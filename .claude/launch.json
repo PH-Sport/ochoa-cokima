@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "cokima",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "cokima", "dev", "--port", "4321"],
+      "port": 4321
+    },
+    {
+      "name": "ochoa",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "ochoa", "dev", "--port", "4322"],
+      "port": 4322
+    }
+  ]
+}
