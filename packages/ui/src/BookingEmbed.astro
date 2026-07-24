@@ -1,0 +1,38 @@
+---
+interface Props {
+  slug: string;
+  locale: "es" | "en";
+  title: string;
+}
+
+const { slug, locale, title } = Astro.props;
+const lang = locale === "es" ? "spanish" : "english";
+const src = `https://www.covermanager.com/reservation/module_restaurant/${slug}/${lang}`;
+---
+
+<div class="booking-embed">
+  <script is:inline src="https://www.covermanager.com/js/iframeResizer.min.js"></script>
+  <iframe
+    id={slug}
+    title={title}
+    src={src}
+    frameborder="0"
+    height="550"
+    width="100%"
+    loading="lazy"
+    onload="typeof iFrameResize === 'function' && iFrameResize();"
+  ></iframe>
+</div>
+
+<style>
+  .booking-embed {
+    background: var(--t-surface, transparent);
+    border: var(--t-card-border, 1px solid var(--t-line));
+    border-radius: var(--t-radius, 6px);
+    overflow: hidden;
+  }
+  .booking-embed iframe {
+    display: block;
+    background: transparent;
+  }
+</style>

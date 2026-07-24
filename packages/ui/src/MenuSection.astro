@@ -1,0 +1,100 @@
+---
+import { hasHalfPortions, type MenuEntry } from "@tombo/content";
+import DishRow from "./DishRow.astro";
+
+interface Props {
+  title: string;
+  dishes: MenuEntry[];
+  showAllergens?: boolean;
+  halfLabel?: string;
+  fullLabel?: string;
+  /** "grid" = dos columnas (Cokima) · "list" = una columna (Ochoa) */
+  layout?: "grid" | "list";
+  allergenLabels?: Record<string, string>;
+}
+
+const {
+  title,
+  dishes,
+  showAllergens = true,
+  halfLabel = "½ ración",
+  fullLabel = "Ración",
+  layout = "grid",
+  allergenLabels = {},
+} = Astro.props;
+
+const sorted = [...dishes].sort((a, b) => a.order - b.order);
+const dual = hasHalfPortions(sorted);
+---
+
+<section class="menu-section">
+  <h3 class="menu-title">{title}</h3>
+  {dual && (
+    <div class="col-legend" aria-hidden="true">
+      <span>{halfLabel}</span><span>{fullLabel}</span>
+    </div>
+  )}
+  <div class:list={["dishes", `dishes--${layout}`]}>
+    {sorted.map((dish) => (
+      <div class="dish-cell">
+        <DishRow dish={dish} showAllergens={showAllergens} dualColumns={dual} allergenLabels={allergenLabels} />
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .menu-section {
+    margin-top: var(--t-section-gap, 3rem);
+  }
+  .menu-title {
+    font-family: var(--t-heading-font, inherit);
+    font-size: var(--t-menu-title-size, 1.6rem);
+    font-weight: var(--t-menu-title-weight, 400);
+    color: var(--t-menu-title-color, var(--t-text));
+    text-transform: var(--t-menu-title-transform, none);
+    margin: 0 0 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .menu-title::after {
+    content: "";
+    flex: 1;
+    height: var(--t-rule-height, 1px);
+    background: var(--t-rule, var(--t-line));
+    border-top: var(--t-rule-top, none);
+    border-bottom: var(--t-rule-bottom, none);
+  }
+  .col-legend {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--t-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 0.3rem;
+  }
+  .col-legend span {
+    width: var(--t-price-width, 4.4rem);
+    text-align: right;
+  }
+  .dishes--grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 56px;
+  }
+  .dishes--list {
+    display: block;
+  }
+  .dish-cell {
+    padding-bottom: 13px;
+    border-bottom: 1px solid var(--t-line);
+  }
+  @media (max-width: 800px) {
+    .dishes--grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

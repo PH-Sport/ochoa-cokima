@@ -1,0 +1,77 @@
+---
+import type { MenuEntry } from "@tombo/content";
+import AllergenIcons from "./AllergenIcons.astro";
+
+interface Props {
+  dish: MenuEntry;
+  showAllergens?: boolean;
+  dualColumns?: boolean;
+  allergenLabels?: Record<string, string>;
+}
+
+const { dish, showAllergens = true, dualColumns = false, allergenLabels = {} } = Astro.props;
+
+const fmt = (n: number) =>
+  `${n.toLocaleString("es-ES", { minimumFractionDigits: 0, maximumFractionDigits: 2 })} €`;
+
+const isDual = typeof dish.price === "object";
+const half = isDual ? (dish.price as { half: number | null }).half : null;
+const full = isDual ? (dish.price as { full: number }).full : (dish.price as number);
+---
+
+<div class="dish">
+  <span class="dish-name">
+    {dish.name}
+    {dish.description && <small>{dish.description}</small>}
+  </span>
+  <i class="leader" aria-hidden="true"></i>
+  {dualColumns && <span class:list={["price", { "price--na": half === null }]}>{half === null ? "—" : fmt(half)}</span>}
+  <span class="price">{fmt(full)}</span>
+</div>
+{showAllergens && dish.allergens.length > 0 && (
+  <div class="dish-allergens">
+    <AllergenIcons allergens={dish.allergens} labels={allergenLabels} />
+  </div>
+)}
+
+<style>
+  .dish {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding-top: var(--t-dish-pad, 14px);
+  }
+  .dish-name {
+    font-weight: var(--t-dish-weight, 600);
+    font-size: 1.05rem;
+    color: var(--t-text);
+  }
+  .dish-name small {
+    display: block;
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: var(--t-text-dim);
+    margin-top: 0.3rem;
+    font-style: var(--t-desc-style, normal);
+  }
+  .leader {
+    flex: 1;
+    border-bottom: var(--t-leader, 1px dotted var(--t-text-dim));
+    transform: translateY(-4px);
+    min-width: 16px;
+  }
+  .price {
+    width: var(--t-price-width, auto);
+    text-align: right;
+    font-family: var(--t-price-font, inherit);
+    font-weight: 600;
+    font-size: 1.02rem;
+    color: var(--t-price-color, var(--t-text));
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .price--na {
+    color: var(--t-text-faint, var(--t-text-dim));
+    font-weight: 400;
+  }
+</style>

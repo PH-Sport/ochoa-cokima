@@ -1,0 +1,105 @@
+---
+interface Props {
+  locale: "es" | "en";
+  cookiesPath: string;
+}
+
+const { locale, cookiesPath } = Astro.props;
+
+const t =
+  locale === "es"
+    ? {
+        text: "Usamos cookies para medir de dónde llegan las reservas y mejorar la web. Puedes aceptarlas o rechazarlas.",
+        more: "Política de cookies",
+        accept: "Aceptar",
+        reject: "Rechazar",
+      }
+    : {
+        text: "We use cookies to understand where bookings come from and improve the site. You can accept or decline.",
+        more: "Cookie policy",
+        accept: "Accept",
+        reject: "Decline",
+      };
+---
+
+<div class="consent" id="tombo-consent" hidden>
+  <p>{t.text} <a href={cookiesPath}>{t.more}</a></p>
+  <div class="consent-actions">
+    <button type="button" class="consent-btn consent-btn--ghost" data-consent="denied">{t.reject}</button>
+    <button type="button" class="consent-btn" data-consent="granted">{t.accept}</button>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var el = document.getElementById("tombo-consent");
+    if (!el) return;
+    var m = document.cookie.match(/(?:^|; )tombo_consent=([^;]*)/);
+    if (m) {
+      if (m[1] === "granted") window.dispatchEvent(new Event("tombo:consent"));
+      return;
+    }
+    el.hidden = false;
+    el.addEventListener("click", function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest("[data-consent]") : null;
+      if (!btn) return;
+      var value = btn.getAttribute("data-consent");
+      document.cookie = "tombo_consent=" + value + "; Max-Age=" + 60 * 60 * 24 * 180 + "; Path=/; SameSite=Lax";
+      el.hidden = true;
+      if (value === "granted") window.dispatchEvent(new Event("tombo:consent"));
+    });
+  })();
+</script>
+
+<style>
+  .consent {
+    position: fixed;
+    z-index: 60;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    max-width: 560px;
+    margin: 0 auto;
+    background: var(--t-surface);
+    color: var(--t-text);
+    border: var(--t-card-border, 1px solid var(--t-line));
+    border-radius: var(--t-radius, 6px);
+    box-shadow: var(--t-shadow, 0 12px 40px rgba(0, 0, 0, 0.25));
+    padding: 16px 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .consent p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--t-text-dim);
+    max-width: 38ch;
+  }
+  .consent a {
+    color: var(--t-accent);
+    text-decoration: underline;
+  }
+  .consent-actions {
+    display: flex;
+    gap: 10px;
+  }
+  .consent-btn {
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: var(--t-accent);
+    color: var(--t-accent-contrast, #fff);
+    border: 0;
+    border-radius: 4px;
+    padding: 9px 16px;
+    cursor: pointer;
+  }
+  .consent-btn--ghost {
+    background: transparent;
+    color: var(--t-text);
+    border: 1px solid var(--t-line);
+  }
+</style>

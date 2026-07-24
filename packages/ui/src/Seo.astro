@@ -1,0 +1,53 @@
+---
+import type { RestaurantInfo } from "./index.ts";
+
+interface Props {
+  title: string;
+  description: string;
+  locale: "es" | "en";
+  /** Ruta equivalente en el otro idioma, p. ej. "/en/menu" desde "/carta". */
+  altPath: string;
+  restaurant: RestaurantInfo;
+  ogImage?: string;
+}
+
+const { title, description, locale, altPath, restaurant, ogImage } = Astro.props;
+const site = Astro.site ?? new URL("http://localhost:4321");
+const canonical = new URL(Astro.url.pathname, site);
+const alternate = new URL(altPath, site);
+const altLocale = locale === "es" ? "en" : "es";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  name: restaurant.name,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: restaurant.streetAddress,
+    postalCode: restaurant.postalCode,
+    addressLocality: restaurant.addressLocality,
+    addressCountry: "ES",
+  },
+  telephone: restaurant.telephone,
+  servesCuisine: restaurant.servesCuisine,
+  priceRange: restaurant.priceRange,
+  openingHours: restaurant.openingHours,
+  url: canonical.href,
+  ...(restaurant.instagram ? { sameAs: [restaurant.instagram] } : {}),
+  ...(ogImage ? { image: new URL(ogImage, site).href } : {}),
+};
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical.href} />
+<link rel="alternate" hreflang={locale} href={canonical.href} />
+<link rel="alternate" hreflang={altLocale} href={alternate.href} />
+<link rel="alternate" hreflang="x-default" href={new URL(locale === "es" ? Astro.url.pathname : altPath, site).href} />
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical.href} />
+<meta property="og:locale" content={locale === "es" ? "es_ES" : "en_GB"} />
+{ogImage && <meta property="og:image" content={new URL(ogImage, site).href} />}
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
