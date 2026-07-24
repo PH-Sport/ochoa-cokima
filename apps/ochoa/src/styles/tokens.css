@@ -1,0 +1,51 @@
+/* Tokens de marca Tasquita Los Ochoa — tasca castiza a plena luz (boceto v1). */
+:root {
+  color-scheme: light;
+
+  --paper: #f4eee2;
+  --paper-2: #ece4d3;
+  --paper-3: #e2d8c3;
+  --ink: #23201b;
+  --ink-dim: #6e6558;
+  --ink-faint: #9c927f;
+  --rojo: #c6222b;
+  --rojo-2: #a81b23;
+  --crema: #f7e9c8;
+  --line: rgba(35, 32, 27, 0.18);
+  --maxw: 1140px;
+
+  --display: "Anton", "Arial Narrow", Impact, sans-serif;
+  --serif: Georgia, "Times New Roman", serif;
+  --sans: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  /* Mapeo a las variables neutras de @tombo/ui */
+  --t-text: var(--ink);
+  --t-text-dim: var(--ink-dim);
+  --t-text-faint: var(--ink-faint);
+  --t-line: var(--line);
+  --t-surface: var(--paper-2);
+  --t-accent: var(--rojo);
+  --t-accent-contrast: #fff9ee;
+  --t-radius: 6px;
+  --t-card-border: 2px solid var(--ink);
+  --t-shadow: 8px 8px 0 rgba(35, 32, 27, 0.85);
+
+  --t-heading-font: var(--display);
+  --t-menu-title-size: clamp(1.9rem, 5vw, 3rem);
+  --t-menu-title-weight: 400;
+  --t-menu-title-color: var(--rojo);
+  --t-menu-title-transform: uppercase;
+  --t-menu-title-shadow: 0.045em 0.05em 0 var(--ink);
+  --t-menu-title-spacing: 0.015em;
+  --t-rule-height: 6px;
+  --t-rule: transparent;
+  --t-rule-top: 2px solid var(--ink);
+  --t-rule-bottom: 1px solid var(--ink);
+  --t-price-color: var(--ink);
+  --t-price-font: var(--sans);
+  --t-price-width: 4.4rem;
+  --t-desc-style: italic;
+  --t-dish-weight: 600;
+  --t-leader: 2px dotted var(--ink-faint);
+  --t-section-gap: clamp(38px, 5vw, 58px);
+}

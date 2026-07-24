@@ -2,8 +2,8 @@
   "name": "tombo-webs",
   "private": true,
   "scripts": {
-    "build": "pnpm -r --filter './apps/*' build",
-    "test": "pnpm -r --filter './packages/*' test"
+    "build": "pnpm --filter cokima build && pnpm --filter ochoa build",
+    "test": "pnpm --filter \"@tombo/*\" -r test"
   },
   "packageManager": "pnpm@9.15.9"
 }

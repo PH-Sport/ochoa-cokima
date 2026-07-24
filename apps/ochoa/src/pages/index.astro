@@ -1,0 +1,322 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+  title="Tasquita Los Ochoa · La tasca que te mereces · Madrid"
+  description="Bar madrileño de toda la vida con gastronomía renovada, en plena Castellana. Vermú, tapas con un toque diferente y aperitivos que se alargan hasta la noche."
+  locale="es"
+  altPath="/en/"
+>
+  <header class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Tasquita · En plena Castellana</p>
+        <h1 class="cartel">La tasca que te mereces</h1>
+        <p class="kicker">
+          Un local que recuerda a los bares madrileños de toda la vida, pero con una gastronomía
+          renovada: un buen vermú, tapas con un toque diferente y la mejor calidad de producto.
+        </p>
+        <div class="hero-cta">
+          <a href="/reservas" class="btn">Reservar mesa</a>
+          <a href="/carta" class="btn ghost">Ver la carta</a>
+        </div>
+      </div>
+      <div class="hero-photo">
+        <img src="/images/hero.jpg" alt="Mesa de mármol con el aperitivo de Los Ochoa servido" width="1400" height="787" loading="eager" fetchpriority="high" />
+        <span class="stamp cartel">Madriz</span>
+        <span class="tag">El aperitivo, servido</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="manifesto">
+    <div class="wrap">
+      <div class="rule"></div>
+      <blockquote>«Aperitivos de esos que se alargan hasta la noche, <strong>como filosofía de vida</strong>.»</blockquote>
+      <p class="sub">
+        Un espacio divertido en plena Castellana donde beberte un buen vermú y acompañarlo de tapas
+        con un toque diferente. El tapeo de toda la vida, con sabores nuevos.
+      </p>
+    </div>
+  </section>
+
+  <section class="tasca">
+    <div class="wrap tasca-grid">
+      <div class="tasca-photo">
+        <img src="/images/tasca.jpg" alt="Rótulo rojo de Los Ochoa en la ventana del local" width="900" height="900" loading="lazy" />
+      </div>
+      <div>
+        <p class="eyebrow">La tasca</p>
+        <h2 class="cartel">El bar de toda la vida, renovado</h2>
+        <p class="txt">
+          Barra, mármol y rótulo rojo. <em>El tapeo de toda la vida que te sorprenderá con sabores
+          nuevos</em> y con la mejor calidad de producto — de la ensaladilla al cachopín, pasando
+          por unas gyozas de txistorra.
+        </p>
+        <p><a href="/carta" class="btn ghost">Ver la carta completa</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="visita" id="visita">
+    <div class="wrap">
+      <p class="eyebrow">Dónde estamos</p>
+      <h2 class="cartel">En plena Castellana</h2>
+      <div class="visit-grid">
+        <dl class="info">
+          <div class="block"><dt>Dirección</dt><dd>P.º de la Castellana, 117<small>28046 Madrid</small></dd></div>
+          <div class="block"><dt>Teléfono</dt><dd><a href="tel:+34912876820">912 87 68 20</a></dd></div>
+          <div class="block">
+            <dt>Horario</dt>
+            <dd>
+              <div class="hours">
+                <span>Lunes a jueves</span><b>9:00 – 1:00</b>
+                <span>Viernes</span><b>9:00 – 2:30</b>
+                <span>Sábado</span><b>12:00 – 2:30</b>
+                <span>Domingo</span><b>12:00 – 1:00</b>
+              </div>
+            </dd>
+          </div>
+          <div class="block"><dt>Instagram</dt><dd><a href="https://instagram.com/tasquita.losochoa">@tasquita.losochoa</a></dd></div>
+        </dl>
+        <div class="mapbox" role="img" aria-label="Mapa orientativo: Paseo de la Castellana 117, Madrid">
+          <div class="pin"><i class="dot"></i><span>Castellana 117</span></div>
+          <span class="ph">Mapa · pendiente de integrar</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    padding: clamp(46px, 8.5vw, 104px) 0 clamp(40px, 7vw, 80px);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.04fr 0.96fr;
+    gap: clamp(28px, 5vw, 60px);
+    align-items: center;
+  }
+  @media (max-width: 860px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .hero h1 {
+    font-size: clamp(3.2rem, 10vw, 7rem);
+    margin: 0.25em 0 0;
+  }
+  .kicker {
+    max-width: 47ch;
+    color: var(--ink-dim);
+    font-size: 1.12rem;
+    margin: 1.4rem 0 0;
+  }
+  .hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 2.1rem;
+  }
+  .hero-photo {
+    position: relative;
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 8px 8px 0 rgba(35, 32, 27, 0.85);
+    aspect-ratio: 16 / 10;
+  }
+  .hero-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-photo .tag {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--ink);
+    background: rgba(244, 238, 226, 0.92);
+    border: 1px solid var(--ink);
+    padding: 6px 12px;
+    border-radius: 3px;
+  }
+  .stamp {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    transform: rotate(6deg);
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+    border: 2.5px solid var(--rojo);
+    border-radius: 6px;
+    padding: 6px 12px;
+    background: rgba(244, 238, 226, 0.85);
+    text-shadow: none;
+  }
+  .manifesto {
+    padding: clamp(44px, 7vw, 84px) 0;
+  }
+  .manifesto .rule {
+    margin-bottom: clamp(30px, 5vw, 52px);
+  }
+  blockquote {
+    margin: 0;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+    line-height: 1.32;
+    max-width: 26ch;
+    text-wrap: balance;
+  }
+  blockquote strong {
+    color: var(--rojo);
+  }
+  .sub {
+    font-size: 1.08rem;
+    color: var(--ink-dim);
+    max-width: 56ch;
+    margin: 1.5rem 0 0;
+  }
+  .tasca {
+    padding: clamp(24px, 4vw, 48px) 0 0;
+  }
+  .tasca-grid {
+    display: grid;
+    grid-template-columns: 0.92fr 1.08fr;
+    gap: clamp(28px, 5vw, 60px);
+    align-items: center;
+  }
+  @media (max-width: 860px) {
+    .tasca-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .tasca-photo {
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: -8px 8px 0 rgba(198, 34, 43, 0.9);
+    aspect-ratio: 1 / 1;
+  }
+  .tasca-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .tasca h2 {
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    margin: 0.2rem 0 0;
+  }
+  .txt {
+    color: var(--ink-dim);
+    font-size: 1.08rem;
+    max-width: 50ch;
+    margin: 1.3rem 0 1.6rem;
+  }
+  .txt em {
+    color: var(--ink);
+  }
+  .visita {
+    padding: clamp(48px, 8vw, 92px) 0 0;
+  }
+  .visita h2 {
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    margin: 0.2rem 0 1.6rem;
+  }
+  .visit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(28px, 5vw, 56px);
+    align-items: stretch;
+  }
+  @media (max-width: 820px) {
+    .visit-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .info {
+    margin: 0;
+  }
+  .block {
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .block dt {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.02rem;
+    color: var(--rojo);
+    margin: 0 0 0.4rem;
+  }
+  .block dd {
+    margin: 0;
+    font-size: 1.08rem;
+  }
+  .block dd small {
+    display: block;
+    color: var(--ink-dim);
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+  }
+  .hours {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.15rem 1.2rem;
+    font-size: 1rem;
+  }
+  .hours span {
+    color: var(--ink-dim);
+  }
+  .mapbox {
+    position: relative;
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    overflow: hidden;
+    min-height: 300px;
+    background:
+      radial-gradient(circle at 40% 45%, rgba(198, 34, 43, 0.14), transparent 45%),
+      repeating-linear-gradient(0deg, rgba(35, 32, 27, 0.07) 0 1px, transparent 1px 46px),
+      repeating-linear-gradient(90deg, rgba(35, 32, 27, 0.07) 0 1px, transparent 1px 46px),
+      #efe8d8;
+  }
+  .pin {
+    position: absolute;
+    left: 40%;
+    top: 45%;
+    transform: translate(-50%, -100%);
+    text-align: center;
+  }
+  .dot {
+    display: block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--rojo);
+    margin: 0 auto;
+    box-shadow: 0 0 0 6px rgba(198, 34, 43, 0.2), 2px 2px 0 var(--ink);
+  }
+  .pin span {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    color: var(--paper);
+    background: var(--ink);
+    padding: 4px 10px;
+    border-radius: 3px;
+    margin-top: 8px;
+    display: inline-block;
+  }
+  .ph {
+    position: absolute;
+    left: 14px;
+    bottom: 12px;
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+  }
+</style>

@@ -1,0 +1,44 @@
+---
+interface Props {
+  locale: "es" | "en";
+}
+const { locale } = Astro.props;
+const es = locale === "es";
+---
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <span class="brand cartel">Los Ochoa</span>
+    <span>Castellana 117 · Madrid · <a href="tel:+34912876820">912 87 68 20</a></span>
+    <span class="legal">
+      <a href="/aviso-legal">{es ? "Aviso legal" : "Legal notice"}</a> ·
+      <a href="/privacidad">{es ? "Privacidad" : "Privacy"}</a> ·
+      <a href="/cookies">Cookies</a>
+    </span>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    margin-top: clamp(52px, 8vw, 96px);
+    border-top: 2px solid var(--ink);
+    padding: 34px 0;
+    background: var(--paper-2);
+  }
+  .foot-in {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    color: var(--ink-dim);
+  }
+  .brand {
+    font-size: 1.15rem;
+  }
+  .legal a:hover {
+    color: var(--rojo);
+  }
+</style>

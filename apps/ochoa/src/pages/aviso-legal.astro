@@ -1,0 +1,27 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Aviso legal · Tasquita Los Ochoa" description="Aviso legal de Tasquita Los Ochoa." locale="es" altPath="/en/">
+  <section class="legal">
+    <div class="wrap">
+      <h1 class="cartel">Aviso legal</h1>
+      <p>
+        Titular del sitio: <em>[razón social pendiente — datos fiscales del cliente]</em>,
+        con domicilio en P.º de la Castellana, 117, 28046 Madrid, y CIF <em>[pendiente]</em>.
+        Contacto: <a href="tel:+34912876820">912 87 68 20</a>.
+      </p>
+      <p>
+        Este contenido se completará con los datos fiscales que facilite el titular antes
+        de la puesta en producción (ver checklist del proyecto).
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legal { padding: clamp(48px, 8vw, 92px) 0 0; }
+  h1 { font-size: clamp(2rem, 5vw, 3rem); }
+  p { color: var(--ink-dim); max-width: 65ch; }
+  a { text-decoration: underline; }
+</style>

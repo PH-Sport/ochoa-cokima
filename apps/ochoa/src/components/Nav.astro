@@ -1,0 +1,96 @@
+---
+interface Props {
+  locale: "es" | "en";
+  altPath: string;
+}
+const { locale, altPath } = Astro.props;
+const es = locale === "es";
+const links = es
+  ? [
+      { href: "/carta", label: "La carta" },
+      { href: "/reservas", label: "Reservas" },
+      { href: "/#visita", label: "Dónde estamos" },
+    ]
+  : [
+      { href: "/en/menu", label: "Menu" },
+      { href: "/en/reservations", label: "Reservations" },
+      { href: "/en/#visit", label: "Find us" },
+    ];
+const home = es ? "/" : "/en/";
+const reserve = es ? "/reservas" : "/en/reservations";
+---
+
+<nav class="nav">
+  <div class="wrap nav-in">
+    <a class="brand cartel" href={home}>Los Ochoa<small>Tasquita · Madriz</small></a>
+    <div class="nav-right">
+      <div class="nav-links">
+        {links.map((l) => <a href={l.href}>{l.label}</a>)}
+      </div>
+      <span class="lang">
+        {es ? <><b>ES</b> · <a href={altPath}>EN</a></> : <><a href={altPath}>ES</a> · <b>EN</b></>}
+      </span>
+      <a href={reserve} class="btn">{es ? "Reservar" : "Book"}</a>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(244, 238, 226, 0.88);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: 66px;
+  }
+  .brand {
+    font-size: 1.5rem;
+  }
+  .brand small {
+    font-family: var(--serif);
+    font-style: italic;
+    text-transform: none;
+    color: var(--ink-dim);
+    font-size: 0.8rem;
+    text-shadow: none;
+    margin-left: 0.6ch;
+    letter-spacing: 0;
+  }
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+  .lang {
+    font-family: var(--sans);
+    font-size: 0.88rem;
+    color: var(--ink-dim);
+  }
+  .lang b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .nav-links {
+    display: flex;
+    gap: 24px;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    color: var(--ink-dim);
+  }
+  .nav-links a:hover {
+    color: var(--rojo);
+  }
+  @media (max-width: 780px) {
+    .nav-links {
+      display: none;
+    }
+  }
+</style>
