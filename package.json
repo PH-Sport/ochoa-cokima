@@ -1,0 +1,9 @@
+{
+  "name": "tombo-webs",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r --filter './apps/*' build",
+    "test": "pnpm -r --filter './packages/*' test"
+  },
+  "packageManager": "pnpm@9.15.9"
+}
