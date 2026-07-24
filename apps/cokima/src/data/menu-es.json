@@ -1,0 +1,23 @@
+[
+  { "id": "compartir-01", "section": "compartir", "order": 1, "name": "Croquetas de jamón Joselito", "description": "Con velo de papada ibérica.", "price": 3, "allergens": ["gluten", "lacteos"] },
+  { "id": "compartir-02", "section": "compartir", "order": 2, "name": "Bao de panceta melosa", "description": "Mayonesa de hierbabuena y furikake.", "price": 8, "allergens": ["gluten", "soja", "sesamo"] },
+  { "id": "compartir-03", "section": "compartir", "order": 3, "name": "Gilda de pastrami casero", "description": "Encurtidos con salsa de oliva Kalamata.", "price": 7, "allergens": ["pescado"] },
+  { "id": "compartir-04", "section": "compartir", "order": 4, "name": "Gyozas de langostino", "description": "Con salsa de chorizo ibérico de Extremadura.", "price": 14, "featured": true, "allergens": ["gluten", "crustaceos"] },
+  { "id": "compartir-05", "section": "compartir", "order": 5, "name": "Tomate rosa ecológico", "description": "Con pesto rojo, pesto verde y AOVE.", "price": 12, "allergens": ["frutos-cascara"] },
+  { "id": "compartir-06", "section": "compartir", "order": 6, "name": "Dumpling de chipirones estofados", "description": "Con alioli de tinta.", "price": 14, "allergens": ["gluten", "moluscos", "huevo"] },
+  { "id": "compartir-07", "section": "compartir", "order": 7, "name": "Tataki de atún", "description": "Gel de guisante y cremoso de ají amarillo.", "price": 18, "featured": true, "allergens": ["pescado", "soja"] },
+  { "id": "compartir-08", "section": "compartir", "order": 8, "name": "Ceviche de corvina", "description": "Leche de tigre de maracuyá y quinoa.", "price": 16, "allergens": ["pescado"] },
+  { "id": "compartir-09", "section": "compartir", "order": 9, "name": "Soft shell crab crujiente", "description": "Con coliflor en texturas.", "price": 15, "allergens": ["crustaceos", "gluten"] },
+  { "id": "compartir-10", "section": "compartir", "order": 10, "name": "Tacos del gobernador de gambón", "description": "Con ñora y queso Oaxaca.", "price": 14, "featured": true, "allergens": ["gluten", "lacteos", "crustaceos"] },
+  { "id": "compartir-11", "section": "compartir", "order": 11, "name": "Alcachofas con salsa de calabaza", "description": "Tomate cherry y papada ibérica.", "price": 16, "allergens": [] },
+  { "id": "compartir-12", "section": "compartir", "order": 12, "name": "Los minutejos de Cokima", "description": "Chips de oreja de cerdo crujiente con milhojas de patata y salsa brava.", "price": 12, "allergens": [] },
+  { "id": "terminar-01", "section": "terminar", "order": 1, "name": "Huevos rotos con patata crujiente y pulpo a la brasa", "description": "Salsa huancaína ahumada y aceite de pimentón.", "price": 24, "allergens": ["moluscos", "huevo"] },
+  { "id": "terminar-02", "section": "terminar", "order": 2, "name": "Katsu sando de solomillo de ternera", "description": "Con queso gorgonzola y demiglace de trufa.", "price": 22, "featured": true, "allergens": ["gluten", "lacteos"] },
+  { "id": "terminar-03", "section": "terminar", "order": 3, "name": "Wonton de carrillera", "description": "Mole mexicano, yema curada y mayonesa de achiote.", "price": 22, "allergens": ["gluten", "huevo"] },
+  { "id": "terminar-04", "section": "terminar", "order": 4, "name": "Arroz meloso de carabinero a la brasa", "description": "Con alioli de perejil.", "price": 30, "featured": true, "allergens": ["crustaceos", "huevo"] },
+  { "id": "terminar-05", "section": "terminar", "order": 5, "name": "Steak tartar de picaña madurada", "description": "Sobre tuétano, con emulsión de su grasa.", "price": 24, "allergens": ["huevo"] },
+  { "id": "terminar-06", "section": "terminar", "order": 6, "name": "Canelones de costilla de cerdo", "description": "Con su demi-glace, bechamel de coco y queso provolone.", "price": 20, "allergens": ["gluten", "lacteos"] },
+  { "id": "terminar-07", "section": "terminar", "order": 7, "name": "Fideuá de boletus, foie y seta enoki a la brasa", "price": 20, "allergens": ["gluten"] },
+  { "id": "postres-01", "section": "postres", "order": 1, "name": "Tarta de queso BRUTAL", "description": "Con helado de Idiazabal y toffee salado.", "price": 7.5, "allergens": ["lacteos", "huevo"] },
+  { "id": "postres-02", "section": "postres", "order": 2, "name": "Tremenda torrija", "description": "Con corazón de dulce de leche y caramelo.", "price": 8.5, "allergens": ["gluten", "lacteos", "huevo"] }
+]

@@ -1,0 +1,62 @@
+---
+import "../styles/tokens.css";
+import "../styles/global.css";
+import Seo from "@tombo/ui/Seo.astro";
+import ConsentBanner from "@tombo/ui/ConsentBanner.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import { RESTAURANT } from "../site.ts";
+
+interface Props {
+  title: string;
+  description: string;
+  locale: "es" | "en";
+  altPath: string;
+}
+
+const { title, description, locale, altPath } = Astro.props;
+---
+
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preload" href="/fonts/bricolage-800.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/bricolage-400.woff2" as="font" type="font/woff2" crossorigin />
+    <Seo title={title} description={description} locale={locale} altPath={altPath} restaurant={RESTAURANT} ogImage="/images/hero.jpg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+  </head>
+  <body>
+    <Nav locale={locale} altPath={altPath} />
+    <slot />
+    <Footer locale={locale} />
+    <ConsentBanner locale={locale} cookiesPath="/cookies" />
+    <script>
+      import { initTracking } from "@tombo/tracking/client";
+
+      function loadGtm(id: string) {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
+        const s = document.createElement("script");
+        s.async = true;
+        s.src = `https://www.googletagmanager.com/gtm.js?id=${id}`;
+        document.head.appendChild(s);
+      }
+
+      // Nada de medición sin consentimiento (spec §10).
+      window.addEventListener(
+        "tombo:consent",
+        () => {
+          const gtmId = import.meta.env.PUBLIC_GTM_ID as string | undefined;
+          if (gtmId) loadGtm(gtmId);
+          initTracking({
+            gtmId,
+            pixelId: import.meta.env.PUBLIC_META_PIXEL_ID as string | undefined,
+            coverSlug: (import.meta.env.PUBLIC_COVERMANAGER_SLUG as string | undefined) ?? "restaurante-cokima",
+          });
+        },
+        { once: true },
+      );
+    </script>
+  </body>
+</html>

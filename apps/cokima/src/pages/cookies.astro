@@ -1,0 +1,28 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Política de cookies · Cokima" description="Política de cookies de Cokima." locale="es" altPath="/en/">
+  <section class="legal">
+    <div class="wrap">
+      <h1>Política de cookies</h1>
+      <p>
+        Usamos cookies de medición (Google Tag Manager, Google Analytics 4 y el píxel de Meta)
+        únicamente si las aceptas en el aviso de cookies. Sirven para saber de dónde llegan las
+        visitas y las reservas. Puedes rechazarlas sin que la web deje de funcionar.
+      </p>
+      <ul>
+        <li><strong>tombo_consent</strong> — guarda tu elección de consentimiento (180 días).</li>
+        <li><strong>tombo_attr</strong> — origen de la visita (campaña, red social) para atribuir reservas (90 días, solo con consentimiento).</li>
+        <li>Cookies de Google/Meta — solo con consentimiento; ver sus políticas respectivas.</li>
+      </ul>
+      <p>Este contenido se revisará jurídicamente antes de la puesta en producción.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legal { padding: clamp(52px, 8vw, 96px) 0 0; }
+  h1 { font-weight: 800; font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -0.02em; }
+  p, li { color: var(--bone-dim); max-width: 65ch; }
+</style>

@@ -1,0 +1,96 @@
+---
+interface Props {
+  locale: "es" | "en";
+  altPath: string;
+}
+const { locale, altPath } = Astro.props;
+const es = locale === "es";
+const links = es
+  ? [
+      { href: "/carta", label: "La carta" },
+      { href: "/reservas", label: "Reservas" },
+      { href: "/#visita", label: "Dónde estamos" },
+    ]
+  : [
+      { href: "/en/menu", label: "Menu" },
+      { href: "/en/reservations", label: "Reservations" },
+      { href: "/en/#visit", label: "Find us" },
+    ];
+const home = es ? "/" : "/en/";
+const reserve = es ? "/reservas" : "/en/reservations";
+---
+
+<nav class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href={home}>Cokima<i class="spark" aria-hidden="true"></i></a>
+    <div class="nav-right">
+      <div class="nav-links">
+        {links.map((l) => <a href={l.href}>{l.label}</a>)}
+      </div>
+      <span class="lang">
+        {es ? <><b>ES</b> · <a href={altPath}>EN</a></> : <><a href={altPath}>ES</a> · <b>EN</b></>}
+      </span>
+      <a href={reserve} class="btn">{es ? "Reservar" : "Book"}</a>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(21, 15, 12, 0.72);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: 66px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5ch;
+    font-weight: 800;
+    font-size: 1.42rem;
+    letter-spacing: -0.01em;
+  }
+  .spark {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--vermilion);
+    box-shadow: 0 0 8px 2px var(--ember), 0 0 2px 1px var(--vermilion);
+  }
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+  .lang {
+    font-size: 0.9rem;
+    color: var(--bone-dim);
+  }
+  .lang b {
+    color: var(--bone);
+    font-weight: 600;
+  }
+  .nav-links {
+    display: flex;
+    gap: 24px;
+    font-size: 0.98rem;
+    color: var(--bone-dim);
+  }
+  .nav-links a:hover {
+    color: var(--bone);
+  }
+  @media (max-width: 760px) {
+    .nav-links {
+      display: none;
+    }
+  }
+</style>

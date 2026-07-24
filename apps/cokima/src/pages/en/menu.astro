@@ -1,0 +1,46 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import MenuSection from "@tombo/ui/MenuSection.astro";
+import { ALLERGEN_LABELS } from "../../site.ts";
+
+const all = (await getCollection("menu-en")).map((e) => e.data);
+const bySection = (s: string) => all.filter((d) => d.section === s);
+---
+
+<Base
+  title="Menu · Cokima — Kitchen Madness"
+  description="Cokima's menu in Madrid: prawn gyozas, seared tuna tataki, creamy red king prawn rice, katsu sando and more. Built for sharing."
+  locale="en"
+  altPath="/carta"
+>
+  <section class="carta">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">The menu</p>
+        <h1>Built for sharing</h1>
+      </div>
+
+      <MenuSection title="Sharing is caring…" dishes={bySection("compartir")} allergenLabels={ALLERGEN_LABELS.en} />
+      <MenuSection title="To finish or not…" dishes={bySection("terminar")} allergenLabels={ALLERGEN_LABELS.en} />
+      <MenuSection title="Y por fin, los postres" dishes={bySection("postres")} allergenLabels={ALLERGEN_LABELS.en} />
+
+      <p class="note">
+        Bread, olive oil, butter and aperitif: €3. Allergen icons are indicative until
+        confirmed against the restaurant's official documentation.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .carta {
+    padding: clamp(52px, 8vw, 96px) 0 0;
+  }
+  .note {
+    font-size: 0.9rem;
+    color: var(--bone-faint);
+    margin-top: 2.6rem;
+    text-align: center;
+  }
+</style>

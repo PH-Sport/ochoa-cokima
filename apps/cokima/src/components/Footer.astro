@@ -1,0 +1,53 @@
+---
+interface Props {
+  locale: "es" | "en";
+}
+const { locale } = Astro.props;
+const es = locale === "es";
+---
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <span class="brand">Cokima<i class="spark" aria-hidden="true"></i></span>
+    <span>Andrés Mellado 21 · Madrid · <a href="tel:+34915989401">915 98 94 01</a></span>
+    <span class="legal">
+      <a href={es ? "/aviso-legal" : "/aviso-legal"}>{es ? "Aviso legal" : "Legal notice"}</a> ·
+      <a href={es ? "/privacidad" : "/privacidad"}>{es ? "Privacidad" : "Privacy"}</a> ·
+      <a href={es ? "/cookies" : "/cookies"}>Cookies</a>
+    </span>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    margin-top: clamp(52px, 8vw, 96px);
+    border-top: 1px solid var(--line);
+    padding: 36px 0;
+  }
+  .foot-in {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.92rem;
+    color: var(--bone-faint);
+  }
+  .brand {
+    font-size: 1.15rem;
+    color: var(--bone);
+    font-weight: 800;
+  }
+  .spark {
+    display: inline-block;
+    margin-left: 0.4ch;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--vermilion);
+    box-shadow: 0 0 8px 2px var(--ember);
+  }
+  .legal a:hover {
+    color: var(--bone);
+  }
+</style>

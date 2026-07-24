@@ -1,0 +1,55 @@
+<canvas id="embers" aria-hidden="true"></canvas>
+
+<script is:inline>
+  (function () {
+    var c = document.getElementById("embers");
+    if (!c || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var x = c.getContext("2d"), W, H, dpr, parts = [];
+    function size() {
+      var r = c.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = r.width; H = r.height;
+      c.width = W * dpr; c.height = H * dpr;
+      x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function seed() {
+      parts = [];
+      var n = Math.round(Math.min(W, 900) / 14);
+      for (var i = 0; i < n; i++) parts.push(mk(Math.random() * H));
+    }
+    function mk(y) {
+      return { x: Math.random() * W, y: y, r: Math.random() * 1.6 + 0.4, v: Math.random() * 0.5 + 0.15, d: Math.random() * 0.6 - 0.3, a: Math.random() * 0.5 + 0.15, hue: Math.random() < 0.5 ? 18 : 6 };
+    }
+    function tick() {
+      x.clearRect(0, 0, W, H);
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i];
+        p.y -= p.v; p.x += p.d; p.a -= 0.0016;
+        if (p.y < -10 || p.a <= 0) { parts[i] = mk(H + 10); continue; }
+        x.beginPath();
+        x.arc(p.x, p.y, p.r, 0, 6.283);
+        x.fillStyle = "hsla(" + p.hue + ",90%," + (55 + p.r * 8) + "%," + p.a + ")";
+        x.shadowColor = "rgba(255,122,24,.8)";
+        x.shadowBlur = 6;
+        x.fill();
+      }
+      requestAnimationFrame(tick);
+    }
+    size(); seed(); tick();
+    var t;
+    window.addEventListener("resize", function () {
+      clearTimeout(t);
+      t = setTimeout(function () { size(); seed(); }, 180);
+    });
+  })();
+</script>
+
+<style>
+  #embers {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>

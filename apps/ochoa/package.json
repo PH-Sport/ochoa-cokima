@@ -1,0 +1,18 @@
+{
+  "name": "ochoa",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.0.0",
+    "@astrojs/vercel": "^10.0.0",
+    "@tombo/content": "workspace:*",
+    "@tombo/tracking": "workspace:*",
+    "@tombo/ui": "workspace:*",
+    "astro": "^6.0.0"
+  }
+}

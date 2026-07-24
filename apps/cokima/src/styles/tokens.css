@@ -1,0 +1,40 @@
+/* Tokens de marca Cokima — mundo oscuro "mecha encendida" (boceto v3). */
+:root {
+  color-scheme: dark;
+
+  --ground: #150f0c;
+  --ground-2: #1e1611;
+  --ground-3: #271c16;
+  --bone: #f3eadd;
+  --bone-dim: #a99c8c;
+  --bone-faint: #6c6055;
+  --vermilion: #ed1c24;
+  --vermilion-2: #ff3b33;
+  --ember: #ff7a18;
+  --line: rgba(243, 234, 221, 0.12);
+  --maxw: 1180px;
+
+  --sans: "Bricolage Grotesque", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --serif: Georgia, "Times New Roman", serif;
+
+  /* Mapeo a las variables neutras de @tombo/ui */
+  --t-text: var(--bone);
+  --t-text-dim: var(--bone-dim);
+  --t-text-faint: var(--bone-faint);
+  --t-line: var(--line);
+  --t-surface: var(--ground-2);
+  --t-accent: var(--vermilion);
+  --t-accent-contrast: #fff;
+  --t-radius: 6px;
+  --t-card-border: 1px solid var(--ground-3);
+  --t-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+
+  --t-heading-font: var(--serif);
+  --t-menu-title-size: 1.6rem;
+  --t-menu-title-weight: 400;
+  --t-price-color: var(--ember);
+  --t-price-font: var(--sans);
+  --t-desc-style: normal;
+  --t-leader: 1px dotted var(--bone-faint);
+  --t-section-gap: clamp(38px, 5vw, 60px);
+}

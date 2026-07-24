@@ -1,0 +1,27 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Aviso legal · Cokima" description="Aviso legal de Cokima." locale="es" altPath="/en/">
+  <section class="legal">
+    <div class="wrap">
+      <h1>Aviso legal</h1>
+      <p>
+        Titular del sitio: <em>[razón social pendiente — datos fiscales del cliente]</em>,
+        con domicilio en C. de Andrés Mellado, 21, 28015 Madrid, y CIF <em>[pendiente]</em>.
+        Contacto: <a href="tel:+34915989401">915 98 94 01</a>.
+      </p>
+      <p>
+        Este contenido se completará con los datos fiscales que facilite el titular antes
+        de la puesta en producción (ver checklist del proyecto).
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legal { padding: clamp(52px, 8vw, 96px) 0 0; }
+  h1 { font-weight: 800; font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -0.02em; }
+  p { color: var(--bone-dim); max-width: 65ch; }
+  a { text-decoration: underline; }
+</style>

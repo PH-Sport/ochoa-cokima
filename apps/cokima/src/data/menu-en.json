@@ -1,0 +1,23 @@
+[
+  { "id": "compartir-01", "section": "compartir", "order": 1, "name": "Creamy Joselito ham croquettes", "description": "With Iberian pork jowl veil.", "price": 3, "allergens": ["gluten", "lacteos"] },
+  { "id": "compartir-02", "section": "compartir", "order": 2, "name": "Slow-cooked pork belly bao bun", "description": "With mint mayo and furikake.", "price": 8, "allergens": ["gluten", "soja", "sesamo"] },
+  { "id": "compartir-03", "section": "compartir", "order": 3, "name": "House-made pastrami brochette", "description": "With Kalamata sauce and pickles.", "price": 7, "allergens": ["pescado"] },
+  { "id": "compartir-04", "section": "compartir", "order": 4, "name": "Prawn gyozas", "description": "With Iberian chorizo sauce.", "price": 14, "featured": true, "allergens": ["gluten", "crustaceos"] },
+  { "id": "compartir-05", "section": "compartir", "order": 5, "name": "Organic pink tomato", "description": "With red pesto, green pesto and olive oil.", "price": 12, "allergens": ["frutos-cascara"] },
+  { "id": "compartir-06", "section": "compartir", "order": 6, "name": "Stewed baby squid dumplings", "description": "With ink sauce.", "price": 14, "allergens": ["gluten", "moluscos", "huevo"] },
+  { "id": "compartir-07", "section": "compartir", "order": 7, "name": "Seared tuna tataki", "description": "With pea gel and creamy yellow chilli.", "price": 18, "featured": true, "allergens": ["pescado", "soja"] },
+  { "id": "compartir-08", "section": "compartir", "order": 8, "name": "Sea bass ceviche", "description": "With passion fruit and quinoa.", "price": 16, "allergens": ["pescado"] },
+  { "id": "compartir-09", "section": "compartir", "order": 9, "name": "Crispy soft shell crab", "description": "With cauliflower textures.", "price": 15, "allergens": ["crustaceos", "gluten"] },
+  { "id": "compartir-10", "section": "compartir", "order": 10, "name": "\"Gobernador\" style tacos", "description": "With king prawns, ñora pepper and Oaxaca cheese.", "price": 14, "featured": true, "allergens": ["gluten", "lacteos", "crustaceos"] },
+  { "id": "compartir-11", "section": "compartir", "order": 11, "name": "Artichokes with pumpkin sauce", "description": "Cherry tomatoes and Iberian pork jowl.", "price": 16, "allergens": [] },
+  { "id": "compartir-12", "section": "compartir", "order": 12, "name": "Crispy pork's ear chips", "description": "With layered potatoes and brava sauce.", "price": 12, "allergens": [] },
+  { "id": "terminar-01", "section": "terminar", "order": 1, "name": "Fried eggs with crispy potatoes and grilled octopus", "description": "Smoked huancaina sauce and paprika oil.", "price": 24, "allergens": ["moluscos", "huevo"] },
+  { "id": "terminar-02", "section": "terminar", "order": 2, "name": "Beef tenderloin katsu sando", "description": "With gorgonzola cheese and truffle demi-glace, served with french fries.", "price": 22, "featured": true, "allergens": ["gluten", "lacteos"] },
+  { "id": "terminar-03", "section": "terminar", "order": 3, "name": "Beef cheek wonton lasagna", "description": "With Mexican mole, cured egg yolk and achiote mayo.", "price": 22, "allergens": ["gluten", "huevo"] },
+  { "id": "terminar-04", "section": "terminar", "order": 4, "name": "Creamy rice with grilled red king prawn", "description": "With parsley aioli.", "price": 30, "featured": true, "allergens": ["crustaceos", "huevo"] },
+  { "id": "terminar-05", "section": "terminar", "order": 5, "name": "Dry-aged top sirloin cap steak tartare", "description": "With bone marrow and its own fat emulsion.", "price": 24, "allergens": ["huevo"] },
+  { "id": "terminar-06", "section": "terminar", "order": 6, "name": "Pork rib cannelloni", "description": "Coconut bechamel and provolone cheese.", "price": 20, "allergens": ["gluten", "lacteos"] },
+  { "id": "terminar-07", "section": "terminar", "order": 7, "name": "\"Fideuá\" with boletus mushrooms, foie gras and grilled enoki", "price": 20, "allergens": ["gluten"] },
+  { "id": "postres-01", "section": "postres", "order": 1, "name": "BRUTAL cheesecake", "description": "With Idiazabal cheese ice cream and salted toffee.", "price": 7.5, "allergens": ["lacteos", "huevo"] },
+  { "id": "postres-02", "section": "postres", "order": 2, "name": "Decadent brioche French toast", "description": "With dulce de leche filling and caramel.", "price": 8.5, "allergens": ["gluten", "lacteos", "huevo"] }
+]
