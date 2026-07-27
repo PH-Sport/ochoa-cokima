@@ -10,7 +10,7 @@ packages/
   content/    → esquema tipado de la carta (Zod)
   tracking/   → capa de atribución (UTM/fbclid, píxel + Meta CAPI, puente CoverManager)
   ui/         → componentes Astro sin marca (la marca la ponen los tokens de cada app)
-  config/     → configuración compartida (tsconfig)
+  config/     → configuración compartida (tsconfig, resolución de SITE_URL)
 ```
 
 ## Comandos
@@ -27,7 +27,7 @@ Por app: `pnpm --filter cokima dev` / `pnpm --filter ochoa dev`.
 
 | Variable | Qué es | Estado |
 |---|---|---|
-| `SITE_URL` | URL canónica del site (dominio pendiente de decisión) | pendiente |
+| `SITE_URL` | URL canónica del site (dominio pendiente de decisión) | obligatoria en producción: sin ella el build falla ([deploy.md](docs/deploy.md)). En local cae a `http://localhost:4321`; en previews de Vercel usa el dominio del despliegue |
 | `PUBLIC_GTM_ID` | Contenedor Google Tag Manager | `GTM-KW58ZDS` (actual del grupo) |
 | `PUBLIC_META_PIXEL_ID` | Píxel de Meta (recomendado: uno por marca) | pendiente de accesos |
 | `PUBLIC_COVERMANAGER_SLUG` | Slug del motor de reservas | `restaurante-cokima` / `tasquita-los-ochoa` |

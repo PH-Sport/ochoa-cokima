@@ -1,0 +1,16 @@
+{
+  "name": "@tombo/config",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./site-url": "./src/site-url.mjs",
+    "./tsconfig.base.json": "./tsconfig.base.json"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.0"
+  }
+}

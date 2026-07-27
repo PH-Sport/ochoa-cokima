@@ -1,7 +1,8 @@
 # Despliegue en Vercel
 
-> **Estado:** documentado, **no ejecutado**. Pendiente de decidir dominios y de tener
-> los accesos (ver `superpowers/specs/2026-07-18-webs-grupo-tombo-design.md` §12).
+> **Estado:** documentado, **no ejecutado** en Vercel. El código ya está listo (incluido el
+> blindaje de `SITE_URL`); falta crear los proyectos, y eso depende de decidir dominios y de
+> tener los accesos (ver `superpowers/specs/2026-07-18-webs-grupo-tombo-design.md` §12).
 
 ## El concepto: un repo, dos proyectos
 
@@ -35,7 +36,7 @@ los `.env.example` de cada app.
 
 | Variable | `cokima` | `ochoa` | Notas |
 |---|---|---|---|
-| `SITE_URL` | su dominio | su dominio | **Obligatoria.** Ver aviso abajo. |
+| `SITE_URL` | su dominio | su dominio | **Obligatoria en producción**: sin ella el build falla. |
 | `PUBLIC_GTM_ID` | `GTM-KW58ZDS` | `GTM-KW58ZDS` | Contenedor actual del grupo. |
 | `PUBLIC_META_PIXEL_ID` | píxel de Cokima | píxel de Los Ochoa | Recomendado uno por marca (hoy comparten `6251807501500238`). |
 | `PUBLIC_COVERMANAGER_SLUG` | `restaurante-cokima` | `tasquita-los-ochoa` | Verificados en la web actual. |
@@ -72,14 +73,25 @@ distinto de 0 y se construye igualmente: el fallo va del lado seguro.
 3. Dar de alta **cada dominio por separado** en Google Search Console y enlazar cada web con
    su ficha de Google Business.
 
+## Cómo se resuelve `SITE_URL`
+
+Ya no hay dominio placeholder. `astro.config.mjs` delega en `resolveSiteUrl()`
+(`packages/config/src/site-url.mjs`, con tests), que aplica esta escalera:
+
+| Entorno | Resultado |
+|---|---|
+| `SITE_URL` definida | ese valor normalizado (sin barra final; se exige `http(s)` absoluto) |
+| Producción de Vercel (`VERCEL_ENV=production`) sin `SITE_URL` | **el build falla** con un error explícito |
+| Preview de Vercel | `https://$VERCEL_URL`, el dominio efímero del despliegue |
+| Desarrollo local | `http://localhost:4321` |
+
+Así las previews funcionan sin configurar nada, y un despliegue de producción sin dominio
+no puede publicar canonical, `hreflang`, sitemap, `robots.txt` ni JSON-LD apuntando a un
+dominio inventado: rompe antes.
+
 ## Pendiente de implementar
 
-- [ ] **Blindar `SITE_URL`.** Hoy `astro.config.mjs` cae a un placeholder
-      (`https://cokima.example` / `https://tasquitalosochoa.example`) si la variable no está
-      definida. Un despliegue sin `SITE_URL` generaría canonical, sitemap y JSON-LD
-      apuntando a un dominio inventado **sin romper el build** — justo el peor escenario
-      para el objetivo de SEO. Debe fallar el build en producción si falta.
-- [ ] Crear los dos proyectos y conectarlos al repositorio.
+- [ ] Crear los dos proyectos y conectarlos al repositorio (`PHSPORT/ochoa-cokima`).
 - [ ] Configurar variables de entorno y dominios.
 - [ ] Aplicar el *Ignored Build Step* en ambos.
 - [ ] Redirects 301 desde las URLs antiguas.

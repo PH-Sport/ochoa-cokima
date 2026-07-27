@@ -1,5 +1,13 @@
 # Monorepo Grupo Tombo (Cokima + Los Ochoa) — Implementation Plan
 
+> **Estado: completado (Tasks 0–6).** Última verificación 2026-07-27: `pnpm test` 15/15 en
+> verde (content 4, config 5, tracking 6) y `pnpm build` `Complete!` en las dos apps; carta,
+> iframe de CoverManager, banner de consentimiento, `hreflang` y JSON-LD comprobados en
+> `dev` para ambas marcas. Añadido después del plan: `resolveSiteUrl()` en `packages/config`
+> (el build de producción falla si falta `SITE_URL` — ver `docs/deploy.md`).
+> Lo que queda es externo al código: crear los proyectos en Vercel, dominios y los accesos
+> del spec §12.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 > **Nota de esta sesión:** el usuario ha pedido ejecución inline continua sin checkpoints; el ejecutor es la misma sesión que validó los bocetos.
 
@@ -43,9 +51,9 @@
 **Interfaces:**
 - Produces: workspace raíz que resuelve `@tombo/content`, `@tombo/tracking`, `@tombo/ui` para las apps.
 
-- [ ] **Step 1: instalar pnpm** — `corepack enable pnpm` y si falla `npm i -g pnpm@9`; verificar `pnpm -v` → `9.x`/`10.x`.
-- [ ] **Step 2: git init** — `git init -b main` en `C:\Users\mario\ochoa-cokima`.
-- [ ] **Step 3: archivos raíz**
+- [x] **Step 1: instalar pnpm** — `corepack enable pnpm` y si falla `npm i -g pnpm@9`; verificar `pnpm -v` → `9.x`/`10.x`.
+- [x] **Step 2: git init** — `git init -b main` en `C:\Users\mario\ochoa-cokima`.
+- [x] **Step 3: archivos raíz**
 
 `package.json`:
 ```json
@@ -78,7 +86,7 @@ packages:
 ```
 `README.md`: descripción breve, comandos (`pnpm install`, `pnpm build`, `pnpm test`), tabla de env vars de Global Constraints, enlace al spec.
 
-- [ ] **Step 4: commit** — `git add -A; git commit -m "chore: scaffold pnpm workspace"`.
+- [x] **Step 4: commit** — `git add -A; git commit -m "chore: scaffold pnpm workspace"`.
 
 ---
 
@@ -90,8 +98,8 @@ packages:
 **Interfaces:**
 - Produces: `dishSchema` (Zod), `allergenEnum` (z.enum de 14 slugs UE: `gluten crustaceos huevo pescado cacahuetes soja lacteos frutos-cascara apio mostaza sesamo sulfitos altramuces moluscos`), tipo `Dish = z.infer<typeof dishSchema>`, helper `hasHalfPortions(dishes: Dish[]): boolean`.
 
-- [ ] **Step 1: package.json** — name `@tombo/content`, `"type":"module"`, exports `./src/index.ts`, deps `zod`, devDeps `vitest`, script `test: vitest run`.
-- [ ] **Step 2: test que falla** (`test/schema.test.ts`):
+- [x] **Step 1: package.json** — name `@tombo/content`, `"type":"module"`, exports `./src/index.ts`, deps `zod`, devDeps `vitest`, script `test: vitest run`.
+- [x] **Step 2: test que falla** (`test/schema.test.ts`):
 ```ts
 import { describe, it, expect } from "vitest";
 import { dishSchema, hasHalfPortions } from "../src/index.ts";
@@ -117,8 +125,8 @@ describe("dishSchema", () => {
   });
 });
 ```
-- [ ] **Step 3: correr y ver FAIL** — `pnpm --filter @tombo/content test` → "Cannot find module".
-- [ ] **Step 4: implementar** (`src/index.ts`):
+- [x] **Step 3: correr y ver FAIL** — `pnpm --filter @tombo/content test` → "Cannot find module".
+- [x] **Step 4: implementar** (`src/index.ts`):
 ```ts
 import { z } from "zod";
 
@@ -152,7 +160,7 @@ export function hasHalfPortions(dishes: Dish[]): boolean {
 }
 ```
 (En apps, el campo `image` se refina a `image()` de Astro si se usan assets locales; el string opcional basta para el paquete.)
-- [ ] **Step 5: correr y ver PASS**; **Step 6: commit** `feat(content): dish schema with EU allergens and dual pricing`.
+- [x] **Step 5: correr y ver PASS**; **Step 6: commit** `feat(content): dish schema with EU allergens and dual pricing`.
 
 ---
 
@@ -170,8 +178,8 @@ export function hasHalfPortions(dishes: Dish[]): boolean {
   - `sendCapiEvent(pixelId: string, token: string, ev: MetaCapiEvent, fetchImpl?): Promise<{ok:boolean;status:number}>` (POST `https://graph.facebook.com/v21.0/{pixelId}/events`).
   - `initTracking(cfg: {gtmId?:string; pixelId?:string; coverSlug:string})` (client.ts, browser-only): captura atribución a cookie `tombo_attr` (90 días, `SameSite=Lax`), listener `message` del iframe CoverManager (dispara `fbq('track','Schedule',{},{eventID})` + `fetch('/api/meta-capi')` con el mismo id; `InitiateCheckout` en evento de inicio), puente GA4 `postMessage` al iframe. Solo se invoca tras consentimiento.
 
-- [ ] **Step 1: package.json** — `@tombo/tracking`, `"type":"module"`, exports `./src/index.ts` (+ `./client` → `src/client.ts`, `./capi` → `src/capi.ts`), devDeps `vitest`, script `test: vitest run`.
-- [ ] **Step 2: test que falla** (`test/attribution.test.ts`):
+- [x] **Step 1: package.json** — `@tombo/tracking`, `"type":"module"`, exports `./src/index.ts` (+ `./client` → `src/client.ts`, `./capi` → `src/capi.ts`), devDeps `vitest`, script `test: vitest run`.
+- [x] **Step 2: test que falla** (`test/attribution.test.ts`):
 ```ts
 import { describe, it, expect } from "vitest";
 import { parseAttribution, serializeAttribution, deserializeAttribution, buildEventId, buildScheduleEvent } from "../src/index.ts";
@@ -211,8 +219,8 @@ describe("eventos Meta", () => {
   });
 });
 ```
-- [ ] **Step 3: FAIL**; **Step 4: implementar** `attribution.ts` + `events.ts` (tipos `Attribution` con campos opcionales; `MetaCapiEvent = {event_name; event_time; event_id; event_source_url; action_source:"website"; user_data:{client_ip_address?; client_user_agent?; fbp?; fbc?}}`); `capi.ts` con `sendCapiEvent`; `client.ts` con `initTracking` (sin test unitario; se verifica en integración manual cuando haya accesos — documentarlo en README con el diagrama del spec §9 y el plan B sin backoffice).
-- [ ] **Step 5: PASS** — `pnpm --filter @tombo/tracking test`; **Step 6: commit** `feat(tracking): attribution capture, event ids and Meta CAPI payloads`.
+- [x] **Step 3: FAIL**; **Step 4: implementar** `attribution.ts` + `events.ts` (tipos `Attribution` con campos opcionales; `MetaCapiEvent = {event_name; event_time; event_id; event_source_url; action_source:"website"; user_data:{client_ip_address?; client_user_agent?; fbp?; fbc?}}`); `capi.ts` con `sendCapiEvent`; `client.ts` con `initTracking` (sin test unitario; se verifica en integración manual cuando haya accesos — documentarlo en README con el diagrama del spec §9 y el plan B sin backoffice).
+- [x] **Step 5: PASS** — `pnpm --filter @tombo/tracking test`; **Step 6: commit** `feat(tracking): attribution capture, event ids and Meta CAPI payloads`.
 
 ---
 
@@ -232,10 +240,10 @@ describe("eventos Meta", () => {
   - `ConsentBanner.astro`: `{ locale }` — banner fijo con Aceptar/Rechazar; al aceptar guarda `tombo_consent=granted` y emite `window.dispatchEvent(new Event("tombo:consent"))`; las apps escuchan ese evento para llamar `initTracking`.
 - Estilo: solo estructura + `var(--...)` (tokens los pone cada app). Sin colores literales.
 
-- [ ] **Step 1: package.json** — `@tombo/ui`, exports de cada `.astro` y `src/index.ts` (re-export tipos); peerDep `astro`, dep `@tombo/content`.
-- [ ] **Step 2: implementar los 6 componentes** (estructura HTML calcada de los bocetos, clases genéricas `menu-section`, `dish`, `leader`, `price`…).
-- [ ] **Step 3: typecheck rápido** — se valida al compilar las apps (Task 4/5); no hay test unitario de render.
-- [ ] **Step 4: commit** `feat(ui): brand-agnostic menu, seo, booking and consent components`.
+- [x] **Step 1: package.json** — `@tombo/ui`, exports de cada `.astro` y `src/index.ts` (re-export tipos); peerDep `astro`, dep `@tombo/content`.
+- [x] **Step 2: implementar los 6 componentes** (estructura HTML calcada de los bocetos, clases genéricas `menu-section`, `dish`, `leader`, `price`…).
+- [x] **Step 3: typecheck rápido** — se valida al compilar las apps (Task 4/5); no hay test unitario de render.
+- [x] **Step 4: commit** `feat(ui): brand-agnostic menu, seo, booking and consent components`.
 
 ---
 
@@ -248,7 +256,7 @@ describe("eventos Meta", () => {
 - Consumes: todo lo de Tasks 1–3.
 - Produces: site estático desplegable; patrón de app que Task 5 replica.
 
-- [ ] **Step 1: package.json + config.** Deps: `astro@^6`, `@astrojs/vercel`, `@astrojs/sitemap`, `@tombo/{content,tracking,ui}` (workspace:*). `astro.config.mjs`:
+- [x] **Step 1: package.json + config.** Deps: `astro@^6`, `@astrojs/vercel`, `@astrojs/sitemap`, `@tombo/{content,tracking,ui}` (workspace:*). `astro.config.mjs`:
 ```js
 import { defineConfig } from "astro/config";
 import vercel from "@astrojs/vercel";
@@ -264,12 +272,12 @@ export default defineConfig({
 ```
 `content.config.ts`: colección `menu` con loader `glob({ pattern: "**/*.yaml", base: "./src/content/menu" })` y schema `menuEntrySchema` de `@tombo/content` (el locale se deriva del id `es/...`/`en/...`).
 `.env.example` con las 5 vars de Global Constraints y los valores públicos conocidos (`PUBLIC_GTM_ID=GTM-KW58ZDS`, `PUBLIC_COVERMANAGER_SLUG=restaurante-cokima`; píxel y token vacíos — pendientes de accesos).
-- [ ] **Step 2: assets** — decodificar los `.b64.txt` de Bricolage a `public/fonts/*.woff2` (PowerShell `[IO.File]::WriteAllBytes`); copiar `hero-cokima.jpg` → `public/images/hero.jpg`; `robots.txt` con `Sitemap: {SITE_URL}/sitemap-index.xml`.
-- [ ] **Step 3: tokens + layout + componentes** — portar el CSS del boceto v3 a `tokens.css` (custom properties) y `global.css` (reset + grano + tipografía); `Base.astro` (html lang, `Seo`, Nav, Footer, ConsentBanner, script que escucha `tombo:consent` → `initTracking`); `Embers.astro` con el canvas del boceto.
-- [ ] **Step 4: contenido ES** — YAML por plato desde el boceto v3 (13 platos + 2 postres, secciones `compartir`/`terminar`/`postres`, alérgenos orientativos actuales marcados con comentario `# orientativo — confirmar con carta oficial`).
-- [ ] **Step 5: contenido EN real** — descargar y transcribir `https://www.grupotombo.com/wp-content/uploads/2026/03/Carta-cokima-eng.jpg`; crear los YAML `en/`.
-- [ ] **Step 6: páginas** — `index.astro` (hero + manifiesto + carta destacada + reservas + visita, como el boceto), `carta.astro` (carta completa con `MenuSection`), `reservas.astro` (`BookingEmbed` + info), legales (contenido mínimo con aviso "pendiente de datos fiscales del cliente"), espejos `en/` con las rutas del spec §7 y `hreflang` cruzado vía `Seo`.
-- [ ] **Step 7: endpoint CAPI** (`src/pages/api/meta-capi.ts`):
+- [x] **Step 2: assets** — decodificar los `.b64.txt` de Bricolage a `public/fonts/*.woff2` (PowerShell `[IO.File]::WriteAllBytes`); copiar `hero-cokima.jpg` → `public/images/hero.jpg`; `robots.txt` con `Sitemap: {SITE_URL}/sitemap-index.xml`.
+- [x] **Step 3: tokens + layout + componentes** — portar el CSS del boceto v3 a `tokens.css` (custom properties) y `global.css` (reset + grano + tipografía); `Base.astro` (html lang, `Seo`, Nav, Footer, ConsentBanner, script que escucha `tombo:consent` → `initTracking`); `Embers.astro` con el canvas del boceto.
+- [x] **Step 4: contenido ES** — YAML por plato desde el boceto v3 (13 platos + 2 postres, secciones `compartir`/`terminar`/`postres`, alérgenos orientativos actuales marcados con comentario `# orientativo — confirmar con carta oficial`).
+- [x] **Step 5: contenido EN real** — descargar y transcribir `https://www.grupotombo.com/wp-content/uploads/2026/03/Carta-cokima-eng.jpg`; crear los YAML `en/`.
+- [x] **Step 6: páginas** — `index.astro` (hero + manifiesto + carta destacada + reservas + visita, como el boceto), `carta.astro` (carta completa con `MenuSection`), `reservas.astro` (`BookingEmbed` + info), legales (contenido mínimo con aviso "pendiente de datos fiscales del cliente"), espejos `en/` con las rutas del spec §7 y `hreflang` cruzado vía `Seo`.
+- [x] **Step 7: endpoint CAPI** (`src/pages/api/meta-capi.ts`):
 ```ts
 export const prerender = false;
 import type { APIRoute } from "astro";
@@ -289,8 +297,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   return new Response(JSON.stringify(res), { status: res.ok ? 200 : 502 });
 };
 ```
-- [ ] **Step 8: build verde** — `pnpm --filter cokima build` → `Complete!` sin errores (la validación Zod de la carta corre en el build). Arreglar lo que salga.
-- [ ] **Step 9: commit** `feat(cokima): port validated design to Astro (i18n, menu collections, seo, capi endpoint)`.
+- [x] **Step 8: build verde** — `pnpm --filter cokima build` → `Complete!` sin errores (la validación Zod de la carta corre en el build). Arreglar lo que salga.
+- [x] **Step 9: commit** `feat(cokima): port validated design to Astro (i18n, menu collections, seo, capi endpoint)`.
 
 ---
 
@@ -298,18 +306,18 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
 **Files:** misma estructura que Task 4 con: tokens del boceto Ochoa, fuente `anton-400.woff2`, imágenes `hero.jpg` (mesa mármol) + `tasca.jpg` (rótulo), componente extra `Tasca.astro`, sin `Embers.astro`, contenido ½/ración (los 15 platos reales; `half: null` donde el guion), **sin alérgenos** (`showAllergens={false}`), slug `tasquita-los-ochoa`, EN transcrito de `Los-Ochoa-Carta-SEPT2025-ENG.jpg`.
 
-- [ ] **Step 1: replicar estructura** (copiar app cokima y ajustar por completo: tokens, fuentes, componentes, contenido, textos de marca del boceto Ochoa).
-- [ ] **Step 2: build verde** — `pnpm --filter ochoa build`.
-- [ ] **Step 3: commit** `feat(ochoa): port validated design to Astro with dual-portion menu`.
+- [x] **Step 1: replicar estructura** (copiar app cokima y ajustar por completo: tokens, fuentes, componentes, contenido, textos de marca del boceto Ochoa).
+- [x] **Step 2: build verde** — `pnpm --filter ochoa build`.
+- [x] **Step 3: commit** `feat(ochoa): port validated design to Astro with dual-portion menu`.
 
 ---
 
 ### Task 6: verificación integral + cierre
 
-- [ ] **Step 1: suite completa** — `pnpm test` (content + tracking en verde) y `pnpm build` (ambas apps).
-- [ ] **Step 2: inspección visual** — `astro preview` de cada app en el Browser pane; comprobar contra los bocetos: tipografías cargan (tildes/ñ), carta renderiza columnas correctas, iframe CoverManager presente en `/reservas`, banner de consentimiento aparece, hreflang/JSON-LD en el HTML.
-- [ ] **Step 3: README final** — quickstart, mapa del repo, estado de pendientes (accesos, dominios, fotos) enlazando al spec §12.
-- [ ] **Step 4: commit** `docs: final readme and verification notes` + marcar checkboxes de este plan.
+- [x] **Step 1: suite completa** — `pnpm test` (content + tracking en verde) y `pnpm build` (ambas apps).
+- [x] **Step 2: inspección visual** — `astro preview` de cada app en el Browser pane; comprobar contra los bocetos: tipografías cargan (tildes/ñ), carta renderiza columnas correctas, iframe CoverManager presente en `/reservas`, banner de consentimiento aparece, hreflang/JSON-LD en el HTML.
+- [x] **Step 3: README final** — quickstart, mapa del repo, estado de pendientes (accesos, dominios, fotos) enlazando al spec §12.
+- [x] **Step 4: commit** `docs: final readme and verification notes` + marcar checkboxes de este plan.
 
 ## Self-review del plan
 
