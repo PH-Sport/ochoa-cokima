@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import Embers from "../../components/Embers.astro";
-import MenuSection from "@tombo/ui/MenuSection.astro";
+import MenuDeck from "../../components/MenuDeck.astro";
 import { ALLERGEN_LABELS } from "../../site.ts";
 
 const featured = (await getCollection("menu-en", (e) => e.data.featured)).map((e) => e.data);
@@ -17,7 +17,7 @@ const featured = (await getCollection("menu-en", (e) => e.data.featured)).map((e
   <header class="hero" id="top">
     <Embers />
     <div class="wrap hero-grid">
-      <div>
+      <div class="hero-copy">
         <p class="eyebrow">Kitchen Madness · Madrid</p>
         <h1>You can eat anywhere. <span class="red">But it will just be eating.</span></h1>
         <p class="kicker">
@@ -36,21 +36,24 @@ const featured = (await getCollection("menu-en", (e) => e.data.featured)).map((e
     </div>
   </header>
 
-  <section class="manifesto">
-    <div class="wrap">
-      <p class="quote">“We love to mix, experiment, get messy.”</p>
-      <p class="sub">And above all, make sure you enjoy. If something surprises you, we're doing it right. If you come back, even better.</p>
-    </div>
-  </section>
-
   <section class="picks">
     <div class="wrap">
       <div class="section-head">
         <p class="eyebrow">Not to be missed</p>
         <h2>The essentials</h2>
       </div>
-      <MenuSection title="Selection" dishes={featured} allergenLabels={ALLERGEN_LABELS.en} />
+      <MenuDeck
+        sections={[{ id: "imprescindibles", title: "Selection", dishes: featured }]}
+        locale="en"
+        allergenLabels={ALLERGEN_LABELS.en}
+      />
       <p class="more"><a href="/en/menu" class="btn ghost">Full menu</a></p>
+    </div>
+  </section>
+
+  <section class="manifesto">
+    <div class="wrap">
+      <p class="quote">“We love to mix, experiment, get messy.”</p>
     </div>
   </section>
 
@@ -77,9 +80,10 @@ const featured = (await getCollection("menu-en", (e) => e.data.featured)).map((e
 </Base>
 
 <style>
-  .hero { position: relative; padding: clamp(48px, 9vw, 112px) 0 clamp(40px, 7vw, 80px); }
+  /* Ver apps/cokima/src/pages/index.astro para el porqué de la compresión del
+     hero y del reordenado de la foto en móvil. */
+  .hero { position: relative; padding: clamp(28px, 5vw, 72px) 0 clamp(24px, 4vw, 48px); }
   .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(28px, 5vw, 64px); align-items: center; position: relative; z-index: 1; }
-  @media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; } }
   .hero h1 { font-weight: 800; font-size: clamp(2.9rem, 8.4vw, 6rem); line-height: 0.98; letter-spacing: -0.025em; margin: 0.3em 0 0; text-wrap: balance; }
   .hero h1 .red { color: var(--vermilion); }
   .kicker { max-width: 46ch; color: var(--bone-dim); font-size: 1.1rem; margin: 1.5rem 0 0; }
@@ -88,9 +92,21 @@ const featured = (await getCollection("menu-en", (e) => e.data.featured)).map((e
   .hero-photo img { width: 100%; height: 100%; object-fit: cover; }
   .hero-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(150deg, rgba(21, 15, 12, 0) 40%, rgba(21, 15, 12, 0.55) 100%); }
   .hero-photo .tag { position: absolute; left: 16px; bottom: 16px; z-index: 2; font-family: var(--serif); font-style: italic; font-size: 1rem; background: rgba(21, 15, 12, 0.55); border: 1px solid var(--line); padding: 6px 12px; border-radius: 3px; }
+  /* Después de las reglas base del hero a propósito: misma especificidad, gana
+     el último. */
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 22px; }
+    .hero-copy { display: contents; }
+    .hero-copy .eyebrow { order: 1; }
+    .hero-copy h1 { order: 2; }
+    .hero-copy .kicker { order: 3; }
+    .hero-photo { order: 4; aspect-ratio: 3 / 2; }
+    .hero-copy .hero-cta { order: 5; margin-top: 0; }
+    .hero h1 { font-size: clamp(2.4rem, 8vw, 3.4rem); }
+    .kicker { font-size: 1rem; margin-top: 1rem; }
+  }
   .manifesto { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: clamp(44px, 7vw, 88px) 0; }
   .quote { font-family: var(--serif); font-style: italic; font-size: clamp(1.55rem, 3.6vw, 2.6rem); line-height: 1.3; max-width: 24ch; margin: 0; text-wrap: balance; }
-  .sub { font-size: 1.06rem; color: var(--bone-dim); max-width: 52ch; margin: 1.6rem 0 0; }
   .picks, .visita { padding: clamp(52px, 8vw, 96px) 0 0; }
   .more { margin-top: 2.2rem; }
   .visit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 56px); align-items: stretch; margin-top: 2rem; }

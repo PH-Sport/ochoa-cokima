@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
 import Embers from "../components/Embers.astro";
-import MenuSection from "@tombo/ui/MenuSection.astro";
+import MenuDeck from "../components/MenuDeck.astro";
 import { ALLERGEN_LABELS } from "../site.ts";
 
 const featured = (await getCollection("menu-es", (e) => e.data.featured)).map((e) => e.data);
@@ -17,7 +17,7 @@ const featured = (await getCollection("menu-es", (e) => e.data.featured)).map((e
   <header class="hero" id="top">
     <Embers />
     <div class="wrap hero-grid">
-      <div>
+      <div class="hero-copy">
         <p class="eyebrow">Kitchen Madness · Madrid</p>
         <h1>Puedes comer en cualquier sitio. <span class="red">Pero será solo comer.</span></h1>
         <p class="kicker">
@@ -36,21 +36,24 @@ const featured = (await getCollection("menu-es", (e) => e.data.featured)).map((e
     </div>
   </header>
 
-  <section class="manifesto">
-    <div class="wrap">
-      <p class="quote">«Nos gusta mezclar, probar, mancharnos.»</p>
-      <p class="sub">Y, sobre todo, que tú disfrutes. Si algo te sorprende, vamos bien. Si repites, mejor aún.</p>
-    </div>
-  </section>
-
   <section class="picks">
     <div class="wrap">
       <div class="section-head">
         <p class="eyebrow">Lo que no te puedes perder</p>
         <h2>Los imprescindibles</h2>
       </div>
-      <MenuSection title="Selección" dishes={featured} allergenLabels={ALLERGEN_LABELS.es} />
+      <MenuDeck
+        sections={[{ id: "imprescindibles", title: "Selección", dishes: featured }]}
+        locale="es"
+        allergenLabels={ALLERGEN_LABELS.es}
+      />
       <p class="more"><a href="/carta" class="btn ghost">Carta completa</a></p>
+    </div>
+  </section>
+
+  <section class="manifesto">
+    <div class="wrap">
+      <p class="quote">«Nos gusta mezclar, probar, mancharnos.»</p>
     </div>
   </section>
 
@@ -79,7 +82,10 @@ const featured = (await getCollection("menu-es", (e) => e.data.featured)).map((e
 <style>
   .hero {
     position: relative;
-    padding: clamp(48px, 9vw, 112px) 0 clamp(40px, 7vw, 80px);
+    /* Comprimido respecto al original (48-112px arriba): el objetivo del
+       rediseño es que se vea comida antes del pliegue, y el relleno del hero
+       era lo primero que la empujaba fuera de pantalla. */
+    padding: clamp(28px, 5vw, 72px) 0 clamp(24px, 4vw, 48px);
   }
   .hero-grid {
     display: grid;
@@ -88,11 +94,6 @@ const featured = (await getCollection("menu-es", (e) => e.data.featured)).map((e
     align-items: center;
     position: relative;
     z-index: 1;
-  }
-  @media (max-width: 860px) {
-    .hero-grid {
-      grid-template-columns: 1fr;
-    }
   }
   .hero h1 {
     font-weight: 800;
@@ -149,6 +150,45 @@ const featured = (await getCollection("menu-es", (e) => e.data.featured)).map((e
     padding: 6px 12px;
     border-radius: 3px;
   }
+  /* Este bloque va después de las reglas base del hero a propósito: comparten
+     especificidad, así que quien gana es el que llega más tarde en la hoja. */
+  @media (max-width: 860px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+    /* La foto sube por delante de los botones: así la comida entra en la
+       primera pantalla sin sacar el titular. `display: contents` disuelve el
+       bloque de texto para que sus hijos y la foto compartan la misma
+       retícula y se puedan ordenar entre sí. */
+    .hero-copy {
+      display: contents;
+    }
+    .hero-copy .eyebrow {
+      order: 1;
+    }
+    .hero-copy h1 {
+      order: 2;
+    }
+    .hero-copy .kicker {
+      order: 3;
+    }
+    .hero-photo {
+      order: 4;
+      aspect-ratio: 3 / 2;
+    }
+    .hero-copy .hero-cta {
+      order: 5;
+      margin-top: 0;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 8vw, 3.4rem);
+    }
+    .kicker {
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+  }
   .manifesto {
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
@@ -162,12 +202,6 @@ const featured = (await getCollection("menu-es", (e) => e.data.featured)).map((e
     max-width: 24ch;
     margin: 0;
     text-wrap: balance;
-  }
-  .sub {
-    font-size: 1.06rem;
-    color: var(--bone-dim);
-    max-width: 52ch;
-    margin: 1.6rem 0 0;
   }
   .picks,
   .visita {

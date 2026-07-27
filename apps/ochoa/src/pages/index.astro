@@ -42,6 +42,7 @@ import Base from "../layouts/Base.astro";
   </section>
 
   <section class="tasca">
+    <div class="wrap"><div class="rule"></div></div>
     <div class="wrap tasca-grid">
       <div class="tasca-photo">
         <img src="/images/tasca.jpg" alt="Rótulo rojo de Los Ochoa en la ventana del local" width="900" height="900" loading="lazy" />
@@ -61,6 +62,7 @@ import Base from "../layouts/Base.astro";
 
   <section class="visita" id="visita">
     <div class="wrap">
+      <div class="rule"></div>
       <p class="eyebrow">Dónde estamos</p>
       <h2 class="cartel">En plena Castellana</h2>
       <div class="visit-grid">
@@ -184,7 +186,13 @@ import Base from "../layouts/Base.astro";
     margin: 1.5rem 0 0;
   }
   .tasca {
-    padding: clamp(24px, 4vw, 48px) 0 0;
+    padding: clamp(32px, 6vw, 56px) 0 0;
+  }
+  /* Cada sección abre con el mismo filete doble que ya usaba el manifiesto: la
+     hoja de bar se lee como un cartel pautado, no como bloques flotando. */
+  .tasca .rule,
+  .visita .rule {
+    margin-bottom: clamp(22px, 4vw, 40px);
   }
   .tasca-grid {
     display: grid;
@@ -223,7 +231,7 @@ import Base from "../layouts/Base.astro";
     color: var(--ink);
   }
   .visita {
-    padding: clamp(48px, 8vw, 92px) 0 0;
+    padding: clamp(32px, 6vw, 56px) 0 0;
   }
   .visita h2 {
     font-size: clamp(2.2rem, 6vw, 3.6rem);
@@ -318,5 +326,41 @@ import Base from "../layouts/Base.astro";
     font-family: var(--sans);
     font-size: 0.8rem;
     color: var(--ink-faint);
+  }
+
+  /* Móvil: la hoja de bar es densa y vertical, no aireada. Nada de scroll
+     lateral en esta marca — es justo lo que la separa de Cokima. Va al final
+     de la hoja porque comparte especificidad con las reglas de arriba. */
+  @media (max-width: 860px) {
+    .hero {
+      padding: 28px 0 32px;
+    }
+    .hero h1 {
+      font-size: clamp(2.6rem, 9vw, 4rem);
+    }
+    .hero-photo {
+      aspect-ratio: 16 / 9;
+    }
+    .kicker {
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+    .manifesto {
+      padding: 28px 0 0;
+    }
+    .tasca,
+    .visita {
+      padding-top: 28px;
+    }
+    .manifesto .rule,
+    .tasca .rule,
+    .visita .rule {
+      margin-bottom: 20px;
+    }
+    .sub,
+    .txt {
+      font-size: 1rem;
+      margin-top: 0.9rem;
+    }
   }
 </style>

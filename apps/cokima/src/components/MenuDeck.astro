@@ -36,7 +36,7 @@ const decks = sections.map((s) => ({
 )}
 
 {decks.map((s) => (
-  <section class="deck-section" id={s.id} data-section={s.id}>
+  <section class:list={["deck-section", { solo: decks.length === 1 }]} id={s.id} data-section={s.id}>
     <h2>{s.title}</h2>
     {/* tabindex="0" para que la baraja se pueda recorrer con el teclado: es una
         región con scroll y sin nada enfocable dentro. Va en el HTML, no puesto
@@ -142,6 +142,26 @@ const decks = sections.map((s) => ({
   .deck-section h2 {
     font-size: clamp(1.8rem, 5.5vw, 2.6rem);
     margin: 0 0 1.2rem;
+  }
+  /* Baraja de una sola sección (la home): el bloque ya viene encabezado por su
+     propio .section-head, así que el título de la sección baja al registro
+     discreto con filete que tenía en MenuSection y no compite con él. */
+  .deck-section.solo {
+    padding-top: 0;
+  }
+  .deck-section.solo h2 {
+    font-family: var(--t-heading-font);
+    font-size: var(--t-menu-title-size);
+    font-weight: var(--t-menu-title-weight);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .deck-section.solo h2::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--t-line);
   }
 
   /* Móvil: baraja horizontal, la siguiente carta siempre asomando. */
