@@ -51,7 +51,9 @@ const items = es
   }
 
   syncBottomBarHeight();
-  document.addEventListener("astro:page-load", syncBottomBarHeight);
+  // `astro:after-swap` y no `astro:page-load`: este último también dispara en la
+  // carga inicial, así que con ClientRouter activo duplicaría el ResizeObserver.
+  document.addEventListener("astro:after-swap", syncBottomBarHeight);
 </script>
 
 <style>

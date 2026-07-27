@@ -49,7 +49,9 @@ const labels =
 
   const mount = () => document.querySelectorAll<HTMLElement>("[data-open-state]").forEach(render);
   mount();
-  document.addEventListener("astro:page-load", mount);
+  // `astro:after-swap` y no `astro:page-load`: este último también dispara en la
+  // carga inicial, así que con ClientRouter activo resolvería dos veces.
+  document.addEventListener("astro:after-swap", mount);
 </script>
 
 <style>

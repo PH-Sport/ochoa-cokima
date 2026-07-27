@@ -107,3 +107,21 @@ img {
   border-color: var(--rojo);
   transform: none;
 }
+
+/* Ninguna transición de vista ni animación para quien pide menos movimiento.
+   Se apagan también las de View Transitions, que el navegador ejecuta por su
+   cuenta y no pasan por ninguna regla de autor. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

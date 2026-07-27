@@ -1,6 +1,7 @@
 ---
 import "../styles/tokens.css";
 import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
 import Seo from "@tombo/ui/Seo.astro";
 import ConsentBanner from "@tombo/ui/ConsentBanner.astro";
 import Nav from "../components/Nav.astro";
@@ -25,6 +26,7 @@ const { title, description, locale, altPath } = Astro.props;
     <link rel="preload" href="/fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin />
     <Seo title={title} description={description} locale={locale} altPath={altPath} restaurant={RESTAURANT} ogImage="/images/hero.jpg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <ClientRouter />
   </head>
   <body>
     <Nav locale={locale} altPath={altPath} />

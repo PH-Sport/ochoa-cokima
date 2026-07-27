@@ -59,7 +59,9 @@ const label = es ? "Reservar mesa" : "Book a table";
   };
 
   mount();
-  document.addEventListener("astro:page-load", mount);
+  // `astro:after-swap` y no `astro:page-load`: este último también dispara en la
+  // carga inicial, así que con ClientRouter activo duplicaría el observer.
+  document.addEventListener("astro:after-swap", mount);
 </script>
 
 <style>
