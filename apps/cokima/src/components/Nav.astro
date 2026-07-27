@@ -23,10 +23,10 @@ const reserve = es ? "/reservas" : "/en/reservations";
 <nav class="nav">
   <div class="wrap nav-in">
     <a class="brand" href={home}>Cokima<i class="spark" aria-hidden="true"></i></a>
+    <div class="nav-links">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </div>
     <div class="nav-right">
-      <div class="nav-links">
-        {links.map((l) => <a href={l.href}>{l.label}</a>)}
-      </div>
       <span class="lang">
         {es ? <><b>ES</b> · <a href={altPath}>EN</a></> : <><a href={altPath}>ES</a> · <b>EN</b></>}
       </span>
@@ -47,8 +47,7 @@ const reserve = es ? "/reservas" : "/en/reservations";
   .nav-in {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
+    gap: 22px;
     height: 66px;
   }
   .brand {
@@ -58,6 +57,7 @@ const reserve = es ? "/reservas" : "/en/reservations";
     font-weight: 800;
     font-size: 1.42rem;
     letter-spacing: -0.01em;
+    margin-right: auto;
   }
   .spark {
     width: 8px;
@@ -95,6 +95,9 @@ const reserve = es ? "/reservas" : "/en/reservations";
       padding-block: 10px;
       row-gap: 8px;
     }
+    /* .nav-links es hijo directo de .nav-in, así que el wrap
+       de arriba sí lo alcanza: flex-basis: 100% lo manda a su
+       propia fila dentro de .nav-in. */
     .nav-links {
       order: 3;
       flex-basis: 100%;
@@ -102,8 +105,8 @@ const reserve = es ? "/reservas" : "/en/reservations";
       font-size: 0.9rem;
     }
     .nav-links a {
-      padding-block: 8px; /* área táctil ≥ 44px con la línea */
-      display: inline-block;
+      /* línea 23.04px (0.9rem × 1.6 heredado) + 11px × 2 de padding = 45.04px ≥ 44px área táctil */
+      padding-block: 11px;
     }
   }
 </style>
