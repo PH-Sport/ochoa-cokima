@@ -42,3 +42,5 @@ export type MenuEntry = z.infer<typeof menuEntrySchema>;
 export function hasHalfPortions(dishes: Dish[]): boolean {
   return dishes.some((d) => typeof d.price === "object");
 }
+
+export { getOpenState, type OpenState } from "./hours.ts";
