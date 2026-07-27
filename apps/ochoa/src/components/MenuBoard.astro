@@ -9,8 +9,22 @@ interface Props {
 const { dishes, locale } = Astro.props;
 const es = locale === "es";
 const t = es
-  ? { half: "½ ración", full: "Ración", onlyFull: "solo ración entera", legend: "Tamaño de ración" }
-  : { half: "Half", full: "Full", onlyFull: "full portion only", legend: "Portion size" };
+  ? {
+      half: "½ ración",
+      full: "Ración",
+      onlyFull: "solo ración entera",
+      legend: "Tamaño de ración",
+      announceHalf: "Precios actualizados a media ración.",
+      announceFull: "Precios actualizados a ración entera.",
+    }
+  : {
+      half: "Half",
+      full: "Full",
+      onlyFull: "full portion only",
+      legend: "Portion size",
+      announceHalf: "Prices updated to half portion.",
+      announceFull: "Prices updated to full portion.",
+    };
 
 // `order` es correlativo dentro de cada sección (carta 1..23, postres 1..2),
 // no un índice global: hay que mantener la sección y solo ordenar dentro de ella,
@@ -31,6 +45,15 @@ const sorted = [...dishes].sort((a, b) => {
     </div>
   </div>
 
+  <div
+    class="visually-hidden"
+    aria-live="polite"
+    aria-atomic="true"
+    data-portion-announce
+    data-msg-half={t.announceHalf}
+    data-msg-full={t.announceFull}
+  ></div>
+
   <ul class="rows">
     {sorted.map((dish) => {
       const half = formatPortionPrice(dish.price, "half");
@@ -48,7 +71,9 @@ const sorted = [...dishes].sort((a, b) => {
             >{formatEuro(full.amount)}</span>
           </div>
           {dish.description && <p class="desc">{dish.description}</p>}
-          <p class="only-full" data-only-full-note hidden>{t.onlyFull}</p>
+          {half.onlyFull && (
+            <p class="only-full" data-only-full-note hidden>{t.onlyFull}</p>
+          )}
         </li>
       );
     })}
@@ -60,6 +85,8 @@ const sorted = [...dishes].sort((a, b) => {
     const toggle = document.querySelector<HTMLElement>("[data-portion-toggle]");
     if (!toggle) return;
     toggle.hidden = false;
+
+    const announce = document.querySelector<HTMLElement>("[data-portion-announce]");
 
     const apply = (portion: "half" | "full") => {
       document.querySelectorAll<HTMLElement>("[data-dish]").forEach((row) => {
@@ -73,6 +100,9 @@ const sorted = [...dishes].sort((a, b) => {
       toggle.querySelectorAll<HTMLButtonElement>("button[data-portion]").forEach((b) => {
         b.setAttribute("aria-pressed", String(b.dataset.portion === portion));
       });
+      if (announce) {
+        announce.textContent = portion === "half" ? announce.dataset.msgHalf! : announce.dataset.msgFull!;
+      }
     };
 
     toggle.querySelectorAll<HTMLButtonElement>("button[data-portion]").forEach((b) => {
@@ -178,5 +208,16 @@ const sorted = [...dishes].sort((a, b) => {
   }
   .only-full[hidden] {
     display: none;
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 </style>
