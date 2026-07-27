@@ -88,9 +88,22 @@ const reserve = es ? "/reservas" : "/en/reservations";
   .nav-links a:hover {
     color: var(--bone);
   }
-  @media (max-width: 760px) {
+  @media (max-width: 780px) {
+    .nav-in {
+      height: auto;
+      flex-wrap: wrap;
+      padding-block: 10px;
+      row-gap: 8px;
+    }
     .nav-links {
-      display: none;
+      order: 3;
+      flex-basis: 100%;
+      gap: 18px;
+      font-size: 0.9rem;
+    }
+    .nav-links a {
+      padding-block: 8px; /* área táctil ≥ 44px con la línea */
+      display: inline-block;
     }
   }
 </style>
