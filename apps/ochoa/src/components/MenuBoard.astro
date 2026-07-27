@@ -16,6 +16,8 @@ const t = es
       legend: "Tamaño de ración",
       announceHalf: "Precios actualizados a media ración.",
       announceFull: "Precios actualizados a ración entera.",
+      search: "Buscar plato",
+      empty: "Nada con ese nombre.",
     }
   : {
       half: "Half",
@@ -24,6 +26,8 @@ const t = es
       legend: "Portion size",
       announceHalf: "Prices updated to half portion.",
       announceFull: "Prices updated to full portion.",
+      search: "Search dish",
+      empty: "Nothing by that name.",
     };
 
 // `order` es correlativo dentro de cada sección (carta 1..23, postres 1..2),
@@ -38,6 +42,10 @@ const sorted = [...dishes].sort((a, b) => {
 
 <div class="board">
   <div class="toggle" data-portion-toggle hidden>
+    <label class="search" data-search-wrap hidden>
+      <span class="visually-hidden">{t.search}</span>
+      <input type="search" data-search placeholder={t.search} autocomplete="off" />
+    </label>
     <span class="legend" id="portion-legend">{t.legend}</span>
     <div class="switch" role="group" aria-labelledby="portion-legend">
       <button type="button" data-portion="half" aria-pressed="false">{t.half}</button>
@@ -59,7 +67,7 @@ const sorted = [...dishes].sort((a, b) => {
       const half = formatPortionPrice(dish.price, "half");
       const full = formatPortionPrice(dish.price, "full");
       return (
-        <li class="row" data-dish>
+        <li class="row" data-dish data-name={dish.name} data-desc={dish.description ?? ""}>
           <div class="head">
             <span class="name">{dish.name}</span>
             <span class="leader" aria-hidden="true"></span>
@@ -78,9 +86,13 @@ const sorted = [...dishes].sort((a, b) => {
       );
     })}
   </ul>
+
+  <p class="empty" data-empty hidden aria-live="polite">{t.empty}</p>
 </div>
 
 <script>
+  import { matchDish } from "@tombo/content";
+
   const mount = () => {
     const toggle = document.querySelector<HTMLElement>("[data-portion-toggle]");
     if (!toggle) return;
@@ -108,6 +120,24 @@ const sorted = [...dishes].sort((a, b) => {
     toggle.querySelectorAll<HTMLButtonElement>("button[data-portion]").forEach((b) => {
       b.addEventListener("click", () => apply(b.dataset.portion as "half" | "full"));
     });
+
+    // El buscador solo se ofrece con JavaScript: sin él no filtraría nada y un
+    // campo que no hace nada es peor que no tenerlo.
+    const wrap = document.querySelector<HTMLElement>("[data-search-wrap]");
+    const input = document.querySelector<HTMLInputElement>("[data-search]");
+    const empty = document.querySelector<HTMLElement>("[data-empty]");
+    if (wrap) wrap.hidden = false;
+
+    input?.addEventListener("input", () => {
+      const q = input.value;
+      let visible = 0;
+      document.querySelectorAll<HTMLElement>("[data-dish]").forEach((row) => {
+        const hit = matchDish({ name: row.dataset.name ?? "", description: row.dataset.desc }, q);
+        row.hidden = !hit;
+        if (hit) visible++;
+      });
+      if (empty) empty.hidden = visible > 0;
+    });
   };
 
   mount();
@@ -125,12 +155,46 @@ const sorted = [...dishes].sort((a, b) => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    /* Con el buscador ya son tres piezas: en móvil no caben en una fila, así
+       que el campo se queda solo arriba y debajo van leyenda e interruptor. */
+    flex-wrap: wrap;
+    gap: 10px 12px;
     padding: 10px 0;
     background: var(--paper);
     border-bottom: 3px solid var(--ink);
   }
   .toggle[hidden] {
+    display: none;
+  }
+  .search {
+    flex: 1 1 12rem;
+    min-width: 0;
+  }
+  .search[hidden] {
+    display: none;
+  }
+  .search input {
+    min-height: 44px;
+    width: 100%;
+    padding: 0 12px;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: transparent;
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+  }
+  .search input:focus-visible {
+    outline: 2px solid var(--rojo);
+    outline-offset: 2px;
+  }
+  .empty {
+    margin: 1.4rem 0 0;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-dim);
+  }
+  .empty[hidden] {
     display: none;
   }
   .legend {
@@ -208,6 +272,24 @@ const sorted = [...dishes].sort((a, b) => {
   }
   .only-full[hidden] {
     display: none;
+  }
+  /* La leyenda dice lo mismo que los propios botones ("½ ración" / "Ración").
+     En pantalla estrecha se retira de la vista —sigue nombrando el grupo por
+     aria-labelledby— para que buscador e interruptor quepan en una fila: con
+     dos filas la barra pegajosa medía 125px y, sumada a la cabecera, se comía
+     192px de los 812 del viewport. */
+  @media (max-width: 560px) {
+    .legend {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .search {
+      flex: 1 1 8rem;
+    }
   }
   .visually-hidden {
     position: absolute;

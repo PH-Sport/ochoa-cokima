@@ -45,3 +45,4 @@ export function hasHalfPortions(dishes: Dish[]): boolean {
 
 export { getOpenState, type OpenState } from "./hours.ts";
 export { formatPortionPrice, formatEuro, type Portion } from "./portions.ts";
+export { normalize, matchDish } from "./search.ts";
