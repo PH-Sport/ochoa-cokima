@@ -1,0 +1,122 @@
+---
+// apps/cokima/src/components/AllergenFilter.astro
+//
+// Construido y listo, pero NO se renderiza mientras ALLERGEN_DATA_CONFIRMED sea
+// false en site.ts. Ver el comentario de la bandera antes de encenderlo.
+interface Props {
+  labels: Record<string, string>;
+  available: string[];
+  locale: "es" | "en";
+}
+const { labels, available, locale } = Astro.props;
+const es = locale === "es";
+const legend = es ? "Filtrar por alérgeno" : "Filter by allergen";
+const clear = es ? "Quitar filtros" : "Clear filters";
+const announceTpl = es ? "{n} platos visibles." : "{n} dishes shown.";
+---
+
+<div class="filter" data-allergen-filter hidden>
+  <p class="legend" id="allergen-legend">{legend}</p>
+  <div class="chips" role="group" aria-labelledby="allergen-legend">
+    {available.map((a) => (
+      <button type="button" data-allergen={a} aria-pressed="false">
+        {es ? `Sin ${labels[a] ?? a}` : `No ${labels[a] ?? a}`}
+      </button>
+    ))}
+    <button type="button" data-allergen-clear>{clear}</button>
+  </div>
+  <p class="visually-hidden" aria-live="polite" data-allergen-announce data-tpl={announceTpl}></p>
+</div>
+
+<script>
+  const mount = () => {
+    const root = document.querySelector<HTMLElement>("[data-allergen-filter]");
+    if (!root) return;
+    root.hidden = false;
+    const excluded = new Set<string>();
+    const announce = root.querySelector<HTMLElement>("[data-allergen-announce]");
+
+    const apply = () => {
+      let visible = 0;
+      document.querySelectorAll<HTMLElement>("[data-card-allergens]").forEach((card) => {
+        const own = (card.dataset.cardAllergens ?? "").split(",").filter(Boolean);
+        const out = own.some((a) => excluded.has(a));
+        card.hidden = out;
+        if (!out) visible++;
+      });
+      if (announce) {
+        announce.textContent = (announce.dataset.tpl ?? "").replace("{n}", String(visible));
+      }
+    };
+
+    root.querySelectorAll<HTMLButtonElement>("button[data-allergen]").forEach((b) => {
+      b.addEventListener("click", () => {
+        const a = b.dataset.allergen!;
+        if (excluded.has(a)) excluded.delete(a);
+        else excluded.add(a);
+        b.setAttribute("aria-pressed", String(excluded.has(a)));
+        apply();
+      });
+    });
+
+    root.querySelector<HTMLButtonElement>("[data-allergen-clear]")?.addEventListener("click", () => {
+      excluded.clear();
+      root.querySelectorAll<HTMLButtonElement>("button[data-allergen]").forEach((b) =>
+        b.setAttribute("aria-pressed", "false"),
+      );
+      apply();
+    });
+  };
+
+  // `astro:after-swap` y no `astro:page-load`: este último también dispara en la
+  // carga inicial, así que con ClientRouter activo duplicaría los listeners.
+  mount();
+  document.addEventListener("astro:after-swap", mount);
+</script>
+
+<style>
+  .filter[hidden] {
+    display: none;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chips button {
+    min-height: 44px;
+    padding: 0 14px;
+    font-family: inherit;
+    font-size: 0.88rem;
+    color: var(--bone-dim);
+    background: transparent;
+    border: 1px solid var(--ground-3);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .chips button[aria-pressed="true"] {
+    color: var(--bone);
+    border-color: var(--vermilion);
+    background: rgba(237, 28, 36, 0.14);
+  }
+  .chips button:focus-visible {
+    outline: 2px solid var(--ember);
+    outline-offset: 2px;
+  }
+  .legend {
+    font-size: 0.82rem;
+    color: var(--bone-faint);
+    margin: 0 0 0.6rem;
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

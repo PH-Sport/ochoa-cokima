@@ -15,6 +15,16 @@ export const RESTAURANT: RestaurantInfo = {
 
 export const COVER_SLUG = import.meta.env.PUBLIC_COVERMANAGER_SLUG ?? "restaurante-cokima";
 
+/**
+ * Los alérgenos de la carta son orientativos hasta que el restaurante firme la
+ * documentación oficial (spec 2026-07-27 §5.3 y §8). Con la bandera en false el
+ * filtro no se renderiza: solo se muestran los iconos y la nota de aviso.
+ * NO cambiar a true sin confirmación escrita del cliente: un filtro "sin
+ * gluten" en el que una persona celíaca confía con datos sin confirmar es un
+ * problema de salud, no de UX.
+ */
+export const ALLERGEN_DATA_CONFIRMED = false;
+
 /** Etiquetas de alérgenos por idioma (iconos de @tombo/ui). */
 export const ALLERGEN_LABELS: Record<"es" | "en", Record<string, string>> = {
   es: {

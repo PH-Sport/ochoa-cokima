@@ -2,6 +2,8 @@
 // apps/cokima/src/components/MenuDeck.astro
 import { formatEuro, type MenuEntry } from "@tombo/content";
 import AllergenIcons from "@tombo/ui/AllergenIcons.astro";
+import AllergenFilter from "./AllergenFilter.astro";
+import { ALLERGEN_DATA_CONFIRMED } from "../site.ts";
 
 interface Section {
   id: string;
@@ -23,6 +25,10 @@ const decks = sections.map((s) => ({
   ...s,
   dishes: [...s.dishes].sort((a, b) => a.order - b.order),
 }));
+
+// Solo los alérgenos que de verdad aparecen en esta carta, para no ofrecer
+// filtros que no quitarían nada.
+const available = [...new Set(sections.flatMap((s) => s.dishes.flatMap((d) => d.allergens)))].sort();
 ---
 
 {decks.length > 1 && (
@@ -35,6 +41,10 @@ const decks = sections.map((s) => ({
   </nav>
 )}
 
+{ALLERGEN_DATA_CONFIRMED && (
+  <AllergenFilter labels={allergenLabels} available={available} locale={locale} />
+)}
+
 {decks.map((s) => (
   <section class:list={["deck-section", { solo: decks.length === 1 }]} id={s.id} data-section={s.id}>
     <h2>{s.title}</h2>
@@ -43,7 +53,7 @@ const decks = sections.map((s) => ({
         por script, para que también funcione sin JavaScript. */}
     <ul class="deck" tabindex="0" aria-label={s.title}>
       {s.dishes.map((dish) => (
-        <li class="card">
+        <li class="card" data-card-allergens={dish.allergens.join(",")}>
           <h3>{dish.name}</h3>
           {dish.description && <p class="desc">{dish.description}</p>}
           <div class="foot">
