@@ -1212,11 +1212,15 @@ En cada `<li class="row" data-dish>` añadir los datos a filtrar:
 data-name={dish.name} data-desc={dish.description ?? ""}
 ```
 
-Y en el `<script>`, dentro de `mount()`, después de revelar el toggle:
+En el `<script>`, añadir el import **arriba del todo, junto al resto de imports del módulo** — nunca dentro de `mount()`, que sería error de sintaxis:
 
 ```ts
 import { matchDish } from "@tombo/content";
+```
 
+Y dentro de `mount()`, después de revelar el toggle:
+
+```ts
 const wrap = document.querySelector<HTMLElement>("[data-search-wrap]");
 const input = document.querySelector<HTMLInputElement>("[data-search]");
 const empty = document.querySelector<HTMLElement>("[data-empty]");
