@@ -30,6 +30,9 @@
   --t-card-border: 2px solid var(--ink);
   --t-shadow: 8px 8px 0 rgba(35, 32, 27, 0.85);
 
+  --t-open: #4c6b2f;
+  --t-bottom-bar-h: 104px;
+
   --t-heading-font: var(--display);
   --t-menu-title-size: clamp(1.9rem, 5vw, 3rem);
   --t-menu-title-weight: 400;
@@ -48,4 +51,10 @@
   --t-dish-weight: 600;
   --t-leader: 2px dotted var(--ink-faint);
   --t-section-gap: clamp(38px, 5vw, 58px);
+}
+
+@media (max-width: 780px) {
+  body {
+    padding-bottom: var(--t-bottom-bar-h);
+  }
 }

@@ -1,0 +1,88 @@
+---
+// apps/ochoa/src/components/BottomBar.astro
+import OpenState from "@tombo/ui/OpenState.astro";
+import { RESTAURANT } from "../site.ts";
+
+interface Props {
+  locale: "es" | "en";
+}
+const { locale } = Astro.props;
+const es = locale === "es";
+const items = es
+  ? [
+      { href: "/carta", label: "Carta" },
+      { href: "/reservas", label: "Reservar", primary: true },
+      { href: "/#visita", label: "Llegar" },
+    ]
+  : [
+      { href: "/en/menu", label: "Menu" },
+      { href: "/en/reservations", label: "Book", primary: true },
+      { href: "/en/#visit", label: "Find us" },
+    ];
+---
+
+<nav class="bottom-bar" aria-label={es ? "Acciones principales" : "Main actions"}>
+  <div class="status"><OpenState hours={RESTAURANT.openingHours} locale={locale} /></div>
+  <ul>
+    {items.map((i) => (
+      <li>
+        <a href={i.href} class:list={["item", { primary: i.primary }]}>{i.label}</a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .bottom-bar {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 30;
+    background: var(--paper);
+    border-top: 2px solid var(--ink);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .status {
+    display: flex;
+    justify-content: center;
+    padding: 5px 0 0;
+  }
+  .status:empty {
+    display: none;
+  }
+  ul {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    list-style: none;
+    margin: 0;
+    padding: 8px 10px 10px;
+  }
+  .item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    color: var(--ink);
+    border: 1.5px solid transparent;
+    border-radius: 4px;
+  }
+  .item.primary {
+    background: var(--rojo);
+    color: var(--paper);
+    border-color: var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    font-weight: 600;
+  }
+  .item:focus-visible {
+    outline: 2px solid var(--rojo);
+    outline-offset: 2px;
+  }
+  /* En escritorio manda la cabecera: la barra inferior sobra. */
+  @media (min-width: 781px) {
+    .bottom-bar {
+      display: none;
+    }
+  }
+</style>

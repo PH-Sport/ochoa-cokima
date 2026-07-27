@@ -5,6 +5,7 @@ import Seo from "@tombo/ui/Seo.astro";
 import ConsentBanner from "@tombo/ui/ConsentBanner.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
+import BottomBar from "../components/BottomBar.astro";
 import { RESTAURANT } from "../site.ts";
 
 interface Props {
@@ -29,6 +30,7 @@ const { title, description, locale, altPath } = Astro.props;
     <Nav locale={locale} altPath={altPath} />
     <slot />
     <Footer locale={locale} />
+    <BottomBar locale={locale} />
     <ConsentBanner locale={locale} cookiesPath="/cookies" />
     <script>
       import { initTracking } from "@tombo/tracking/client";
