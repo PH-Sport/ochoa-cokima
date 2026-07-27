@@ -89,9 +89,31 @@ Así las previews funcionan sin configurar nada, y un despliegue de producción 
 no puede publicar canonical, `hreflang`, sitemap, `robots.txt` ni JSON-LD apuntando a un
 dominio inventado: rompe antes.
 
+## Enseñar las webs antes de tener dominio: la rama `preview`
+
+Como `SITE_URL` solo es obligatoria en producción, la vía para tener URLs que enseñar sin
+decidir dominio es desplegar desde una rama:
+
+```bash
+git push origin main:preview
+```
+
+Vercel construye una preview con `VERCEL_URL` y la publica en un alias fijo por rama
+(`cokima-git-preview-<team>.vercel.app`), con `x-robots-tag: noindex`, así que no interfiere
+con el SEO. Verificado el 2026-07-27 en el proyecto `cokima`: canonical, `hreflang`, `og:url`,
+JSON-LD y sitemap salen con el dominio del despliegue.
+
+Mientras no exista `SITE_URL` en el proyecto, **los despliegues de producción (`main`)
+fallarán a propósito**. Es lo correcto: significa que aún no hay dominio que publicar.
+
+Si el equipo no puede abrir la URL, es la *Deployment Protection* de Vercel
+(Settings → Deployment Protection): hay que desactivar *Vercel Authentication* para previews
+o compartir el enlace con bypass.
+
 ## Pendiente de implementar
 
-- [ ] Crear los dos proyectos y conectarlos al repositorio (`PHSPORT/ochoa-cokima`).
+- [x] Proyecto `cokima` creado y conectado a `PH-Sport/ochoa-cokima` (Root Directory `apps/cokima`).
+- [ ] Crear el proyecto `ochoa` igual, con Root Directory `apps/ochoa`.
 - [ ] Configurar variables de entorno y dominios.
 - [ ] Aplicar el *Ignored Build Step* en ambos.
 - [ ] Redirects 301 desde las URLs antiguas.
