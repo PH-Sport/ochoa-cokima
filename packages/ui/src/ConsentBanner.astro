@@ -72,6 +72,12 @@ const t =
     align-items: center;
     justify-content: space-between;
   }
+  /* Sin esto el `display: flex` de arriba gana al atributo `hidden` y el cartel
+     no se va nunca: ni al aceptar, ni al rechazar, ni en las visitas siguientes
+     con el consentimiento ya guardado. */
+  .consent[hidden] {
+    display: none;
+  }
   .consent p {
     margin: 0;
     font-size: 0.9rem;
