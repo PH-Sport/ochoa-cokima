@@ -1,0 +1,76 @@
+---
+// packages/ui/src/OpenState.astro
+interface Props {
+  hours: string[];
+  locale: "es" | "en";
+}
+const { hours, locale } = Astro.props;
+const labels =
+  locale === "es"
+    ? { open: "Abierto ahora", until: "hasta las", closed: "Cerrado", next: "abre a las" }
+    : { open: "Open now", until: "until", closed: "Closed", next: "opens at" };
+---
+
+<span
+  class="open-state"
+  data-open-state
+  data-hours={JSON.stringify(hours)}
+  data-labels={JSON.stringify(labels)}
+  hidden
+>
+  <i class="dot" aria-hidden="true"></i><span class="text"></span>
+</span>
+
+<script>
+  import { getOpenState } from "@tombo/content";
+
+  const render = (el: HTMLElement) => {
+    const hours = JSON.parse(el.dataset.hours ?? "[]") as string[];
+    const labels = JSON.parse(el.dataset.labels ?? "{}");
+    const state = getOpenState(hours, new Date());
+    const text = el.querySelector(".text");
+    if (!text) return;
+
+    if (state.open) {
+      text.textContent = `${labels.open} · ${labels.until} ${state.until}`;
+      el.dataset.state = "open";
+    } else if (state.nextOpen) {
+      text.textContent = `${labels.closed} · ${labels.next} ${state.nextOpen}`;
+      el.dataset.state = "closed";
+    } else {
+      return; // Sin horario: no afirmamos nada.
+    }
+    el.hidden = false;
+  };
+
+  const mount = () => document.querySelectorAll<HTMLElement>("[data-open-state]").forEach(render);
+  mount();
+  document.addEventListener("astro:page-load", mount);
+</script>
+
+<style>
+  .open-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5ch;
+    font-size: var(--t-open-state-size, 0.82rem);
+    color: var(--t-text-dim);
+    line-height: 1.2;
+  }
+  .open-state[hidden] {
+    display: none;
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--t-text-faint);
+    flex: none;
+  }
+  .open-state[data-state="open"] .dot {
+    background: var(--t-open, #3f9d5a);
+  }
+  .open-state[data-state="closed"] .dot {
+    background: var(--t-text-faint);
+  }
+</style>
