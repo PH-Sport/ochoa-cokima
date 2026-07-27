@@ -32,6 +32,28 @@ const items = es
   </ul>
 </nav>
 
+<script>
+  // Mide el alto real de la barra (varía cuando aparece el badge "Abierto ahora"
+  // tras resolver el horario) y lo escribe en la variable CSS que usa el
+  // padding-bottom del body, para que nunca sobre ni falte hueco.
+  function syncBottomBarHeight() {
+    const bar = document.querySelector<HTMLElement>(".bottom-bar");
+    if (!bar) return;
+
+    const root = document.documentElement;
+    const setHeight = () => {
+      root.style.setProperty("--t-bottom-bar-h", `${bar.offsetHeight}px`);
+    };
+
+    setHeight();
+    const ro = new ResizeObserver(setHeight);
+    ro.observe(bar);
+  }
+
+  syncBottomBarHeight();
+  document.addEventListener("astro:page-load", syncBottomBarHeight);
+</script>
+
 <style>
   .bottom-bar {
     position: fixed;
@@ -44,10 +66,12 @@ const items = es
   .status {
     display: flex;
     justify-content: center;
-    padding: 5px 0 0;
   }
-  .status:empty {
-    display: none;
+  /* El badge "Abierto ahora" se renderiza con [hidden] hasta que el script de
+     OpenState resuelve el horario, así que .status nunca está :empty aunque el
+     badge no se vea. Solo reservamos el padding-top cuando hay algo visible. */
+  .status:has(> :not([hidden])) {
+    padding: 5px 0 0;
   }
   ul {
     display: grid;

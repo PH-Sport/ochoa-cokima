@@ -31,7 +31,10 @@
   --t-shadow: 8px 8px 0 rgba(35, 32, 27, 0.85);
 
   --t-open: #4c6b2f;
-  --t-bottom-bar-h: 104px;
+  /* Alto real de BottomBar sin el badge "Abierto ahora" (69px medido en navegador).
+     Se sobreescribe en cliente vía ResizeObserver (ver BottomBar.astro) en cuanto
+     el componente monta y de nuevo si el badge aparece tras resolver el horario. */
+  --t-bottom-bar-h: 69px;
 
   --t-heading-font: var(--display);
   --t-menu-title-size: clamp(1.9rem, 5vw, 3rem);
