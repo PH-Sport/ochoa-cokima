@@ -1,0 +1,182 @@
+---
+// apps/ochoa/src/components/MenuBoard.astro
+import { formatPortionPrice, formatEuro, type MenuEntry } from "@tombo/content";
+
+interface Props {
+  dishes: MenuEntry[];
+  locale: "es" | "en";
+}
+const { dishes, locale } = Astro.props;
+const es = locale === "es";
+const t = es
+  ? { half: "½ ración", full: "Ración", onlyFull: "solo ración entera", legend: "Tamaño de ración" }
+  : { half: "Half", full: "Full", onlyFull: "full portion only", legend: "Portion size" };
+
+// `order` es correlativo dentro de cada sección (carta 1..23, postres 1..2),
+// no un índice global: hay que mantener la sección y solo ordenar dentro de ella,
+// o los postres se intercalan entre los platos salados.
+const sectionOrder = ["carta", "postres"];
+const sorted = [...dishes].sort((a, b) => {
+  const bySection = sectionOrder.indexOf(a.section) - sectionOrder.indexOf(b.section);
+  return bySection !== 0 ? bySection : a.order - b.order;
+});
+---
+
+<div class="board">
+  <div class="toggle" data-portion-toggle hidden>
+    <span class="legend" id="portion-legend">{t.legend}</span>
+    <div class="switch" role="group" aria-labelledby="portion-legend">
+      <button type="button" data-portion="half" aria-pressed="false">{t.half}</button>
+      <button type="button" data-portion="full" aria-pressed="true">{t.full}</button>
+    </div>
+  </div>
+
+  <ul class="rows">
+    {sorted.map((dish) => {
+      const half = formatPortionPrice(dish.price, "half");
+      const full = formatPortionPrice(dish.price, "full");
+      return (
+        <li class="row" data-dish>
+          <div class="head">
+            <span class="name">{dish.name}</span>
+            <span class="leader" aria-hidden="true"></span>
+            <span
+              class="price"
+              data-half={formatEuro(half.amount)}
+              data-full={formatEuro(full.amount)}
+              data-only-full={half.onlyFull ? "true" : "false"}
+            >{formatEuro(full.amount)}</span>
+          </div>
+          {dish.description && <p class="desc">{dish.description}</p>}
+          <p class="only-full" data-only-full-note hidden>{t.onlyFull}</p>
+        </li>
+      );
+    })}
+  </ul>
+</div>
+
+<script>
+  const mount = () => {
+    const toggle = document.querySelector<HTMLElement>("[data-portion-toggle]");
+    if (!toggle) return;
+    toggle.hidden = false;
+
+    const apply = (portion: "half" | "full") => {
+      document.querySelectorAll<HTMLElement>("[data-dish]").forEach((row) => {
+        const price = row.querySelector<HTMLElement>(".price");
+        const note = row.querySelector<HTMLElement>("[data-only-full-note]");
+        if (!price) return;
+        price.textContent = portion === "half" ? price.dataset.half! : price.dataset.full!;
+        const onlyFull = price.dataset.onlyFull === "true";
+        if (note) note.hidden = !(portion === "half" && onlyFull);
+      });
+      toggle.querySelectorAll<HTMLButtonElement>("button[data-portion]").forEach((b) => {
+        b.setAttribute("aria-pressed", String(b.dataset.portion === portion));
+      });
+    };
+
+    toggle.querySelectorAll<HTMLButtonElement>("button[data-portion]").forEach((b) => {
+      b.addEventListener("click", () => apply(b.dataset.portion as "half" | "full"));
+    });
+  };
+
+  mount();
+  document.addEventListener("astro:page-load", mount);
+</script>
+
+<style>
+  .toggle {
+    position: sticky;
+    /* La cabecera mide 67px reales (66px de .nav-in + 1px de su border-bottom),
+       no 66px: si el offset no cuenta ese borde, el interruptor se solapa 1px
+       con la cabecera al quedar ambos fijos. */
+    top: 67px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    background: var(--paper);
+    border-bottom: 3px solid var(--ink);
+  }
+  .toggle[hidden] {
+    display: none;
+  }
+  .legend {
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-dim);
+  }
+  .switch {
+    display: flex;
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .switch button {
+    min-height: 44px;
+    padding: 0 14px;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1;
+    background: transparent;
+    color: var(--ink);
+    border: 0;
+    cursor: pointer;
+  }
+  .switch button[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 600;
+  }
+  .switch button:focus-visible {
+    outline: 2px solid var(--rojo);
+    outline-offset: -4px;
+  }
+  .rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .row {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .name {
+    font-size: 1.06rem;
+  }
+  .leader {
+    flex: 1;
+    border-bottom: 1px dotted var(--ink-faint);
+    transform: translateY(-0.25em);
+  }
+  .price {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .desc {
+    margin: 0.35rem 0 0;
+    color: var(--ink-dim);
+    font-size: 0.95rem;
+    max-width: 60ch;
+  }
+  .only-full {
+    margin: 0.3rem 0 0;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--rojo);
+  }
+  .only-full[hidden] {
+    display: none;
+  }
+</style>

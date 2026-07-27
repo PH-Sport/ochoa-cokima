@@ -1,10 +1,9 @@
 ---
 import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
-import MenuSection from "@tombo/ui/MenuSection.astro";
+import MenuBoard from "../../components/MenuBoard.astro";
 
 const all = (await getCollection("menu-en")).map((e) => e.data);
-const bySection = (s: string) => all.filter((d) => d.section === s);
 ---
 
 <Base
@@ -18,8 +17,7 @@ const bySection = (s: string) => all.filter((d) => d.section === s);
       <p class="eyebrow">Tasquita · Madriz</p>
       <h1 class="cartel">Menu</h1>
 
-      <MenuSection title="For tapeo" dishes={bySection("carta")} showAllergens={false} halfLabel="½ portion" fullLabel="Full" layout="list" />
-      <MenuSection title="Desserts" dishes={bySection("postres")} showAllergens={false} layout="list" />
+      <MenuBoard dishes={all} locale="en" />
 
       <p class="note">Bread basket with olive oil: €3. Menu from September 2025, the latest published — pending confirmation by the restaurant.</p>
     </div>
