@@ -5,6 +5,7 @@ import Seo from "@tombo/ui/Seo.astro";
 import ConsentBanner from "@tombo/ui/ConsentBanner.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
+import ReserveBar from "../components/ReserveBar.astro";
 import { RESTAURANT } from "../site.ts";
 
 interface Props {
@@ -20,7 +21,7 @@ const { title, description, locale, altPath } = Astro.props;
 <html lang={locale}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <link rel="preload" href="/fonts/bricolage-800.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/bricolage-400.woff2" as="font" type="font/woff2" crossorigin />
     <Seo title={title} description={description} locale={locale} altPath={altPath} restaurant={RESTAURANT} ogImage="/images/hero.jpg" />
@@ -28,6 +29,7 @@ const { title, description, locale, altPath } = Astro.props;
   </head>
   <body>
     <Nav locale={locale} altPath={altPath} />
+    <ReserveBar locale={locale} />
     <slot />
     <Footer locale={locale} />
     <ConsentBanner locale={locale} cookiesPath="/cookies" />

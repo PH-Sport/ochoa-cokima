@@ -1,0 +1,94 @@
+---
+// apps/cokima/src/components/ReserveBar.astro
+import OpenState from "@tombo/ui/OpenState.astro";
+import { RESTAURANT } from "../site.ts";
+
+interface Props {
+  locale: "es" | "en";
+}
+const { locale } = Astro.props;
+const es = locale === "es";
+const href = es ? "/reservas" : "/en/reservations";
+const label = es ? "Reservar mesa" : "Book a table";
+---
+
+<div class="reserve-bar" data-reserve-bar>
+  <div class="status"><OpenState hours={RESTAURANT.openingHours} locale={locale} /></div>
+  <a href={href} class="btn">{label}</a>
+</div>
+
+<script>
+  const mount = () => {
+    const bar = document.querySelector<HTMLElement>("[data-reserve-bar]");
+    if (!bar) return;
+    const hero = document.querySelector("#top");
+
+    // Sin hero (carta, reservas): visible desde el principio.
+    if (!hero) {
+      bar.dataset.shown = "true";
+    } else {
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          bar.dataset.shown = entry.isIntersecting ? "false" : "true";
+        },
+        { rootMargin: "-40% 0px 0px 0px" },
+      );
+      io.observe(hero);
+    }
+
+    // Alto real de la barra: el badge "Abierto ahora" solo aparece cuando el
+    // script de OpenState resuelve el horario, así que el alto cambia tras
+    // el primer render. Lo medimos con ResizeObserver (nativo) en vez de fijar
+    // un número inventado, y lo escribimos en la variable que gobierna el
+    // padding-bottom del body (ver tokens.css).
+    const root = document.documentElement;
+    const setHeight = () => {
+      root.style.setProperty("--t-bottom-bar-h", `${bar.offsetHeight}px`);
+    };
+    setHeight();
+    const ro = new ResizeObserver(setHeight);
+    ro.observe(bar);
+  };
+
+  mount();
+  document.addEventListener("astro:page-load", mount);
+</script>
+
+<style>
+  .reserve-bar {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(21, 15, 12, 0.92);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line);
+    transform: translateY(110%);
+    transition: transform 260ms ease;
+  }
+  .reserve-bar[data-shown="true"] {
+    transform: translateY(0);
+  }
+  .reserve-bar .btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  /* El span de OpenState siempre está en el DOM (con [hidden] hasta que el
+     script resuelve el horario), así que .status nunca queda :empty: no hace
+     falta esa regla para colapsar su hueco cuando no hay badge. */
+  @media (prefers-reduced-motion: reduce) {
+    .reserve-bar {
+      transition: none;
+    }
+  }
+  @media (min-width: 861px) {
+    .reserve-bar {
+      display: none;
+    }
+  }
+</style>

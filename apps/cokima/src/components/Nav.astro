@@ -109,4 +109,12 @@ const reserve = es ? "/reservas" : "/en/reservations";
       padding-block: 11px;
     }
   }
+  /* Por debajo de 861px, ReserveBar (fija, al pie) ya lleva el CTA de
+     reserva: ocultamos el de la cabecera para no duplicarlo en pantalla.
+     El selector de idioma y los enlaces de navegación siguen visibles. */
+  @media (max-width: 860px) {
+    .nav-right .btn {
+      display: none;
+    }
+  }
 </style>
