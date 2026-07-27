@@ -35,6 +35,31 @@ const reserve = es ? "/reservas" : "/en/reservations";
   </div>
 </nav>
 
+<script>
+  // El alto de la cabecera cambia por breakpoint y por idioma (los enlaces en
+  // español son más largos y pueden envolver a otra fila en pantallas muy
+  // estrechas). Los tokens de tokens.css llevan el valor medido como punto de
+  // partida — el sticky es correcto sin JavaScript — y aquí se afina con el
+  // alto real para que las tabs de la carta nunca se solapen ni dejen hueco.
+  const mount = () => {
+    const nav = document.querySelector<HTMLElement>(".nav");
+    if (!nav) return;
+    const sync = () => {
+      document.documentElement.style.setProperty(
+        "--t-header-h",
+        `${Math.ceil(nav.getBoundingClientRect().height)}px`,
+      );
+    };
+    sync();
+    new ResizeObserver(sync).observe(nav);
+  };
+
+  // `astro:after-swap` y no `astro:page-load`: este último también dispara en
+  // la carga inicial, así que con ClientRouter activo duplicaría el observer.
+  mount();
+  document.addEventListener("astro:after-swap", mount);
+</script>
+
 <style>
   .nav {
     position: sticky;

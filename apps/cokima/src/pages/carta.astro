@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
-import MenuSection from "@tombo/ui/MenuSection.astro";
+import MenuDeck from "../components/MenuDeck.astro";
 import { ALLERGEN_LABELS } from "../site.ts";
 
 const all = (await getCollection("menu-es")).map((e) => e.data);
@@ -21,9 +21,15 @@ const bySection = (s: string) => all.filter((d) => d.section === s);
         <h1>Para compartir y desfasar</h1>
       </div>
 
-      <MenuSection title="Compartir es vivir" dishes={bySection("compartir")} allergenLabels={ALLERGEN_LABELS.es} />
-      <MenuSection title="Para terminar o no…" dishes={bySection("terminar")} allergenLabels={ALLERGEN_LABELS.es} />
-      <MenuSection title="Y por fin, los postres" dishes={bySection("postres")} allergenLabels={ALLERGEN_LABELS.es} />
+      <MenuDeck
+        sections={[
+          { id: "compartir", title: "Compartir es vivir", dishes: bySection("compartir") },
+          { id: "terminar", title: "Para terminar o no…", dishes: bySection("terminar") },
+          { id: "postres", title: "Y por fin, los postres", dishes: bySection("postres") },
+        ]}
+        locale="es"
+        allergenLabels={ALLERGEN_LABELS.es}
+      />
 
       <p class="note">
         Mantequilla, AOVE, pan y aperitivo: 3 €. Los iconos de alérgenos son orientativos

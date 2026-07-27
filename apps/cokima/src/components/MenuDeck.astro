@@ -1,0 +1,234 @@
+---
+// apps/cokima/src/components/MenuDeck.astro
+import { formatEuro, type MenuEntry } from "@tombo/content";
+import AllergenIcons from "@tombo/ui/AllergenIcons.astro";
+
+interface Section {
+  id: string;
+  title: string;
+  dishes: MenuEntry[];
+}
+interface Props {
+  sections: Section[];
+  locale: "es" | "en";
+  allergenLabels: Record<string, string>;
+}
+const { sections, locale, allergenLabels } = Astro.props;
+const es = locale === "es";
+const navLabel = es ? "Secciones de la carta" : "Menu sections";
+
+// `order` es correlativo dentro de cada sección (compartir 1..12, terminar 1..7,
+// postres 1..2), no un índice global: se ordena sección a sección.
+const decks = sections.map((s) => ({
+  ...s,
+  dishes: [...s.dishes].sort((a, b) => a.order - b.order),
+}));
+---
+
+{decks.length > 1 && (
+  <nav class="tabs" aria-label={navLabel}>
+    <ul>
+      {decks.map((s) => (
+        <li><a href={`#${s.id}`} data-tab={s.id}>{s.title}</a></li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+{decks.map((s) => (
+  <section class="deck-section" id={s.id} data-section={s.id}>
+    <h2>{s.title}</h2>
+    {/* tabindex="0" para que la baraja se pueda recorrer con el teclado: es una
+        región con scroll y sin nada enfocable dentro. Va en el HTML, no puesto
+        por script, para que también funcione sin JavaScript. */}
+    <ul class="deck" tabindex="0" aria-label={s.title}>
+      {s.dishes.map((dish) => (
+        <li class="card">
+          <h3>{dish.name}</h3>
+          {dish.description && <p class="desc">{dish.description}</p>}
+          <div class="foot">
+            <span class="price">
+              {formatEuro(typeof dish.price === "number" ? dish.price : dish.price.full)}
+            </span>
+            <AllergenIcons allergens={dish.allergens} labels={allergenLabels} />
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+))}
+
+<script>
+  const mount = () => {
+    const sections = document.querySelectorAll<HTMLElement>("[data-section]");
+    const tabs = document.querySelectorAll<HTMLAnchorElement>("[data-tab]");
+    if (sections.length === 0 || tabs.length === 0) return;
+
+    const setActive = (id: string) => {
+      tabs.forEach((tab) => {
+        const on = tab.dataset.tab === id;
+        tab.dataset.active = String(on);
+        if (on) tab.setAttribute("aria-current", "true");
+        else tab.removeAttribute("aria-current");
+      });
+    };
+
+    // La banda activa es el tercio superior útil, por debajo de cabecera y tabs.
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive((entry.target as HTMLElement).dataset.section!);
+        }
+      },
+      { rootMargin: "-30% 0px -60% 0px" },
+    );
+    sections.forEach((s) => io.observe(s));
+  };
+
+  // `astro:after-swap` y no `astro:page-load`: este último también dispara en la
+  // carga inicial, así que con ClientRouter activo duplicaría el observer.
+  mount();
+  document.addEventListener("astro:after-swap", mount);
+</script>
+
+<style>
+  .tabs {
+    position: sticky;
+    top: var(--t-header-h);
+    z-index: 10;
+    background: rgba(21, 15, 12, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    /* A sangre: el carril de tabs llega a los bordes de la pantalla aunque
+       viva dentro de .wrap, y recupera por dentro el mismo padding. */
+    margin-inline: calc(50% - 50vw);
+    padding-inline: max(20px, calc(50vw - 50%));
+  }
+  .tabs ul {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs ul::-webkit-scrollbar {
+    display: none;
+  }
+  .tabs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    color: var(--bone-dim);
+    border-bottom: 2px solid transparent;
+  }
+  .tabs a[data-active="true"] {
+    color: var(--bone);
+    border-bottom-color: var(--vermilion);
+  }
+  .tabs a:focus-visible {
+    outline: 2px solid var(--ember);
+    outline-offset: -4px;
+  }
+
+  .deck-section {
+    padding-top: clamp(36px, 7vw, 64px);
+    /* Cabecera + carril de tabs (44px de área táctil + 1px de borde) + aire. */
+    scroll-margin-top: calc(var(--t-header-h) + 53px);
+  }
+  .deck-section h2 {
+    font-size: clamp(1.8rem, 5.5vw, 2.6rem);
+    margin: 0 0 1.2rem;
+  }
+
+  /* Móvil: baraja horizontal, la siguiente carta siempre asomando. */
+  .deck {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 8px;
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    margin-inline: calc(50% - 50vw);
+    padding-inline: max(20px, calc(50vw - 50%));
+    /* Sin esto el snap alinea la primera carta con el borde del scrollport y se
+       come el padding: la carta queda pegada al borde de la pantalla mientras el
+       título de la sección respeta el margen. Medido: scrollLeft nacía en 20. */
+    scroll-padding-inline: max(20px, calc(50vw - 50%));
+  }
+  .deck::-webkit-scrollbar {
+    display: none;
+  }
+  .deck:focus-visible {
+    outline: 2px solid var(--ember);
+    outline-offset: 4px;
+  }
+  .card {
+    flex: 0 0 85%;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 18px;
+    border: 1px solid var(--ground-3);
+    border-radius: 5px;
+    background: var(--ground-2);
+  }
+  .card h3 {
+    font-size: 1.3rem;
+    line-height: 1.15;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .desc {
+    margin: 0;
+    color: var(--bone-dim);
+    font-size: 0.98rem;
+  }
+  .foot {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 0.4rem;
+  }
+  /* AllergenIcons se separa con margen propio pensado para ir bajo el plato;
+     aquí comparte fila con el precio y ese margen lo descuadra. */
+  .foot :global(.allergens) {
+    margin-top: 0;
+  }
+  .price {
+    font-weight: 800;
+    font-size: 1.15rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--t-price-color);
+  }
+
+  /* Escritorio: la baraja se despliega en retícula de dos columnas desiguales. */
+  @media (min-width: 861px) {
+    .deck {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+      overflow: visible;
+      scroll-snap-type: none;
+      margin-inline: 0;
+      padding-inline: 0;
+    }
+    .card {
+      flex: initial;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .deck {
+      scroll-behavior: auto;
+    }
+  }
+</style>

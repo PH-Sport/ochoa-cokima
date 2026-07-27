@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
-import MenuSection from "@tombo/ui/MenuSection.astro";
+import MenuDeck from "../../components/MenuDeck.astro";
 import { ALLERGEN_LABELS } from "../../site.ts";
 
 const all = (await getCollection("menu-en")).map((e) => e.data);
@@ -21,9 +21,15 @@ const bySection = (s: string) => all.filter((d) => d.section === s);
         <h1>Built for sharing</h1>
       </div>
 
-      <MenuSection title="Sharing is caring…" dishes={bySection("compartir")} allergenLabels={ALLERGEN_LABELS.en} />
-      <MenuSection title="To finish or not…" dishes={bySection("terminar")} allergenLabels={ALLERGEN_LABELS.en} />
-      <MenuSection title="Y por fin, los postres" dishes={bySection("postres")} allergenLabels={ALLERGEN_LABELS.en} />
+      <MenuDeck
+        sections={[
+          { id: "compartir", title: "Sharing is caring…", dishes: bySection("compartir") },
+          { id: "terminar", title: "To finish or not…", dishes: bySection("terminar") },
+          { id: "postres", title: "Y por fin, los postres", dishes: bySection("postres") },
+        ]}
+        locale="en"
+        allergenLabels={ALLERGEN_LABELS.en}
+      />
 
       <p class="note">
         Bread, olive oil, butter and aperitif: €3. Allergen icons are indicative until
