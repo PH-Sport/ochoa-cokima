@@ -27,11 +27,19 @@ const label = es ? "Reservar mesa" : "Book a table";
     if (!hero) {
       bar.dataset.shown = "true";
     } else {
+      // Pestillo de un solo sentido: una vez que el hero sale del viewport,
+      // la barra se muestra y ya no vuelve a ocultarse aunque el usuario
+      // suba de nuevo. rootMargin en 0 (sin encoger el borde superior) para
+      // que la revelación ocurra cuando el hero ha salido de verdad, no
+      // mientras todavía compite con él a mitad de scroll.
       const io = new IntersectionObserver(
         ([entry]) => {
-          bar.dataset.shown = entry.isIntersecting ? "false" : "true";
+          if (!entry.isIntersecting) {
+            bar.dataset.shown = "true";
+            io.disconnect();
+          }
         },
-        { rootMargin: "-40% 0px 0px 0px" },
+        { rootMargin: "0px" },
       );
       io.observe(hero);
     }
