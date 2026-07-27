@@ -25,22 +25,26 @@ const labels =
   import { getOpenState } from "@tombo/content";
 
   const render = (el: HTMLElement) => {
-    const hours = JSON.parse(el.dataset.hours ?? "[]") as string[];
-    const labels = JSON.parse(el.dataset.labels ?? "{}");
-    const state = getOpenState(hours, new Date());
-    const text = el.querySelector(".text");
-    if (!text) return;
+    try {
+      const hours = JSON.parse(el.dataset.hours ?? "[]") as string[];
+      const labels = JSON.parse(el.dataset.labels ?? "{}");
+      const state = getOpenState(hours, new Date());
+      const text = el.querySelector(".text");
+      if (!text) return;
 
-    if (state.open) {
-      text.textContent = `${labels.open} · ${labels.until} ${state.until}`;
-      el.dataset.state = "open";
-    } else if (state.nextOpen) {
-      text.textContent = `${labels.closed} · ${labels.next} ${state.nextOpen}`;
-      el.dataset.state = "closed";
-    } else {
-      return; // Sin horario: no afirmamos nada.
+      if (state.open) {
+        text.textContent = `${labels.open} · ${labels.until} ${state.until}`;
+        el.dataset.state = "open";
+      } else if (state.nextOpen) {
+        text.textContent = `${labels.closed} · ${labels.next} ${state.nextOpen}`;
+        el.dataset.state = "closed";
+      } else {
+        return; // Sin horario: no afirmamos nada.
+      }
+      el.hidden = false;
+    } catch {
+      return;
     }
-    el.hidden = false;
   };
 
   const mount = () => document.querySelectorAll<HTMLElement>("[data-open-state]").forEach(render);
@@ -68,7 +72,7 @@ const labels =
     flex: none;
   }
   .open-state[data-state="open"] .dot {
-    background: var(--t-open, #3f9d5a);
+    background: var(--t-open, currentColor);
   }
   .open-state[data-state="closed"] .dot {
     background: var(--t-text-faint);
