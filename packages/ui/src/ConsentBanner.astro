@@ -108,4 +108,34 @@ const t =
     color: var(--t-text);
     border: 1px solid var(--t-line);
   }
+
+  /* Móvil: la tarjeta flotante tapaba la primera pantalla justo encima de la
+     foto del hero. Pasa a franja a lo ancho, más baja, apoyada sobre la barra
+     fija de cada marca (`--t-bottom-bar-h`, que las propias barras recalculan
+     con su alto real) para que no se solapen. */
+  @media (max-width: 640px) {
+    .consent {
+      left: 0;
+      right: 0;
+      bottom: var(--t-bottom-bar-h, 0px);
+      max-width: none;
+      border-radius: 0;
+      border-inline: 0;
+      padding: 10px 14px;
+      gap: 8px;
+    }
+    .consent p {
+      font-size: 0.8rem;
+      line-height: 1.4;
+      max-width: none;
+      flex: 1 1 100%;
+    }
+    .consent-actions {
+      flex: 1 1 100%;
+    }
+    .consent-btn {
+      flex: 1;
+      min-height: 44px;
+    }
+  }
 </style>
