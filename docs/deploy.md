@@ -89,13 +89,32 @@ Así las previews funcionan sin configurar nada, y un despliegue de producción 
 no puede publicar canonical, `hreflang`, sitemap, `robots.txt` ni JSON-LD apuntando a un
 dominio inventado: rompe antes.
 
-## Enseñar las webs antes de tener dominio: la rama `preview`
+## Modelo de ramas
 
-Como `SITE_URL` solo es obligatoria en producción, la vía para tener URLs que enseñar sin
-decidir dominio es desplegar desde una rama:
+Dos ramas permanentes:
+
+| Rama | Papel | Despliegue |
+|---|---|---|
+| `main` | **producción** | *production* en Vercel. Falla mientras no haya `SITE_URL`, a propósito. |
+| `preview` | **desarrollo** | preview con alias fijo por rama. Aquí se integra todo el trabajo. |
+
+El trabajo se integra en `preview` y se enseña desde su alias. Cuando una tanda está
+aprobada para salir a producción, se lleva a `main`:
 
 ```bash
-git push origin main:preview
+git switch main && git merge preview
+```
+
+Las ramas de tema (`feat/…`) son opcionales y efímeras: nacen de `preview` y vuelven a
+`preview`. No se acumulan.
+
+## Enseñar las webs antes de tener dominio
+
+Como `SITE_URL` solo es obligatoria en producción, `preview` da URLs que enseñar sin haber
+decidido dominio:
+
+```bash
+git push origin preview
 ```
 
 Vercel construye una preview con `VERCEL_URL` y la publica en un alias fijo por rama
@@ -113,7 +132,8 @@ o compartir el enlace con bypass.
 ## Pendiente de implementar
 
 - [x] Proyecto `cokima` creado y conectado a `PH-Sport/ochoa-cokima` (Root Directory `apps/cokima`).
-- [ ] Crear el proyecto `ochoa` igual, con Root Directory `apps/ochoa`.
+- [x] Proyecto `ochoa` creado igual, con Root Directory `apps/ochoa`. Verificado el 2026-07-28:
+      despliega previews por rama con su propio alias.
 - [ ] Configurar variables de entorno y dominios.
 - [ ] Aplicar el *Ignored Build Step* en ambos.
 - [ ] Redirects 301 desde las URLs antiguas.
