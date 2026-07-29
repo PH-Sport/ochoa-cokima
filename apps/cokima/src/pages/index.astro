@@ -1,11 +1,11 @@
 ---
 import { getCollection } from "astro:content";
+import { pickFeatured } from "@tombo/content";
 import Base from "../layouts/Base.astro";
 import Embers from "../components/Embers.astro";
-import MenuDeck from "../components/MenuDeck.astro";
-import { ALLERGEN_LABELS } from "../site.ts";
+import Highlights from "../components/Highlights.astro";
 
-const featured = (await getCollection("menu-es", (e) => e.data.featured)).map((e) => e.data);
+const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data));
 ---
 
 <Base
@@ -36,20 +36,7 @@ const featured = (await getCollection("menu-es", (e) => e.data.featured)).map((e
     </div>
   </header>
 
-  <section class="picks">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">Lo que no te puedes perder</p>
-        <h2>Los imprescindibles</h2>
-      </div>
-      <MenuDeck
-        sections={[{ id: "imprescindibles", title: "Selección", dishes: featured }]}
-        locale="es"
-        allergenLabels={ALLERGEN_LABELS.es}
-      />
-      <p class="more"><a href="/carta" class="btn ghost">Carta completa</a></p>
-    </div>
-  </section>
+  <Highlights dishes={featured} locale="es" href="/carta" />
 
   <section class="manifesto">
     <div class="wrap">
@@ -203,12 +190,8 @@ const featured = (await getCollection("menu-es", (e) => e.data.featured)).map((e
     margin: 0;
     text-wrap: balance;
   }
-  .picks,
   .visita {
     padding: clamp(52px, 8vw, 96px) 0 0;
-  }
-  .more {
-    margin-top: 2.2rem;
   }
   .visit-grid {
     display: grid;

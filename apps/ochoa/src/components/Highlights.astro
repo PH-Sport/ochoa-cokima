@@ -1,0 +1,148 @@
+---
+// apps/ochoa/src/components/Highlights.astro
+import { Image } from "astro:assets";
+import { formatEuro, type MenuEntry } from "@tombo/content";
+import { dishImages } from "../data/dish-images.ts";
+
+interface Props {
+  dishes: MenuEntry[];
+  locale: "es" | "en";
+  href: string;
+}
+const { dishes, locale, href } = Astro.props;
+const es = locale === "es";
+const t = es
+  ? { title: "Lo que más sale", more: "La carta entera", list: "Platos destacados" }
+  : { title: "What sells most", more: "Full menu", list: "Featured dishes" };
+
+const cards = dishes.map((d) => ({
+  dish: d,
+  image: d.image ? dishImages[d.image] : undefined,
+}));
+
+// La carta de Ochoa tiene platos con media ración y platos sin ella: cuando
+// existe media se muestran los dos importes, como ya hace MenuBoard.
+const label = (price: MenuEntry["price"]) => {
+  if (typeof price === "number") return formatEuro(price);
+  return price.half ? `${formatEuro(price.half)} · ${formatEuro(price.full)}` : formatEuro(price.full);
+};
+---
+
+<section class="highlights">
+  <div class="wrap head">
+    <h2 class="cartel">{t.title}</h2>
+    <a href={href} class="more">{t.more} →</a>
+  </div>
+
+  {/* tabindex="0" para poder recorrer la tira con el teclado: es una región
+      con scroll y sin nada enfocable dentro. Va en el HTML, no puesto por
+      script, para que también funcione sin JavaScript. */}
+  <ul class="strip" tabindex="0" aria-label={t.list}>
+    {cards.map(({ dish, image }) => (
+      <li class:list={["card", { flat: !image }]}>
+        {image && (
+          <Image
+            src={image}
+            alt={dish.name}
+            widths={[280, 560]}
+            sizes="(max-width: 860px) 68vw, 280px"
+            loading="lazy"
+            class="shot"
+          />
+        )}
+        <div class="body">
+          <h3>{dish.name}</h3>
+          <span class="price">{label(dish.price)}</span>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .highlights {
+    padding: clamp(26px, 4vw, 44px) 0 clamp(30px, 5vw, 56px);
+  }
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 16px;
+  }
+  .head h2 {
+    font-size: clamp(1.7rem, 5vw, 2.6rem);
+    margin: 0;
+  }
+  .more {
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    color: var(--rojo);
+    white-space: nowrap;
+  }
+  .strip {
+    display: flex;
+    gap: 14px;
+    list-style: none;
+    margin: 0;
+    padding: 0 clamp(20px, 5vw, 48px);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .strip::-webkit-scrollbar {
+    display: none;
+  }
+  .strip:focus-visible {
+    outline: 2px solid var(--rojo);
+    outline-offset: 3px;
+  }
+  .card {
+    flex: 0 0 68vw;
+    max-width: 280px;
+    scroll-snap-align: start;
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--paper);
+    box-shadow: 4px 4px 0 var(--rojo);
+  }
+  /* Sin foto la ficha no se queda a media altura: el texto se va abajo y la
+     tarjeta conserva el mismo peso visual que sus vecinas con imagen. */
+  .card.flat {
+    display: flex;
+    align-items: flex-end;
+    min-height: 132px;
+  }
+  .shot {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+  }
+  .body {
+    padding: 12px 14px 14px;
+    width: 100%;
+  }
+  .body h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 6px;
+    line-height: 1.25;
+  }
+  .price {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  @media (min-width: 861px) {
+    .strip {
+      max-width: var(--maxw);
+      margin: 0 auto;
+    }
+    .card {
+      flex: 1 1 0;
+      max-width: none;
+    }
+  }
+</style>
