@@ -2,6 +2,8 @@ node_modules/
 dist/
 .astro/
 .vercel/
+# Volcados de las sesiones de navegador usadas para medir en desarrollo
+.playwright-mcp/
 .env
 .env.*
 !.env.example
