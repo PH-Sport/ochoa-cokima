@@ -20,9 +20,39 @@
   --maxw: 1140px;
 
   /* Sin serif: la itálica de Georgia era la que fabricaba el aire nostálgico.
-     La condensada del rótulo manda, y el resto es sans. */
+     La condensada del rótulo manda, y el resto es sans.
+
+     Archivo (Omnibus-Type) sustituye a la fuente del sistema, que era lo que
+     hacía que Ochoa pareciera menos diseñada que Cokima: hasta ahora Anton
+     aparecía solo en los titulares y todo el cuerpo caía en Segoe UI. Es una
+     grotesca de origen editorial y de rótulo, con dos ejes variables —peso
+     100..900 y ancho 62..125— en un solo archivo de 90 KB. El eje de ancho es
+     el que permite hablar el idioma del rótulo (versales apretadas) sin traer
+     una tercera familia, y el que dejará apretar la carta a dos columnas. */
   --display: "Anton", "Arial Narrow", Impact, sans-serif;
-  --sans: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --sans: "Archivo", Arial, Helvetica, sans-serif;
+
+  /* Los tres anchos que se usan, y solo esos. El navegador mapea
+     `font-stretch` al eje `wdth` de la variable. */
+  --wd-text: 100%;
+  --wd-carta: 92%; /* la carta aprieta un punto para ganar caracteres por línea */
+  --wd-rotulo: 84%; /* versales de etiqueta, en la proporción del rótulo */
+
+  /* Escala tipográfica, ratio ~1.25 desde el cuerpo. Nombres por papel, no por
+     valor: si mañana el cuerpo sube, el resto sube con él. */
+  --fs-micro: 0.8rem; /* notas al pie, avisos */
+  --fs-label: 0.875rem; /* etiquetas y eyebrows en versal */
+  --fs-body: 1.0625rem; /* 17px con el ajuste del usuario respetado */
+  --fs-lead: 1.33rem; /* entradillas */
+  --fs-h3: 1.66rem;
+  --fs-h2: clamp(2.08rem, 5vw, 3.1rem);
+  --fs-cartel: clamp(2.6rem, 9.5vw, 5rem);
+
+  /* Interlineado inverso al ancho de la línea: el cartel casi se toca, el
+     cuerpo respira. */
+  --lh-cartel: 0.96;
+  --lh-title: 1.18;
+  --lh-body: 1.6;
 
   /* Mapeo a las variables neutras de @tombo/ui */
   --t-text: var(--ink);

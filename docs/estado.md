@@ -74,14 +74,20 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
 
 ---
 
-## 3.bis Fase 4 — acordada el 2026-07-29, sin empezar
+## 3.bis Fase 4 — acordada el 2026-07-29, en curso
 
 Orden acordado. Los cinco primeros no dependen de nadie; el sexto necesita contenido real.
 
-1. **Tipografía propia para Ochoa.** Hoy el cuerpo usa la fuente del sistema
-   (`-apple-system, Segoe UI, Roboto`) y Anton solo aparece en titulares; Cokima sí tiene
-   Bricolage Grotesque en todo. Es la causa de fondo de que Ochoa parezca menos diseñada.
-   **La elección queda delegada**, con el criterio de que cuadre con su Instagram.
+1. ~~**Tipografía propia para Ochoa.**~~ **Hecho el 2026-07-29.** El cuerpo ya no cae en la
+   fuente del sistema: **Archivo** (Omnibus-Type), variable en peso (100-900) **y en ancho
+   (62-125)**, autoalojada en un solo `.woff2` de 90 KB — menos que los tres estáticos de
+   Bricolage en Cokima, que suman 124 KB para tres pesos. Anton se queda solo en los
+   titulares de cartel. El eje de ancho es lo que hace de bisagra entre las dos: las
+   etiquetas en versal van al 84%, en la proporción del rótulo, y la carta podrá apretar al
+   92% cuando pase a dos columnas. Escala de siete pasos con nombres por papel
+   (`--fs-micro` … `--fs-cartel`) en `apps/ochoa/src/styles/tokens.css`. Fuera el
+   `tabular-nums` del precio. Verificado a 390px: ni un elemento del DOM conserva fuente de
+   sistema, 43 tests verdes y las dos apps `Complete!`.
 2. **Menú a pantalla completa.** Botón sin borde, tres rayas. Secciones en cascada
    vertical priorizando "La carta". Bloquear el scroll del fondo. Con transición suave.
 3. **Carta de Ochoa a dos columnas.** Los dos precios a la vez, como carta de bar; fuera
@@ -118,11 +124,10 @@ desmenuzar a fondo.
       que preguntar al restaurante qué sirve de verdad antes de cambiar la palabra en la
       carta. La carta original dice «½ ración».
 - [ ] **Cuándo llevar `preview` a `main`** (`git switch main && git merge preview`).
-- [ ] **Autorizar el push de `preview`.** El trabajo de la fase 3 está commiteado en local
-      pero **sin subir**, así que los alias de preview siguen mostrando la versión vieja.
 
 **Cerradas el 2026-07-29:** el verde oliva del estado de apertura (retirado con la piel
-nueva de Ochoa) y las dos ramas muertas, que ya no existen.
+nueva de Ochoa), las dos ramas muertas —que ya no existen— y **el push de `preview`**, que
+Mario autorizó: la fase 3 está subida y los alias de preview ya no van retrasados.
 
 ---
 
@@ -186,6 +191,7 @@ Sin cambios respecto a la spec §12, más una entrada nueva:
 
 | Documento | Qué es |
 |---|---|
+| `../.impeccable.md` | Contexto de diseño: para quién es cada web y cómo debe sentirse |
 | `fotografia.md` | Qué fotos faltan, con qué nombre y dónde dejarlas |
 | `deploy.md` | Vercel: dos proyectos, modelo de ramas, env vars, dominios |
 | `estado-divergencia-layout.md` | Registro de la fase 2, tarea por tarea |

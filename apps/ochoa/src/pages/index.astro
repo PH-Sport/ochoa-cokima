@@ -177,10 +177,11 @@ const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data
   }
   .block dt {
     font-family: var(--sans);
-    font-weight: 600;
+    font-weight: 700;
+    font-stretch: var(--wd-rotulo);
     text-transform: uppercase;
-    letter-spacing: 0.07em;
-    font-size: 0.8rem;
+    letter-spacing: 0.09em;
+    font-size: var(--fs-label);
     color: var(--rojo);
     margin: 0 0 0.4rem;
   }

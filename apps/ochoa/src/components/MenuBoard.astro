@@ -200,9 +200,11 @@ const sorted = [...dishes].sort((a, b) => {
   }
   .legend {
     font-family: var(--sans);
-    font-size: 0.8rem;
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    font-stretch: var(--wd-rotulo);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     color: var(--ink-dim);
   }
   .switch {
@@ -247,15 +249,19 @@ const sorted = [...dishes].sort((a, b) => {
   }
   .name {
     font-size: 1.06rem;
+    font-weight: 550;
   }
   .leader {
     flex: 1;
     border-bottom: 1px dotted var(--ink-faint);
     transform: translateY(-0.25em);
   }
+  /* Sin `tabular-nums`: era lo que hacía que los precios parecieran de otra
+     fuente que el nombre del plato. Las cifras proporcionales de Archivo tienen
+     el mismo color que su texto, y aquí no hay ninguna columna que alinear —
+     cada precio se ancla a su guía de puntos, no al de la fila de arriba. */
   .price {
     font-weight: 600;
-    font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
   .desc {

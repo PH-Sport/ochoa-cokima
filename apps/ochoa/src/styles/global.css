@@ -6,6 +6,18 @@
   src: url("/fonts/anton-400.woff2") format("woff2");
 }
 
+/* Un solo archivo para toda la familia: los rangos de `font-weight` y
+   `font-stretch` son los dos ejes variables, no tres pesos sueltos. Subconjunto
+   latino, que ya trae ñ, los acentos, «», ½ y €. */
+@font-face {
+  font-family: "Archivo";
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/archivo-var.woff2") format("woff2");
+}
+
 * {
   box-sizing: border-box;
 }
@@ -17,8 +29,10 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
-  font-size: 17px;
-  line-height: 1.6;
+  font-size: var(--fs-body);
+  font-stretch: var(--wd-text);
+  line-height: var(--lh-body);
+  font-kerning: normal;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -46,16 +60,20 @@ img {
   text-transform: uppercase;
   color: var(--rojo);
   letter-spacing: 0.015em;
-  line-height: 0.96;
+  line-height: var(--lh-cartel);
   text-shadow: 0.045em 0.05em 0 var(--ink);
 }
 
+/* La etiqueta es la bisagra entre Anton y el texto: misma versal apretada del
+   rótulo, pero en Archivo. Es lo que hace que las dos familias se lean como una
+   sola voz en vez de como una pareja de conveniencia. */
 .eyebrow {
   font-family: var(--sans);
-  font-weight: 600;
+  font-weight: 700;
+  font-stretch: var(--wd-rotulo);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.82rem;
+  letter-spacing: 0.09em;
+  font-size: var(--fs-label);
   color: var(--rojo);
   margin: 0 0 0.3rem;
 }
@@ -72,7 +90,8 @@ img {
   display: inline-block;
   font-family: var(--sans);
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 650;
+  letter-spacing: 0.005em;
   background: var(--rojo);
   color: #ffffff;
   padding: 12px 22px;
