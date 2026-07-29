@@ -31,6 +31,11 @@
   --t-shadow: 8px 8px 0 rgba(35, 32, 27, 0.85);
 
   --t-open: #4c6b2f;
+  /* Alto de la cabecera sticky, del que cuelga el offset del interruptor de la
+     carta: 60px de .nav-in + 2px de su borde. Es solo el punto de partida para
+     que el sticky sea correcto sin JavaScript; Nav.astro lo reescribe en
+     cliente con el alto medido en cuanto monta. */
+  --t-header-h: 62px;
   /* Alto real de BottomBar sin el badge "Abierto ahora" (69px medido en navegador).
      Se sobreescribe en cliente vía ResizeObserver (ver BottomBar.astro) en cuanto
      el componente monta y de nuevo si el badge aparece tras resolver el horario. */

@@ -30,13 +30,13 @@
   --t-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
 
   --t-open: var(--ember);
-  /* Alto real de la cabecera sticky, del que cuelga el offset de cualquier
-     otro elemento pegajoso (las tabs de MenuDeck). 67px = 66px de .nav-in +
-     1px de su border-bottom. Bajo 780px la cabecera envuelve a dos filas y
-     mide 110.39px medidos a 375px; se redondea al alza para que el borde no
-     asome por subpíxel. Nav.astro lo reescribe en cliente con ResizeObserver,
-     así que un cambio de idioma o una pantalla estrecha no lo desajustan. */
-  --t-header-h: 67px;
+  /* Alto de la cabecera sticky, del que cuelga el offset de cualquier otro
+     elemento pegajoso (las tabs de MenuDeck): 60px de .nav-in + 1px de su
+     border-bottom. Desde que los enlaces viven en el panel de la hamburguesa,
+     la cabecera es una sola fila en todos los anchos y ya no envuelve. Es solo
+     el punto de partida sin JavaScript; Nav.astro lo reescribe en cliente con
+     ResizeObserver con el alto real medido. */
+  --t-header-h: 61px;
   /* Alto real de ReserveBar sin el badge "Abierto ahora" (70px medido en
      navegador a 375px: el layout es una fila horizontal donde el botón de
      44px mín. domina la altura, así que el badge no la cambia). Se
@@ -52,12 +52,6 @@
   --t-desc-style: normal;
   --t-leader: 1px dotted var(--bone-faint);
   --t-section-gap: clamp(38px, 5vw, 60px);
-}
-
-@media (max-width: 780px) {
-  :root {
-    --t-header-h: 111px;
-  }
 }
 
 @media (max-width: 860px) {

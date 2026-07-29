@@ -149,10 +149,10 @@ const sorted = [...dishes].sort((a, b) => {
 <style>
   .toggle {
     position: sticky;
-    /* La cabecera mide 67px reales (66px de .nav-in + 1px de su border-bottom),
-       no 66px: si el offset no cuenta ese borde, el interruptor se solapa 1px
-       con la cabecera al quedar ambos fijos. */
-    top: 67px;
+    /* Cuelga del alto real que Nav.astro mide y escribe en cliente: el botón de
+       reserva y la hamburguesa cambian el alto de la cabecera por idioma y
+       ancho, así que un número fijo aquí se desajusta solo. */
+    top: var(--t-header-h);
     z-index: 10;
     display: flex;
     align-items: center;

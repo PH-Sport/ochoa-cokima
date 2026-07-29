@@ -1,4 +1,7 @@
 ---
+import OpenState from "@tombo/ui/OpenState.astro";
+import { RESTAURANT } from "../site.ts";
+
 interface Props {
   locale: "es" | "en";
   altPath: string;
@@ -8,94 +11,255 @@ const es = locale === "es";
 const links = es
   ? [
       { href: "/carta", label: "La carta" },
-      { href: "/reservas", label: "Reservas" },
       { href: "/#visita", label: "Dónde estamos" },
     ]
   : [
       { href: "/en/menu", label: "Menu" },
-      { href: "/en/reservations", label: "Reservations" },
       { href: "/en/#visit", label: "Find us" },
     ];
 const home = es ? "/" : "/en/";
 const reserve = es ? "/reservas" : "/en/reservations";
+const t = es
+  ? { menu: "Menú", reserve: "Reservar" }
+  : { menu: "Menu", reserve: "Book" };
 ---
 
 <nav class="nav">
   <div class="wrap nav-in">
-    <a class="brand cartel" href={home}>Los Ochoa<small>Tasquita · Madriz</small></a>
-    <div class="nav-right">
-      <div class="nav-links">
-        {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    <a class="brand cartel" href={home}>Los Ochoa</a>
+    <div class="nav-actions">
+      <a href={reserve} class="btn">{t.reserve}</a>
+      <button
+        type="button"
+        class="menu-btn"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="nav-panel"
+      >
+        <span class="bars" aria-hidden="true"><i></i><i></i></span>
+        <span class="visually-hidden">{t.menu}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="panel" id="nav-panel" data-menu-panel hidden>
+    <div class="wrap panel-in">
+      <ul class="panel-links">
+        {links.map((l) => (
+          <li><a href={l.href}>{l.label}</a></li>
+        ))}
+      </ul>
+      <div class="panel-foot">
+        <OpenState hours={RESTAURANT.openingHours} locale={locale} />
+        <span class="lang">
+          {es ? <><b>ES</b> · <a href={altPath}>EN</a></> : <><a href={altPath}>ES</a> · <b>EN</b></>}
+        </span>
       </div>
-      <span class="lang">
-        {es ? <><b>ES</b> · <a href={altPath}>EN</a></> : <><a href={altPath}>ES</a> · <b>EN</b></>}
-      </span>
-      <a href={reserve} class="btn">{es ? "Reservar" : "Book"}</a>
     </div>
   </div>
 </nav>
+
+<script>
+  let controller: AbortController | null = null;
+
+  const mount = () => {
+    const nav = document.querySelector<HTMLElement>(".nav");
+    if (!nav) return;
+    const btn = nav.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+    const panel = nav.querySelector<HTMLElement>("[data-menu-panel]");
+    if (!btn || !panel) return;
+
+    // Un AbortController por montaje: `astro:after-swap` vuelve a llamar a
+    // mount() en cada navegación y, sin esto, los listeners de `document` se
+    // acumularían una capa por página visitada.
+    controller?.abort();
+    controller = new AbortController();
+    const { signal } = controller;
+
+    const focusables = () =>
+      [...panel.querySelectorAll<HTMLElement>("a[href], button:not([disabled])")].filter(
+        (el) => el.offsetParent !== null,
+      );
+
+    const isOpen = () => btn.getAttribute("aria-expanded") === "true";
+
+    const close = (returnFocus = false) => {
+      if (!isOpen()) return;
+      btn.setAttribute("aria-expanded", "false");
+      panel.hidden = true;
+      if (returnFocus) btn.focus();
+    };
+
+    const open = () => {
+      btn.setAttribute("aria-expanded", "true");
+      panel.hidden = false;
+      focusables()[0]?.focus();
+    };
+
+    btn.addEventListener("click", () => (isOpen() ? close(true) : open()), { signal });
+
+    document.addEventListener(
+      "keydown",
+      (e) => {
+        if (!isOpen()) return;
+        if (e.key === "Escape") {
+          close(true);
+          return;
+        }
+        if (e.key !== "Tab") return;
+        const items = focusables();
+        if (!items.length) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      },
+      { signal },
+    );
+
+    document.addEventListener(
+      "click",
+      (e) => {
+        if (!isOpen()) return;
+        if (nav.contains(e.target as Node)) return;
+        close();
+      },
+      { signal },
+    );
+
+    // El alto real de la cabecera gobierna el offset del interruptor de la
+    // carta. Con el panel abierto, el alto del <nav> incluye el desplegable y
+    // no representa la barra: en ese caso se conserva el último valor bueno.
+    const sync = () => {
+      if (!panel.hidden) return;
+      document.documentElement.style.setProperty(
+        "--t-header-h",
+        `${Math.ceil(nav.getBoundingClientRect().height)}px`,
+      );
+    };
+    sync();
+    new ResizeObserver(sync).observe(nav);
+  };
+
+  mount();
+  // `astro:after-swap` y no `astro:page-load`: este último también dispara en
+  // la carga inicial, así que con ClientRouter activo duplicaría el observer.
+  document.addEventListener("astro:after-swap", mount);
+</script>
 
 <style>
   .nav {
     position: sticky;
     top: 0;
-    z-index: 20;
-    background: rgba(244, 238, 226, 0.88);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line);
+    z-index: 40;
+    background: var(--rojo);
+    border-bottom: 2px solid var(--ink);
   }
   .nav-in {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    height: 66px;
+    height: 60px;
   }
   .brand {
-    font-size: 1.5rem;
-  }
-  .brand small {
-    font-family: var(--serif);
-    font-style: italic;
-    text-transform: none;
-    color: var(--ink-dim);
-    font-size: 0.8rem;
+    font-size: 1.4rem;
+    color: var(--paper);
     text-shadow: none;
-    margin-left: 0.6ch;
-    letter-spacing: 0;
   }
-  .nav-right {
+  .nav-actions {
     display: flex;
     align-items: center;
-    gap: 22px;
+    gap: 10px;
+  }
+  /* El botón de la cabecera invierte el .btn global: sobre el rojo de la barra,
+     un botón rojo no se vería. */
+  .nav-actions .btn {
+    padding: 9px 16px;
+    font-size: 0.92rem;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    background: var(--paper);
+    color: var(--rojo);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .nav-actions .btn:hover {
+    background: var(--paper);
+    color: var(--rojo-2);
+  }
+  .menu-btn {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    border: 1.5px solid var(--paper);
+    border-radius: 3px;
+    cursor: pointer;
+    color: var(--paper);
+  }
+  .bars {
+    display: grid;
+    gap: 5px;
+    width: 18px;
+  }
+  .bars i {
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+  }
+  .panel {
+    border-top: 2px solid var(--ink);
+    background: var(--paper);
+  }
+  .panel[hidden] {
+    display: none;
+  }
+  .panel-in {
+    padding-block: 14px 18px;
+  }
+  .panel-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .panel-links a {
+    display: block;
+    padding: 13px 0;
+    font-size: 1.06rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .panel-links a:hover {
+    color: var(--rojo);
+  }
+  .panel-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 14px;
   }
   .lang {
     font-family: var(--sans);
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     color: var(--ink-dim);
   }
   .lang b {
     color: var(--ink);
     font-weight: 600;
   }
-  .nav-links {
-    display: flex;
-    gap: 24px;
-    font-family: var(--sans);
-    font-size: 0.95rem;
-    color: var(--ink-dim);
-  }
-  .nav-links a:hover {
-    color: var(--rojo);
-  }
-  @media (max-width: 780px) {
-    .nav-links {
-      display: none;
-    }
-    /* En móvil la navegación y la reserva viven en la barra inferior;
-       la cabecera se queda solo con marca y selector de idioma. */
-    .btn {
-      display: none;
-    }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 </style>

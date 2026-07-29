@@ -1,4 +1,7 @@
 ---
+import OpenState from "@tombo/ui/OpenState.astro";
+import { RESTAURANT } from "../site.ts";
+
 interface Props {
   locale: "es" | "en";
   altPath: string;
@@ -8,43 +11,132 @@ const es = locale === "es";
 const links = es
   ? [
       { href: "/carta", label: "La carta" },
-      { href: "/reservas", label: "Reservas" },
       { href: "/#visita", label: "Dónde estamos" },
     ]
   : [
       { href: "/en/menu", label: "Menu" },
-      { href: "/en/reservations", label: "Reservations" },
       { href: "/en/#visit", label: "Find us" },
     ];
 const home = es ? "/" : "/en/";
 const reserve = es ? "/reservas" : "/en/reservations";
+const t = es
+  ? { menu: "Menú", reserve: "Reservar" }
+  : { menu: "Menu", reserve: "Book" };
 ---
 
 <nav class="nav">
   <div class="wrap nav-in">
     <a class="brand" href={home}>Cokima<i class="spark" aria-hidden="true"></i></a>
-    <div class="nav-links">
-      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    <div class="nav-actions">
+      <a href={reserve} class="btn">{t.reserve}</a>
+      <button
+        type="button"
+        class="menu-btn"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="nav-panel"
+      >
+        <span class="bars" aria-hidden="true"><i></i><i></i></span>
+        <span class="visually-hidden">{t.menu}</span>
+      </button>
     </div>
-    <div class="nav-right">
-      <span class="lang">
-        {es ? <><b>ES</b> · <a href={altPath}>EN</a></> : <><a href={altPath}>ES</a> · <b>EN</b></>}
-      </span>
-      <a href={reserve} class="btn">{es ? "Reservar" : "Book"}</a>
+  </div>
+
+  <div class="panel" id="nav-panel" data-menu-panel hidden>
+    <div class="wrap panel-in">
+      <ul class="panel-links">
+        {links.map((l) => (
+          <li><a href={l.href}>{l.label}</a></li>
+        ))}
+      </ul>
+      <div class="panel-foot">
+        <OpenState hours={RESTAURANT.openingHours} locale={locale} />
+        <span class="lang">
+          {es ? <><b>ES</b> · <a href={altPath}>EN</a></> : <><a href={altPath}>ES</a> · <b>EN</b></>}
+        </span>
+      </div>
     </div>
   </div>
 </nav>
 
 <script>
-  // El alto de la cabecera cambia por breakpoint y por idioma (los enlaces en
-  // español son más largos y pueden envolver a otra fila en pantallas muy
-  // estrechas). Los tokens de tokens.css llevan el valor medido como punto de
-  // partida — el sticky es correcto sin JavaScript — y aquí se afina con el
-  // alto real para que las tabs de la carta nunca se solapen ni dejen hueco.
+  let controller: AbortController | null = null;
+
   const mount = () => {
     const nav = document.querySelector<HTMLElement>(".nav");
     if (!nav) return;
+    const btn = nav.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+    const panel = nav.querySelector<HTMLElement>("[data-menu-panel]");
+    if (!btn || !panel) return;
+
+    // Un AbortController por montaje: `astro:after-swap` vuelve a llamar a
+    // mount() en cada navegación y, sin esto, los listeners de `document` se
+    // acumularían una capa por página visitada.
+    controller?.abort();
+    controller = new AbortController();
+    const { signal } = controller;
+
+    const focusables = () =>
+      [...panel.querySelectorAll<HTMLElement>("a[href], button:not([disabled])")].filter(
+        (el) => el.offsetParent !== null,
+      );
+
+    const isOpen = () => btn.getAttribute("aria-expanded") === "true";
+
+    const close = (returnFocus = false) => {
+      if (!isOpen()) return;
+      btn.setAttribute("aria-expanded", "false");
+      panel.hidden = true;
+      if (returnFocus) btn.focus();
+    };
+
+    const open = () => {
+      btn.setAttribute("aria-expanded", "true");
+      panel.hidden = false;
+      focusables()[0]?.focus();
+    };
+
+    btn.addEventListener("click", () => (isOpen() ? close(true) : open()), { signal });
+
+    document.addEventListener(
+      "keydown",
+      (e) => {
+        if (!isOpen()) return;
+        if (e.key === "Escape") {
+          close(true);
+          return;
+        }
+        if (e.key !== "Tab") return;
+        const items = focusables();
+        if (!items.length) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      },
+      { signal },
+    );
+
+    document.addEventListener(
+      "click",
+      (e) => {
+        if (!isOpen()) return;
+        if (nav.contains(e.target as Node)) return;
+        close();
+      },
+      { signal },
+    );
+
+    // El alto real de la cabecera gobierna el offset de las tabs de la carta.
+    // Con el panel abierto, el alto del <nav> incluye el desplegable y no
+    // representa la barra: en ese caso se conserva el último valor bueno.
     const sync = () => {
+      if (!panel.hidden) return;
       document.documentElement.style.setProperty(
         "--t-header-h",
         `${Math.ceil(nav.getBoundingClientRect().height)}px`,
@@ -54,9 +146,9 @@ const reserve = es ? "/reservas" : "/en/reservations";
     new ResizeObserver(sync).observe(nav);
   };
 
+  mount();
   // `astro:after-swap` y no `astro:page-load`: este último también dispara en
   // la carga inicial, así que con ClientRouter activo duplicaría el observer.
-  mount();
   document.addEventListener("astro:after-swap", mount);
 </script>
 
@@ -64,25 +156,25 @@ const reserve = es ? "/reservas" : "/en/reservations";
   .nav {
     position: sticky;
     top: 0;
-    z-index: 20;
-    background: rgba(21, 15, 12, 0.72);
+    z-index: 40;
+    background: rgba(21, 15, 12, 0.82);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
   }
   .nav-in {
     display: flex;
     align-items: center;
-    gap: 22px;
-    height: 66px;
+    justify-content: space-between;
+    gap: 16px;
+    height: 60px;
   }
   .brand {
     display: flex;
     align-items: center;
     gap: 0.5ch;
     font-weight: 800;
-    font-size: 1.42rem;
+    font-size: 1.3rem;
     letter-spacing: -0.01em;
-    margin-right: auto;
   }
   .spark {
     width: 8px;
@@ -91,10 +183,69 @@ const reserve = es ? "/reservas" : "/en/reservations";
     background: var(--vermilion);
     box-shadow: 0 0 8px 2px var(--ember), 0 0 2px 1px var(--vermilion);
   }
-  .nav-right {
+  .nav-actions {
     display: flex;
     align-items: center;
-    gap: 22px;
+    gap: 10px;
+  }
+  .nav-actions .btn {
+    padding: 9px 16px;
+    font-size: 0.92rem;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .menu-btn {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    cursor: pointer;
+    color: var(--bone);
+  }
+  .bars {
+    display: grid;
+    gap: 5px;
+    width: 18px;
+  }
+  .bars i {
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+  }
+  .panel {
+    border-top: 1px solid var(--line);
+    background: var(--ground);
+  }
+  .panel[hidden] {
+    display: none;
+  }
+  .panel-in {
+    padding-block: 14px 18px;
+  }
+  .panel-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .panel-links a {
+    display: block;
+    padding: 13px 0;
+    font-size: 1.06rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .panel-links a:hover {
+    color: var(--vermilion);
+  }
+  .panel-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 14px;
   }
   .lang {
     font-size: 0.9rem;
@@ -104,42 +255,12 @@ const reserve = es ? "/reservas" : "/en/reservations";
     color: var(--bone);
     font-weight: 600;
   }
-  .nav-links {
-    display: flex;
-    gap: 24px;
-    font-size: 0.98rem;
-    color: var(--bone-dim);
-  }
-  .nav-links a:hover {
-    color: var(--bone);
-  }
-  @media (max-width: 780px) {
-    .nav-in {
-      height: auto;
-      flex-wrap: wrap;
-      padding-block: 10px;
-      row-gap: 8px;
-    }
-    /* .nav-links es hijo directo de .nav-in, así que el wrap
-       de arriba sí lo alcanza: flex-basis: 100% lo manda a su
-       propia fila dentro de .nav-in. */
-    .nav-links {
-      order: 3;
-      flex-basis: 100%;
-      gap: 18px;
-      font-size: 0.9rem;
-    }
-    .nav-links a {
-      /* línea 23.04px (0.9rem × 1.6 heredado) + 11px × 2 de padding = 45.04px ≥ 44px área táctil */
-      padding-block: 11px;
-    }
-  }
-  /* Por debajo de 861px, ReserveBar (fija, al pie) ya lleva el CTA de
-     reserva: ocultamos el de la cabecera para no duplicarlo en pantalla.
-     El selector de idioma y los enlaces de navegación siguen visibles. */
-  @media (max-width: 860px) {
-    .nav-right .btn {
-      display: none;
-    }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 </style>
