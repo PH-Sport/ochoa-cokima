@@ -39,13 +39,28 @@ const t =
       if (m[1] === "granted") window.dispatchEvent(new Event("tombo:consent"));
       return;
     }
+    // El cartel se apoya en el borde inferior, que es justo donde la portada
+    // ancla su titular. Publica su alto para que quien lo necesite le reserve
+    // sitio, y lo devuelve a cero al decidir: sin esto, el cartel tapa el
+    // titular durante toda la primera visita.
+    var setHeight = function (px) {
+      document.documentElement.style.setProperty("--t-consent-h", px + "px");
+    };
     el.hidden = false;
+    setHeight(el.offsetHeight);
+    if (typeof ResizeObserver === "function") {
+      new ResizeObserver(function () {
+        if (!el.hidden) setHeight(el.offsetHeight);
+      }).observe(el);
+    }
+
     el.addEventListener("click", function (e) {
       var btn = e.target && e.target.closest ? e.target.closest("[data-consent]") : null;
       if (!btn) return;
       var value = btn.getAttribute("data-consent");
       document.cookie = "tombo_consent=" + value + "; Max-Age=" + 60 * 60 * 24 * 180 + "; Path=/; SameSite=Lax";
       el.hidden = true;
+      setHeight(0);
       if (value === "granted") window.dispatchEvent(new Event("tombo:consent"));
     });
   })();

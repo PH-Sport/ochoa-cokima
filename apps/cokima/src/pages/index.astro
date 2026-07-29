@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import { pickFeatured } from "@tombo/content";
 import Base from "../layouts/Base.astro";
-import Embers from "../components/Embers.astro";
+import Hero from "../components/Hero.astro";
 import Highlights from "../components/Highlights.astro";
 
 const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data));
@@ -14,27 +14,7 @@ const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data
   locale="es"
   altPath="/en/"
 >
-  <header class="hero" id="top">
-    <Embers />
-    <div class="wrap hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow">Kitchen Madness · Madrid</p>
-        <h1>Puedes comer en cualquier sitio. <span class="red">Pero será solo comer.</span></h1>
-        <p class="kicker">
-          Una explosión de sabor. Un concepto creado para compartir y desfasar: de la receta madrileña
-          de siempre a la cocina más exótica, con producto fresco y sin miedo a mezclar.
-        </p>
-        <div class="hero-cta">
-          <a href="/reservas" class="btn">Reservar mesa</a>
-          <a href="/carta" class="btn ghost">Ver la carta</a>
-        </div>
-      </div>
-      <div class="hero-photo">
-        <img src="/images/hero.jpg" alt="Plato de Cokima sobre pizarra oscura" width="1200" height="1200" loading="eager" fetchpriority="high" />
-        <span class="tag">Compartir es vivir</span>
-      </div>
-    </div>
-  </header>
+  <Hero locale="es" />
 
   <Highlights dishes={featured} locale="es" href="/carta" />
 
@@ -67,115 +47,6 @@ const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data
 </Base>
 
 <style>
-  .hero {
-    position: relative;
-    /* Comprimido respecto al original (48-112px arriba): el objetivo del
-       rediseño es que se vea comida antes del pliegue, y el relleno del hero
-       era lo primero que la empujaba fuera de pantalla. */
-    padding: clamp(28px, 5vw, 72px) 0 clamp(24px, 4vw, 48px);
-  }
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: clamp(28px, 5vw, 64px);
-    align-items: center;
-    position: relative;
-    z-index: 1;
-  }
-  .hero h1 {
-    font-weight: 800;
-    font-size: clamp(2.9rem, 8.4vw, 6rem);
-    line-height: 0.98;
-    letter-spacing: -0.025em;
-    margin: 0.3em 0 0;
-    text-wrap: balance;
-  }
-  .hero h1 .red {
-    color: var(--vermilion);
-  }
-  .kicker {
-    max-width: 46ch;
-    color: var(--bone-dim);
-    font-size: 1.1rem;
-    margin: 1.5rem 0 0;
-  }
-  .hero-cta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    margin-top: 2.1rem;
-  }
-  .hero-photo {
-    position: relative;
-    border: 1px solid var(--ground-3);
-    border-radius: 5px;
-    overflow: hidden;
-    box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.8);
-    aspect-ratio: 4 / 5;
-  }
-  .hero-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .hero-photo::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(150deg, rgba(21, 15, 12, 0) 40%, rgba(21, 15, 12, 0.55) 100%);
-  }
-  .hero-photo .tag {
-    position: absolute;
-    left: 16px;
-    bottom: 16px;
-    z-index: 2;
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 1rem;
-    background: rgba(21, 15, 12, 0.55);
-    border: 1px solid var(--line);
-    padding: 6px 12px;
-    border-radius: 3px;
-  }
-  /* Este bloque va después de las reglas base del hero a propósito: comparten
-     especificidad, así que quien gana es el que llega más tarde en la hoja. */
-  @media (max-width: 860px) {
-    .hero-grid {
-      grid-template-columns: 1fr;
-      gap: 22px;
-    }
-    /* La foto sube por delante de los botones: así la comida entra en la
-       primera pantalla sin sacar el titular. `display: contents` disuelve el
-       bloque de texto para que sus hijos y la foto compartan la misma
-       retícula y se puedan ordenar entre sí. */
-    .hero-copy {
-      display: contents;
-    }
-    .hero-copy .eyebrow {
-      order: 1;
-    }
-    .hero-copy h1 {
-      order: 2;
-    }
-    .hero-copy .kicker {
-      order: 3;
-    }
-    .hero-photo {
-      order: 4;
-      aspect-ratio: 3 / 2;
-    }
-    .hero-copy .hero-cta {
-      order: 5;
-      margin-top: 0;
-    }
-    .hero h1 {
-      font-size: clamp(2.4rem, 8vw, 3.4rem);
-    }
-    .kicker {
-      font-size: 1rem;
-      margin-top: 1rem;
-    }
-  }
   .manifesto {
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);

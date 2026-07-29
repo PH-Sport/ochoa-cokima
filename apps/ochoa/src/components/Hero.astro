@@ -1,0 +1,92 @@
+---
+// apps/ochoa/src/components/Hero.astro
+import { Image } from "astro:assets";
+import OpenState from "@tombo/ui/OpenState.astro";
+import { RESTAURANT } from "../site.ts";
+import hero from "../assets/hero.jpg";
+
+interface Props {
+  locale: "es" | "en";
+}
+const { locale } = Astro.props;
+const es = locale === "es";
+---
+
+<header class="hero" id="top">
+  <Image
+    src={hero}
+    alt={es
+      ? "Barra de Los Ochoa con el aperitivo servido"
+      : "The bar at Los Ochoa with the aperitivo served"}
+    widths={[480, 780, 1200]}
+    sizes="100vw"
+    loading="eager"
+    fetchpriority="high"
+    class="shot"
+  />
+  <div class="veil"></div>
+  <div class="wrap copy">
+    <h1 class="cartel">{es ? "La tasca que te mereces" : "The tavern you deserve"}</h1>
+    <OpenState hours={RESTAURANT.openingHours} locale={locale} />
+  </div>
+</header>
+
+<style>
+  .hero {
+    position: relative;
+    /* svh y no vh: en móvil, vh cuenta con la barra del navegador retraída y la
+       portada se corta por abajo justo donde queremos que asome el primer
+       plato. Además de la cabecera se resta una franja de asomo: sin ella la
+       portada llena la pantalla al píxel y la tira de platos queda invisible
+       hasta que alguien decide bajar. Que asome es el punto entero. */
+    height: calc(100svh - var(--t-header-h, 62px) - clamp(128px, 18vw, 156px));
+    min-height: 420px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+  }
+  .shot {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* Degradado solo bajo el texto, no una capa uniforme sobre toda la foto:
+     apagar la imagen entera es justo lo que hacen las cinco webs que nos
+     pusieron de referencia, y es lo que las vuelve intercambiables. */
+  .veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(26, 26, 26, 0.92) 0%,
+      rgba(26, 26, 26, 0.66) 28%,
+      rgba(26, 26, 26, 0) 62%
+    );
+  }
+  /* El cartel de cookies vive en esta misma esquina durante la primera visita.
+     `--t-consent-h` lo publica el propio cartel y vuelve a 0 al decidir, así
+     que el titular se aparta mientras hace falta y no un píxel más. */
+  .copy {
+    position: relative;
+    padding-bottom: calc(clamp(26px, 5vw, 54px) + var(--t-consent-h, 0px));
+    width: 100%;
+    transition: padding-bottom 200ms ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .copy {
+      transition: none;
+    }
+  }
+  .hero h1 {
+    font-size: clamp(2.6rem, 10vw, 6rem);
+    line-height: 0.94;
+    margin: 0 0 14px;
+    max-width: 14ch;
+    /* Sobre la foto, el cartel invierte su fórmula: la tinta pasa a ser el
+       papel y la sombra dura la pone el rojo de la marca. */
+    color: var(--paper);
+    text-shadow: 0.04em 0.045em 0 var(--rojo);
+  }
+</style>

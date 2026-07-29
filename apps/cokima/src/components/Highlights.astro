@@ -12,7 +12,7 @@ interface Props {
 const { dishes, locale, href } = Astro.props;
 const es = locale === "es";
 const t = es
-  ? { title: "Los imprescindibles", more: "Carta completa", list: "Platos destacados" }
+  ? { title: "Los imprescindibles", more: "Ver la carta", list: "Platos destacados" }
   : { title: "The must-haves", more: "Full menu", list: "Featured dishes" };
 
 const cards = dishes.map((d) => ({
@@ -55,22 +55,28 @@ const cards = dishes.map((d) => ({
 </section>
 
 <style>
+  /* El relleno superior va apretado a propósito: la portada deja asomar una
+     franja fija y todo lo que gaste este encabezado es ficha de plato que no
+     se ve. */
   .highlights {
-    padding: clamp(26px, 4vw, 44px) 0 clamp(30px, 5vw, 56px);
+    padding: clamp(16px, 4vw, 44px) 0 clamp(30px, 5vw, 56px);
   }
   .head {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 18px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
+  /* El tamaño se contiene en móvil para que el título quepa en una línea junto
+     al enlace: partido en dos se come el asomo que la portada le reserva. */
   .head h2 {
     font-family: var(--sans);
     font-weight: 800;
-    font-size: clamp(1.5rem, 4.4vw, 2.4rem);
+    font-size: clamp(1.3rem, 4.4vw, 2.4rem);
     letter-spacing: -0.02em;
     margin: 0;
+    text-wrap: nowrap;
   }
   .more {
     font-size: 0.92rem;
@@ -103,11 +109,13 @@ const cards = dishes.map((d) => ({
     overflow: hidden;
     background: var(--ground-2);
   }
-  /* Sin foto la ficha no se queda a media altura: el texto se va abajo y la
-     tarjeta conserva el mismo peso visual que sus vecinas con imagen. */
+  /* Sin foto, el nombre y el precio van arriba del todo: la portada deja
+     asomar la primera ficha por el borde de la pantalla, y lo que tiene que
+     asomar es información, no un rectángulo vacío. Con foto manda la imagen y
+     esta regla no aplica. */
   .card.flat {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     min-height: 132px;
   }
   .shot {

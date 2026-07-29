@@ -12,7 +12,7 @@ interface Props {
 const { dishes, locale, href } = Astro.props;
 const es = locale === "es";
 const t = es
-  ? { title: "Lo que más sale", more: "La carta entera", list: "Platos destacados" }
+  ? { title: "Lo que más sale", more: "Ver la carta", list: "Platos destacados" }
   : { title: "What sells most", more: "Full menu", list: "Featured dishes" };
 
 const cards = dishes.map((d) => ({
@@ -60,19 +60,25 @@ const label = (price: MenuEntry["price"]) => {
 </section>
 
 <style>
+  /* El relleno superior va apretado a propósito: la portada deja asomar una
+     franja fija y todo lo que gaste este encabezado es ficha de plato que no
+     se ve. */
   .highlights {
-    padding: clamp(26px, 4vw, 44px) 0 clamp(30px, 5vw, 56px);
+    padding: clamp(16px, 4vw, 44px) 0 clamp(30px, 5vw, 56px);
   }
   .head {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 18px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
+  /* El tamaño se contiene en móvil para que el título quepa en una línea junto
+     al enlace: partido en dos se come el asomo que la portada le reserva. */
   .head h2 {
-    font-size: clamp(1.7rem, 5vw, 2.6rem);
+    font-size: clamp(1.5rem, 5vw, 2.6rem);
     margin: 0;
+    text-wrap: nowrap;
   }
   .more {
     font-family: var(--sans);
@@ -107,11 +113,13 @@ const label = (price: MenuEntry["price"]) => {
     background: var(--paper);
     box-shadow: 4px 4px 0 var(--rojo);
   }
-  /* Sin foto la ficha no se queda a media altura: el texto se va abajo y la
-     tarjeta conserva el mismo peso visual que sus vecinas con imagen. */
+  /* Sin foto, el nombre y el precio van arriba del todo: la portada deja
+     asomar la primera ficha por el borde de la pantalla, y lo que tiene que
+     asomar es información, no un rectángulo vacío. Con foto manda la imagen y
+     esta regla no aplica. */
   .card.flat {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     min-height: 132px;
   }
   .shot {
