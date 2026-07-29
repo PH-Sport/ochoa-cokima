@@ -1,6 +1,6 @@
 ---
 // apps/ochoa/src/components/MenuBoard.astro
-import { formatPortionPrice, formatEuro, type MenuEntry } from "@tombo/content";
+import { formatEuro, type MenuEntry } from "@tombo/content";
 
 interface Props {
   dishes: MenuEntry[];
@@ -12,80 +12,101 @@ const t = es
   ? {
       half: "½ ración",
       full: "Ración",
-      onlyFull: "solo ración entera",
-      legend: "Tamaño de ración",
-      announceHalf: "Precios actualizados a media ración.",
-      announceFull: "Precios actualizados a ración entera.",
+      price: "Precio",
+      dish: "Plato",
+      noHalf: "No se sirve en media ración",
       search: "Buscar plato",
       empty: "Nada con ese nombre.",
+      sections: { carta: "Carta", postres: "Postres" } as Record<string, string>,
     }
   : {
       half: "Half",
       full: "Full",
-      onlyFull: "full portion only",
-      legend: "Portion size",
-      announceHalf: "Prices updated to half portion.",
-      announceFull: "Prices updated to full portion.",
+      price: "Price",
+      dish: "Dish",
+      noHalf: "Not served as a half portion",
       search: "Search dish",
       empty: "Nothing by that name.",
+      sections: { carta: "Menu", postres: "Desserts" } as Record<string, string>,
     };
 
-// `order` es correlativo dentro de cada sección (carta 1..23, postres 1..2),
-// no un índice global: hay que mantener la sección y solo ordenar dentro de ella,
-// o los postres se intercalan entre los platos salados.
-const sectionOrder = ["carta", "postres"];
-const sorted = [...dishes].sort((a, b) => {
-  const bySection = sectionOrder.indexOf(a.section) - sectionOrder.indexOf(b.section);
-  return bySection !== 0 ? bySection : a.order - b.order;
-});
+// `order` es correlativo dentro de cada sección (carta 1..23, postres 1..2), no
+// un índice global: hay que agrupar por sección y ordenar dentro de ella, o los
+// postres se intercalan entre los platos salados.
+const SECTION_ORDER = ["carta", "postres"];
+const sections = SECTION_ORDER.map((key) => {
+  const items = dishes.filter((d) => d.section === key).sort((a, b) => a.order - b.order);
+  return {
+    key,
+    title: t.sections[key] ?? key,
+    items,
+    // Los postres tienen un precio y ya. Una sección sin medias raciones no
+    // enseña una columna vacía: enseña una sola columna de precio.
+    hasHalf: items.some((d) => typeof d.price === "object" && d.price.half !== null),
+  };
+}).filter((s) => s.items.length > 0);
+
+/** Las dos cifras de una fila, tal y como van impresas en la carta de la casa. */
+const cells = (price: MenuEntry["price"]) => {
+  if (typeof price === "number") return { half: null, full: price, noHalf: false };
+  return { half: price.half, full: price.full, noHalf: price.half === null };
+};
 ---
 
 <div class="board">
-  <div class="toggle" data-portion-toggle hidden>
-    <label class="search" data-search-wrap hidden>
-      <span class="visually-hidden">{t.search}</span>
-      <input type="search" data-search placeholder={t.search} autocomplete="off" />
-    </label>
-    <span class="legend" id="portion-legend">{t.legend}</span>
-    <div class="switch" role="group" aria-labelledby="portion-legend">
-      <button type="button" data-portion="half" aria-pressed="false">{t.half}</button>
-      <button type="button" data-portion="full" aria-pressed="true">{t.full}</button>
-    </div>
-  </div>
+  <label class="search" data-search-wrap hidden>
+    <span class="visually-hidden">{t.search}</span>
+    <input type="search" data-search placeholder={t.search} autocomplete="off" />
+  </label>
 
-  <div
-    class="visually-hidden"
-    aria-live="polite"
-    aria-atomic="true"
-    data-portion-announce
-    data-msg-half={t.announceHalf}
-    data-msg-full={t.announceFull}
-  ></div>
+  {sections.map((sec) => (
+    <section class="sec" data-section>
+      {/* La primera sección no repite su título: lo dice el titular de la
+          página dos centímetros más arriba. */}
+      {sec.key !== "carta" && <h2 class="sec-title">{sec.title}</h2>}
 
-  <ul class="rows">
-    {sorted.map((dish) => {
-      const half = formatPortionPrice(dish.price, "half");
-      const full = formatPortionPrice(dish.price, "full");
-      return (
-        <li class="row" data-dish data-name={dish.name} data-desc={dish.description ?? ""}>
-          <div class="head">
-            <span class="name">{dish.name}</span>
-            <span class="leader" aria-hidden="true"></span>
-            <span
-              class="price"
-              data-half={formatEuro(half.amount)}
-              data-full={formatEuro(full.amount)}
-              data-only-full={half.onlyFull ? "true" : "false"}
-            >{formatEuro(full.amount)}</span>
-          </div>
-          {dish.description && <p class="desc">{dish.description}</p>}
-          {half.onlyFull && (
-            <p class="only-full" data-only-full-note hidden>{t.onlyFull}</p>
-          )}
-        </li>
-      );
-    })}
-  </ul>
+      <table class="menu">
+        <caption class="visually-hidden">{sec.title}</caption>
+        <thead>
+          <tr>
+            {/* La columna de platos necesita nombre para quien navega con
+                lector de pantalla, pero ninguna carta de bar escribe "PLATO"
+                encima de los platos: se lo dice a quien lo necesita y no le
+                quita sitio a nadie más. */}
+            <th scope="col" class="col-dish"><span class="visually-hidden">{t.dish}</span></th>
+            {sec.hasHalf && <th scope="col" class="col-price">{t.half}</th>}
+            <th scope="col" class="col-price">{sec.hasHalf ? t.full : t.price}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sec.items.map((dish) => {
+            const c = cells(dish.price);
+            return (
+              <tr data-dish data-name={dish.name} data-desc={dish.description ?? ""}>
+                <th scope="row" class="dish">
+                  <span class="name">{dish.name}</span>
+                  {dish.description && <span class="desc">{dish.description}</span>}
+                </th>
+                {sec.hasHalf && (
+                  <td class="price">
+                    {c.half !== null ? (
+                      formatEuro(c.half)
+                    ) : (
+                      <>
+                        <span aria-hidden="true" class="dash">—</span>
+                        <span class="visually-hidden">{t.noHalf}</span>
+                      </>
+                    )}
+                  </td>
+                )}
+                <td class="price">{formatEuro(c.full)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </section>
+  ))}
 
   <p class="empty" data-empty hidden aria-live="polite">{t.empty}</p>
 </div>
@@ -93,51 +114,40 @@ const sorted = [...dishes].sort((a, b) => {
 <script>
   import { matchDish } from "@tombo/content";
 
+  let controller: AbortController | null = null;
+
   const mount = () => {
-    const toggle = document.querySelector<HTMLElement>("[data-portion-toggle]");
-    if (!toggle) return;
-    toggle.hidden = false;
-
-    const announce = document.querySelector<HTMLElement>("[data-portion-announce]");
-
-    const apply = (portion: "half" | "full") => {
-      document.querySelectorAll<HTMLElement>("[data-dish]").forEach((row) => {
-        const price = row.querySelector<HTMLElement>(".price");
-        const note = row.querySelector<HTMLElement>("[data-only-full-note]");
-        if (!price) return;
-        price.textContent = portion === "half" ? price.dataset.half! : price.dataset.full!;
-        const onlyFull = price.dataset.onlyFull === "true";
-        if (note) note.hidden = !(portion === "half" && onlyFull);
-      });
-      toggle.querySelectorAll<HTMLButtonElement>("button[data-portion]").forEach((b) => {
-        b.setAttribute("aria-pressed", String(b.dataset.portion === portion));
-      });
-      if (announce) {
-        announce.textContent = portion === "half" ? announce.dataset.msgHalf! : announce.dataset.msgFull!;
-      }
-    };
-
-    toggle.querySelectorAll<HTMLButtonElement>("button[data-portion]").forEach((b) => {
-      b.addEventListener("click", () => apply(b.dataset.portion as "half" | "full"));
-    });
-
     // El buscador solo se ofrece con JavaScript: sin él no filtraría nada y un
     // campo que no hace nada es peor que no tenerlo.
     const wrap = document.querySelector<HTMLElement>("[data-search-wrap]");
     const input = document.querySelector<HTMLInputElement>("[data-search]");
-    const empty = document.querySelector<HTMLElement>("[data-empty]");
-    if (wrap) wrap.hidden = false;
+    if (!wrap || !input) return;
+    wrap.hidden = false;
 
-    input?.addEventListener("input", () => {
-      const q = input.value;
-      let visible = 0;
-      document.querySelectorAll<HTMLElement>("[data-dish]").forEach((row) => {
-        const hit = matchDish({ name: row.dataset.name ?? "", description: row.dataset.desc }, q);
-        row.hidden = !hit;
-        if (hit) visible++;
-      });
-      if (empty) empty.hidden = visible > 0;
-    });
+    controller?.abort();
+    controller = new AbortController();
+
+    const empty = document.querySelector<HTMLElement>("[data-empty]");
+
+    input.addEventListener(
+      "input",
+      () => {
+        const q = input.value;
+        let visible = 0;
+        document.querySelectorAll<HTMLElement>("[data-dish]").forEach((row) => {
+          const hit = matchDish({ name: row.dataset.name ?? "", description: row.dataset.desc }, q);
+          row.hidden = !hit;
+          if (hit) visible++;
+        });
+        // Una sección cuyas filas se han ido entera se retira con ellas: si no,
+        // queda el título de "Postres" presidiendo una tabla vacía.
+        document.querySelectorAll<HTMLElement>("[data-section]").forEach((sec) => {
+          sec.hidden = !sec.querySelector("[data-dish]:not([hidden])");
+        });
+        if (empty) empty.hidden = visible > 0;
+      },
+      { signal: controller.signal },
+    );
   };
 
   mount();
@@ -147,30 +157,13 @@ const sorted = [...dishes].sort((a, b) => {
 </script>
 
 <style>
-  .toggle {
-    position: sticky;
-    /* Cuelga del alto real que Nav.astro mide y escribe en cliente: el botón de
-       reserva y la hamburguesa cambian el alto de la cabecera por idioma y
-       ancho, así que un número fijo aquí se desajusta solo. */
-    top: var(--t-header-h);
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    /* Con el buscador ya son tres piezas: en móvil no caben en una fila, así
-       que el campo se queda solo arriba y debajo van leyenda e interruptor. */
-    flex-wrap: wrap;
-    gap: 10px 12px;
-    padding: 10px 0;
-    background: var(--paper);
-    border-bottom: 3px solid var(--ink);
-  }
-  .toggle[hidden] {
-    display: none;
-  }
+  /* El buscador ya no se pega a la cabecera. Pegajoso medía 71px que viajaban
+     con el dedo por toda la carta, y sumado a la barra se comía un cuarto de la
+     pantalla; aquí arriba se usa cuando hace falta y luego deja sitio. */
   .search {
-    flex: 1 1 12rem;
-    min-width: 0;
+    display: block;
+    max-width: var(--carta-w);
+    margin-bottom: clamp(18px, 3vw, 26px);
   }
   .search[hidden] {
     display: none;
@@ -190,6 +183,113 @@ const sorted = [...dishes].sort((a, b) => {
     outline: 2px solid var(--rojo);
     outline-offset: 2px;
   }
+
+  .sec + .sec {
+    margin-top: var(--t-section-gap);
+  }
+  .sec[hidden] {
+    display: none;
+  }
+  .sec-title {
+    font-family: var(--t-heading-font);
+    font-size: var(--t-menu-title-size);
+    font-weight: var(--t-menu-title-weight);
+    color: var(--t-menu-title-color);
+    text-transform: var(--t-menu-title-transform);
+    letter-spacing: var(--t-menu-title-spacing);
+    text-shadow: var(--t-menu-title-shadow);
+    line-height: var(--lh-cartel);
+    margin: 0 0 0.6rem;
+  }
+
+  /* La carta no se estira a todo el ancho de la pantalla. A 1280px el nombre
+     del plato quedaba a setecientos píxeles de su precio y el ojo no recorre
+     esa distancia: es exactamente el hueco que antes tapaba la guía de puntos.
+     Acotada, las dos cifras vuelven a caer al lado de su plato. El margen que
+     queda a la derecha no sobra: es donde entrarán las fotos. */
+  .board {
+    --carta-w: 44rem;
+  }
+  .menu {
+    width: 100%;
+    max-width: var(--carta-w);
+    border-collapse: collapse;
+  }
+  /* Las cabeceras de columna son la pieza que sostiene todo el invento: sin
+     ellas, dos cifras seguidas no dicen cuál es la media y cuál la entera.
+     Van en la versal apretada del rótulo y se apoyan en el filete doble de la
+     casa, el mismo "CARTA ====" de la carta impresa. */
+  .menu thead th {
+    font-family: var(--sans);
+    font-size: var(--fs-micro);
+    font-weight: 700;
+    font-stretch: var(--wd-rotulo);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-dim);
+    text-align: right;
+    padding: 0 0 6px;
+    border-bottom: var(--t-rule-top);
+    /* En una línea, siempre: partido, el «½» caía sobre el «ración» y las dos
+       cabeceras dejaban de leerse como la pareja que son. Es la columna la que
+       se ensancha lo que haga falta, no el rótulo el que se rompe. */
+    white-space: nowrap;
+  }
+  .menu thead .col-dish {
+    text-align: left;
+  }
+  /* Anchos fijos y no `auto`: son las dos columnas alineadas las que dicen de
+     un vistazo qué precio es cuál, y para eso tienen que caer en la misma
+     vertical en las veinticinco filas. Con `auto` cada tabla se colocaría a su
+     aire y la media ración quedaría desperdigada de la entera. */
+  .menu .col-price {
+    width: 3.9rem;
+  }
+  .menu thead .col-price:last-child {
+    width: 4.4rem;
+  }
+
+  .menu tbody tr {
+    border-bottom: 1px solid var(--line);
+  }
+  .menu tbody tr[hidden] {
+    display: none;
+  }
+  .dish {
+    text-align: left;
+    font-weight: 400;
+    padding: 13px 12px 13px 0;
+  }
+  .name {
+    display: block;
+    font-size: 1.02rem;
+    font-weight: 550;
+    line-height: 1.3;
+  }
+  .desc {
+    display: block;
+    margin-top: 0.3rem;
+    color: var(--ink-dim);
+    font-size: 0.92rem;
+    line-height: 1.45;
+    max-width: 46ch;
+  }
+  /* Sin `tabular-nums`: era lo que hacía que los precios parecieran de otra
+     fuente que el nombre del plato. Y sin guía de puntos, que existía para
+     llevar el ojo hasta un precio suelto a la derecha; con dos columnas
+     alineadas, la columna ya es la guía. */
+  .price {
+    text-align: right;
+    vertical-align: baseline;
+    font-weight: 600;
+    white-space: nowrap;
+    padding: 13px 0;
+  }
+  /* El guion es el de la carta de la casa: dice "esto no va en media" sin
+     gastar una palabra. Se apaga un punto para que no pese como una cifra. */
+  .dash {
+    color: var(--ink-faint);
+  }
   .empty {
     margin: 1.4rem 0 0;
     font-family: var(--sans);
@@ -198,114 +298,13 @@ const sorted = [...dishes].sort((a, b) => {
   .empty[hidden] {
     display: none;
   }
-  .legend {
-    font-family: var(--sans);
-    font-size: var(--fs-micro);
-    font-weight: 600;
-    font-stretch: var(--wd-rotulo);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--ink-dim);
-  }
-  .switch {
-    display: flex;
-    border: 2px solid var(--ink);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .switch button {
-    min-height: 44px;
-    padding: 0 14px;
-    font-family: var(--sans);
-    font-size: 0.9rem;
-    line-height: 1;
-    background: transparent;
-    color: var(--ink);
-    border: 0;
-    cursor: pointer;
-  }
-  .switch button[aria-pressed="true"] {
-    background: var(--ink);
-    color: var(--paper);
-    font-weight: 600;
-  }
-  .switch button:focus-visible {
-    outline: 2px solid var(--rojo);
-    outline-offset: -4px;
-  }
-  .rows {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .row {
-    padding: 14px 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .head {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-  }
-  .name {
-    font-size: 1.06rem;
-    font-weight: 550;
-  }
-  .leader {
-    flex: 1;
-    border-bottom: 1px dotted var(--ink-faint);
-    transform: translateY(-0.25em);
-  }
-  /* Sin `tabular-nums`: era lo que hacía que los precios parecieran de otra
-     fuente que el nombre del plato. Las cifras proporcionales de Archivo tienen
-     el mismo color que su texto, y aquí no hay ninguna columna que alinear —
-     cada precio se ancla a su guía de puntos, no al de la fila de arriba. */
-  .price {
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .desc {
-    margin: 0.35rem 0 0;
-    color: var(--ink-dim);
-    font-size: 0.95rem;
-    max-width: 60ch;
-  }
-  .only-full {
-    margin: 0.3rem 0 0;
-    font-family: var(--sans);
-    font-size: 0.85rem;
-    color: var(--rojo);
-  }
-  .only-full[hidden] {
-    display: none;
-  }
-  /* La leyenda dice lo mismo que los propios botones ("½ ración" / "Ración").
-     En pantalla estrecha se retira de la vista —sigue nombrando el grupo por
-     aria-labelledby— para que buscador e interruptor quepan en una fila: con
-     dos filas la barra pegajosa medía 125px y, sumada a la cabecera, se comía
-     192px de los 812 del viewport. */
-  @media (max-width: 560px) {
-    .legend {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-      white-space: nowrap;
-    }
-    .search {
-      flex: 1 1 8rem;
-    }
-  }
+
   .visually-hidden {
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
-    margin: -1px;
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
     white-space: nowrap;
-    border: 0;
   }
 </style>

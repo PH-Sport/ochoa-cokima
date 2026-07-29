@@ -26,6 +26,16 @@ const label = (price: MenuEntry["price"]) => {
   if (typeof price === "number") return formatEuro(price);
   return price.half ? `${formatEuro(price.half)} · ${formatEuro(price.full)}` : formatEuro(price.full);
 };
+
+// Dos cifras seguidas no dicen cuál es la media y cuál la entera: en la carta lo
+// resuelven las cabeceras de columna, y aquí, donde no hay tabla, hace falta
+// decirlo para quien lo escucha en vez de verlo.
+const priceLabel = (price: MenuEntry["price"]) => {
+  if (typeof price === "number" || !price.half) return undefined;
+  return es
+    ? `½ ración ${formatEuro(price.half)}, ración ${formatEuro(price.full)}`
+    : `Half ${formatEuro(price.half)}, full ${formatEuro(price.full)}`;
+};
 ---
 
 <section class="highlights">
@@ -53,7 +63,7 @@ const label = (price: MenuEntry["price"]) => {
         )}
         <div class="body">
           <h3>{dish.name}</h3>
-          <span class="price">{label(dish.price)}</span>
+          <span class="price" aria-label={priceLabel(dish.price)}>{label(dish.price)}</span>
         </div>
       </li>
     ))}

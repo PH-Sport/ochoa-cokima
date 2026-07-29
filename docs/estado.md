@@ -71,6 +71,9 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
       es 4,2:1. Cambiarlo es decisión de marca (ver §4).
 - [ ] Las fichas de destacados sin foto se resuelven tipográficamente. Funciona, pero la
       tira gana mucho en cuanto haya imágenes.
+- [ ] `formatPortionPrice` (en `packages/content/src/portions.ts`) se quedó sin usuarios al
+      pasar la carta a dos columnas: ya nadie elige una porción, se pintan las dos. Sigue
+      exportada y con sus cinco tests. Retirarla —o no— cuando se limpie el paquete.
 
 ---
 
@@ -100,11 +103,18 @@ Orden acordado. Los cinco primeros no dependen de nadie; el sexto necesita conte
    scroll —pasa a `fixed` mientras el menú vive—, y ocultar el desbordamiento ensancha la
    página de golpe, que se resuelve reservando el hueco de la barra con
    `scrollbar-gutter: stable`.
-3. **Carta de Ochoa a dos columnas.** Los dos precios a la vez, como carta de bar; fuera
-   el interruptor pegajoso de 71px. Nomenclatura de bar («Tapa», «½»), con el reto de que
-   quede limpio: el «½» no puede quedar desperdigado del «Ración». Y quitar
-   `tabular-nums` del precio — es lo que hace que los números parezcan de otra fuente, no
-   la familia, que ya es la misma.
+3. ~~**Carta de Ochoa a dos columnas.**~~ **Hecho el 2026-07-30.** Los dos precios a la vez
+   en columnas alineadas, y fuera el interruptor pegajoso: era una barra de 71px que
+   viajaba con el dedo por toda la carta. El buscador se queda, arriba y quieto. La
+   nomenclatura la confirmó Mario con el restaurante: **«Ración» y «½ Ración», no «Tapa»**.
+   Es una `<table>` de verdad, con `scope="col"`/`scope="row"`, porque un precio sin su
+   cabecera no dice si es media o entera — y así un lector de pantalla lo anuncia solo.
+   Once de los veinticinco platos no tienen media: llevan el mismo guion que la carta
+   impresa, con el aviso en texto para quien no lo ve. Los postres, que van a precio único,
+   enseñan una sola columna en vez de una vacía. Fuera también la guía de puntos: existía
+   para llevar el ojo hasta un precio suelto, y con dos columnas alineadas la columna ya es
+   la guía. **En escritorio la carta se acota a 44rem** — a 1280px el nombre quedaba a
+   700px de su precio; el margen que sobra a la derecha es donde entrarán las fotos.
 4. **Rejillas guía en los huecos de foto.** Marcadores visibles, a propósito, para decidir
    dónde van las imágenes. Mario los pide como herramienta de trabajo y se compromete a
    que no lleguen a producción. Hacen falta del orden de 15-20 fotos, no dos.
@@ -136,14 +146,14 @@ desmenuzar a fondo.
       sobre la portada. Se queda así (cumple para texto grande) o el fragmento pasa al
       naranja `--ember`, que da 7,9:1 pero cambia el acento de marca en la primera
       pantalla.
-- [ ] **«Tapa» o «½ ración».** No son lo mismo en hostelería y el precio va al lado: hay
-      que preguntar al restaurante qué sirve de verdad antes de cambiar la palabra en la
-      carta. La carta original dice «½ ración».
 - [ ] **Cuándo llevar `preview` a `main`** (`git switch main && git merge preview`).
 
 **Cerradas el 2026-07-29:** el verde oliva del estado de apertura (retirado con la piel
 nueva de Ochoa), las dos ramas muertas —que ya no existen— y **el push de `preview`**, que
 Mario autorizó: la fase 3 está subida y los alias de preview ya no van retrasados.
+
+**Cerrada el 2026-07-30:** **«Ración» y «½ Ración»**. Mario lo confirmó con el restaurante:
+sirven media ración, no tapa. Es la nomenclatura que va en la carta.
 
 ---
 
