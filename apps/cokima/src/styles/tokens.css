@@ -38,6 +38,17 @@
      ResizeObserver con el alto real medido. */
   --t-header-h: 61px;
 
+  /* Movimiento: una curva, dos duraciones y un desplazamiento. La curva es la
+     misma que en Ochoa —una ease-out quíntica, que frena como frena un objeto
+     real y nunca rebota—, pero el ritmo diverge a propósito: este mundo es
+     oscuro y denso, y se mueve un punto más despacio y más lejos que la tasca,
+     que es seca. Cualquier animación de la marca sale de aquí. */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-in: 520ms;
+  --dur-out: 180ms;
+  --shift: 18px;
+  --stagger: 65ms; /* escalón entre hermanos en cascada */
+
   --t-heading-font: var(--serif);
   --t-menu-title-size: 1.6rem;
   --t-menu-title-weight: 400;

@@ -54,6 +54,18 @@
   --lh-title: 1.18;
   --lh-body: 1.6;
 
+  /* Movimiento: una curva, dos duraciones y un desplazamiento. Cualquier
+     animación de esta marca sale de aquí; no hay milisegundos sueltos por los
+     componentes. La curva es una ease-out quíntica —frena como frena un objeto
+     real— y por eso no rebota: el bounce delata plantilla y envejece mal.
+     `--dur-in` es para lo que entra, `--dur-out` para lo que responde a un dedo,
+     que siempre tiene que sentirse instantáneo. */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-in: 420ms;
+  --dur-out: 160ms;
+  --shift: 14px;
+  --stagger: 55ms; /* escalón entre hermanos en cascada */
+
   /* Mapeo a las variables neutras de @tombo/ui */
   --t-text: var(--ink);
   --t-text-dim: var(--ink-dim);

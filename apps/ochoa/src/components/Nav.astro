@@ -8,20 +8,28 @@ interface Props {
 }
 const { locale, altPath } = Astro.props;
 const es = locale === "es";
+
+// "La carta" abre la cascada porque es lo que se viene a buscar. Reservar va
+// segundo aunque también esté fijo en la barra: quien abre el menú está
+// decidiendo, y ahí es donde tiene que encontrarlo.
 const links = es
   ? [
       { href: "/carta", label: "La carta" },
+      { href: "/reservas", label: "Reservar" },
       { href: "/#visita", label: "Dónde estamos" },
     ]
   : [
       { href: "/en/menu", label: "Menu" },
+      { href: "/en/reservations", label: "Book" },
       { href: "/en/#visit", label: "Find us" },
     ];
 const home = es ? "/" : "/en/";
 const reserve = es ? "/reservas" : "/en/reservations";
 const t = es
-  ? { menu: "Menú", reserve: "Reservar" }
-  : { menu: "Menu", reserve: "Book" };
+  ? { menu: "Menú", close: "Cerrar el menú", reserve: "Reservar", call: "Llamar" }
+  : { menu: "Menu", close: "Close menu", reserve: "Book", call: "Call" };
+
+const telHref = `tel:${RESTAURANT.telephone.replace(/\s/g, "")}`;
 ---
 
 <nav class="nav">
@@ -36,129 +44,71 @@ const t = es
         aria-expanded="false"
         aria-controls="nav-panel"
       >
-        <span class="bars" aria-hidden="true"><i></i><i></i></span>
-        <span class="visually-hidden">{t.menu}</span>
+        <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="visually-hidden" data-label-open={t.menu} data-label-close={t.close}
+          >{t.menu}</span
+        >
       </button>
     </div>
   </div>
+</nav>
 
-  <div class="panel" id="nav-panel" data-menu-panel hidden>
-    <div class="wrap panel-in">
-      <ul class="panel-links">
-        {links.map((l) => (
-          <li><a href={l.href}>{l.label}</a></li>
-        ))}
-      </ul>
-      <div class="panel-foot">
+<div class="panel" id="nav-panel" data-state="closed" inert>
+  <div class="wrap panel-in">
+    <ul class="panel-links">
+      {links.map((l, i) => (
+        <li style={`--i:${i}`}>
+          <a href={l.href} class="cartel">
+            <span class="idx" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+            <span class="lbl">{l.label}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="panel-foot" style={`--i:${links.length}`}>
+      <div class="foot-row">
         <OpenState hours={RESTAURANT.openingHours} locale={locale} />
         <span class="lang">
           {es ? <><b>ES</b> · <a href={altPath}>EN</a></> : <><a href={altPath}>ES</a> · <b>EN</b></>}
         </span>
       </div>
+      <div class="foot-row">
+        <a class="foot-link" href={telHref}>{RESTAURANT.telephone}</a>
+        <a class="foot-link" href={RESTAURANT.instagram} rel="me noopener" target="_blank">
+          @tasquita.losochoa
+        </a>
+      </div>
+      <p class="addr">{RESTAURANT.streetAddress} · {RESTAURANT.addressLocality}</p>
     </div>
   </div>
-</nav>
+</div>
 
 <script>
-  let controller: AbortController | null = null;
+  import { initMenuOverlay } from "@tombo/ui/menu-overlay.ts";
 
-  const mount = () => {
-    const nav = document.querySelector<HTMLElement>(".nav");
-    if (!nav) return;
-    const btn = nav.querySelector<HTMLButtonElement>("[data-menu-toggle]");
-    const panel = nav.querySelector<HTMLElement>("[data-menu-panel]");
-    if (!btn || !panel) return;
-
-    // Un AbortController por montaje: `astro:after-swap` vuelve a llamar a
-    // mount() en cada navegación y, sin esto, los listeners de `document` se
-    // acumularían una capa por página visitada.
-    controller?.abort();
-    controller = new AbortController();
-    const { signal } = controller;
-
-    const focusables = () =>
-      [...panel.querySelectorAll<HTMLElement>("a[href], button:not([disabled])")].filter(
-        (el) => el.offsetParent !== null,
-      );
-
-    const isOpen = () => btn.getAttribute("aria-expanded") === "true";
-
-    const close = (returnFocus = false) => {
-      if (!isOpen()) return;
-      btn.setAttribute("aria-expanded", "false");
-      panel.hidden = true;
-      if (returnFocus) btn.focus();
-    };
-
-    const open = () => {
-      btn.setAttribute("aria-expanded", "true");
-      panel.hidden = false;
-      focusables()[0]?.focus();
-    };
-
-    btn.addEventListener("click", () => (isOpen() ? close(true) : open()), { signal });
-
-    document.addEventListener(
-      "keydown",
-      (e) => {
-        if (!isOpen()) return;
-        if (e.key === "Escape") {
-          close(true);
-          return;
-        }
-        if (e.key !== "Tab") return;
-        const items = focusables();
-        if (!items.length) return;
-        const first = items[0];
-        const last = items[items.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      },
-      { signal },
-    );
-
-    document.addEventListener(
-      "click",
-      (e) => {
-        if (!isOpen()) return;
-        if (nav.contains(e.target as Node)) return;
-        close();
-      },
-      { signal },
-    );
-
-    // El alto real de la cabecera gobierna el offset del interruptor de la
-    // carta. Con el panel abierto, el alto del <nav> incluye el desplegable y
-    // no representa la barra: en ese caso se conserva el último valor bueno.
-    const sync = () => {
-      if (!panel.hidden) return;
-      document.documentElement.style.setProperty(
-        "--t-header-h",
-        `${Math.ceil(nav.getBoundingClientRect().height)}px`,
-      );
-    };
-    sync();
-    new ResizeObserver(sync).observe(nav);
-  };
-
-  mount();
-  // `astro:after-swap` y no `astro:page-load`: este último también dispara en
-  // la carga inicial, así que con ClientRouter activo duplicaría el observer.
-  document.addEventListener("astro:after-swap", mount);
+  initMenuOverlay();
 </script>
 
 <style>
   .nav {
     position: sticky;
     top: 0;
-    z-index: 40;
+    /* Por encima del panel: la barra no se va a ninguna parte al abrir el menú,
+       y el botón que abre es el mismo que cierra, en el mismo sitio. */
+    z-index: 60;
     background: var(--rojo);
     border-bottom: 2px solid var(--ink);
+  }
+  /* Con el menú abierto el documento deja de tener scroll, y una cabecera
+     `sticky` sin scroll del que colgar cae a su posición en el flujo: si la
+     página venía desplazada, se va fuera de la pantalla y el botón de cerrar
+     desaparece con ella. Mientras dura el menú, se ancla al viewport. El hueco
+     que deja al salir del flujo lo tapa el propio panel. */
+  :global(html.menu-open) .nav {
+    position: fixed;
+    left: 0;
+    right: 0;
   }
   .nav-in {
     display: flex;
@@ -193,57 +143,169 @@ const t = es
     background: var(--paper);
     color: var(--rojo-2);
   }
+  /* Sin borde: era el recuadro lo que lo hacía parecer un control de sistema
+     metido en un cartel pintado. Manda el área de toque, no la caja dibujada. */
   .menu-btn {
     width: 44px;
     height: 44px;
     display: grid;
     place-items: center;
     background: transparent;
-    border: 1.5px solid var(--paper);
-    border-radius: 3px;
+    border: 0;
+    padding: 0;
     cursor: pointer;
     color: var(--paper);
+  }
+  .menu-btn:focus-visible {
+    outline: 2px solid var(--paper);
+    outline-offset: 2px;
   }
   .bars {
     display: grid;
     gap: 5px;
-    width: 18px;
+    width: 22px;
   }
   .bars i {
     height: 2px;
     background: currentColor;
     border-radius: 2px;
+    transition:
+      transform var(--dur-out) var(--ease),
+      opacity var(--dur-out) var(--ease);
   }
+  /* Tres rayas que se convierten en aspa sin cambiar de sitio: la de en medio se
+     apaga y las otras dos giran sobre el centro. 7px es el paso exacto de una
+     raya a la siguiente (2px de alto + 5px de hueco). */
+  .menu-btn[aria-expanded="true"] .bars i:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .menu-btn[aria-expanded="true"] .bars i:nth-child(2) {
+    opacity: 0;
+  }
+  .menu-btn[aria-expanded="true"] .bars i:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* El panel cubre la pantalla entera por debajo de la barra. `visibility`, y no
+     solo opacidad, para que cerrado no intercepte ni un clic; se retrasa hasta
+     el final de la transición para que el desvanecido llegue a verse. */
   .panel {
-    border-top: 2px solid var(--ink);
+    position: fixed;
+    inset: 0;
+    z-index: 50;
     background: var(--paper);
+    padding-top: var(--t-header-h);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--dur-out) var(--ease),
+      visibility 0s linear var(--dur-out);
   }
-  .panel[hidden] {
-    display: none;
+  .panel[data-state="open"] {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity var(--dur-in) var(--ease),
+      visibility 0s;
   }
   .panel-in {
-    padding-block: 14px 18px;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 32px;
+    padding-block: clamp(24px, 6vh, 56px) clamp(20px, 4vh, 40px);
   }
+  /* El bloque de enlaces flota entre la barra y el pie en vez de apoyarse
+     arriba: con tres secciones y una pantalla alta, pegarlo al techo deja medio
+     folio en blanco que se lee como contenido que falta. */
   .panel-links {
     list-style: none;
-    margin: 0;
+    margin-block: auto;
     padding: 0;
   }
-  .panel-links a {
-    display: block;
-    padding: 13px 0;
-    font-size: 1.06rem;
-    border-bottom: 1px solid var(--line);
+  /* La cascada: cada hermano entra un escalón más tarde que el anterior. Al
+     cerrar no hay cascada ni retardo —cerrar responde a un dedo y tiene que
+     sentirse inmediato—, y por eso el delay solo vive en el estado abierto. */
+  .panel-links li {
+    opacity: 0;
+    transform: translateY(var(--shift));
+    transition:
+      opacity var(--dur-out) var(--ease),
+      transform var(--dur-out) var(--ease);
   }
-  .panel-links a:hover {
+  .panel[data-state="open"] .panel-links li,
+  .panel[data-state="open"] .panel-foot {
+    opacity: 1;
+    transform: none;
+    transition-duration: var(--dur-in);
+    transition-delay: calc(var(--i) * var(--stagger));
+  }
+  /* El área del enlace se ciñe a su texto: estirada a todo el ancho, el foco
+     encerraba un metro de vacío y el puntero cambiaba en sitios donde no hay
+     nada que pulsar. */
+  .panel-links a {
+    display: flex;
+    width: fit-content;
+    align-items: baseline;
+    gap: 0.5ch;
+    padding: clamp(10px, 2.4vh, 20px) 0;
+    font-size: clamp(2.1rem, 10vw, 3.4rem);
+    color: var(--ink);
+    text-shadow: none;
+  }
+  .panel-links a:hover .lbl,
+  .panel-links a:focus-visible .lbl {
     color: var(--rojo);
   }
+  .panel-links a:focus-visible {
+    outline: 2px solid var(--rojo);
+    outline-offset: 4px;
+  }
+  /* El número es de la misma familia del cuerpo, apretado como una etiqueta de
+     rótulo: ordena la cascada sin competir con el nombre de la sección. */
+  .idx {
+    font-family: var(--sans);
+    font-size: var(--fs-label);
+    font-weight: 700;
+    font-stretch: var(--wd-rotulo);
+    color: var(--rojo);
+    letter-spacing: 0.06em;
+  }
   .panel-foot {
+    opacity: 0;
+    transform: translateY(var(--shift));
+    transition:
+      opacity var(--dur-out) var(--ease),
+      transform var(--dur-out) var(--ease);
+    border-top: 2px solid var(--ink);
+    padding-top: 16px;
+    display: grid;
+    gap: 10px;
+  }
+  .foot-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding-top: 14px;
+    flex-wrap: wrap;
+  }
+  .foot-link {
+    font-size: 0.95rem;
+    color: var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 1px;
+  }
+  .foot-link:hover {
+    color: var(--rojo);
+    border-color: var(--rojo);
+  }
+  .addr {
+    margin: 0;
+    font-size: var(--fs-micro);
+    color: var(--ink-dim);
   }
   .lang {
     font-family: var(--sans);

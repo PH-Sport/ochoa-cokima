@@ -88,8 +88,18 @@ Orden acordado. Los cinco primeros no dependen de nadie; el sexto necesita conte
    (`--fs-micro` … `--fs-cartel`) en `apps/ochoa/src/styles/tokens.css`. Fuera el
    `tabular-nums` del precio. Verificado a 390px: ni un elemento del DOM conserva fuente de
    sistema, 43 tests verdes y las dos apps `Complete!`.
-2. **Menú a pantalla completa.** Botón sin borde, tres rayas. Secciones en cascada
-   vertical priorizando "La carta". Bloquear el scroll del fondo. Con transición suave.
+2. ~~**Menú a pantalla completa.**~~ **Hecho el 2026-07-30, en las dos webs.** Botón sin
+   borde y tres rayas que se pliegan en aspa sobre su propio centro. El panel cubre la
+   pantalla por debajo de la barra —que se queda quieta, así que el botón que abre es el
+   mismo que cierra y en el mismo sitio—, con "La carta" abriendo la cascada, numerada en
+   Ochoa y con el punto de brasa en Cokima, y un pie con horario, teléfono, Instagram y
+   dirección. El comportamiento vive una sola vez en `packages/ui/src/menu-overlay.ts`
+   (estado, foco atrapado, Escape, bloqueo del fondo) y la piel entera en cada app, como
+   manda la regla de oro. **Dos trampas que solo se vieron midiendo en el navegador:** una
+   cabecera `sticky` se descuelga fuera de la pantalla en cuanto el fondo deja de tener
+   scroll —pasa a `fixed` mientras el menú vive—, y ocultar el desbordamiento ensancha la
+   página de golpe, que se resuelve reservando el hueco de la barra con
+   `scrollbar-gutter: stable`.
 3. **Carta de Ochoa a dos columnas.** Los dos precios a la vez, como carta de bar; fuera
    el interruptor pegajoso de 71px. Nomenclatura de bar («Tapa», «½»), con el reto de que
    quede limpio: el «½» no puede quedar desperdigado del «Ración». Y quitar
@@ -99,7 +109,13 @@ Orden acordado. Los cinco primeros no dependen de nadie; el sexto necesita conte
    dónde van las imágenes. Mario los pide como herramienta de trabajo y se compromete a
    que no lleguen a producción. Hacen falta del orden de 15-20 fotos, no dos.
 5. **Sistema de movimiento.** Pocas animaciones, concretas, y ordenadas en el código con
-   lógica detrás: una curva, dos duraciones, un desplazamiento. Sin bounce.
+   lógica detrás: una curva, dos duraciones, un desplazamiento. Sin bounce. **Los tokens ya
+   existen** —`--ease`, `--dur-in`, `--dur-out`, `--shift`, `--stagger` en el `tokens.css`
+   de cada app— porque el menú los necesitaba y era mejor estrenarlos con nombre que dejar
+   milisegundos sueltos. La curva es la misma en las dos marcas (una *ease-out* quíntica,
+   que frena como frena un objeto real); el ritmo diverge a propósito: Cokima se mueve más
+   despacio y más lejos, Ochoa es seca. **Queda** llevar a estos tokens el movimiento que ya
+   había suelto por los componentes y decidir qué más se mueve.
 6. **Páginas nuevas.** No relleno: dar contexto a lo que ya hay y contar la historia real
    de cada casa, con copys trabajados. Las páginas concretas se deciden más adelante.
 

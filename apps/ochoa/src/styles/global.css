@@ -23,6 +23,15 @@
 }
 html {
   scroll-behavior: smooth;
+  /* El hueco de la barra de scroll se reserva siempre, esté o no. Así, cuando el
+     menú oculta el desbordamiento, la página no se ensancha de golpe: sin esto
+     todo el contenido daba un respingo lateral justo al abrir. En móvil, donde
+     la barra se superpone, no reserva nada. */
+  scrollbar-gutter: stable;
+}
+/* Fondo quieto con el menú abierto. La clase la pone `menu-overlay.ts`. */
+html.menu-open {
+  overflow: hidden;
 }
 body {
   margin: 0;
