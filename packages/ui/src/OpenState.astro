@@ -73,8 +73,12 @@ const labels =
     background: var(--t-text-faint);
     flex: none;
   }
+  /* El texto ya dice si está abierto: el punto refuerza, no informa por sí
+     solo, así que no hace falta reservarle un color propio a cada marca.
+     `--t-open` sigue siendo opcional para quien quiera uno; sin él, cae al
+     acento de la marca en vez de inventar una familia de color nueva. */
   .open-state[data-state="open"] .dot {
-    background: var(--t-open, currentColor);
+    background: var(--t-open, var(--t-accent));
   }
   .open-state[data-state="closed"] .dot {
     background: var(--t-text-faint);

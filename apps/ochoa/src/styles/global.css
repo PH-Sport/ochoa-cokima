@@ -16,21 +16,11 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--serif);
-  font-size: 17.5px;
-  line-height: 1.62;
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-}
-/* grano de papel */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.06;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 a {
   color: inherit;
@@ -61,9 +51,11 @@ img {
 }
 
 .eyebrow {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 1.06rem;
+  font-family: var(--sans);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.82rem;
   color: var(--rojo);
   margin: 0 0 0.3rem;
 }
@@ -82,7 +74,7 @@ img {
   font-size: 0.95rem;
   font-weight: 600;
   background: var(--rojo);
-  color: #fff9ee;
+  color: #ffffff;
   padding: 12px 22px;
   border: 0;
   border-radius: 3px;
@@ -106,6 +98,17 @@ img {
   color: var(--rojo);
   border-color: var(--rojo);
   transform: none;
+}
+
+/* Cuadro vichy rojo y blanco del mantel, generado sin imagen. Se usa como
+   separador de sección, nunca de fondo bajo texto. */
+.vichy {
+  height: 22px;
+  background-image:
+    repeating-linear-gradient(90deg, var(--rojo) 0 11px, transparent 11px 22px),
+    repeating-linear-gradient(0deg, var(--rojo) 0 11px, transparent 11px 22px);
+  background-color: rgba(198, 34, 43, 0.22);
+  background-blend-mode: multiply;
 }
 
 /* Ninguna transición de vista ni animación para quien pide menos movimiento.

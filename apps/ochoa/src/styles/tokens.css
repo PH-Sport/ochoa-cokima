@@ -1,21 +1,27 @@
-/* Tokens de marca Tasquita Los Ochoa — tasca castiza a plena luz (boceto v1). */
+/* Tokens de marca Tasquita Los Ochoa.
+
+   Rojo bandera sobre blanco, que es la identidad real de la marca: la que se
+   ve en su rótulo, en los mandiles y en todo su Instagram. La versión anterior
+   (papel crema con tinta marrón, rojo solo de acento) era una interpretación
+   de "tasca de 1950" que nos habíamos inventado nosotros y que no se parecía
+   ni al local ni a sus redes. */
 :root {
   color-scheme: light;
 
-  --paper: #f4eee2;
-  --paper-2: #ece4d3;
-  --paper-3: #e2d8c3;
-  --ink: #23201b;
-  --ink-dim: #6e6558;
-  --ink-faint: #9c927f;
+  --paper: #ffffff;
+  --paper-2: #f7f4f2;
+  --paper-3: #ebe5e2;
+  --ink: #1a1a1a;
+  --ink-dim: #5c5654;
+  --ink-faint: #918a87;
   --rojo: #c6222b;
   --rojo-2: #a81b23;
-  --crema: #f7e9c8;
-  --line: rgba(35, 32, 27, 0.18);
+  --line: rgba(26, 26, 26, 0.16);
   --maxw: 1140px;
 
+  /* Sin serif: la itálica de Georgia era la que fabricaba el aire nostálgico.
+     La condensada del rótulo manda, y el resto es sans. */
   --display: "Anton", "Arial Narrow", Impact, sans-serif;
-  --serif: Georgia, "Times New Roman", serif;
   --sans: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
   /* Mapeo a las variables neutras de @tombo/ui */
@@ -25,12 +31,15 @@
   --t-line: var(--line);
   --t-surface: var(--paper-2);
   --t-accent: var(--rojo);
-  --t-accent-contrast: #fff9ee;
+  --t-accent-contrast: #ffffff;
   --t-radius: 6px;
   --t-card-border: 2px solid var(--ink);
-  --t-shadow: 8px 8px 0 rgba(35, 32, 27, 0.85);
+  --t-shadow: 6px 6px 0 rgba(26, 26, 26, 0.9);
 
-  --t-open: #4c6b2f;
+  /* Sin `--t-open`: el verde oliva era una cuarta familia de color que nadie
+     de marca validó. El punto del estado de apertura cae al acento rojo, y
+     quien informa de verdad es el texto que lo acompaña. */
+
   /* Alto de la cabecera sticky, del que cuelga el offset del interruptor de la
      carta: 60px de .nav-in + 2px de su borde. Es solo el punto de partida para
      que el sticky sea correcto sin JavaScript; Nav.astro lo reescribe en
@@ -51,7 +60,7 @@
   --t-price-color: var(--ink);
   --t-price-font: var(--sans);
   --t-price-width: 4.4rem;
-  --t-desc-style: italic;
+  --t-desc-style: normal;
   --t-dish-weight: 600;
   --t-leader: 2px dotted var(--ink-faint);
   --t-section-gap: clamp(38px, 5vw, 58px);

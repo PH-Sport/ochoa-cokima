@@ -2,6 +2,6 @@
   <!-- Provisional: el rótulo rojo con marco, en la línea del cartel del local.
        Se sustituye cuando llegue el logo vectorial (spec §11). -->
   <rect width="64" height="64" rx="8" fill="#c6222b" />
-  <rect x="9" y="9" width="46" height="46" rx="3" fill="none" stroke="#f4eee2" stroke-width="4" />
-  <rect x="20" y="27" width="24" height="10" rx="2" fill="#f4eee2" />
+  <rect x="9" y="9" width="46" height="46" rx="3" fill="none" stroke="#ffffff" stroke-width="4" />
+  <rect x="20" y="27" width="24" height="10" rx="2" fill="#ffffff" />
 </svg>
