@@ -1,11 +1,24 @@
 ---
 import { getCollection } from "astro:content";
 import { pickFeatured } from "@tombo/content";
+import { showPhotoGuides } from "@tombo/config/photo-guides";
+import PhotoGuide from "@tombo/ui/PhotoGuide.astro";
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import Highlights from "../components/Highlights.astro";
 
 const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data));
+
+// La casa: la sección que hoy no existe porque no hay fotos del local, solo del
+// plato. Se dibuja en hueco para poder decidir qué se encarga; cuando lleguen
+// las imágenes, esta sección deja de ser andamio y se publica con ellas.
+const guides = showPhotoGuides();
+const casa = [
+  { file: "apps/ochoa/src/assets/casa/barra.jpg", ratio: "16 / 9", note: "La barra en hora punta, con el mandil rojo. Horizontal y ancha." },
+  { file: "apps/ochoa/src/assets/casa/rotulo.jpg", ratio: "1 / 1", note: "El rótulo desde la calle, de noche, con el rojo encendido." },
+  { file: "apps/ochoa/src/assets/casa/vermu.jpg", ratio: "1 / 1", note: "Vermú de grifo servido, primer plano corto." },
+  { file: "apps/ochoa/src/assets/casa/comedor.jpg", ratio: "3 / 4", note: "El comedor lleno a mediodía. Vertical, gente de verdad." },
+];
 ---
 
 <Base
@@ -47,6 +60,26 @@ const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data
       </div>
     </div>
   </section>
+
+  {guides && (
+    <section class="casa">
+      <div class="wrap">
+        <div class="rule"></div>
+        <p class="eyebrow">La casa · huecos de foto</p>
+        <h2 class="cartel">Lo que falta por retratar</h2>
+        <p class="txt">
+          Estos cuatro huecos no se publican: están para decidir qué se encarga al fotógrafo y con
+          qué encuadre. Dejando el archivo con el nombre que pone cada uno, el hueco se convierte
+          en la foto.
+        </p>
+        <div class="wall">
+          {casa.map((c) => (
+            <PhotoGuide file={c.file} ratio={c.ratio} note={c.note} minHeight="150px" />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 
   <section class="visita" id="visita">
     <div class="wrap">
@@ -150,6 +183,56 @@ const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data
   .txt em {
     color: var(--ink);
   }
+  /* Mosaico asimétrico y no una rejilla de cuatro iguales: la distribución es
+     justo lo que hay que decidir aquí, y cuatro rectángulos idénticos no
+     ayudan a imaginar nada. El ancho manda sobre el primero y el último. */
+  .casa {
+    padding: clamp(32px, 6vw, 56px) 0 0;
+  }
+  .casa .rule {
+    margin-bottom: clamp(22px, 4vw, 40px);
+  }
+  .casa h2 {
+    font-size: clamp(1.9rem, 5vw, 3rem);
+    margin: 0.2rem 0 0;
+  }
+  .wall {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 1.4rem;
+  }
+  /* `:global` porque los hijos son componentes con su propio ámbito de estilos:
+     sin él, Astro no deja que esta hoja alcance al <figure> de PhotoGuide y los
+     cuatro huecos salen del mismo tamaño. */
+  .wall > :global(*:first-child) {
+    grid-column: span 2;
+  }
+  /* En ancho, mosaico de tres columnas colocado a mano: la barra manda arriba,
+     el comedor sostiene la derecha a doble alto y los dos cuadrados rellenan
+     debajo. Cuatro celdas iguales no dirían nada sobre qué foto pesa más. */
+  @media (min-width: 861px) {
+    .wall {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .wall > :global(*:nth-child(1)) {
+      grid-column: 1 / span 2;
+      grid-row: 1;
+    }
+    .wall > :global(*:nth-child(2)) {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .wall > :global(*:nth-child(3)) {
+      grid-column: 2;
+      grid-row: 2;
+    }
+    .wall > :global(*:nth-child(4)) {
+      grid-column: 3;
+      grid-row: 1 / span 2;
+    }
+  }
+
   .visita {
     padding: clamp(32px, 6vw, 56px) 0 0;
   }

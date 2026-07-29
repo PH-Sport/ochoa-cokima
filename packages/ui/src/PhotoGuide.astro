@@ -1,0 +1,142 @@
+---
+/**
+ * Rejilla guía: el hueco de una foto que todavía no existe, dibujado a
+ * propósito para poder decidir dónde va y con qué encuadre antes de tenerla.
+ *
+ * No es un "placeholder" que disimule: se ve que es andamio, y lleva escrito el
+ * nombre exacto del archivo que hay que dejar para que desaparezca. Las líneas
+ * de dentro son la regla de tercios, para encuadrar contra algo.
+ *
+ * **Nunca se renderiza en producción.** Quien lo usa pregunta primero a
+ * `showPhotoGuides()` de `@tombo/config/photo-guides`.
+ */
+interface Props {
+  /** Ruta del archivo que hay que dejar, tal cual, desde la raíz del repo. */
+  file: string;
+  /** Proporción del encuadre, en formato CSS: "3 / 4", "1 / 1", "16 / 9". */
+  ratio?: string;
+  /** Qué foto va aquí. Se le enseña al fotógrafo. */
+  note?: string;
+  /** Alto mínimo, para huecos que si no quedarían en una raya. */
+  minHeight?: string;
+}
+const { file, ratio = "3 / 4", note, minHeight } = Astro.props;
+
+// "apps/ochoa/src/assets/dishes/oreja-crujiente.jpg" → "oreja-crujiente.jpg"
+const name = file.split("/").pop() ?? file;
+const folder = file.slice(0, file.length - name.length).replace(/\/$/, "");
+const shape = ratio.replace(/\s/g, "").replace("/", ":");
+---
+
+<figure
+  class="guide"
+  style={`--ratio:${ratio};${minHeight ? `--min-h:${minHeight};` : ""}`}
+  data-photo-guide
+>
+  <div class="thirds" aria-hidden="true"></div>
+  <figcaption>
+    <span class="tag">Falta foto · {shape}</span>
+    <span class="file"><span class="folder">{folder}/</span>{name}</span>
+    {note && <span class="note">{note}</span>}
+  </figcaption>
+</figure>
+
+<style>
+  /* Trama diagonal + borde discontinuo: a un metro de distancia ya se sabe que
+     esto es obra y no diseño. La trama se dibuja con gradientes, sin pedir una
+     imagen que tampoco existe. */
+  .guide {
+    position: relative;
+    /* El hueco se mide a sí mismo, no a la ventana: el mismo componente cae en
+       una ficha de 250px y en una banda de 700px, y lo que tiene que caber
+       depende del hueco, no de la pantalla. */
+    container-type: inline-size;
+    margin: 0;
+    aspect-ratio: var(--ratio);
+    min-height: var(--min-h, 0);
+    display: flex;
+    align-items: flex-end;
+    padding: 10px;
+    border: 2px dashed var(--t-line);
+    border-radius: var(--t-radius, 4px);
+    background-image: repeating-linear-gradient(
+      45deg,
+      color-mix(in oklch, var(--t-text) 6%, transparent) 0 2px,
+      transparent 2px 11px
+    );
+    overflow: hidden;
+  }
+  /* La regla de tercios, para que el encuadre se decida contra algo y no a ojo. */
+  .thirds {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(
+        to right,
+        transparent calc(33.333% - 1px),
+        color-mix(in oklch, var(--t-text) 14%, transparent) calc(33.333% - 1px) 33.333%,
+        transparent 33.333% calc(66.666% - 1px),
+        color-mix(in oklch, var(--t-text) 14%, transparent) calc(66.666% - 1px) 66.666%,
+        transparent 66.666%
+      ),
+      linear-gradient(
+        to bottom,
+        transparent calc(33.333% - 1px),
+        color-mix(in oklch, var(--t-text) 14%, transparent) calc(33.333% - 1px) 33.333%,
+        transparent 33.333% calc(66.666% - 1px),
+        color-mix(in oklch, var(--t-text) 14%, transparent) calc(66.666% - 1px) 66.666%,
+        transparent 66.666%
+      );
+  }
+  figcaption {
+    position: relative;
+    display: grid;
+    gap: 3px;
+    width: 100%;
+    padding: 7px 9px;
+    background: var(--t-surface);
+    border-radius: 3px;
+  }
+  .tag {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--t-accent);
+  }
+  /* El nombre del archivo es la instrucción entera: dejarlo ahí con ese nombre
+     y el hueco desaparece solo. La carpeta se apaga para que resalte el nombre,
+     que es lo que hay que copiar. */
+  .file {
+    font-size: 0.76rem;
+    line-height: 1.35;
+    color: var(--t-text);
+    word-break: break-word;
+  }
+  .folder {
+    color: var(--t-text-faint);
+  }
+  .note {
+    font-size: 0.74rem;
+    line-height: 1.4;
+    color: var(--t-text-dim);
+  }
+  /* En un hueco pequeño la leyenda entera tapaba la rejilla y dejaba de servir
+     para lo único que sirve: ver el encuadre. Se queda lo imprescindible, que
+     es el nombre del archivo. */
+  @container (max-width: 300px) {
+    .note {
+      display: none;
+    }
+    figcaption {
+      padding: 5px 7px;
+    }
+    .tag {
+      font-size: 0.62rem;
+    }
+    .file {
+      font-size: 0.7rem;
+    }
+  }
+</style>

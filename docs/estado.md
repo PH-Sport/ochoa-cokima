@@ -118,9 +118,21 @@ Orden acordado. Los cinco primeros no dependen de nadie; el sexto necesita conte
    para llevar el ojo hasta un precio suelto, y con dos columnas alineadas la columna ya es
    la guía. **En escritorio la carta se acota a 44rem** — a 1280px el nombre quedaba a
    700px de su precio; el margen que sobra a la derecha es donde entrarán las fotos.
-4. **Rejillas guía en los huecos de foto.** Marcadores visibles, a propósito, para decidir
-   dónde van las imágenes. Mario los pide como herramienta de trabajo y se compromete a
-   que no lleguen a producción. Hacen falta del orden de 15-20 fotos, no dos.
+4. ~~**Rejillas guía en los huecos de foto.**~~ **Hecho el 2026-07-30.** **Diecinueve
+   huecos** entre las dos webs: once de plato (las fichas de destacados que salen sin
+   imagen) y ocho de la casa, en una sección nueva —«Lo que falta por retratar»— que
+   enseña en mosaico asimétrico lo que ninguna de las dos webs tiene hoy: la barra, la
+   sala, el equipo. Cada hueco dibuja su proporción, la regla de tercios y **el nombre
+   exacto del archivo** que hay que dejar para que desaparezca, derivado del nombre del
+   plato con `dishImageKey()`. El componente es `packages/ui/src/PhotoGuide.astro`, sin
+   una gota de marca, y se mide con container queries porque cae igual en una ficha de
+   250px que en una banda de 700px.
+
+   **No pueden llegar a producción, y eso no depende de acordarse:** lo decide
+   `showPhotoGuides()` (`packages/config/src/photo-guides.mjs`), que las apaga si hay
+   `SITE_URL` o si Vercel dice que es producción —un despliegue público siempre tiene una
+   de las dos— y tiene seis tests que lo fijan. Comprobado además sobre el HTML construido:
+   con `SITE_URL`, cero huecos en las dos apps; sin él, los diez de la home de Ochoa.
 5. **Sistema de movimiento.** Pocas animaciones, concretas, y ordenadas en el código con
    lógica detrás: una curva, dos duraciones, un desplazamiento. Sin bounce. **Los tokens ya
    existen** —`--ease`, `--dur-in`, `--dur-out`, `--shift`, `--stagger` en el `tokens.css`
@@ -178,7 +190,7 @@ sirven media ración, no tapa. Es la nomenclatura que va en la carta.
 pnpm install
 pnpm --filter cokima dev    # http://localhost:4321
 pnpm --filter ochoa dev     # segundo puerto libre
-pnpm test                   # 34 tests (eran 43: los 9 del buscador se fueron con él)
+pnpm test                   # 45 tests
 SITE_URL=https://example.com pnpm build
 ```
 

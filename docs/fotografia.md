@@ -34,21 +34,51 @@ son dos pasos:
 2. Añadir `"image": "tataki-de-atun"` al plato **en `menu-es.json` y en `menu-en.json`**,
    o la versión inglesa se queda sin foto.
 
-Platos destacados que hoy salen sin imagen:
+Platos destacados que hoy salen sin imagen. **La clave no es una sugerencia: es el nombre
+exacto que espera el código**, y sale del nombre del plato con `dishImageKey()`
+(`packages/content`). Es el mismo que escribe cada rejilla guía en pantalla, así que se puede
+copiar de ahí.
 
-| App | Plato | Clave sugerida |
+| App | Plato | Archivo |
 |---|---|---|
-| Cokima | Gyozas de langostino | `gyozas-de-langostino` |
-| Cokima | Tataki de atún | `tataki-de-atun` |
-| Cokima | Tacos del gobernador de gambón | `tacos-del-gobernador` |
-| Cokima | Katsu sando de solomillo | `katsu-sando` |
-| Cokima | Arroz meloso de carabinero | `arroz-de-carabinero` |
-| Ochoa | Oreja de cerdo crujiente | `oreja-crujiente` |
-| Ochoa | Huevos rotos con puntilla | `huevos-rotos` |
-| Ochoa | Cachopín de ternera | `cachopin` |
-| Ochoa | Croissant de rabo de toro | `croissant-de-rabo-de-toro` |
-| Ochoa | Croquetas de jamón Joselito | `croquetas-joselito` |
-| Ochoa | Ensaladilla rusa casera | `ensaladilla` |
+| Cokima | Gyozas de langostino | `gyozas-de-langostino.jpg` |
+| Cokima | Tataki de atún | `tataki-de-atun.jpg` |
+| Cokima | Tacos del gobernador de gambón | `tacos-del-gobernador-de-gambon.jpg` |
+| Cokima | Katsu sando de solomillo de ternera | `katsu-sando-de-solomillo-de-ternera.jpg` |
+| Cokima | Arroz meloso de carabinero a la brasa | `arroz-meloso-de-carabinero-a-la-brasa.jpg` |
+| Ochoa | Oreja de cerdo crujiente con salsa brava | `oreja-de-cerdo-crujiente-con-salsa-brava.jpg` |
+| Ochoa | Huevos rotos con puntilla | `huevos-rotos-con-puntilla.jpg` |
+| Ochoa | Cachopín de ternera | `cachopin-de-ternera.jpg` |
+| Ochoa | Croissant de rabo de toro | `croissant-de-rabo-de-toro.jpg` |
+| Ochoa | Ración de croquetas de jamón Joselito | `racion-de-croquetas-de-jamon-joselito.jpg` |
+| Ochoa | Ensaladilla rusa casera | `ensaladilla-rusa-casera.jpg` |
+
+### Fotos de la casa — el local, no el plato
+
+Las dos webs enseñan solo comida. Falta la casa: la barra, la sala, la gente. La sección «Lo
+que falta por retratar» de cada home es exactamente eso, dibujada en hueco, y se publica sola
+en cuanto existan los archivos.
+
+| App | Archivo | Qué buscamos |
+|---|---|---|
+| Ochoa | `src/assets/casa/barra.jpg` | La barra en hora punta, con el mandil rojo. Apaisada 16:9. |
+| Ochoa | `src/assets/casa/rotulo.jpg` | El rótulo desde la calle, de noche, con el rojo encendido. Cuadrada. |
+| Ochoa | `src/assets/casa/vermu.jpg` | Vermú de grifo servido, primer plano corto. Cuadrada. |
+| Ochoa | `src/assets/casa/comedor.jpg` | El comedor lleno a mediodía, gente de verdad. Vertical 3:4. |
+| Cokima | `src/assets/casa/pase.jpg` | El pase de cocina en servicio, con la llama. Apaisada 16:9. |
+| Cokima | `src/assets/casa/sala.jpg` | La sala de noche, luz baja y mesas llenas. Cuadrada. |
+| Cokima | `src/assets/casa/producto.jpg` | Producto en crudo sobre fondo negro, luz dura. Cuadrada. |
+| Cokima | `src/assets/casa/equipo.jpg` | El equipo en la cocina, caras de verdad. Vertical 3:4. |
+
+## Las rejillas guía
+
+Cada hueco de foto se dibuja en pantalla con su proporción, la regla de tercios y el nombre
+del archivo que hay que dejar. **Diecinueve en total**: once de plato y ocho de la casa.
+
+Se ven en `dev` y en las previews por rama, y **no existen en producción**: no es cuestión de
+acordarse de apagarlas, lo decide `showPhotoGuides()` (`packages/config/src/photo-guides.mjs`)
+y hay tests que lo fijan. Un despliegue público siempre tiene `SITE_URL` o `VERCEL_ENV=production`,
+y cualquiera de las dos las apaga.
 
 **Una foto solo se asigna a un plato cuando hay certeza de que es ese plato.** Ilustrar un
 cachopín con la foto de otra cosa es información falsa en una carta con precios.

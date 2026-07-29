@@ -1,11 +1,24 @@
 ---
 import { getCollection } from "astro:content";
 import { pickFeatured } from "@tombo/content";
+import { showPhotoGuides } from "@tombo/config/photo-guides";
+import PhotoGuide from "@tombo/ui/PhotoGuide.astro";
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import Highlights from "../components/Highlights.astro";
 
 const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data));
+
+// La casa: la sección que hoy no existe porque no hay fotos del local, solo del
+// plato. Se dibuja en hueco para poder decidir qué se encarga; cuando lleguen
+// las imágenes, esta sección deja de ser andamio y se publica con ellas.
+const guides = showPhotoGuides();
+const casa = [
+  { file: "apps/cokima/src/assets/casa/pase.jpg", ratio: "16 / 9", note: "El pase de cocina en servicio, con la llama. Horizontal y ancha." },
+  { file: "apps/cokima/src/assets/casa/sala.jpg", ratio: "1 / 1", note: "La sala de noche, luz baja y mesas llenas." },
+  { file: "apps/cokima/src/assets/casa/producto.jpg", ratio: "1 / 1", note: "Producto en crudo sobre fondo negro, luz dura." },
+  { file: "apps/cokima/src/assets/casa/equipo.jpg", ratio: "3 / 4", note: "El equipo en la cocina. Vertical, caras de verdad." },
+];
 ---
 
 <Base
@@ -23,6 +36,27 @@ const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data
       <p class="quote">«Nos gusta mezclar, probar, mancharnos.»</p>
     </div>
   </section>
+
+  {guides && (
+    <section class="casa">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">La casa · huecos de foto</p>
+          <h2>Lo que falta por retratar</h2>
+        </div>
+        <p class="casa-txt">
+          Estos cuatro huecos no se publican: están para decidir qué se encarga al fotógrafo y con
+          qué encuadre. Dejando el archivo con el nombre que pone cada uno, el hueco se convierte
+          en la foto.
+        </p>
+        <div class="wall">
+          {casa.map((c) => (
+            <PhotoGuide file={c.file} ratio={c.ratio} note={c.note} minHeight="150px" />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 
   <section class="visita" id="visita">
     <div class="wrap">
@@ -61,6 +95,49 @@ const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data
     margin: 0;
     text-wrap: balance;
   }
+  /* Mosaico asimétrico y no una rejilla de cuatro iguales: la distribución es
+     justo lo que hay que decidir aquí, y cuatro rectángulos idénticos no
+     ayudan a imaginar nada. `:global` porque los hijos son componentes con su
+     propio ámbito de estilos y esta hoja no los alcanza sin él. */
+  .casa {
+    padding: clamp(52px, 8vw, 96px) 0 0;
+  }
+  .casa-txt {
+    color: var(--bone-dim);
+    max-width: 56ch;
+    margin: 1rem 0 0;
+  }
+  .wall {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 1.6rem;
+  }
+  .wall > :global(*:first-child) {
+    grid-column: span 2;
+  }
+  @media (min-width: 861px) {
+    .wall {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .wall > :global(*:nth-child(1)) {
+      grid-column: 1 / span 2;
+      grid-row: 1;
+    }
+    .wall > :global(*:nth-child(2)) {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .wall > :global(*:nth-child(3)) {
+      grid-column: 2;
+      grid-row: 2;
+    }
+    .wall > :global(*:nth-child(4)) {
+      grid-column: 3;
+      grid-row: 1 / span 2;
+    }
+  }
+
   .visita {
     padding: clamp(52px, 8vw, 96px) 0 0;
   }

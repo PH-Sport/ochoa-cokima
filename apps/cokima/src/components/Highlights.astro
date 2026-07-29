@@ -1,8 +1,13 @@
 ---
 // apps/cokima/src/components/Highlights.astro
 import { Image } from "astro:assets";
-import { formatEuro, type MenuEntry } from "@tombo/content";
+import { formatEuro, dishImageKey, type MenuEntry } from "@tombo/content";
+import { showPhotoGuides } from "@tombo/config/photo-guides";
+import PhotoGuide from "@tombo/ui/PhotoGuide.astro";
 import { dishImages } from "../data/dish-images.ts";
+
+// Andamio, nunca producción: la decisión la toma @tombo/config, no este archivo.
+const guides = showPhotoGuides();
 
 interface Props {
   dishes: MenuEntry[];
@@ -32,7 +37,7 @@ const cards = dishes.map((d) => ({
       script, para que también funcione sin JavaScript. */}
   <ul class="strip" tabindex="0" aria-label={t.list}>
     {cards.map(({ dish, image }) => (
-      <li class:list={["card", { flat: !image }]}>
+      <li class:list={["card", { flat: !image && !guides }]}>
         {image && (
           <Image
             src={image}
@@ -42,6 +47,13 @@ const cards = dishes.map((d) => ({
             quality={72}
             loading="lazy"
             class="shot"
+          />
+        )}
+        {!image && guides && (
+          <PhotoGuide
+            file={`apps/cokima/src/assets/dishes/${dishImageKey(dish.name)}.jpg`}
+            ratio="4 / 3"
+            note={`${dish.name}. Luz dura sobre fondo oscuro, como en su Instagram.`}
           />
         )}
         <div class="body">
