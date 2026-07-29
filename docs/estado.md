@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-- **Corte:** 2026-07-28
+- **Corte:** 2026-07-29
 - **Rama de trabajo:** `preview` (desarrollo) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
 
@@ -16,9 +16,6 @@
 Ramas de tema opcionales y efímeras: nacen de `preview` y vuelven a `preview`.
 Detalle en `deploy.md` §Modelo de ramas.
 
-**Ramas muertas por borrar:** `layout-movil` y `feat/divergencia-layout` (esta última es el
-mismo commit que `preview`; su contenido ya está integrado).
-
 ---
 
 ## 2. Qué está construido
@@ -33,42 +30,47 @@ carta "baraja" de Cokima con tabs y snap horizontal, carta "pizarra" de Ochoa co
 apertura real en hora de Madrid, View Transitions, y `MenuSection`/`DishRow` retirados de
 `packages/ui`. Registro detallado en `estado-divergencia-layout.md`.
 
-**Añadido el 2026-07-28:** favicons provisionales en las dos apps, cartel de cookies
-compacto en móvil apoyado en `--t-bottom-bar-h`, y el arreglo de que ese cartel no se
-cerraba nunca (`display: flex` ganaba a `hidden`).
+**Fase 3 — portadas, chrome y piel de Ochoa (2026-07-29).** Las dos homes abren con una
+foto a sangre y titular anclado abajo a la izquierda, sin párrafo ni botones; debajo, una
+tira de platos con nombre y precio que **asoma por el borde inferior** de la primera
+pantalla. La reserva y la navegación se mudan a la cabecera (`[Reservar]` + hamburguesa
+con foco atrapado), y desaparecen `BottomBar` y `ReserveBar`. Ochoa se viste con su marca
+real: rojo bandera sobre blanco, sin serif ni grano ni verde oliva. Diseño en
+`superpowers/specs/2026-07-29-portadas-y-chrome-design.md`, plan en
+`superpowers/plans/2026-07-29-portadas-y-chrome.md`.
 
-**Verificado el 2026-07-28 en `preview`:** `pnpm test` → 37 tests en verde (26 content,
-6 tracking, 5 config). `pnpm build` → `Complete!` en las dos apps. Medido a 390px: en
-Cokima la foto del hero entra en la primera pantalla (541px) y la home pasa de 3565px a
-2716px; en Ochoa la cabecera mide 67px sin romper y la barra inferior muestra el estado
-de apertura real; el cartel de cookies no se solapa con la barra fija (0px).
+**Verificado el 2026-07-29 en `preview`,** midiendo a 390px en las cuatro homes:
+`pnpm test` → 43 tests en verde (32 content, 6 tracking, 5 config) y `pnpm build` →
+`Complete!` en las dos apps. La cabecera baja de 110px a 61px en Cokima y a 62px en
+Ochoa; la portada ocupa el 77,5% de la pantalla y asoman las fichas con su precio;
+cabecera e interruptor de la carta encajan con 0px de solape; el cartel de cookies se
+apoya en el borde inferior sin competir con nada y sus dos botones miden 168,5px cada
+uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las portadas
+15,7:1 (Cokima) y 16,0:1 (Ochoa).
 
 ---
 
 ## 3. Pendiente de construir
 
-**Lo único grande:**
+**Lo que bloquea de verdad:**
 
-- [ ] **La home de Ochoa no muestra ni un plato.** Hay 6 platos con `featured: true` en
-      `apps/ochoa/src/data/menu-es.json` sin usar. Es el hueco que queda del objetivo
-      "que se vea qué puedes comer antes de terminar la primera pantalla". El plan de la
-      fase 2 no lo cubría: para Ochoa solo verticalizaba y densificaba.
+- [ ] **Fotografía real.** Ni una foto nueva ha entrado: la extracción desde Instagram
+      está bloqueada por la firma de las URLs de su CDN. Las webs siguen con las fotos
+      antiguas y **los once platos destacados salen sin imagen**. Todo lo demás está
+      construido para recibirlas sin tocar layout. Detalle y claves de archivo exactas en
+      `fotografia.md`.
 
 **Menores:**
 
-- [ ] Imágenes sin optimizar: `<img>` crudo en vez del `<Image>` de Astro. Cokima
-      `hero.jpg` 245 KB (1200×1200 servida a ~358px), Ochoa `hero.jpg` 151 KB +
-      `tasca.jpg` 112 KB. Es el LCP de las dos homes.
 - [ ] El mapa sigue mostrando el cartel *"Mapa · pendiente de integrar"* en las dos webs.
       Hasta que haya embed, un botón "Cómo llegar" a Google Maps cierra el hueco sin
       parecer obra inacabada.
-- [ ] Cabecera de Cokima: 110px permanentes en móvil (13% de pantalla; el sector ronda
-      el 8-10%). El offset ya cuelga de `--t-header-h`, así que ajustarlo es barato.
-- [ ] `/carta` de Ochoa: cabecera 67 + interruptor 71 + barra inferior 85 = 223px de 812
-      (27%) ocupados de forma permanente.
-- [ ] **Sin verificar:** si en la home de Cokima persiste el triple encabezado
-      *"Lo que no te puedes perder / Los imprescindibles / Selección"*. El tercero sale
-      del `title` que se pasa al componente de la carta.
+- [ ] El fragmento rojo del titular de Cokima da **4,26:1** sobre la foto. Cumple el 3:1
+      que WCAG exige para texto grande (36,8px en negrita), pero no el 4,5:1 general: el
+      vermellón `#ed1c24` no puede alcanzarlo ni sobre negro puro, donde su techo teórico
+      es 4,2:1. Cambiarlo es decisión de marca (ver §4).
+- [ ] Las fichas de destacados sin foto se resuelven tipográficamente. Funciona, pero la
+      tira gana mucho en cuanto haya imágenes.
 
 ---
 
@@ -78,13 +80,16 @@ de apertura real; el cartel de cookies no se solapa con la barra fija (0px).
       (`ALLERGEN_DATA_CONFIRMED = false` en `apps/cokima/src/site.ts`). No se enciende
       hasta que el restaurante firme los datos: un filtro "sin gluten" en el que una
       persona celíaca confía con datos orientativos es un problema de salud, no de UX.
-- [ ] **Verde oliva `#4c6b2f`** del estado de apertura en Ochoa. Lo eligió un subagente por
-      su cuenta. Contraste 5.0:1 correcto, pero introduce una cuarta familia de color fuera
-      de papel / tinta / rojo y nadie de marca lo ha validado.
 - [ ] **Texto del cartel de cookies.** Es lo que más altura le da. No se ha tocado porque
       es contenido de consentimiento y acortarlo tiene matiz legal.
-- [ ] **Borrar las dos ramas muertas** (§1).
+- [ ] **El rojo del titular de Cokima.** Con `#ed1c24` no hay forma de pasar de 4,26:1
+      sobre la portada. Se queda así (cumple para texto grande) o el fragmento pasa al
+      naranja `--ember`, que da 7,9:1 pero cambia el acento de marca en la primera
+      pantalla.
 - [ ] **Cuándo llevar `preview` a `main`** (`git switch main && git merge preview`).
+
+**Cerradas el 2026-07-29:** el verde oliva del estado de apertura (retirado con la piel
+nueva de Ochoa) y las dos ramas muertas, que ya no existen.
 
 ---
 
@@ -106,13 +111,17 @@ de apertura real; el cartel de cookies no se solapa con la barra fija (0px).
 pnpm install
 pnpm --filter cokima dev    # http://localhost:4321
 pnpm --filter ochoa dev     # segundo puerto libre
-pnpm test                   # 37 tests
+pnpm test                   # 43 tests
 SITE_URL=https://example.com pnpm build
 ```
 
-**Casi todo el trabajo de la fase 2 es mobile-first y está oculto en escritorio a
-propósito.** En una ventana ancha la impresión es que cambió poco: hay que estrechar a
+**Casi todo el trabajo es mobile-first y está pensado para pantalla estrecha.** En una
+ventana ancha la impresión es que cambió menos de lo que cambió: hay que estrechar a
 ~375-390px o usar el modo dispositivo.
+
+**Las imágenes solo se optimizan en Vercel, no en local.** Desde el 2026-07-29 las sirve
+el servicio de imágenes del adaptador (`/_vercel/image?...`), que en `dev` y en `preview`
+local devuelve el original. El peso real solo se puede medir en un despliegue.
 
 **Previews (alias fijos, no cambian con cada push):**
 - Cokima → `https://cokima-git-preview-rodzs-projects-1c289ef0.vercel.app`
@@ -144,8 +153,11 @@ Sin cambios respecto a la spec §12, más una entrada nueva:
 
 | Documento | Qué es |
 |---|---|
+| `fotografia.md` | Qué fotos faltan, con qué nombre y dónde dejarlas |
 | `deploy.md` | Vercel: dos proyectos, modelo de ramas, env vars, dominios |
 | `estado-divergencia-layout.md` | Registro de la fase 2, tarea por tarea |
 | `superpowers/specs/2026-07-18-webs-grupo-tombo-design.md` | Diseño general |
 | `superpowers/specs/2026-07-27-divergencia-layout-design.md` | Diseño de la fase 2 |
 | `superpowers/plans/2026-07-27-divergencia-layout.md` | Plan de la fase 2 (ejecutado) |
+| `superpowers/specs/2026-07-29-portadas-y-chrome-design.md` | Diseño de la fase 3 |
+| `superpowers/plans/2026-07-29-portadas-y-chrome.md` | Plan de la fase 3 (ejecutado) |
