@@ -1,0 +1,93 @@
+- generic [active] [ref=f10e1]:
+  - navigation [ref=f10e2]:
+    - generic [ref=f10e3]:
+      - link "Los Ochoa" [ref=f10e4] [cursor=pointer]:
+        - /url: /
+      - generic [ref=f10e5]:
+        - link "Reservar" [ref=f10e6] [cursor=pointer]:
+          - /url: /reservas
+        - button "Menú" [ref=f10e7] [cursor=pointer]
+  - banner [ref=f10e12]:
+    - generic [ref=f10e13]:
+      - generic [ref=f10e14]:
+        - paragraph [ref=f10e15]: Tasquita · En plena Castellana
+        - heading "La tasca que te mereces" [level=1] [ref=f10e16]
+        - paragraph [ref=f10e17]: "Un local que recuerda a los bares madrileños de toda la vida, pero con una gastronomía renovada: un buen vermú, tapas con un toque diferente y la mejor calidad de producto."
+        - generic [ref=f10e18]:
+          - link "Reservar mesa" [ref=f10e19] [cursor=pointer]:
+            - /url: /reservas
+          - link "Ver la carta" [ref=f10e20] [cursor=pointer]:
+            - /url: /carta
+      - generic [ref=f10e21]:
+        - img "Mesa de mármol con el aperitivo de Los Ochoa servido" [ref=f10e22]
+        - generic [ref=f10e23]: Madriz
+        - generic [ref=f10e24]: El aperitivo, servido
+  - generic [ref=f10e26]:
+    - blockquote [ref=f10e28]:
+      - text: «Aperitivos de esos que se alargan hasta la noche,
+      - strong [ref=f10e29]: como filosofía de vida
+      - text: .»
+    - paragraph [ref=f10e30]: Un espacio divertido en plena Castellana donde beberte un buen vermú y acompañarlo de tapas con un toque diferente. El tapeo de toda la vida, con sabores nuevos.
+  - generic [ref=f10e34]:
+    - img "Rótulo rojo de Los Ochoa en la ventana del local" [ref=f10e36]
+    - generic [ref=f10e37]:
+      - paragraph [ref=f10e38]: La tasca
+      - heading "El bar de toda la vida, renovado" [level=2] [ref=f10e39]
+      - paragraph [ref=f10e40]:
+        - text: Barra, mármol y rótulo rojo.
+        - emphasis [ref=f10e41]: El tapeo de toda la vida que te sorprenderá con sabores nuevos
+        - text: y con la mejor calidad de producto — de la ensaladilla al cachopín, pasando por unas gyozas de txistorra.
+      - paragraph [ref=f10e42]:
+        - link "Ver la carta completa" [ref=f10e43] [cursor=pointer]:
+          - /url: /carta
+  - generic [ref=f10e45]:
+    - paragraph [ref=f10e47]: Dónde estamos
+    - heading "En plena Castellana" [level=2] [ref=f10e48]
+    - generic [ref=f10e49]:
+      - generic [ref=f10e50]:
+        - generic [ref=f10e51]:
+          - term [ref=f10e52]: Dirección
+          - definition [ref=f10e53]:
+            - text: P.º de la Castellana, 117
+            - generic [ref=f10e54]: 28046 Madrid
+        - generic [ref=f10e55]:
+          - term [ref=f10e56]: Teléfono
+          - definition [ref=f10e57]:
+            - link "912 87 68 20" [ref=f10e58] [cursor=pointer]:
+              - /url: tel:+34912876820
+        - generic [ref=f10e59]:
+          - term [ref=f10e60]: Horario
+          - definition [ref=f10e61]:
+            - generic [ref=f10e62]:
+              - generic [ref=f10e63]: Lunes a jueves
+              - generic [ref=f10e64]: 9:00 – 1:00
+              - generic [ref=f10e65]: Viernes
+              - generic [ref=f10e66]: 9:00 – 2:30
+              - generic [ref=f10e67]: Sábado
+              - generic [ref=f10e68]: 12:00 – 2:30
+              - generic [ref=f10e69]: Domingo
+              - generic [ref=f10e70]: 12:00 – 1:00
+        - generic [ref=f10e71]:
+          - term [ref=f10e72]: Instagram
+          - definition [ref=f10e73]:
+            - link "@tasquita.losochoa" [ref=f10e74] [cursor=pointer]:
+              - /url: https://instagram.com/tasquita.losochoa
+      - 'img "Mapa orientativo: Paseo de la Castellana 117, Madrid" [ref=f10e75]':
+        - generic [ref=f10e76]: Castellana 117
+        - generic [ref=f10e79]: Mapa · pendiente de integrar
+  - contentinfo [ref=f10e80]:
+    - generic [ref=f10e81]:
+      - generic [ref=f10e82]: Los Ochoa
+      - generic [ref=f10e83]:
+        - text: Castellana 117 · Madrid ·
+        - link "912 87 68 20" [ref=f10e84] [cursor=pointer]:
+          - /url: tel:+34912876820
+      - generic [ref=f10e85]:
+        - link "Aviso legal" [ref=f10e86] [cursor=pointer]:
+          - /url: /aviso-legal
+        - text: ·
+        - link "Privacidad" [ref=f10e87] [cursor=pointer]:
+          - /url: /privacidad
+        - text: ·
+        - link "Cookies" [ref=f10e88] [cursor=pointer]:
+          - /url: /cookies

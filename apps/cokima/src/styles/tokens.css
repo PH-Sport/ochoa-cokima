@@ -37,12 +37,6 @@
      el punto de partida sin JavaScript; Nav.astro lo reescribe en cliente con
      ResizeObserver con el alto real medido. */
   --t-header-h: 61px;
-  /* Alto real de ReserveBar sin el badge "Abierto ahora" (70px medido en
-     navegador a 375px: el layout es una fila horizontal donde el botón de
-     44px mín. domina la altura, así que el badge no la cambia). Se
-     sobreescribe en cliente vía ResizeObserver (ver ReserveBar.astro) en
-     cuanto el componente monta, por si cambia con otro idioma/viewport. */
-  --t-bottom-bar-h: 70px;
 
   --t-heading-font: var(--serif);
   --t-menu-title-size: 1.6rem;
@@ -52,10 +46,4 @@
   --t-desc-style: normal;
   --t-leader: 1px dotted var(--bone-faint);
   --t-section-gap: clamp(38px, 5vw, 60px);
-}
-
-@media (max-width: 860px) {
-  body {
-    padding-bottom: var(--t-bottom-bar-h);
-  }
 }

@@ -36,10 +36,6 @@
      que el sticky sea correcto sin JavaScript; Nav.astro lo reescribe en
      cliente con el alto medido en cuanto monta. */
   --t-header-h: 62px;
-  /* Alto real de BottomBar sin el badge "Abierto ahora" (69px medido en navegador).
-     Se sobreescribe en cliente vía ResizeObserver (ver BottomBar.astro) en cuanto
-     el componente monta y de nuevo si el badge aparece tras resolver el horario. */
-  --t-bottom-bar-h: 69px;
 
   --t-heading-font: var(--display);
   --t-menu-title-size: clamp(1.9rem, 5vw, 3rem);
@@ -59,10 +55,4 @@
   --t-dish-weight: 600;
   --t-leader: 2px dotted var(--ink-faint);
   --t-section-gap: clamp(38px, 5vw, 58px);
-}
-
-@media (max-width: 780px) {
-  body {
-    padding-bottom: var(--t-bottom-bar-h);
-  }
 }

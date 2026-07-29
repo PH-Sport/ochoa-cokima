@@ -1,0 +1,128 @@
+- generic [active] [ref=f9e1]:
+  - navigation [ref=f9e2]:
+    - generic [ref=f9e3]:
+      - link "Cokima" [ref=f9e4] [cursor=pointer]:
+        - /url: /
+      - generic [ref=f9e6]:
+        - link "Reservar" [ref=f9e7] [cursor=pointer]:
+          - /url: /reservas
+        - button "Menú" [ref=f9e8] [cursor=pointer]
+  - banner [ref=f9e13]:
+    - generic [ref=f9e15]:
+      - generic [ref=f9e16]:
+        - paragraph [ref=f9e17]: Kitchen Madness · Madrid
+        - heading "Puedes comer en cualquier sitio. Pero será solo comer." [level=1] [ref=f9e18]
+        - paragraph [ref=f9e19]: "Una explosión de sabor. Un concepto creado para compartir y desfasar: de la receta madrileña de siempre a la cocina más exótica, con producto fresco y sin miedo a mezclar."
+        - generic [ref=f9e20]:
+          - link "Reservar mesa" [ref=f9e21] [cursor=pointer]:
+            - /url: /reservas
+          - link "Ver la carta" [ref=f9e22] [cursor=pointer]:
+            - /url: /carta
+      - generic [ref=f9e23]:
+        - img "Plato de Cokima sobre pizarra oscura" [ref=f9e24]
+        - generic [ref=f9e25]: Compartir es vivir
+  - generic [ref=f9e27]:
+    - generic [ref=f9e28]:
+      - paragraph [ref=f9e29]: Lo que no te puedes perder
+      - heading "Los imprescindibles" [level=2] [ref=f9e30]
+    - generic [ref=f9e31]:
+      - heading "Selección" [level=2] [ref=f9e32]
+      - list "Selección" [ref=f9e33]:
+        - listitem [ref=f9e34]:
+          - heading "Katsu sando de solomillo de ternera" [level=3] [ref=f9e35]
+          - paragraph [ref=f9e36]: Con queso gorgonzola y demiglace de trufa.
+          - generic [ref=f9e37]:
+            - generic [ref=f9e38]: 22 €
+            - generic [ref=f9e39]:
+              - img "Gluten" [ref=f9e40]
+              - img "Lácteos" [ref=f9e43]
+        - listitem [ref=f9e46]:
+          - heading "Gyozas de langostino" [level=3] [ref=f9e47]
+          - paragraph [ref=f9e48]: Con salsa de chorizo ibérico de Extremadura.
+          - generic [ref=f9e49]:
+            - generic [ref=f9e50]: 14 €
+            - generic [ref=f9e51]:
+              - img "Gluten" [ref=f9e52]
+              - img "Crustáceos" [ref=f9e55]
+        - listitem [ref=f9e58]:
+          - heading "Arroz meloso de carabinero a la brasa" [level=3] [ref=f9e59]
+          - paragraph [ref=f9e60]: Con alioli de perejil.
+          - generic [ref=f9e61]:
+            - generic [ref=f9e62]: 30 €
+            - generic [ref=f9e63]:
+              - img "Crustáceos" [ref=f9e64]
+              - img "Huevo" [ref=f9e67]
+        - listitem [ref=f9e70]:
+          - heading "Tataki de atún" [level=3] [ref=f9e71]
+          - paragraph [ref=f9e72]: Gel de guisante y cremoso de ají amarillo.
+          - generic [ref=f9e73]:
+            - generic [ref=f9e74]: 18 €
+            - generic [ref=f9e75]:
+              - img "Pescado" [ref=f9e76]
+              - img "Soja" [ref=f9e79]
+        - listitem [ref=f9e82]:
+          - heading "Tacos del gobernador de gambón" [level=3] [ref=f9e83]
+          - paragraph [ref=f9e84]: Con ñora y queso Oaxaca.
+          - generic [ref=f9e85]:
+            - generic [ref=f9e86]: 14 €
+            - generic [ref=f9e87]:
+              - img "Gluten" [ref=f9e88]
+              - img "Lácteos" [ref=f9e91]
+              - img "Crustáceos" [ref=f9e94]
+    - paragraph [ref=f9e97]:
+      - link "Carta completa" [ref=f9e98] [cursor=pointer]:
+        - /url: /carta
+  - paragraph [ref=f9e101]: «Nos gusta mezclar, probar, mancharnos.»
+  - generic [ref=f9e103]:
+    - generic [ref=f9e104]:
+      - paragraph [ref=f9e105]: Dónde estamos
+      - heading "Chamberí, Madrid" [level=2] [ref=f9e106]
+    - generic [ref=f9e107]:
+      - generic [ref=f9e108]:
+        - generic [ref=f9e109]:
+          - term [ref=f9e110]: Dirección
+          - definition [ref=f9e111]:
+            - text: C. de Andrés Mellado, 21
+            - generic [ref=f9e112]: 28015 Madrid
+        - generic [ref=f9e113]:
+          - term [ref=f9e114]: Teléfono
+          - definition [ref=f9e115]:
+            - link "915 98 94 01" [ref=f9e116] [cursor=pointer]:
+              - /url: tel:+34915989401
+        - generic [ref=f9e117]:
+          - term [ref=f9e118]: Horario
+          - definition [ref=f9e119]:
+            - text: Lunes a domingo · 9:00 – 00:00
+            - generic [ref=f9e120]: Cocina 13:00–16:00 y 19:30–23:30
+        - generic [ref=f9e121]:
+          - term [ref=f9e122]: Instagram
+          - definition [ref=f9e123]:
+            - link "@cokimamadrid" [ref=f9e124] [cursor=pointer]:
+              - /url: https://instagram.com/cokimamadrid
+      - 'img "Mapa orientativo: Andrés Mellado 21, Madrid" [ref=f9e125]':
+        - generic [ref=f9e126]: Andrés Mellado 21
+        - generic [ref=f9e129]: Mapa · pendiente de integrar
+  - contentinfo [ref=f9e130]:
+    - generic [ref=f9e131]:
+      - generic [ref=f9e132]: Cokima
+      - generic [ref=f9e134]:
+        - text: Andrés Mellado 21 · Madrid ·
+        - link "915 98 94 01" [ref=f9e135] [cursor=pointer]:
+          - /url: tel:+34915989401
+      - generic [ref=f9e136]:
+        - link "Aviso legal" [ref=f9e137] [cursor=pointer]:
+          - /url: /aviso-legal
+        - text: ·
+        - link "Privacidad" [ref=f9e138] [cursor=pointer]:
+          - /url: /privacidad
+        - text: ·
+        - link "Cookies" [ref=f9e139] [cursor=pointer]:
+          - /url: /cookies
+  - generic [ref=f9e140]:
+    - paragraph [ref=f9e141]:
+      - text: Usamos cookies para medir de dónde llegan las reservas y mejorar la web. Puedes aceptarlas o rechazarlas.
+      - link "Política de cookies" [ref=f9e142] [cursor=pointer]:
+        - /url: /cookies
+    - generic [ref=f9e143]:
+      - button "Rechazar" [ref=f9e144] [cursor=pointer]
+      - button "Aceptar" [ref=f9e145] [cursor=pointer]

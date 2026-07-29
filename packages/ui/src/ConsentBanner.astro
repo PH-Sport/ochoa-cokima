@@ -98,7 +98,11 @@ const t =
     font-weight: 600;
     background: var(--t-accent);
     color: var(--t-accent-contrast, #fff);
-    border: 0;
+    /* Borde transparente, no `border: 0`: al repartir con `flex-basis: 0`,
+       flexbox divide el content-box y luego suma padding y borde, así que un
+       botón con borde y otro sin él salen con anchos distintos. Rechazar y
+       aceptar tienen que medir exactamente lo mismo. */
+    border: 1px solid transparent;
     border-radius: 4px;
     padding: 9px 16px;
     cursor: pointer;
@@ -109,19 +113,18 @@ const t =
     border: 1px solid var(--t-line);
   }
 
-  /* Móvil: la tarjeta flotante tapaba la primera pantalla justo encima de la
-     foto del hero. Pasa a franja a lo ancho, más baja, apoyada sobre la barra
-     fija de cada marca (`--t-bottom-bar-h`, que las propias barras recalculan
-     con su alto real) para que no se solapen. */
+  /* Móvil: franja a lo ancho apoyada en el borde inferior. Desde que la reserva
+     vive en la cabecera, abajo no queda ninguna barra fija con la que competir.
+     El safe-area evita que los botones caigan bajo el indicador de iOS. */
   @media (max-width: 640px) {
     .consent {
       left: 0;
       right: 0;
-      bottom: var(--t-bottom-bar-h, 0px);
+      bottom: 0;
       max-width: none;
       border-radius: 0;
       border-inline: 0;
-      padding: 10px 14px;
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
       gap: 8px;
     }
     .consent p {
@@ -133,8 +136,15 @@ const t =
     .consent-actions {
       flex: 1 1 100%;
     }
+    /* `min-width: 0` es imprescindible: con el `auto` por defecto, cada botón
+       reclama su ancho de min-content y "Rechazar" acaba midiendo más que
+       "Aceptar" por ser palabra más larga. Rechazar tiene que pesar
+       exactamente lo mismo que aceptar, así que el reparto manda sobre el
+       contenido; el padding se afloja para que el texto siga cabiendo. */
     .consent-btn {
       flex: 1;
+      min-width: 0;
+      padding-inline: 12px;
       min-height: 44px;
     }
   }
