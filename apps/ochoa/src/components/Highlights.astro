@@ -44,8 +44,9 @@ const label = (price: MenuEntry["price"]) => {
           <Image
             src={image}
             alt={dish.name}
-            widths={[280, 560]}
+            widths={[320, 640]}
             sizes="(max-width: 860px) 68vw, 280px"
+            quality={72}
             loading="lazy"
             class="shot"
           />
