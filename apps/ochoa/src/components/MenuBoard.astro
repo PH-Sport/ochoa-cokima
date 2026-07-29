@@ -15,8 +15,6 @@ const t = es
       price: "Precio",
       dish: "Plato",
       noHalf: "No se sirve en media ración",
-      search: "Buscar plato",
-      empty: "Nada con ese nombre.",
       sections: { carta: "Carta", postres: "Postres" } as Record<string, string>,
     }
   : {
@@ -25,8 +23,6 @@ const t = es
       price: "Price",
       dish: "Dish",
       noHalf: "Not served as a half portion",
-      search: "Search dish",
-      empty: "Nothing by that name.",
       sections: { carta: "Menu", postres: "Desserts" } as Record<string, string>,
     };
 
@@ -54,13 +50,8 @@ const cells = (price: MenuEntry["price"]) => {
 ---
 
 <div class="board">
-  <label class="search" data-search-wrap hidden>
-    <span class="visually-hidden">{t.search}</span>
-    <input type="search" data-search placeholder={t.search} autocomplete="off" />
-  </label>
-
   {sections.map((sec) => (
-    <section class="sec" data-section>
+    <section class="sec">
       {/* La primera sección no repite su título: lo dice el titular de la
           página dos centímetros más arriba. */}
       {sec.key !== "carta" && <h2 class="sec-title">{sec.title}</h2>}
@@ -82,7 +73,7 @@ const cells = (price: MenuEntry["price"]) => {
           {sec.items.map((dish) => {
             const c = cells(dish.price);
             return (
-              <tr data-dish data-name={dish.name} data-desc={dish.description ?? ""}>
+              <tr>
                 <th scope="row" class="dish">
                   <span class="name">{dish.name}</span>
                   {dish.description && <span class="desc">{dish.description}</span>}
@@ -107,88 +98,11 @@ const cells = (price: MenuEntry["price"]) => {
       </table>
     </section>
   ))}
-
-  <p class="empty" data-empty hidden aria-live="polite">{t.empty}</p>
 </div>
 
-<script>
-  import { matchDish } from "@tombo/content";
-
-  let controller: AbortController | null = null;
-
-  const mount = () => {
-    // El buscador solo se ofrece con JavaScript: sin él no filtraría nada y un
-    // campo que no hace nada es peor que no tenerlo.
-    const wrap = document.querySelector<HTMLElement>("[data-search-wrap]");
-    const input = document.querySelector<HTMLInputElement>("[data-search]");
-    if (!wrap || !input) return;
-    wrap.hidden = false;
-
-    controller?.abort();
-    controller = new AbortController();
-
-    const empty = document.querySelector<HTMLElement>("[data-empty]");
-
-    input.addEventListener(
-      "input",
-      () => {
-        const q = input.value;
-        let visible = 0;
-        document.querySelectorAll<HTMLElement>("[data-dish]").forEach((row) => {
-          const hit = matchDish({ name: row.dataset.name ?? "", description: row.dataset.desc }, q);
-          row.hidden = !hit;
-          if (hit) visible++;
-        });
-        // Una sección cuyas filas se han ido entera se retira con ellas: si no,
-        // queda el título de "Postres" presidiendo una tabla vacía.
-        document.querySelectorAll<HTMLElement>("[data-section]").forEach((sec) => {
-          sec.hidden = !sec.querySelector("[data-dish]:not([hidden])");
-        });
-        if (empty) empty.hidden = visible > 0;
-      },
-      { signal: controller.signal },
-    );
-  };
-
-  mount();
-  // `astro:after-swap` y no `astro:page-load`: este último también dispara en la
-  // carga inicial, así que con ClientRouter activo duplicaría los listeners.
-  document.addEventListener("astro:after-swap", mount);
-</script>
-
 <style>
-  /* El buscador ya no se pega a la cabecera. Pegajoso medía 71px que viajaban
-     con el dedo por toda la carta, y sumado a la barra se comía un cuarto de la
-     pantalla; aquí arriba se usa cuando hace falta y luego deja sitio. */
-  .search {
-    display: block;
-    max-width: var(--carta-w);
-    margin-bottom: clamp(18px, 3vw, 26px);
-  }
-  .search[hidden] {
-    display: none;
-  }
-  .search input {
-    min-height: 44px;
-    width: 100%;
-    padding: 0 12px;
-    font-family: var(--sans);
-    font-size: 0.95rem;
-    color: var(--ink);
-    background: transparent;
-    border: 2px solid var(--ink);
-    border-radius: 4px;
-  }
-  .search input:focus-visible {
-    outline: 2px solid var(--rojo);
-    outline-offset: 2px;
-  }
-
   .sec + .sec {
     margin-top: var(--t-section-gap);
-  }
-  .sec[hidden] {
-    display: none;
   }
   .sec-title {
     font-family: var(--t-heading-font);
@@ -252,9 +166,6 @@ const cells = (price: MenuEntry["price"]) => {
   .menu tbody tr {
     border-bottom: 1px solid var(--line);
   }
-  .menu tbody tr[hidden] {
-    display: none;
-  }
   .dish {
     text-align: left;
     font-weight: 400;
@@ -289,14 +200,6 @@ const cells = (price: MenuEntry["price"]) => {
      gastar una palabra. Se apaga un punto para que no pese como una cifra. */
   .dash {
     color: var(--ink-faint);
-  }
-  .empty {
-    margin: 1.4rem 0 0;
-    font-family: var(--sans);
-    color: var(--ink-dim);
-  }
-  .empty[hidden] {
-    display: none;
   }
 
   .visually-hidden {

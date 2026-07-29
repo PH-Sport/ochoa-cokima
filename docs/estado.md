@@ -105,7 +105,10 @@ Orden acordado. Los cinco primeros no dependen de nadie; el sexto necesita conte
    `scrollbar-gutter: stable`.
 3. ~~**Carta de Ochoa a dos columnas.**~~ **Hecho el 2026-07-30.** Los dos precios a la vez
    en columnas alineadas, y fuera el interruptor pegajoso: era una barra de 71px que
-   viajaba con el dedo por toda la carta. El buscador se queda, arriba y quieto. La
+   viajaba con el dedo por toda la carta. **Fuera también el buscador**, que Mario retiró el
+   mismo día — nadie va a buscar en una carta de veinticinco platos que se lee de un vistazo.
+   Con él se fueron `matchDish` y `normalize` (`packages/content/src/search.ts`) y sus nueve
+   tests, y la carta se quedó **sin una línea de JavaScript**. La
    nomenclatura la confirmó Mario con el restaurante: **«Ración» y «½ Ración», no «Tapa»**.
    Es una `<table>` de verdad, con `scope="col"`/`scope="row"`, porque un precio sin su
    cabecera no dice si es media o entera — y así un lector de pantalla lo anuncia solo.
@@ -175,7 +178,7 @@ sirven media ración, no tapa. Es la nomenclatura que va en la carta.
 pnpm install
 pnpm --filter cokima dev    # http://localhost:4321
 pnpm --filter ochoa dev     # segundo puerto libre
-pnpm test                   # 43 tests
+pnpm test                   # 34 tests (eran 43: los 9 del buscador se fueron con él)
 SITE_URL=https://example.com pnpm build
 ```
 
