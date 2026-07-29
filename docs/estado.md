@@ -74,6 +74,34 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
 
 ---
 
+## 3.bis Fase 4 — acordada el 2026-07-29, sin empezar
+
+Orden acordado. Los cinco primeros no dependen de nadie; el sexto necesita contenido real.
+
+1. **Tipografía propia para Ochoa.** Hoy el cuerpo usa la fuente del sistema
+   (`-apple-system, Segoe UI, Roboto`) y Anton solo aparece en titulares; Cokima sí tiene
+   Bricolage Grotesque en todo. Es la causa de fondo de que Ochoa parezca menos diseñada.
+   **La elección queda delegada**, con el criterio de que cuadre con su Instagram.
+2. **Menú a pantalla completa.** Botón sin borde, tres rayas. Secciones en cascada
+   vertical priorizando "La carta". Bloquear el scroll del fondo. Con transición suave.
+3. **Carta de Ochoa a dos columnas.** Los dos precios a la vez, como carta de bar; fuera
+   el interruptor pegajoso de 71px. Nomenclatura de bar («Tapa», «½»), con el reto de que
+   quede limpio: el «½» no puede quedar desperdigado del «Ración». Y quitar
+   `tabular-nums` del precio — es lo que hace que los números parezcan de otra fuente, no
+   la familia, que ya es la misma.
+4. **Rejillas guía en los huecos de foto.** Marcadores visibles, a propósito, para decidir
+   dónde van las imágenes. Mario los pide como herramienta de trabajo y se compromete a
+   que no lleguen a producción. Hacen falta del orden de 15-20 fotos, no dos.
+5. **Sistema de movimiento.** Pocas animaciones, concretas, y ordenadas en el código con
+   lógica detrás: una curva, dos duraciones, un desplazamiento. Sin bounce.
+6. **Páginas nuevas.** No relleno: dar contexto a lo que ya hay y contar la historia real
+   de cada casa, con copys trabajados. Las páginas concretas se deciden más adelante.
+
+**Pendiente de foco:** casi todo el trabajo hasta ahora ha mirado a Ochoa. Cokima está sin
+desmenuzar a fondo.
+
+---
+
 ## 4. Decisiones abiertas (de Mario)
 
 - [ ] **Filtro de alérgenos de Cokima.** Construido y apagado
@@ -86,7 +114,12 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
       sobre la portada. Se queda así (cumple para texto grande) o el fragmento pasa al
       naranja `--ember`, que da 7,9:1 pero cambia el acento de marca en la primera
       pantalla.
+- [ ] **«Tapa» o «½ ración».** No son lo mismo en hostelería y el precio va al lado: hay
+      que preguntar al restaurante qué sirve de verdad antes de cambiar la palabra en la
+      carta. La carta original dice «½ ración».
 - [ ] **Cuándo llevar `preview` a `main`** (`git switch main && git merge preview`).
+- [ ] **Autorizar el push de `preview`.** El trabajo de la fase 3 está commiteado en local
+      pero **sin subir**, así que los alias de preview siguen mostrando la versión vieja.
 
 **Cerradas el 2026-07-29:** el verde oliva del estado de apertura (retirado con la piel
 nueva de Ochoa) y las dos ramas muertas, que ya no existen.
