@@ -1,25 +1,24 @@
 ---
 import { getCollection } from "astro:content";
 import { pickFeatured } from "@tombo/content";
-import { showPhotoGuides } from "@tombo/config/photo-guides";
-import PhotoGuide from "@tombo/ui/PhotoGuide.astro";
+import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import Highlights from "../components/Highlights.astro";
+import barra from "../assets/casa/barra.jpg";
+import rotulo from "../assets/casa/rotulo.jpg";
+import vermu from "../assets/casa/vermu.jpg";
+import comedor from "../assets/casa/comedor.jpg";
 
 const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data));
 
-// La casa: la sección que hoy no existe porque no hay fotos del local, solo del
-// plato. El texto ya es el definitivo —el que se publicará con las imágenes—; lo
-// único provisional son los cuatro huecos, y eso ya lo dice cada rejilla en su
-// etiqueta. Las cuatro comparten proporción a propósito: en cuadrícula regular
-// se ven como una serie, y de paso es más fácil de encargar.
-const guides = showPhotoGuides();
+// La casa: ya no son rejillas. Las cuatro son fotos reales del local, de la
+// propia web del grupo, así que esta sección se publica.
 const casa = [
-  { file: "apps/ochoa/src/assets/casa/barra.jpg", note: "La barra en hora punta, con el mandil rojo." },
-  { file: "apps/ochoa/src/assets/casa/rotulo.jpg", note: "El rótulo desde la calle, de noche, con el rojo encendido." },
-  { file: "apps/ochoa/src/assets/casa/vermu.jpg", note: "Vermú de grifo recién servido, plano corto." },
-  { file: "apps/ochoa/src/assets/casa/comedor.jpg", note: "El comedor lleno a mediodía, gente de verdad." },
+  { src: barra, alt: "Barra de Los Ochoa con las botellas y el espejo rotulado a mano: tortilla, gildas, ensaladilla, patatas bravas" },
+  { src: rotulo, alt: "Rótulo de Los Ochoa pintado en el cristal, con la terraza al otro lado" },
+  { src: vermu, alt: "Vermú con hielo y una banderilla de anchoa y aceituna sobre mármol" },
+  { src: comedor, alt: "Interior del local: banco corrido rojo, mesas de mármol y el rótulo visto desde dentro" },
 ];
 ---
 
@@ -48,7 +47,7 @@ const casa = [
     <div class="wrap"><div class="rule"></div></div>
     <div class="wrap tasca-grid">
       <div class="tasca-photo">
-        <img src="/images/hero.jpg" alt="Mesa de mármol con varios platos de la carta servidos para compartir" width="1400" height="800" loading="lazy" />
+        <img src="/images/mesa.jpg" alt="Mesa de mármol con varios platos de la carta servidos para compartir" width="1920" height="1080" loading="lazy" />
       </div>
       <div>
         <p class="eyebrow">La tasca</p>
@@ -63,24 +62,30 @@ const casa = [
     </div>
   </section>
 
-  {guides && (
-    <section class="casa">
-      <div class="wrap">
-        <div class="rule"></div>
-        <p class="eyebrow">La casa</p>
-        <h2 class="cartel">Lo que hay detrás del cristal</h2>
-        <p class="txt">
-          Barra, mármol y vermú de media tarde. <em>El tapeo que se alarga hasta que alguien mira
-          el reloj</em> y resulta que ya es de noche. Los Ochoa por dentro.
-        </p>
-        <div class="wall">
-          {casa.map((c) => (
-            <PhotoGuide file={c.file} ratio="4 / 3" note={c.note} minHeight="150px" />
-          ))}
-        </div>
+  <section class="casa">
+    <div class="wrap">
+      <div class="rule"></div>
+      <p class="eyebrow">La casa</p>
+      <h2 class="cartel">Lo que hay detrás del cristal</h2>
+      <p class="txt">
+        Barra, mármol y vermú de media tarde. <em>El tapeo que se alarga hasta que alguien mira
+        el reloj</em> y resulta que ya es de noche. Los Ochoa por dentro.
+      </p>
+      <div class="wall">
+        {casa.map((c) => (
+          <Image
+            src={c.src}
+            alt={c.alt}
+            widths={[320, 640, 900]}
+            sizes="(max-width: 860px) 46vw, 33vw"
+            quality={72}
+            loading="lazy"
+            class="casa-shot"
+          />
+        ))}
       </div>
-    </section>
-  )}
+    </div>
+  </section>
 
   <section class="visita" id="visita">
     <div class="wrap">
@@ -159,14 +164,14 @@ const casa = [
       grid-template-columns: 1fr;
     }
   }
-  /* Apaisada y no cuadrada: la foto que vive aquí ahora es el cenital de la
-     mesa, y recortarlo a cuadrado se comía media mesa. */
+  /* Apaisada 16:9, la proporción del propio archivo: aquí vive el cenital de la
+     mesa y recortarlo a cuadrado se comía media mesa. */
   .tasca-photo {
     border: 2px solid var(--ink);
     border-radius: 4px;
     overflow: hidden;
     box-shadow: -8px 8px 0 rgba(198, 34, 43, 0.9);
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 9;
   }
   .tasca-photo img {
     width: 100%;
@@ -201,11 +206,40 @@ const casa = [
     font-size: clamp(1.9rem, 5vw, 3rem);
     margin: 0.2rem 0 0;
   }
+  /* Dos columnas desfasadas: la de la derecha baja un escalón para que la serie
+     no se lea como una tabla. Ni el mosaico de piezas de tamaños distintos —que
+     llamaba la atención sobre la composición— ni la cuadrícula perfecta, que era
+     lo contrario y quedaba rígida. El desfase también hace que se vea siempre
+     media foto empezada, que invita a seguir bajando. */
   .wall {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: clamp(10px, 1.6vw, 18px);
+    gap: clamp(12px, 2vw, 22px);
     margin-top: 1.6rem;
+    /* El escalón sube como margen inferior de la columna izquierda para que la
+       sección no acabe con un diente suelto. */
+    padding-bottom: var(--desfase);
+    --desfase: clamp(28px, 7vw, 64px);
+  }
+  .wall > :global(*:nth-child(2n)) {
+    margin-top: var(--desfase);
+  }
+  .casa-shot {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+  }
+  /* La primera y la última llevan el realce rojo de la casa, en esquinas
+     opuestas: es el mismo recurso del retrato de «la tasca», y remata el
+     escalonado por sus dos extremos. */
+  .wall > :global(*:first-child) {
+    box-shadow: -8px 8px 0 rgba(198, 34, 43, 0.9);
+  }
+  .wall > :global(*:last-child) {
+    box-shadow: 8px 8px 0 rgba(198, 34, 43, 0.9);
   }
 
   .visita {

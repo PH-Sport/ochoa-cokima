@@ -2,10 +2,17 @@
 
 ## Estado
 
-**Las webs siguen con las fotos antiguas.** La selección de Instagram acordada el
-2026-07-29 no ha podido descargarse: la extensión de navegador bloquea la extracción de
-las URLs del CDN de Instagram porque llevan parámetros de firma en la cadena de consulta.
-No es un problema del código ni de permisos de la cuenta.
+**Ochoa ya tiene fotos reales del local; Cokima no.** El 2026-07-30 aparecieron **nueve fotos
+en la web vieja del grupo** que nadie había mirado:
+`grupotombo.com/wp-content/uploads/2021/09/LosOchoa-1..9.jpg`, a 1000×1000. Con ellas se
+resolvieron la portada de Ochoa y las cuatro de «la casa». **Quedan cuatro sin usar y son
+buenas** —croquetas en huevera, huevos rotos, brioche de rabo de toro, un bocadillo en las
+manos con el banco rojo detrás—: sirven directamente para cuatro de los seis platos destacados
+que siguen sin imagen. Ver la tabla de más abajo para el nombre que tiene que llevar cada una.
+
+La selección de Instagram acordada el 2026-07-29 sigue sin poder descargarse: la extensión de
+navegador bloquea la extracción de las URLs del CDN de Instagram porque llevan parámetros de
+firma en la cadena de consulta. No es un problema del código ni de permisos de la cuenta.
 
 Lo que sí está hecho: las imágenes existentes pasan por `<Image>` de Astro desde
 `src/assets/`, así que **sustituir una foto es dejar el archivo con el mismo nombre**. No
@@ -20,15 +27,13 @@ mayor resolución disponible.
 
 | Destino | Qué buscamos |
 |---|---|
-| `apps/cokima/src/assets/hero.jpg` | Registro oscuro con luz dura. En su Instagram encajan la parrilla con llama, el atún crudo sobre fondo negro o las gambas rojas. |
-| `apps/ochoa/src/assets/tasca.jpg` | **Ya cubierta**, con el rótulo pintado en el cristal. Ver la nota de abajo antes de sustituirla. |
+| `apps/cokima/src/assets/hero.jpg` | **Lo único urgente que queda.** Registro oscuro con luz dura: en su Instagram encajan la parrilla con llama, el atún crudo sobre fondo negro o las gambas rojas. |
+| `apps/ochoa/src/assets/hero.jpg` | **Ya cubierta** con la fachada (`LosOchoa-5`): toldo, cartel colgante y terraza. |
 
-**Ojo con la portada de Ochoa:** desde el 2026-07-30 es `tasca.jpg` —el rótulo en el
-cristal—, no `hero.jpg`, que se mudó a la sección «la tasca». Como la foto es **cuadrada** y
-la portada de móvil es vertical, a sangre solo cabía el 60% del ancho y el rótulo se leía
-«OS OCHO»; por eso en móvil la portada se parte en dos: la foto entera arriba y el titular en
-una banda del rojo de la casa. **Si la sustituye una toma apaisada, esa composición deja de
-hacer falta** y conviene revisar la media query de `Hero.astro`.
+**Ojo con la portada de Ochoa.** Es cuadrada y se sirve a sangre, así que en móvil se recorta a
+lo alto: lleva `object-position: 62% 42%` para que el recorte se quede con el cartel y la puerta
+y no con la acera. Si se sustituye por otra foto **hay que revisar ese encuadre**, porque está
+elegido para esta imagen y no para cualquiera.
 
 ### Fotos de plato
 
@@ -54,27 +59,32 @@ copiar de ahí.
 | Cokima | Katsu sando de solomillo de ternera | `katsu-sando-de-solomillo-de-ternera.jpg` |
 | Cokima | Arroz meloso de carabinero a la brasa | `arroz-meloso-de-carabinero-a-la-brasa.jpg` |
 | Ochoa | Oreja de cerdo crujiente con salsa brava | `oreja-de-cerdo-crujiente-con-salsa-brava.jpg` |
-| Ochoa | Huevos rotos con puntilla | `huevos-rotos-con-puntilla.jpg` |
+| Ochoa | Huevos rotos con puntilla | `huevos-rotos-con-puntilla.jpg` — **candidata: `LosOchoa-6`** |
 | Ochoa | Cachopín de ternera | `cachopin-de-ternera.jpg` |
-| Ochoa | Croissant de rabo de toro | `croissant-de-rabo-de-toro.jpg` |
-| Ochoa | Ración de croquetas de jamón Joselito | `racion-de-croquetas-de-jamon-joselito.jpg` |
+| Ochoa | Croissant de rabo de toro | `croissant-de-rabo-de-toro.jpg` — **candidata: `LosOchoa-7`**, si el brioche es este plato |
+| Ochoa | Ración de croquetas de jamón Joselito | `racion-de-croquetas-de-jamon-joselito.jpg` — **candidata: `LosOchoa-2`** |
 | Ochoa | Ensaladilla rusa casera | `ensaladilla-rusa-casera.jpg` |
+
+**Las candidatas hay que confirmarlas antes de asignarlas.** Una foto solo se pone en un plato
+cuando hay certeza de que es ese plato: `LosOchoa-6` parece huevos rotos con puntilla y
+`LosOchoa-2` croquetas empanadas con jamón por encima, pero `LosOchoa-7` es un brioche con carne
+deshilachada que podría ser el croissant de rabo de toro o el dúo de brioche, y **no es lo
+mismo**. Queda también `LosOchoa-9`, un bocadillo en las manos con el banco rojo detrás: no
+sirve para identificar un plato, pero es la única foto con gente y vale para cualquier sitio
+donde haga falta calor humano.
 
 ### Fotos de la casa — el local, no el plato
 
-Las dos webs enseñan solo comida. Falta la casa: la barra, la sala, la gente. La sección «Lo
-que falta por retratar» de cada home es exactamente eso, dibujada en hueco, y se publica sola
-en cuanto existan los archivos.
+Las webs enseñaban solo comida y faltaba la casa: la barra, la sala, la gente. La sección «La
+casa» de cada home es eso. **En Ochoa ya está resuelta con cuatro fotos reales y se publica; en
+Cokima siguen siendo rejillas.** Las cuatro van apaisadas 4:3 en dos columnas desfasadas.
 
-**Las ocho van apaisadas 4:3**, todas iguales: se muestran en una cuadrícula de dos por dos y
-lo que se busca es que se lean como una serie, no como cuatro encuadres distintos peleándose.
-
-| App | Archivo | Qué buscamos |
+| App | Archivo | Estado |
 |---|---|---|
-| Ochoa | `src/assets/casa/barra.jpg` | La barra en hora punta, con el mandil rojo. |
-| Ochoa | `src/assets/casa/rotulo.jpg` | El rótulo desde la calle, de noche, con el rojo encendido. |
-| Ochoa | `src/assets/casa/vermu.jpg` | Vermú de grifo recién servido, plano corto. |
-| Ochoa | `src/assets/casa/comedor.jpg` | El comedor lleno a mediodía, gente de verdad. |
+| Ochoa | `src/assets/casa/barra.jpg` | ✅ `LosOchoa-8`: la barra con el espejo rotulado a mano. |
+| Ochoa | `src/assets/casa/rotulo.jpg` | ✅ `LosOchoa-1`: el rótulo pintado en el cristal. |
+| Ochoa | `src/assets/casa/vermu.jpg` | ✅ `LosOchoa-4`: vermú con banderilla sobre mármol. |
+| Ochoa | `src/assets/casa/comedor.jpg` | ✅ `LosOchoa-3`: banco corrido rojo y mesas de mármol. |
 | Cokima | `src/assets/casa/pase.jpg` | El pase de cocina en servicio, con la llama. |
 | Cokima | `src/assets/casa/sala.jpg` | La sala de noche, luz baja y mesas llenas. |
 | Cokima | `src/assets/casa/producto.jpg` | Producto en crudo sobre fondo negro, luz dura. |
@@ -83,7 +93,8 @@ lo que se busca es que se lean como una serie, no como cuatro encuadres distinto
 ## Las rejillas guía
 
 Cada hueco de foto se dibuja en pantalla con su proporción, la regla de tercios y el nombre
-del archivo que hay que dejar. **Diecinueve en total**: once de plato y ocho de la casa.
+del archivo que hay que dejar. **Quince en total**: once de plato y las cuatro de la casa de Cokima. Las cuatro de la casa de
+Ochoa ya son fotos reales.
 
 Se ven en `dev` y en las previews por rama, y **no existen en producción**: no es cuestión de
 acordarse de apagarlas, lo decide `showPhotoGuides()` (`packages/config/src/photo-guides.mjs`)
@@ -106,5 +117,6 @@ Las fotos de portada viven duplicadas a propósito: en `src/assets/` las procesa
 `public/images/` se sirven tal cual como `og:image` de las redes sociales, que necesita una URL
 estable. Al sustituir una portada hay que cambiar **las dos copias**.
 
-En Ochoa, el `og:image` apunta a `/images/tasca.jpg` para que la vista previa en redes sea la
-misma imagen que ve quien entra.
+En Ochoa el `og:image` apunta a `/images/hero.jpg` —la fachada— para que la vista previa en
+redes sea la misma imagen que ve quien entra. `/images/mesa.jpg` es el cenital de la mesa, que
+sirve la sección «la tasca».

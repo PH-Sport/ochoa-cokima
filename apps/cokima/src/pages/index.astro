@@ -52,7 +52,7 @@ const casa = [
         </p>
         <div class="wall">
           {casa.map((c) => (
-            <PhotoGuide file={c.file} ratio="4 / 3" note={c.note} minHeight="150px" />
+            <PhotoGuide file={c.file} ratio="4 / 3" note={c.note} />
           ))}
         </div>
       </div>
@@ -108,11 +108,20 @@ const casa = [
     max-width: 56ch;
     margin: 1rem 0 0;
   }
+  /* Dos columnas desfasadas: la de la derecha baja un escalón para que la serie
+     no se lea como una tabla. Ni el mosaico de piezas de tamaños distintos —que
+     llamaba la atención sobre la composición— ni la cuadrícula perfecta, que era
+     lo contrario y quedaba rígida. */
   .wall {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: clamp(10px, 1.6vw, 18px);
+    gap: clamp(12px, 2vw, 22px);
     margin-top: 1.6rem;
+    padding-bottom: var(--desfase);
+    --desfase: clamp(28px, 7vw, 64px);
+  }
+  .wall > :global(*:nth-child(2n)) {
+    margin-top: var(--desfase);
   }
 
   .visita {

@@ -77,21 +77,34 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
 
 ---
 
-## 3.ter La portada de Ochoa, cambiada el 2026-07-30
+## 3.ter Las fotos de Ochoa, rehechas el 2026-07-30
 
-Era el cenital de la mesa y **no decía nada**: recortado a pantalla vertical se quedaba en un
-fragmento de plato sin contexto. Ahora es **el rótulo pintado en el cristal** (`tasca.jpg`),
-que dice el nombre de la casa y de dónde sale todo lo demás —las letras rojas con sombra dura,
-el «MADRIZ», el vermú—. El cenital se mudó a la sección «la tasca», que es apaisada y le
-sienta, y el `og:image` sigue a la portada.
+**Hay nueve fotos del local en la web vieja del grupo** (`/wp-content/uploads/2021/09/LosOchoa-1..9.jpg`,
+1000×1000) que nadie había mirado. De ahí sale todo lo de abajo.
 
-La foto es cuadrada y la portada de móvil es vertical, así que a sangre solo cabía el 60% del
-ancho y el rótulo se leía «OS OCHO». **En móvil la portada se parte en dos:** la foto entera
-arriba y el titular en una banda del rojo de la casa, con los tokens de texto reescritos ahí
-dentro para que el estado de apertura siga legible (5,7:1 medido). En ancho no hace falta: el
-hueco es apaisado, el rótulo entra completo y sigue a sangre. Verificado a 375×667, 390×844 y
-412×915: **la tira de platos asoma en los tres**, que es lo que protegía el cálculo de altura
-que se ha retirado en móvil.
+**La portada es la fachada** (`hero.jpg`): el toldo rojo, el cartel colgante, la barra vista
+desde la calle y «LA TASCA QUE TE MERECES» en el cristal. Dice qué sitio es antes de leer una
+palabra. Es una sola pieza a sangre en todos los anchos, con el titular apoyado en la foto y su
+sombra roja, que es lo que mejor funcionaba de la portada original.
+
+Dos intentos anteriores, y por qué se descartaron: el **cenital de la mesa** no decía nada
+recortado a vertical —se quedaba en un fragmento de plato sin contexto— y se mudó a la sección
+«la tasca», que es apaisada y le sienta; el **rótulo del cristal** era demasiado plano de cerca
+y, siendo cuadrado, en móvil solo cabía el 60% del ancho («OS OCHO»), lo que obligó a partir la
+portada en dos con una banda roja bajo la foto. Esa partición se retiró: la banda competía con
+la imagen y forzaba a cambiar el color de la sombra del titular. El rótulo del cristal no se
+pierde, es la segunda foto de «la casa».
+
+**«Lo que hay detrás del cristal» ya no son rejillas:** las cuatro son fotos reales —la barra
+con el espejo rotulado a mano, el rótulo del cristal, el vermú con su banderilla y el interior
+con el banco corrido rojo—, así que la sección se publica. Van en **dos columnas desfasadas**,
+con la derecha bajando un escalón: ni el mosaico de piezas desiguales del primer intento ni la
+cuadrícula perfecta del segundo, que quedaba rígida.
+
+**Un fallo de la fase 3 que salió al mirar:** el estado de apertura de la portada iba en tinta
+atenuada sobre una foto oscurecida por el degradado, o sea gris oscuro sobre fondo oscuro. Se
+resuelve reescribiendo dentro de `.copy` los tokens `--t-text*` que consume, no parcheando el
+componente.
 
 ## 3.bis Fase 4 — acordada el 2026-07-29, en curso
 

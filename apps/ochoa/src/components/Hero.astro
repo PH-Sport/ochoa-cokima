@@ -3,12 +3,13 @@
 import { Image } from "astro:assets";
 import OpenState from "@tombo/ui/OpenState.astro";
 import { RESTAURANT } from "../site.ts";
-// La portada es el rótulo en el cristal, no el cenital de la mesa: recortado a
-// pantalla vertical, aquel se quedaba en un fragmento de plato sin contexto, y
-// este dice el nombre de la casa y de dónde sale todo lo demás —las letras
-// rojas con sombra, el «MADRIZ», el vermú. El cenital se mudó a «la tasca», que
-// es apaisada y le sienta.
-import hero from "../assets/tasca.jpg";
+// La portada es la fachada: el toldo rojo, el cartel colgante y la terraza en la
+// Castellana. Antes fue el cenital de la mesa —que recortado a pantalla vertical
+// se quedaba en un fragmento de plato sin contexto— y después el rótulo del
+// cristal, que era demasiado plano de cerca y no cabía entero en móvil. Esta
+// dice qué sitio es antes de leer una palabra, y aguanta el recorte porque el
+// nombre aparece dos veces, arriba y a la derecha.
+import hero from "../assets/hero.jpg";
 
 interface Props {
   locale: "es" | "en";
@@ -21,8 +22,8 @@ const es = locale === "es";
   <Image
     src={hero}
     alt={es
-      ? "Rótulo de Tasquita Los Ochoa pintado en el cristal del local, con la terraza al otro lado"
-      : "Tasquita Los Ochoa sign painted on the window, with the terrace on the other side"}
+      ? "Fachada de Tasquita Los Ochoa: toldo rojo, cartel colgante con el nombre y la terraza en la calle"
+      : "Tasquita Los Ochoa storefront: red awning, hanging sign and the street terrace"}
     widths={[390, 640, 960, 1200]}
     sizes="100vw"
     quality={72}
@@ -59,52 +60,17 @@ const es = locale === "es";
     object-fit: cover;
   }
 
-  /* En pantalla estrecha la portada se parte en dos piezas, y no es un capricho
-     de composición: la foto es cuadrada y el hueco de móvil es vertical, así que
-     a sangre solo cabía el 60% del ancho y el rótulo se leía «OS OCHO». Como el
-     rótulo es justo lo que tiene que verse, la foto se muestra entera arriba y el
-     titular baja a una banda del rojo de la casa. En ancho no hace falta: ahí el
-     hueco es apaisado, el rótulo entra completo y la portada sigue a sangre. */
+  /* La portada es una sola pieza a sangre en todos los anchos, y el titular se
+     apoya en la foto con su sombra roja. Hubo un intento de partirla en dos en
+     móvil —foto arriba, titular sobre una banda roja— para que cupiera entero el
+     rótulo del cristal; se retiró con esa foto: la banda roja competía con la
+     imagen y la sombra del titular tenía que cambiar de color para verse, que era
+     perder justo lo que mejor funcionaba. */
   @media (max-width: 860px) {
-    /* El alto lo dan la foto y el texto, no un cálculo contra la pantalla: con
-       `100svh` sobraba un dedo de rojo vacío debajo del titular. Partida en dos
-       piezas, la portada mide lo que mide y la tira de platos asoma igual —de
-       hecho asoma más—, que es lo que el cálculo protegía. */
-    .hero {
-      display: grid;
-      grid-template-rows: auto auto;
-      height: auto;
-      min-height: 0;
-      background: var(--rojo);
-    }
+    /* Encuadre para el recorte vertical: la foto se lleva el peso al cartel
+       colgante y a la puerta, no a la acera. */
     .shot {
-      position: static;
-      width: 100%;
-      height: auto;
-      aspect-ratio: 1 / 1;
-    }
-    /* Sin degradado: el titular ya no se apoya en la foto, sino en el rojo. */
-    .veil {
-      display: none;
-    }
-    .copy {
-      display: flex;
-      flex-direction: column;
-      padding-top: clamp(18px, 4vw, 28px);
-      padding-bottom: clamp(20px, 5vw, 32px);
-      /* Sobre el rojo, la tinta no se lee. En vez de parchear el estado de
-         apertura desde fuera, se le reescriben los tokens que consume: para eso
-         existe el sistema, y así cualquier pieza neutra que caiga aquí se
-         adapta sola. */
-      --t-text: var(--paper);
-      --t-text-dim: rgba(255, 255, 255, 0.88);
-      --t-text-faint: rgba(255, 255, 255, 0.6);
-      --t-accent: var(--paper);
-    }
-    .hero h1 {
-      /* Sobre rojo plano la sombra de tinta vuelve a ser la de la marca: la roja
-         desaparecería contra el fondo. */
-      text-shadow: 0.04em 0.045em 0 var(--ink);
+      object-position: 62% 42%;
     }
   }
   /* Degradado solo bajo el texto, no una capa uniforme sobre toda la foto:
@@ -133,6 +99,13 @@ const es = locale === "es";
     width: 100%;
     transform: translateY(calc(-1 * var(--t-consent-h, 0px)));
     transition: transform var(--dur-out) var(--ease);
+    /* Aquí abajo la foto está oscurecida por el degradado, así que la tinta de la
+       marca no se lee: el estado de apertura salía en gris oscuro sobre fondo
+       oscuro. En vez de parchearlo desde fuera se le reescriben los tokens que
+       consume, y cualquier pieza neutra que caiga sobre la portada se adapta. */
+    --t-text: var(--paper);
+    --t-text-dim: rgba(255, 255, 255, 0.9);
+    --t-text-faint: rgba(255, 255, 255, 0.65);
   }
   .hero h1 {
     font-size: clamp(2.6rem, 10vw, 6rem);

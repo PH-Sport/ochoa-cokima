@@ -17,10 +17,8 @@ interface Props {
   ratio?: string;
   /** Qué foto va aquí. Se le enseña al fotógrafo. */
   note?: string;
-  /** Alto mínimo, para huecos que si no quedarían en una raya. */
-  minHeight?: string;
 }
-const { file, ratio = "3 / 4", note, minHeight } = Astro.props;
+const { file, ratio = "3 / 4", note } = Astro.props;
 
 // "apps/ochoa/src/assets/dishes/oreja-crujiente.jpg" → "oreja-crujiente.jpg"
 const name = file.split("/").pop() ?? file;
@@ -30,7 +28,7 @@ const shape = ratio.replace(/\s/g, "").replace("/", ":");
 
 <figure
   class="guide"
-  style={`--ratio:${ratio};${minHeight ? `--min-h:${minHeight};` : ""}`}
+  style={`--ratio:${ratio}`}
   data-photo-guide
 >
   <div class="thirds" aria-hidden="true"></div>
@@ -52,8 +50,13 @@ const shape = ratio.replace(/\s/g, "").replace("/", ":");
        depende del hueco, no de la pantalla. */
     container-type: inline-size;
     margin: 0;
+    /* Solo la proporción manda el alto. Hubo un `min-height` para que los huecos
+       pequeños no quedaran en una raya, y hacía justo el daño contrario: en
+       cuanto la celda era más estrecha que el mínimo, ganaba el mínimo, el
+       `aspect-ratio` dejaba de aplicarse y los huecos salían con proporciones
+       distintas de la pedida —con la leyenda ocupando media celda—, que es lo que
+       se leía como una cuadrícula descuadrada. */
     aspect-ratio: var(--ratio);
-    min-height: var(--min-h, 0);
     display: flex;
     align-items: flex-end;
     padding: 10px;
