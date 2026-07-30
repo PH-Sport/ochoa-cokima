@@ -73,15 +73,22 @@ const t = es
     min-height: 44px;
     padding: 10px 12px;
     border: 1.5px solid var(--ink);
-    border-radius: 3px;
+    /* Un escalón más que un botón: estas fichas miden 55px y con el radio de
+       un botón de 44 se veían más picudas que «Reservar» aun teniendo el mismo
+       número. La curva se percibe en proporción a la pieza. */
+    border-radius: var(--r-caja);
     background: var(--paper);
     color: var(--ink);
     box-shadow: 3px 3px 0 var(--ink);
     transition:
-      transform var(--dur-out) var(--ease),
-      box-shadow var(--dur-out) var(--ease),
+      transform var(--dur-out) var(--ease) var(--hold-tacto),
+      box-shadow var(--dur-out) var(--ease) var(--hold-tacto),
       color var(--dur-out) var(--ease),
       border-color var(--dur-out) var(--ease);
+  }
+  .contacto a:hover,
+  .contacto a:active {
+    transition-delay: 0s;
   }
   .contacto a:hover {
     color: var(--rojo);

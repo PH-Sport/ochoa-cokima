@@ -60,9 +60,26 @@
      real— y por eso no rebota: el bounce delata plantilla y envejece mal.
      `--dur-in` es para lo que entra, `--dur-out` para lo que responde a un dedo,
      que siempre tiene que sentirse instantáneo. */
+  /* Curvatura por tamaño de pieza, no una sola para todo. Un radio de 3px en
+     un botón de 44px se ve redondeado y ese mismo radio en una tarjeta de 300
+     parece un canto vivo: la esquina se percibe en proporción a lo que
+     enmarca, no en píxeles absolutos. Así que la curva crece con la pieza —y
+     deja de crecer en las grandes, donde seguir subiendo la convertiría en una
+     pastilla—. Cuatro escalones y ninguno suelto por los componentes. */
+  --r-chapa: 4px; /* etiquetas y chapas, por debajo de ~36px */
+  --r-btn: 7px; /* botones, ~44px */
+  --r-caja: 9px; /* fichas de contacto y piezas de ~55-90px */
+  --r-marco: 12px; /* fotos, mapa y tarjetas grandes */
+
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --dur-in: 420ms;
   --dur-out: 160ms;
+  /* Lo que el botón se queda hundido después de soltarlo. Sin esta espera, el
+     recorrido entero ocurría debajo del dedo —que es justo lo que lo tapa— y
+     se perdía: el hundido solo se ve cuando el dedo ya no está. La ida sigue
+     siendo instantánea, que es lo que hace que responda; lo que se retrasa es
+     la vuelta. */
+  --hold-tacto: 110ms;
   --shift: 14px;
   --stagger: 55ms; /* escalón entre hermanos en cascada */
   /* La cinta rotulada es el único movimiento que no entra ni responde a un
@@ -87,7 +104,8 @@
   --t-surface: var(--paper-2);
   --t-accent: var(--rojo);
   --t-accent-contrast: #ffffff;
-  --t-radius: 6px;
+  --t-radius: var(--r-marco);
+  --t-radius-control: var(--r-btn);
   --t-card-border: 2px solid var(--ink);
   --t-shadow: 6px 6px 0 rgba(26, 26, 26, 0.9);
 

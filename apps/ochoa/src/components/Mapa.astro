@@ -88,12 +88,15 @@ const t = es
     position: relative;
     display: block;
     border: 2px solid var(--ink);
-    border-radius: 6px;
+    border-radius: var(--r-marco);
     overflow: hidden;
     box-shadow: 6px 6px 0 rgba(198, 34, 43, 0.9);
     transition:
-      transform var(--dur-out) var(--ease),
-      box-shadow var(--dur-out) var(--ease);
+      transform var(--dur-out) var(--ease) var(--hold-tacto),
+      box-shadow var(--dur-out) var(--ease) var(--hold-tacto);
+  }
+  .mapa:active {
+    transition-delay: 0s;
   }
   /* El mismo recorrido que los botones: el mapa es lo más grande que se pulsa
      en toda la sección, y tiene que acusar el dedo igual que ellos. */
@@ -139,7 +142,7 @@ const t = es
     color: var(--paper);
     background: var(--ink);
     padding: 4px 10px;
-    border-radius: 3px;
+    border-radius: var(--r-chapa);
     margin-top: 8px;
     display: inline-block;
     white-space: nowrap;
@@ -168,7 +171,7 @@ const t = es
     font-size: var(--fs-label);
     color: var(--paper);
     background: var(--ink);
-    border-radius: 3px;
+    border-radius: var(--r-chapa);
     padding: 9px 12px;
   }
 </style>

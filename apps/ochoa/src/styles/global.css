@@ -105,16 +105,26 @@ img {
   color: #ffffff;
   padding: 12px 22px;
   border: 0;
-  border-radius: 3px;
+  border-radius: var(--r-btn);
   cursor: pointer;
   white-space: nowrap;
   box-shadow: 3px 3px 0 var(--ink);
   /* Responde a un dedo, así que va con la duración corta: lo que reacciona a
-     una pulsación tiene que sentirse instantáneo. */
+     una pulsación tiene que sentirse instantáneo.
+     El retardo vive aquí y no en `:active` a propósito: esta es la transición
+     de *vuelta*, la que corre al soltar. La ida la gobierna la regla de
+     `:active`, que lo pone a cero. Así el botón baja en el instante en que se
+     toca y se queda abajo un momento después de levantar el dedo, que es
+     cuando por fin se ve. */
   transition:
-    transform var(--dur-out) var(--ease),
-    box-shadow var(--dur-out) var(--ease),
+    transform var(--dur-out) var(--ease) var(--hold-tacto),
+    box-shadow var(--dur-out) var(--ease) var(--hold-tacto),
     background var(--dur-out) var(--ease);
+}
+/* Ni el hover ni la pulsación esperan: el retardo es solo para la vuelta. */
+.btn:hover,
+.btn:active {
+  transition-delay: 0s;
 }
 .btn:hover {
   background: var(--rojo-2);

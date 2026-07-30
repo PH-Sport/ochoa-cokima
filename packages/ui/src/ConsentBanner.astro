@@ -118,9 +118,18 @@ const t =
        botón con borde y otro sin él salen con anchos distintos. Rechazar y
        aceptar tienen que medir exactamente lo mismo. */
     border: 1px solid transparent;
-    border-radius: 4px;
+    /* El radio sale de la app, con el valor de antes como respaldo: es la misma
+       curva que sus botones, y una esquina distinta en el único control que
+       aparece encima de todo lo demás se nota. */
+    border-radius: var(--t-radius-control, 4px);
     padding: 9px 16px;
     cursor: pointer;
+    transition: transform var(--dur-out, 160ms) var(--ease, ease);
+  }
+  /* Acusa el dedo. Sin relieve ni recorrido: esto flota sobre la página y no es
+     una pieza rotulada, así que se hunde un píxel y ya. */
+  .consent-btn:active {
+    transform: translateY(1px);
   }
   .consent-btn--ghost {
     background: transparent;

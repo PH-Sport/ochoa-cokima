@@ -138,6 +138,17 @@ const t = es
   .nav-actions .btn:hover {
     background: var(--paper);
     color: var(--rojo-2);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  /* Este era el único botón de la casa que no se hundía, y no por su culpa:
+     al reescribir aquí su `box-shadow` —tiene que ser blanco sobre el rojo de
+     la barra— ganaba en especificidad al `:active` de la hoja global, que se
+     quedaba sin efecto. Cada estado que se reescribe hay que reescribirlo
+     entero. */
+  .nav-actions .btn:active {
+    background: var(--paper);
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--ink);
   }
   /* Sin borde: era el recuadro lo que lo hacía parecer un control de sistema
      metido en un cartel pintado. Manda el área de toque, no la caja dibujada.
