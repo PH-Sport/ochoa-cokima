@@ -1,8 +1,32 @@
 # Estado del proyecto
 
-- **Corte:** 2026-07-29
+- **Corte:** 2026-07-30
 - **Rama de trabajo:** `preview` (desarrollo) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
+
+---
+
+## 0. Por dónde seguir
+
+**Lo primero al abrir el repo:** `git status`. El 2026-07-30 quedó trabajo **sin commitear** en
+el árbol —`Ticker.astro` (la cinta rotulada de la home de Ochoa), el titular de «la casa»
+partido con la foto del cristal en medio, y `--dur-cinta` en los tokens—. Pasa `pnpm test` y
+`pnpm build`, pero **no está commiteado ni subido**: decidir si entra antes de tocar nada más.
+
+**La fase 4 está hecha salvo el punto 6.** Ver §3.bis. Lo que queda, por orden de lo que más
+mueve la aguja:
+
+1. **Desmenuzar Cokima.** Es lo más rentable y lo que Mario lleva señalando desde el principio.
+   Ochoa se ha llevado la tipografía, la carta, las fotos reales y tres iteraciones de portada;
+   Cokima solo el menú y el movimiento, de rebote. No tiene ni una foto real, su carta no se ha
+   revisado desde la fase 2 y su portada sigue siendo la genérica.
+2. **Páginas nuevas (punto 6 de la fase 4).** Bloqueado por contenido: hay que decidir con Mario
+   qué páginas y con qué material. No es trabajo de código hasta que eso esté.
+3. **Las cuatro fotos de Ochoa sin usar.** Ver `fotografia.md`: dos son asignables ya, una
+   necesita que Mario confirme qué plato es y otra no identifica ningún plato.
+
+**Cómo levantarlo:** los `pnpm dev` lanzados en segundo plano desde el agente se mueren solos en
+esta máquina. Lanzarlos desde una terminal propia.
 
 ---
 
