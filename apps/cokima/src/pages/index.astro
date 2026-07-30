@@ -10,14 +10,16 @@ import Highlights from "../components/Highlights.astro";
 const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data));
 
 // La casa: la sección que hoy no existe porque no hay fotos del local, solo del
-// plato. Se dibuja en hueco para poder decidir qué se encarga; cuando lleguen
-// las imágenes, esta sección deja de ser andamio y se publica con ellas.
+// plato. El texto ya es el definitivo —el que se publicará con las imágenes—; lo
+// único provisional son los cuatro huecos, y eso ya lo dice cada rejilla en su
+// etiqueta. Las cuatro comparten proporción a propósito: en cuadrícula regular
+// se ven como una serie, y de paso es más fácil de encargar.
 const guides = showPhotoGuides();
 const casa = [
-  { file: "apps/cokima/src/assets/casa/pase.jpg", ratio: "16 / 9", note: "El pase de cocina en servicio, con la llama. Horizontal y ancha." },
-  { file: "apps/cokima/src/assets/casa/sala.jpg", ratio: "1 / 1", note: "La sala de noche, luz baja y mesas llenas." },
-  { file: "apps/cokima/src/assets/casa/producto.jpg", ratio: "1 / 1", note: "Producto en crudo sobre fondo negro, luz dura." },
-  { file: "apps/cokima/src/assets/casa/equipo.jpg", ratio: "3 / 4", note: "El equipo en la cocina. Vertical, caras de verdad." },
+  { file: "apps/cokima/src/assets/casa/pase.jpg", note: "El pase de cocina en servicio, con la llama." },
+  { file: "apps/cokima/src/assets/casa/sala.jpg", note: "La sala de noche, luz baja y mesas llenas." },
+  { file: "apps/cokima/src/assets/casa/producto.jpg", note: "Producto en crudo sobre fondo negro, luz dura." },
+  { file: "apps/cokima/src/assets/casa/equipo.jpg", note: "El equipo en la cocina, caras de verdad." },
 ];
 ---
 
@@ -41,17 +43,16 @@ const casa = [
     <section class="casa">
       <div class="wrap">
         <div class="section-head">
-          <p class="eyebrow">La casa · huecos de foto</p>
-          <h2>Lo que falta por retratar</h2>
+          <p class="eyebrow">La casa</p>
+          <h2>Donde se mezcla y se mancha</h2>
         </div>
         <p class="casa-txt">
-          Estos cuatro huecos no se publican: están para decidir qué se encarga al fotógrafo y con
-          qué encuadre. Dejando el archivo con el nombre que pone cada uno, el hueco se convierte
-          en la foto.
+          El pase en plena faena, la sala a media luz y el producto crudo antes de que le pase
+          nada. Cokima por dentro, con la mecha encendida.
         </p>
         <div class="wall">
           {casa.map((c) => (
-            <PhotoGuide file={c.file} ratio={c.ratio} note={c.note} minHeight="150px" />
+            <PhotoGuide file={c.file} ratio="4 / 3" note={c.note} minHeight="150px" />
           ))}
         </div>
       </div>
@@ -95,10 +96,10 @@ const casa = [
     margin: 0;
     text-wrap: balance;
   }
-  /* Mosaico asimétrico y no una rejilla de cuatro iguales: la distribución es
-     justo lo que hay que decidir aquí, y cuatro rectángulos idénticos no
-     ayudan a imaginar nada. `:global` porque los hijos son componentes con su
-     propio ámbito de estilos y esta hoja no los alcanza sin él. */
+  /* Cuadrícula de dos por dos, con las cuatro del mismo tamaño y la misma
+     proporción. El mosaico asimétrico que hubo antes llamaba la atención sobre
+     la composición en vez de sobre las fotos, y con cuatro piezas se leía como
+     descuadrado más que como intencionado. */
   .casa {
     padding: clamp(52px, 8vw, 96px) 0 0;
   }
@@ -110,32 +111,8 @@ const casa = [
   .wall {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: clamp(10px, 1.6vw, 18px);
     margin-top: 1.6rem;
-  }
-  .wall > :global(*:first-child) {
-    grid-column: span 2;
-  }
-  @media (min-width: 861px) {
-    .wall {
-      grid-template-columns: repeat(3, 1fr);
-    }
-    .wall > :global(*:nth-child(1)) {
-      grid-column: 1 / span 2;
-      grid-row: 1;
-    }
-    .wall > :global(*:nth-child(2)) {
-      grid-column: 1;
-      grid-row: 2;
-    }
-    .wall > :global(*:nth-child(3)) {
-      grid-column: 2;
-      grid-row: 2;
-    }
-    .wall > :global(*:nth-child(4)) {
-      grid-column: 3;
-      grid-row: 1 / span 2;
-    }
   }
 
   .visita {

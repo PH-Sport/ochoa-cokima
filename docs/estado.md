@@ -77,6 +77,22 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
 
 ---
 
+## 3.ter La portada de Ochoa, cambiada el 2026-07-30
+
+Era el cenital de la mesa y **no decía nada**: recortado a pantalla vertical se quedaba en un
+fragmento de plato sin contexto. Ahora es **el rótulo pintado en el cristal** (`tasca.jpg`),
+que dice el nombre de la casa y de dónde sale todo lo demás —las letras rojas con sombra dura,
+el «MADRIZ», el vermú—. El cenital se mudó a la sección «la tasca», que es apaisada y le
+sienta, y el `og:image` sigue a la portada.
+
+La foto es cuadrada y la portada de móvil es vertical, así que a sangre solo cabía el 60% del
+ancho y el rótulo se leía «OS OCHO». **En móvil la portada se parte en dos:** la foto entera
+arriba y el titular en una banda del rojo de la casa, con los tokens de texto reescritos ahí
+dentro para que el estado de apertura siga legible (5,7:1 medido). En ancho no hace falta: el
+hueco es apaisado, el rótulo entra completo y sigue a sangre. Verificado a 375×667, 390×844 y
+412×915: **la tira de platos asoma en los tres**, que es lo que protegía el cálculo de altura
+que se ha retirado en móvil.
+
 ## 3.bis Fase 4 — acordada el 2026-07-29, en curso
 
 Orden acordado. Los cinco primeros no dependen de nadie; el sexto necesita contenido real.
@@ -120,9 +136,14 @@ Orden acordado. Los cinco primeros no dependen de nadie; el sexto necesita conte
    700px de su precio; el margen que sobra a la derecha es donde entrarán las fotos.
 4. ~~**Rejillas guía en los huecos de foto.**~~ **Hecho el 2026-07-30.** **Diecinueve
    huecos** entre las dos webs: once de plato (las fichas de destacados que salen sin
-   imagen) y ocho de la casa, en una sección nueva —«Lo que falta por retratar»— que
-   enseña en mosaico asimétrico lo que ninguna de las dos webs tiene hoy: la barra, la
-   sala, el equipo. Cada hueco dibuja su proporción, la regla de tercios y **el nombre
+   imagen) y ocho de la casa, en una sección nueva que enseña lo que ninguna de las dos
+   webs tiene hoy: la barra, la sala, el equipo. **Su texto ya es el definitivo** —«Lo que
+   hay detrás del cristal» en Ochoa, «Donde se mezcla y se mancha» en Cokima—, no el de
+   andamio que hubo primero: que faltan las fotos ya lo dice cada rejilla en su etiqueta, y
+   escribirlo otra vez en el titular era contarlo dos veces. Van en **cuadrícula de dos por
+   dos, las cuatro iguales**; el mosaico asimétrico del primer intento llamaba la atención
+   sobre la composición en vez de sobre las fotos. Cada hueco dibuja su proporción, la
+   regla de tercios y **el nombre
    exacto del archivo** que hay que dejar para que desaparezca, derivado del nombre del
    plato con `dishImageKey()`. El componente es `packages/ui/src/PhotoGuide.astro`, sin
    una gota de marca, y se mide con container queries porque cae igual en una ficha de

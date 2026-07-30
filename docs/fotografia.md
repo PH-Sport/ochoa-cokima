@@ -21,7 +21,14 @@ mayor resolución disponible.
 | Destino | Qué buscamos |
 |---|---|
 | `apps/cokima/src/assets/hero.jpg` | Registro oscuro con luz dura. En su Instagram encajan la parrilla con llama, el atún crudo sobre fondo negro o las gambas rojas. |
-| `apps/ochoa/src/assets/hero.jpg` | Producto sobre fondo rojo liso, o la barra con el mandil rojo. |
+| `apps/ochoa/src/assets/tasca.jpg` | **Ya cubierta**, con el rótulo pintado en el cristal. Ver la nota de abajo antes de sustituirla. |
+
+**Ojo con la portada de Ochoa:** desde el 2026-07-30 es `tasca.jpg` —el rótulo en el
+cristal—, no `hero.jpg`, que se mudó a la sección «la tasca». Como la foto es **cuadrada** y
+la portada de móvil es vertical, a sangre solo cabía el 60% del ancho y el rótulo se leía
+«OS OCHO»; por eso en móvil la portada se parte en dos: la foto entera arriba y el titular en
+una banda del rojo de la casa. **Si la sustituye una toma apaisada, esa composición deja de
+hacer falta** y conviene revisar la media query de `Hero.astro`.
 
 ### Fotos de plato
 
@@ -59,16 +66,19 @@ Las dos webs enseñan solo comida. Falta la casa: la barra, la sala, la gente. L
 que falta por retratar» de cada home es exactamente eso, dibujada en hueco, y se publica sola
 en cuanto existan los archivos.
 
+**Las ocho van apaisadas 4:3**, todas iguales: se muestran en una cuadrícula de dos por dos y
+lo que se busca es que se lean como una serie, no como cuatro encuadres distintos peleándose.
+
 | App | Archivo | Qué buscamos |
 |---|---|---|
-| Ochoa | `src/assets/casa/barra.jpg` | La barra en hora punta, con el mandil rojo. Apaisada 16:9. |
-| Ochoa | `src/assets/casa/rotulo.jpg` | El rótulo desde la calle, de noche, con el rojo encendido. Cuadrada. |
-| Ochoa | `src/assets/casa/vermu.jpg` | Vermú de grifo servido, primer plano corto. Cuadrada. |
-| Ochoa | `src/assets/casa/comedor.jpg` | El comedor lleno a mediodía, gente de verdad. Vertical 3:4. |
-| Cokima | `src/assets/casa/pase.jpg` | El pase de cocina en servicio, con la llama. Apaisada 16:9. |
-| Cokima | `src/assets/casa/sala.jpg` | La sala de noche, luz baja y mesas llenas. Cuadrada. |
-| Cokima | `src/assets/casa/producto.jpg` | Producto en crudo sobre fondo negro, luz dura. Cuadrada. |
-| Cokima | `src/assets/casa/equipo.jpg` | El equipo en la cocina, caras de verdad. Vertical 3:4. |
+| Ochoa | `src/assets/casa/barra.jpg` | La barra en hora punta, con el mandil rojo. |
+| Ochoa | `src/assets/casa/rotulo.jpg` | El rótulo desde la calle, de noche, con el rojo encendido. |
+| Ochoa | `src/assets/casa/vermu.jpg` | Vermú de grifo recién servido, plano corto. |
+| Ochoa | `src/assets/casa/comedor.jpg` | El comedor lleno a mediodía, gente de verdad. |
+| Cokima | `src/assets/casa/pase.jpg` | El pase de cocina en servicio, con la llama. |
+| Cokima | `src/assets/casa/sala.jpg` | La sala de noche, luz baja y mesas llenas. |
+| Cokima | `src/assets/casa/producto.jpg` | Producto en crudo sobre fondo negro, luz dura. |
+| Cokima | `src/assets/casa/equipo.jpg` | El equipo en la cocina, caras de verdad. |
 
 ## Las rejillas guía
 
@@ -92,6 +102,9 @@ cachopín con la foto de otra cosa es información falsa en una carta con precio
 
 ## Nota técnica
 
-`hero.jpg` vive duplicado a propósito: en `src/assets/` lo procesa Astro para la portada,
-y en `public/images/` se sirve tal cual como `og:image` de las redes sociales, que
-necesita una URL estable. Al sustituir la portada hay que cambiar **las dos copias**.
+Las fotos de portada viven duplicadas a propósito: en `src/assets/` las procesa Astro, y en
+`public/images/` se sirven tal cual como `og:image` de las redes sociales, que necesita una URL
+estable. Al sustituir una portada hay que cambiar **las dos copias**.
+
+En Ochoa, el `og:image` apunta a `/images/tasca.jpg` para que la vista previa en redes sea la
+misma imagen que ve quien entra.

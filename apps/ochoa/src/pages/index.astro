@@ -10,14 +10,16 @@ import Highlights from "../components/Highlights.astro";
 const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data));
 
 // La casa: la sección que hoy no existe porque no hay fotos del local, solo del
-// plato. Se dibuja en hueco para poder decidir qué se encarga; cuando lleguen
-// las imágenes, esta sección deja de ser andamio y se publica con ellas.
+// plato. El texto ya es el definitivo —el que se publicará con las imágenes—; lo
+// único provisional son los cuatro huecos, y eso ya lo dice cada rejilla en su
+// etiqueta. Las cuatro comparten proporción a propósito: en cuadrícula regular
+// se ven como una serie, y de paso es más fácil de encargar.
 const guides = showPhotoGuides();
 const casa = [
-  { file: "apps/ochoa/src/assets/casa/barra.jpg", ratio: "16 / 9", note: "La barra en hora punta, con el mandil rojo. Horizontal y ancha." },
-  { file: "apps/ochoa/src/assets/casa/rotulo.jpg", ratio: "1 / 1", note: "El rótulo desde la calle, de noche, con el rojo encendido." },
-  { file: "apps/ochoa/src/assets/casa/vermu.jpg", ratio: "1 / 1", note: "Vermú de grifo servido, primer plano corto." },
-  { file: "apps/ochoa/src/assets/casa/comedor.jpg", ratio: "3 / 4", note: "El comedor lleno a mediodía. Vertical, gente de verdad." },
+  { file: "apps/ochoa/src/assets/casa/barra.jpg", note: "La barra en hora punta, con el mandil rojo." },
+  { file: "apps/ochoa/src/assets/casa/rotulo.jpg", note: "El rótulo desde la calle, de noche, con el rojo encendido." },
+  { file: "apps/ochoa/src/assets/casa/vermu.jpg", note: "Vermú de grifo recién servido, plano corto." },
+  { file: "apps/ochoa/src/assets/casa/comedor.jpg", note: "El comedor lleno a mediodía, gente de verdad." },
 ];
 ---
 
@@ -46,7 +48,7 @@ const casa = [
     <div class="wrap"><div class="rule"></div></div>
     <div class="wrap tasca-grid">
       <div class="tasca-photo">
-        <img src="/images/tasca.jpg" alt="Rótulo rojo de Los Ochoa en la ventana del local" width="900" height="900" loading="lazy" />
+        <img src="/images/hero.jpg" alt="Mesa de mármol con varios platos de la carta servidos para compartir" width="1400" height="800" loading="lazy" />
       </div>
       <div>
         <p class="eyebrow">La tasca</p>
@@ -65,16 +67,15 @@ const casa = [
     <section class="casa">
       <div class="wrap">
         <div class="rule"></div>
-        <p class="eyebrow">La casa · huecos de foto</p>
-        <h2 class="cartel">Lo que falta por retratar</h2>
+        <p class="eyebrow">La casa</p>
+        <h2 class="cartel">Lo que hay detrás del cristal</h2>
         <p class="txt">
-          Estos cuatro huecos no se publican: están para decidir qué se encarga al fotógrafo y con
-          qué encuadre. Dejando el archivo con el nombre que pone cada uno, el hueco se convierte
-          en la foto.
+          Barra, mármol y vermú de media tarde. <em>El tapeo que se alarga hasta que alguien mira
+          el reloj</em> y resulta que ya es de noche. Los Ochoa por dentro.
         </p>
         <div class="wall">
           {casa.map((c) => (
-            <PhotoGuide file={c.file} ratio={c.ratio} note={c.note} minHeight="150px" />
+            <PhotoGuide file={c.file} ratio="4 / 3" note={c.note} minHeight="150px" />
           ))}
         </div>
       </div>
@@ -158,12 +159,14 @@ const casa = [
       grid-template-columns: 1fr;
     }
   }
+  /* Apaisada y no cuadrada: la foto que vive aquí ahora es el cenital de la
+     mesa, y recortarlo a cuadrado se comía media mesa. */
   .tasca-photo {
     border: 2px solid var(--ink);
     border-radius: 4px;
     overflow: hidden;
     box-shadow: -8px 8px 0 rgba(198, 34, 43, 0.9);
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 4 / 3;
   }
   .tasca-photo img {
     width: 100%;
@@ -183,9 +186,11 @@ const casa = [
   .txt em {
     color: var(--ink);
   }
-  /* Mosaico asimétrico y no una rejilla de cuatro iguales: la distribución es
-     justo lo que hay que decidir aquí, y cuatro rectángulos idénticos no
-     ayudan a imaginar nada. El ancho manda sobre el primero y el último. */
+  /* Cuadrícula de dos por dos, con las cuatro del mismo tamaño y la misma
+     proporción. El mosaico asimétrico que hubo antes hacía justo lo contrario de
+     lo que necesita esta sección: llamaba la atención sobre la composición en vez
+     de sobre las fotos, y con cuatro piezas se leía como descuadrado más que
+     como intencionado. */
   .casa {
     padding: clamp(32px, 6vw, 56px) 0 0;
   }
@@ -199,38 +204,8 @@ const casa = [
   .wall {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-top: 1.4rem;
-  }
-  /* `:global` porque los hijos son componentes con su propio ámbito de estilos:
-     sin él, Astro no deja que esta hoja alcance al <figure> de PhotoGuide y los
-     cuatro huecos salen del mismo tamaño. */
-  .wall > :global(*:first-child) {
-    grid-column: span 2;
-  }
-  /* En ancho, mosaico de tres columnas colocado a mano: la barra manda arriba,
-     el comedor sostiene la derecha a doble alto y los dos cuadrados rellenan
-     debajo. Cuatro celdas iguales no dirían nada sobre qué foto pesa más. */
-  @media (min-width: 861px) {
-    .wall {
-      grid-template-columns: repeat(3, 1fr);
-    }
-    .wall > :global(*:nth-child(1)) {
-      grid-column: 1 / span 2;
-      grid-row: 1;
-    }
-    .wall > :global(*:nth-child(2)) {
-      grid-column: 1;
-      grid-row: 2;
-    }
-    .wall > :global(*:nth-child(3)) {
-      grid-column: 2;
-      grid-row: 2;
-    }
-    .wall > :global(*:nth-child(4)) {
-      grid-column: 3;
-      grid-row: 1 / span 2;
-    }
+    gap: clamp(10px, 1.6vw, 18px);
+    margin-top: 1.6rem;
   }
 
   .visita {
