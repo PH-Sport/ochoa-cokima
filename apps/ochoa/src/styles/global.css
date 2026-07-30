@@ -109,7 +109,12 @@ img {
   cursor: pointer;
   white-space: nowrap;
   box-shadow: 3px 3px 0 var(--ink);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  /* Responde a un dedo, así que va con la duración corta: lo que reacciona a
+     una pulsación tiene que sentirse instantáneo. */
+  transition:
+    transform var(--dur-out) var(--ease),
+    box-shadow var(--dur-out) var(--ease),
+    background var(--dur-out) var(--ease);
 }
 .btn:hover {
   background: var(--rojo-2);

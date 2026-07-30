@@ -256,6 +256,9 @@ const telHref = `tel:${RESTAURANT.telephone.replace(/\s/g, "")}`;
     color: var(--ink);
     text-shadow: none;
   }
+  .lbl {
+    transition: color var(--dur-out) var(--ease);
+  }
   .panel-links a:hover .lbl,
   .panel-links a:focus-visible .lbl {
     color: var(--rojo);

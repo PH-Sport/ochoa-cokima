@@ -133,14 +133,16 @@ Orden acordado. Los cinco primeros no dependen de nadie; el sexto necesita conte
    `SITE_URL` o si Vercel dice que es producción —un despliegue público siempre tiene una
    de las dos— y tiene seis tests que lo fijan. Comprobado además sobre el HTML construido:
    con `SITE_URL`, cero huecos en las dos apps; sin él, los diez de la home de Ochoa.
-5. **Sistema de movimiento.** Pocas animaciones, concretas, y ordenadas en el código con
-   lógica detrás: una curva, dos duraciones, un desplazamiento. Sin bounce. **Los tokens ya
-   existen** —`--ease`, `--dur-in`, `--dur-out`, `--shift`, `--stagger` en el `tokens.css`
-   de cada app— porque el menú los necesitaba y era mejor estrenarlos con nombre que dejar
-   milisegundos sueltos. La curva es la misma en las dos marcas (una *ease-out* quíntica,
-   que frena como frena un objeto real); el ritmo diverge a propósito: Cokima se mueve más
-   despacio y más lejos, Ochoa es seca. **Queda** llevar a estos tokens el movimiento que ya
-   había suelto por los componentes y decidir qué más se mueve.
+5. ~~**Sistema de movimiento.**~~ **Hecho el 2026-07-30.** Cinco valores por marca
+   (`--ease`, `--dur-in`, `--dur-out`, `--shift`, `--stagger`) y **ni un milisegundo suelto
+   en los componentes**: los cuatro que quedaban a mano —los dos `.btn` y las dos portadas—
+   ya salen de los tokens. La curva es la misma en las dos marcas porque es calidad, no
+   identidad; el ritmo diverge a propósito, Cokima más lenta y más lejos, Ochoa seca.
+   De paso, **las portadas dejaron de animar `padding-bottom`**: el titular se aparta del
+   cartel de cookies con `translateY`, mismo resultado en pantalla sin recalcular la
+   disposición en cada fotograma. Y el apagado por `prefers-reduced-motion` vive ahora en un
+   único sitio, no repetido por componente. Todo escrito en **`movimiento.md`**: los cinco
+   valores, las cinco reglas y la lista de lo que se mueve, que es corta a propósito.
 6. **Páginas nuevas.** No relleno: dar contexto a lo que ya hay y contar la historia real
    de cada casa, con copys trabajados. Las páginas concretas se deciden más adelante.
 
@@ -233,6 +235,7 @@ Sin cambios respecto a la spec §12, más una entrada nueva:
 | Documento | Qué es |
 |---|---|
 | `../.impeccable.md` | Contexto de diseño: para quién es cada web y cómo debe sentirse |
+| `movimiento.md` | Los cinco valores del movimiento, las reglas y qué se mueve |
 | `fotografia.md` | Qué fotos faltan, con qué nombre y dónde dejarlas |
 | `deploy.md` | Vercel: dos proyectos, modelo de ramas, env vars, dominios |
 | `estado-divergencia-layout.md` | Registro de la fase 2, tarea por tarea |

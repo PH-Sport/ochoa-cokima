@@ -275,6 +275,11 @@ const telHref = `tel:${RESTAURANT.telephone.replace(/\s/g, "")}`;
       background var(--dur-out) var(--ease),
       box-shadow var(--dur-out) var(--ease);
   }
+  /* El texto acompaña a la brasa en vez de cambiar de golpe: eran hermanos con
+     el mismo papel moviéndose a distinta velocidad. */
+  .lbl {
+    transition: color var(--dur-out) var(--ease);
+  }
   .panel-links a:hover .dot,
   .panel-links a:focus-visible .dot {
     background: var(--vermilion);

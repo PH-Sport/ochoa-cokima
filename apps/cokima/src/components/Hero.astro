@@ -75,16 +75,16 @@ const es = locale === "es";
   /* El cartel de cookies vive en esta misma esquina durante la primera visita.
      `--t-consent-h` lo publica el propio cartel y vuelve a 0 al decidir, así
      que el titular se aparta mientras hace falta y no un píxel más. */
+  /* El apartarse es un `transform` y no el `padding` que crecía: mover el
+     relleno obliga al navegador a recalcular la disposición en cada fotograma,
+     y el resultado en pantalla es idéntico porque el bloque ya está anclado
+     abajo y el alto de la portada no depende de él. */
   .copy {
     position: relative;
-    padding-bottom: calc(clamp(26px, 5vw, 54px) + var(--t-consent-h, 0px));
+    padding-bottom: clamp(26px, 5vw, 54px);
     width: 100%;
-    transition: padding-bottom 200ms ease;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .copy {
-      transition: none;
-    }
+    transform: translateY(calc(-1 * var(--t-consent-h, 0px)));
+    transition: transform var(--dur-out) var(--ease);
   }
   .hero h1 {
     font-weight: 800;
