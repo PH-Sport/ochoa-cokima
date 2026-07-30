@@ -65,6 +65,19 @@
   --dur-out: 160ms;
   --shift: 14px;
   --stagger: 55ms; /* escalón entre hermanos en cascada */
+  /* La cinta rotulada es el único movimiento que no entra ni responde a un
+     dedo: recorre. Por eso no puede salir de `--dur-in` ni de `--dur-out`, que
+     miden gestos, y por eso su curva es lineal y no la quíntica de la marca —un
+     rótulo que recorre a velocidad variable se lee como un fallo. Es la sexta
+     pieza del sistema de movimiento, no un milisegundo suelto. */
+  --dur-cinta: 34s;
+  /* Lo que dura un plato en la tira antes de pasar al siguiente. Es el otro
+     movimiento que no responde a un dedo: espera. Tres segundos y medio es lo
+     que se tarda en leer un nombre de plato y sus dos precios sin agobio —por
+     debajo se convierte en una diapositiva y por encima parece que se ha
+     colgado—. Cuando alguien toca la tira, esta cuenta se apaga para siempre:
+     quien desliza ha dicho que prefiere conducir. */
+  --dur-turno: 3.5s;
 
   /* Mapeo a las variables neutras de @tombo/ui */
   --t-text: var(--ink);

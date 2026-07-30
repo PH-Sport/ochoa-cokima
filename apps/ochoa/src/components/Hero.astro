@@ -108,7 +108,12 @@ const es = locale === "es";
     --t-text-faint: rgba(255, 255, 255, 0.65);
   }
   .hero h1 {
-    font-size: clamp(2.6rem, 10vw, 6rem);
+    /* 11.5vw y no 10vw: por debajo de 416px de ancho, 10vw cae bajo el mínimo
+       de 2.6rem y el cartel se queda congelado en 41.6px justo en el formato
+       que más se usa —a 390px daba 39px y ganaba siempre el suelo del clamp—.
+       Con 11.5vw el titular vuelve a escalar con la pantalla desde 362px, y el
+       suelo sigue protegiendo a las pantallas por debajo de eso. */
+    font-size: clamp(2.6rem, 11.5vw, 6rem);
     line-height: 0.94;
     margin: 0 0 14px;
     max-width: 14ch;

@@ -121,16 +121,34 @@ img {
   transform: translate(1px, 1px);
   box-shadow: 2px 2px 0 var(--ink);
 }
+/* El recorrido entero: la pieza baja los tres píxeles que medía su sombra y se
+   queda pegada al papel. Va en `:active` y no solo en `:hover` porque en el
+   móvil —que es donde se usa esta web— no existe el hover: sin esto, el botón
+   no acusaba el dedo por ninguna parte. Los tres píxeles del desplazamiento son
+   exactamente los de la sombra en reposo; por eso parece que se hunde y no que
+   se mueve. */
+.btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--ink);
+}
+/* El fantasma llevaba `box-shadow: none` y `transform: none`, así que era el
+   único botón de la casa sin relieve ni recorrido: se leía como texto con una
+   caja alrededor. Ahora es el mismo botón, en hueco. */
 .btn.ghost {
   background: transparent;
   color: var(--ink);
   border: 1.5px solid var(--ink);
-  box-shadow: none;
+  box-shadow: 3px 3px 0 var(--ink);
 }
 .btn.ghost:hover {
+  background: transparent;
   color: var(--rojo);
   border-color: var(--rojo);
-  transform: none;
+  box-shadow: 2px 2px 0 var(--rojo);
+}
+.btn.ghost:active {
+  background: transparent;
+  box-shadow: 0 0 0 var(--rojo);
 }
 
 /* Cuadro vichy rojo y blanco del mantel, generado sin imagen. Se usa como
@@ -142,6 +160,47 @@ img {
     repeating-linear-gradient(0deg, var(--rojo) 0 11px, transparent 11px 22px);
   background-color: rgba(198, 34, 43, 0.22);
   background-blend-mode: multiply;
+}
+
+/* Barrido entre páginas. La hoja nueva entra por el borde y empuja a la vieja
+   fuera, como se pasa una foto en la galería del móvil; el fundido por defecto
+   de las transiciones de vista no decía en qué dirección se estaba yendo.
+   La que sale recorre menos que la que entra —un 22% frente al 100%— porque
+   así se lee que una tapa a la otra en vez de que las dos se persigan.
+   La dirección la marca `data-nav`, que escribe el layout: hacia adelante en
+   una navegación normal, y al revés con el botón de atrás del navegador, que
+   es donde un barrido en el sentido equivocado se nota como un error. */
+@keyframes barre-entra {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes barre-sale {
+  to {
+    transform: translateX(-22%);
+  }
+}
+@keyframes barre-entra-atras {
+  from {
+    transform: translateX(-100%);
+  }
+}
+@keyframes barre-sale-atras {
+  to {
+    transform: translateX(22%);
+  }
+}
+::view-transition-old(root) {
+  animation: barre-sale var(--dur-in) var(--ease) both;
+}
+::view-transition-new(root) {
+  animation: barre-entra var(--dur-in) var(--ease) both;
+}
+html[data-nav="atras"]::view-transition-old(root) {
+  animation-name: barre-sale-atras;
+}
+html[data-nav="atras"]::view-transition-new(root) {
+  animation-name: barre-entra-atras;
 }
 
 /* Ninguna transición de vista ni animación para quien pide menos movimiento.

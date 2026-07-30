@@ -1,0 +1,90 @@
+---
+// apps/ochoa/src/components/Ticker.astro
+// La cinta rotulada: el recurso de rótulo de bar llevado a la web. No es
+// decoración con texto de relleno —dice el nombre, la dirección y el reclamo
+// que ya está en el manifiesto—, así que quien la lea de pasada se lleva el
+// dato aunque no baje más.
+interface Props {
+  locale: "es" | "en";
+}
+const { locale } = Astro.props;
+const es = locale === "es";
+
+// Contenido real, el mismo que ya vive en la página. Sin relleno inventado.
+const piezas = es
+  ? ["Tasquita Los Ochoa", "Castellana 117 · Madrid", "El tapeo de toda la vida, con sabores nuevos"]
+  : ["Tasquita Los Ochoa", "Castellana 117 · Madrid", "Classic Madrid tapas, new flavours"];
+---
+
+{/* La cinta es una imagen de texto: se anuncia una vez a quien la escucha y las
+    copias visuales quedan ocultas. Sin esto, un lector de pantalla recitaría el
+    mismo reclamo cuatro veces seguidas. */}
+<div class="cinta" role="img" aria-label={piezas.join(". ")}>
+  <div class="pista" aria-hidden="true">
+    {[0, 1].map(() => (
+      <span class="tanda">
+        {piezas.map((p) => (
+          <><span class="pieza">{p}</span><i class="sep"></i></>
+        ))}
+      </span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .cinta {
+    overflow: hidden;
+    background: var(--rojo);
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    padding: 10px 0;
+    /* La cinta va a sangre aunque el resto de la hoja viva dentro de `.wrap`:
+       un rótulo cortado por los dos bordes es lo que le da la escala. */
+    width: 100%;
+  }
+  .pista {
+    display: flex;
+    width: max-content;
+    animation: recorre var(--dur-cinta) linear infinite;
+  }
+  /* Dos tandas idénticas y un desplazamiento de la mitad exacta: cuando la
+     primera sale por la izquierda, la segunda está justo donde empezó la
+     primera y el salto es invisible. */
+  .tanda {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+  @keyframes recorre {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  .pieza {
+    font-family: var(--display);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: clamp(1.05rem, 3.4vw, 1.5rem);
+    line-height: 1;
+    color: var(--paper);
+    white-space: nowrap;
+    padding: 0 clamp(14px, 3vw, 26px);
+  }
+  /* El separador es el mismo punto rojo del estado de apertura, invertido a
+     papel: la marca ya tiene su signo y no hace falta traer otro. */
+  .sep {
+    flex: 0 0 auto;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--paper);
+    opacity: 0.85;
+  }
+  /* Quien pide menos movimiento se queda con el rótulo quieto, que sigue
+     diciendo lo mismo: la cinta no esconde información en el recorrido. */
+  @media (prefers-reduced-motion: reduce) {
+    .pista {
+      animation: none;
+    }
+  }
+</style>

@@ -46,7 +46,7 @@ const priceLabel = (price: MenuEntry["price"]) => {
 <section class="highlights">
   <div class="wrap head">
     <h2 class="cartel">{t.title}</h2>
-    <a href={href} class="more">{t.more} →</a>
+    <a href={href} class="btn ghost more">{t.more} →</a>
   </div>
 
   {/* tabindex="0" para poder recorrer la tira con el teclado: es una región
@@ -80,7 +80,138 @@ const priceLabel = (price: MenuEntry["price"]) => {
       </li>
     ))}
   </ul>
+
+  {/* Guía de cuántos platos hay y por cuál va. Es un indicador, no un mando:
+      `aria-hidden` porque la tira ya se recorre con el dedo y con el teclado, y
+      seis paradas de tabulación más no ayudarían a nadie. El turno en curso es
+      una barra que se rellena; los demás, puntos. */}
+  <div class="turnos" aria-hidden="true" data-turnos>
+    {cards.map(() => <span class="turno"><i></i></span>)}
+  </div>
 </section>
+
+<script>
+  /* El turno de la tira de platos.
+   *
+   * Avanza solo mientras nadie la toca, y se apaga para siempre en cuanto
+   * alguien la toca: en una tira con precios, moverse debajo de quien está
+   * leyendo «7 € · 12 €» es quitarle el sitio. Por eso no hay botón de pausa —
+   * el gesto de deslizar ya es la pausa— y por eso el apagado es definitivo y
+   * no una tregua de unos segundos.
+   */
+  const duracionTurno = () => {
+    const v = getComputedStyle(document.documentElement).getPropertyValue("--dur-turno");
+    return parseFloat(v) * 1000 || 3500;
+  };
+
+  let sueltaAnterior: (() => void) | null = null;
+
+  function montaTira() {
+    const strip = document.querySelector<HTMLElement>(".highlights .strip");
+    const turnos = document.querySelector<HTMLElement>(".highlights [data-turnos]");
+    if (!strip || !turnos) return null;
+
+    const fichas = [...strip.children] as HTMLElement[];
+    const marcas = [...turnos.children] as HTMLElement[];
+    if (fichas.length < 2) return null;
+
+    const abort = new AbortController();
+    const { signal } = abort;
+    let indice = 0;
+    let reloj: ReturnType<typeof setInterval> | null = null;
+    let parado = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /* La posición de reposo de cada ficha es su borde menos el relleno de la
+       tira: el mismo punto en el que la deja el `scroll-snap`, así que el turno
+       automático y el dedo aterrizan exactamente igual. */
+    const posicionDe = (i: number) =>
+      fichas[i].offsetLeft - parseFloat(getComputedStyle(strip).paddingLeft);
+
+    const pintar = (i: number) => {
+      marcas.forEach((m, n) => m.toggleAttribute("data-activo", n === i));
+    };
+
+    const pausa = () => {
+      if (reloj) clearInterval(reloj);
+      reloj = null;
+      turnos.removeAttribute("data-corriendo");
+    };
+
+    const arranca = () => {
+      if (parado || reloj) return;
+      turnos.setAttribute("data-corriendo", "");
+      reloj = setInterval(() => {
+        indice = (indice + 1) % fichas.length;
+        strip.scrollTo({ left: posicionDe(indice), behavior: "smooth" });
+        pintar(indice);
+      }, duracionTurno());
+    };
+
+    const para = () => {
+      parado = true;
+      pausa();
+    };
+
+    /* Cuatro señales de que hay alguien al mando. `once` en cada una porque con
+       la primera basta: a partir de ahí la tira es suya. */
+    for (const ev of ["pointerdown", "touchstart", "wheel", "keydown"]) {
+      strip.addEventListener(ev, para, { passive: true, once: true, signal });
+    }
+
+    /* El indicador sigue al scroll real, lo mueva el reloj o lo mueva un dedo:
+       así nunca dice un plato distinto del que se está viendo. */
+    let encolado = false;
+    strip.addEventListener(
+      "scroll",
+      () => {
+        if (encolado) return;
+        encolado = true;
+        requestAnimationFrame(() => {
+          encolado = false;
+          const x = strip.scrollLeft;
+          let cerca = 0;
+          let corta = Infinity;
+          fichas.forEach((_, i) => {
+            const d = Math.abs(posicionDe(i) - x);
+            if (d < corta) {
+              corta = d;
+              cerca = i;
+            }
+          });
+          indice = cerca;
+          pintar(cerca);
+        });
+      },
+      { passive: true, signal },
+    );
+
+    // Nada corre mientras la tira no se ve, ni con la pestaña en segundo plano.
+    const ojo = new IntersectionObserver(
+      ([e]) => (e.isIntersecting && !document.hidden ? arranca() : pausa()),
+      { threshold: 0.5 },
+    );
+    ojo.observe(strip);
+    document.addEventListener("visibilitychange", () => document.hidden && pausa(), { signal });
+
+    pintar(0);
+
+    return () => {
+      pausa();
+      ojo.disconnect();
+      abort.abort();
+    };
+  }
+
+  /* `astro:page-load` dispara en la carga inicial y después de cada navegación
+     con transiciones de vista. Se suelta el montaje anterior antes de crear
+     otro: sin esto, cada visita a la portada dejaría un reloj corriendo sobre
+     nodos que ya no existen. */
+  const remonta = () => {
+    sueltaAnterior?.();
+    sueltaAnterior = montaTira();
+  };
+  document.addEventListener("astro:page-load", remonta);
+</script>
 
 <style>
   /* El relleno superior va apretado a propósito: la portada deja asomar una
@@ -89,9 +220,11 @@ const priceLabel = (price: MenuEntry["price"]) => {
   .highlights {
     padding: clamp(16px, 4vw, 44px) 0 clamp(30px, 5vw, 56px);
   }
+  /* `center` y no `baseline`: con el enlace convertido en botón, cuadrar por la
+     línea base dejaba la caja colgando por debajo del titular. */
   .head {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
     gap: 18px;
     margin-bottom: 12px;
@@ -103,11 +236,16 @@ const priceLabel = (price: MenuEntry["price"]) => {
     margin: 0;
     text-wrap: nowrap;
   }
+  /* Botón de verdad, no texto con una flecha: el mismo hueco con relieve que
+     «Ver la carta completa» más abajo, encogido para caber en la línea del
+     titular. El alto se fija en 44px —el mínimo de un dedo— en vez de dejarlo
+     al relleno, que se quedaba en 41. */
   .more {
-    font-family: var(--sans);
-    font-size: 0.92rem;
-    color: var(--rojo);
-    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 15px;
+    font-size: 0.86rem;
   }
   .strip {
     display: flex;
@@ -118,6 +256,13 @@ const priceLabel = (price: MenuEntry["price"]) => {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
+    /* Sin esto, la primera ficha aparecía pegada al borde de la pantalla pese
+       al relleno: el `scroll-snap` alinea contra el borde del área de scroll,
+       que ignora el `padding`, así que el navegador desplazaba esos mismos
+       veinte píxeles para cuadrar la ficha y se comía el margen. El
+       `scroll-padding` le dice dónde está de verdad el borde, y la tira arranca
+       a plomo con el titular y con el resto de la hoja. */
+    scroll-padding-inline: clamp(20px, 5vw, 48px);
   }
   .strip::-webkit-scrollbar {
     display: none;
@@ -166,6 +311,56 @@ const priceLabel = (price: MenuEntry["price"]) => {
     color: var(--ink);
     font-weight: 600;
   }
+  .turnos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+    margin-top: 18px;
+  }
+  /* Apagado es un punto; en turno se estira a barra. La transición del ancho es
+     la corta, porque el cambio de forma acompaña al desplazamiento de la tira y
+     tiene que llegar a la vez. */
+  .turno {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--paper-3);
+    overflow: hidden;
+    transition: width var(--dur-out) var(--ease);
+  }
+  .turno[data-activo] {
+    width: 34px;
+  }
+  .turno i {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--rojo);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  /* La cuenta del turno en curso. Arranca sola cada vez que el atributo salta a
+     otro hermano, así que no hay que reiniciar nada a mano. Lineal: una barra
+     de tiempo que acelera o frena miente sobre lo que queda. */
+  @keyframes rellena {
+    to {
+      transform: scaleX(1);
+    }
+  }
+  .turnos[data-corriendo] .turno[data-activo] i {
+    animation: rellena var(--dur-turno) linear forwards;
+  }
+  /* Parado —porque alguien ha tocado la tira, o porque pide menos movimiento—
+     el turno en curso se queda lleno: sigue diciendo por dónde va, sin prometer
+     que se vaya a mover. */
+  .turno[data-activo] i {
+    transform: scaleX(1);
+  }
+  .turnos[data-corriendo] .turno[data-activo] i {
+    transform: scaleX(0);
+  }
+
   @media (min-width: 861px) {
     .strip {
       max-width: var(--maxw);
@@ -174,6 +369,11 @@ const priceLabel = (price: MenuEntry["price"]) => {
     .card {
       flex: 1 1 0;
       max-width: none;
+    }
+    /* En una sola fila se ven los seis platos a la vez: no hay turno que
+       indicar ni tira que recorrer. */
+    .turnos {
+      display: none;
     }
   }
 </style>

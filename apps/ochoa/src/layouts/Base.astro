@@ -35,6 +35,22 @@ const { title, description, locale, altPath } = Astro.props;
     <Footer locale={locale} />
     <ConsentBanner locale={locale} cookiesPath="/cookies" />
     <script>
+      /* El sentido del barrido. Lo escribe aquí y no en el CSS porque solo el
+         evento de navegación sabe si se va hacia adelante o se está volviendo:
+         un barrido que entra siempre por el mismo lado convierte el botón de
+         atrás en algo que se siente roto.
+         Se marca en los dos documentos a propósito: el intercambio copia los
+         atributos del `<html>` entrante sobre el actual, así que marcar solo
+         este se borraba justo antes de que la animación llegara a leerlo. */
+      document.addEventListener("astro:before-swap", (e) => {
+        const ev = e as { direction?: string; newDocument?: Document };
+        const sentido = ev.direction === "back" ? "atras" : "adelante";
+        document.documentElement.dataset.nav = sentido;
+        if (ev.newDocument) ev.newDocument.documentElement.dataset.nav = sentido;
+      });
+    </script>
+
+    <script>
       import { initTracking } from "@tombo/tracking/client";
 
       function loadGtm(id: string) {

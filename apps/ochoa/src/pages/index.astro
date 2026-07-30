@@ -5,6 +5,9 @@ import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import Highlights from "../components/Highlights.astro";
+import Ticker from "../components/Ticker.astro";
+import Mapa from "../components/Mapa.astro";
+import Contacto from "../components/Contacto.astro";
 import barra from "../assets/casa/barra.jpg";
 import rotulo from "../assets/casa/rotulo.jpg";
 import vermu from "../assets/casa/vermu.jpg";
@@ -14,9 +17,19 @@ const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data
 
 // La casa: ya no son rejillas. Las cuatro son fotos reales del local, de la
 // propia web del grupo, así que esta sección se publica.
+//
+// `rotulo` se separa de las otras tres porque no va en el muro: va abrazada por
+// el titular, entre «lo que hay» y «detrás del cristal». La foto es literalmente
+// el cristal rotulado, así que la frase se termina de leer en la imagen en vez
+// de describirla. Es el recurso que nos gustó de la portada de Sibuya —el medio
+// como una línea más del titular, no como fondo— traído al único sitio de la
+// hoja donde no deshace una decisión ya tomada.
+const cristal = {
+  src: rotulo,
+  alt: "Rótulo de Los Ochoa pintado en el cristal, con la terraza al otro lado",
+};
 const casa = [
   { src: barra, alt: "Barra de Los Ochoa con las botellas y el espejo rotulado a mano: tortilla, gildas, ensaladilla, patatas bravas" },
-  { src: rotulo, alt: "Rótulo de Los Ochoa pintado en el cristal, con la terraza al otro lado" },
   { src: vermu, alt: "Vermú con hielo y una banderilla de anchoa y aceituna sobre mármol" },
   { src: comedor, alt: "Interior del local: banco corrido rojo, mesas de mármol y el rótulo visto desde dentro" },
 ];
@@ -31,6 +44,11 @@ const casa = [
   <Hero locale="es" />
 
   <Highlights dishes={featured} locale="es" href="/carta" />
+
+  {/* Va debajo de la tira y no debajo de la portada: ahí arriba el hueco está
+      medido para que asome la primera ficha de plato, y meter una banda lo
+      gastaría entero. Aquí hace de corte entre los platos y el manifiesto. */}
+  <Ticker locale="es" />
 
   <section class="manifesto">
     <div class="wrap">
@@ -66,7 +84,22 @@ const casa = [
     <div class="wrap">
       <div class="rule"></div>
       <p class="eyebrow">La casa</p>
-      <h2 class="cartel">Lo que hay detrás del cristal</h2>
+      {/* El titular es un solo h2 partido en dos bloques con la foto en medio:
+          para quien lo escucha sigue siendo una frase seguida, porque la imagen
+          va entre los dos tramos de texto y no dentro de ninguno. */}
+      <h2 class="cartel titular-cristal">
+        <span class="tramo">Lo que hay</span>
+        <Image
+          src={cristal.src}
+          alt={cristal.alt}
+          widths={[390, 640, 960]}
+          sizes="(max-width: 860px) 100vw, 560px"
+          quality={72}
+          loading="lazy"
+          class="cristal-shot"
+        />
+        <span class="tramo">Detrás del cristal</span>
+      </h2>
       <p class="txt">
         Barra, mármol y vermú de media tarde. <em>El tapeo que se alarga hasta que alguien mira
         el reloj</em> y resulta que ya es de noche. Los Ochoa por dentro.
@@ -92,26 +125,28 @@ const casa = [
       <div class="rule"></div>
       <p class="eyebrow">Dónde estamos</p>
       <h2 class="cartel">En plena Castellana</h2>
+      {/* El mapa abre la sección en vez de cerrarla: quien llega hasta aquí ya
+          sabe que quiere venir, y lo primero que necesita es situarse. Detrás,
+          las dos acciones —llamar y mirar el Instagram— y solo después los
+          datos en frío. */}
       <div class="visit-grid">
-        <dl class="info">
-          <div class="block"><dt>Dirección</dt><dd>P.º de la Castellana, 117<small>28046 Madrid</small></dd></div>
-          <div class="block"><dt>Teléfono</dt><dd><a href="tel:+34912876820">912 87 68 20</a></dd></div>
-          <div class="block">
-            <dt>Horario</dt>
-            <dd>
-              <div class="hours">
-                <span>Lunes a jueves</span><b>9:00 – 1:00</b>
-                <span>Viernes</span><b>9:00 – 2:30</b>
-                <span>Sábado</span><b>12:00 – 2:30</b>
-                <span>Domingo</span><b>12:00 – 1:00</b>
-              </div>
-            </dd>
-          </div>
-          <div class="block"><dt>Instagram</dt><dd><a href="https://instagram.com/tasquita.losochoa">@tasquita.losochoa</a></dd></div>
-        </dl>
-        <div class="mapbox" role="img" aria-label="Mapa orientativo: Paseo de la Castellana 117, Madrid">
-          <div class="pin"><i class="dot"></i><span>Castellana 117</span></div>
-          <span class="ph">Mapa · pendiente de integrar</span>
+        <Mapa locale="es" />
+        <div class="datos">
+          <Contacto locale="es" />
+          <dl class="info">
+            <div class="block"><dt>Dirección</dt><dd>P.º de la Castellana, 117<small>28046 Madrid</small></dd></div>
+            <div class="block">
+              <dt>Horario</dt>
+              <dd>
+                <div class="hours">
+                  <span>Lunes a jueves</span><b>9:00 – 1:00</b>
+                  <span>Viernes</span><b>9:00 – 2:30</b>
+                  <span>Sábado</span><b>12:00 – 2:30</b>
+                  <span>Domingo</span><b>12:00 – 1:00</b>
+                </div>
+              </dd>
+            </div>
+          </dl>
         </div>
       </div>
     </div>
@@ -206,6 +241,23 @@ const casa = [
     font-size: clamp(1.9rem, 5vw, 3rem);
     margin: 0.2rem 0 0;
   }
+  /* El titular abraza la foto: los dos tramos de texto y la imagen son un solo
+     bloque, con el mismo interlineado apretado del cartel a cada lado. La foto
+     no lleva la sombra dura roja que sí llevan las del muro —aquí hace de
+     palabra, y una palabra no se realza contra sí misma. */
+  .titular-cristal {
+    display: grid;
+    gap: clamp(10px, 2.5vw, 18px);
+    justify-items: start;
+  }
+  .cristal-shot {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+  }
   /* Dos columnas desfasadas: la de la derecha baja un escalón para que la serie
      no se lea como una tabla. Ni el mosaico de piezas de tamaños distintos —que
      llamaba la atención sobre la composición— ni la cuadrícula perfecta, que era
@@ -216,13 +268,21 @@ const casa = [
     grid-template-columns: repeat(2, 1fr);
     gap: clamp(12px, 2vw, 22px);
     margin-top: 1.6rem;
-    /* El escalón sube como margen inferior de la columna izquierda para que la
-       sección no acabe con un diente suelto. */
-    padding-bottom: var(--desfase);
+    padding-bottom: clamp(18px, 3vw, 34px);
     --desfase: clamp(28px, 7vw, 64px);
   }
   .wall > :global(*:nth-child(2n)) {
     margin-top: var(--desfase);
+  }
+  /* Quedan tres piezas desde que el rótulo se fue al titular, y tres en dos
+     columnas dejaban un hueco al final. La última pasa a ancho completo y la
+     sección cierra en plano: no es el mosaico de tamaños arbitrarios que se
+     retiró —ahí el desorden era el recurso—, sino la fila de cierre de una
+     retícula que sigue siendo de dos columnas. Por eso tampoco hace falta ya
+     el relleno del escalón: no hay diente que compensar. */
+  .wall > :global(*:nth-child(3)) {
+    grid-column: 1 / -1;
+    aspect-ratio: 16 / 9;
   }
   .casa-shot {
     width: 100%;
@@ -296,51 +356,12 @@ const casa = [
   .hours span {
     color: var(--ink-dim);
   }
-  .mapbox {
-    position: relative;
-    border: 2px solid var(--ink);
-    border-radius: 6px;
-    overflow: hidden;
-    min-height: 300px;
-    background:
-      radial-gradient(circle at 40% 45%, rgba(198, 34, 43, 0.14), transparent 45%),
-      repeating-linear-gradient(0deg, rgba(26, 26, 26, 0.06) 0 1px, transparent 1px 46px),
-      repeating-linear-gradient(90deg, rgba(26, 26, 26, 0.06) 0 1px, transparent 1px 46px),
-      var(--paper-3);
-  }
-  .pin {
-    position: absolute;
-    left: 40%;
-    top: 45%;
-    transform: translate(-50%, -100%);
-    text-align: center;
-  }
-  .dot {
-    display: block;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--rojo);
-    margin: 0 auto;
-    box-shadow: 0 0 0 6px rgba(198, 34, 43, 0.2), 2px 2px 0 var(--ink);
-  }
-  .pin span {
-    font-family: var(--sans);
-    font-size: 0.82rem;
-    color: var(--paper);
-    background: var(--ink);
-    padding: 4px 10px;
-    border-radius: 3px;
-    margin-top: 8px;
-    display: inline-block;
-  }
-  .ph {
-    position: absolute;
-    left: 14px;
-    bottom: 12px;
-    font-family: var(--sans);
-    font-size: 0.8rem;
-    color: var(--ink-faint);
+  /* Las acciones separadas de los datos: entre pulsar «llamar» y leer el
+     horario hay un cambio de marcha, y el hueco lo dice mejor que una regla. */
+  .datos {
+    display: grid;
+    gap: clamp(18px, 3vw, 26px);
+    align-content: start;
   }
 
   /* Móvil: la hoja de bar es densa y vertical, no aireada. Nada de scroll
@@ -350,9 +371,18 @@ const casa = [
     .manifesto {
       padding: 28px 0 0;
     }
-    .tasca,
     .visita {
       padding-top: 28px;
+    }
+    /* Las dos secciones que cargan fotografía respiran casi el doble que el
+       resto. La densidad de la hoja se mantiene donde es texto —que es lo que
+       la hace una hoja de bar y no un folleto—, pero una foto pegada a la
+       anterior se lee como error de montaje y no como ritmo. El asomo de la
+       portada y el relleno apretado de la tira de platos siguen intactos: esos
+       dos están medidos para que la primera ficha se vea sin bajar. */
+    .tasca,
+    .casa {
+      padding-top: 52px;
     }
     .manifesto .rule,
     .tasca .rule,

@@ -1,0 +1,174 @@
+---
+// apps/ochoa/src/components/Mapa.astro
+//
+// El mapa del local, con la piel de la casa en vez de la de Google. Es una
+// imagen estática y no un iframe a propósito: el embebido interactivo trae
+// novecientos kilobytes de JavaScript y cookies de terceros —hoy esta web no
+// tiene ni un dominio ajeno y no vamos a estrenar el contador con el mapa—,
+// mientras que la estática es un PNG y no pide permiso a nadie. Lo que se
+// pierde es el zoom dentro de la página; lo que se gana es que al tocarla se
+// abre la app de mapas del móvil, que es lo que de verdad quiere quien mira
+// esto de pie en la calle.
+//
+// Sin clave configurada no se inventa nada: se queda el hueco marcado, como
+// manda la casa, pero el enlace de «cómo llegar» ya funciona porque no depende
+// de ninguna API.
+import { RESTAURANT } from "../site.ts";
+
+interface Props {
+  locale: "es" | "en";
+}
+const { locale } = Astro.props;
+const es = locale === "es";
+
+const direccion = `${RESTAURANT.streetAddress}, ${RESTAURANT.postalCode} ${RESTAURANT.addressLocality}`;
+const consulta = encodeURIComponent(direccion);
+
+// Universal: lo resuelve cada sistema con su app de mapas por defecto.
+const comoLlegar = `https://www.google.com/maps/search/?api=1&query=${consulta}`;
+
+const clave = import.meta.env.PUBLIC_GOOGLE_MAPS_KEY as string | undefined;
+
+/* La paleta de la casa traducida al lenguaje de Static Maps. El callejero es
+   real; lo único nuestro son los colores y el haber apagado todo lo que no es
+   calle: puntos de interés, transporte y sus etiquetas, que en un mapa de este
+   tamaño solo hacen ruido alrededor del único sitio que importa. */
+const piel = [
+  "feature:all|element:geometry|color:0xf7f4f2",
+  "feature:all|element:labels.text.fill|color:0x5c5654",
+  "feature:all|element:labels.text.stroke|color:0xffffff",
+  "feature:all|element:labels.icon|visibility:off",
+  "feature:poi|visibility:off",
+  "feature:transit|visibility:off",
+  "feature:road|element:geometry|color:0xffffff",
+  "feature:road|element:geometry.stroke|color:0xebe5e2",
+  "feature:road.arterial|element:geometry|color:0xffffff",
+  "feature:road.highway|element:geometry|color:0xffffff",
+  "feature:road.highway|element:geometry.stroke|color:0xe0d9d6",
+  "feature:water|element:geometry|color:0xebe5e2",
+  "feature:landscape|element:geometry|color:0xf2eeec",
+];
+
+const estatico = clave
+  ? "https://maps.googleapis.com/maps/api/staticmap?" +
+    [
+      `center=${consulta}`,
+      "zoom=16",
+      "size=640x400",
+      "scale=2",
+      "maptype=roadmap",
+      "format=png",
+      `markers=${encodeURIComponent("color:0xc6222b|size:mid|")}${consulta}`,
+      ...piel.map((s) => `style=${encodeURIComponent(s)}`),
+      `key=${clave}`,
+    ].join("&")
+  : null;
+
+const t = es
+  ? { como: "Cómo llegar", alt: `Mapa de ${direccion}`, hueco: "Mapa · falta la clave de Google Maps" }
+  : { como: "Get directions", alt: `Map of ${direccion}`, hueco: "Map · Google Maps key missing" };
+---
+
+<a class="mapa" href={comoLlegar} target="_blank" rel="noopener">
+  {estatico ? (
+    <img src={estatico} alt={t.alt} width="640" height="400" loading="lazy" decoding="async" />
+  ) : (
+    /* El mismo andamio que el resto de huecos de la casa: se ve que falta algo
+       y se ve exactamente qué falta. */
+    <span class="hueco" role="img" aria-label={t.alt}>
+      <span class="pin"><i class="punto"></i><span class="chapa">{RESTAURANT.streetAddress}</span></span>
+      <span class="nota">{t.hueco}</span>
+    </span>
+  )}
+  <span class="ir">{t.como} →</span>
+</a>
+
+<style>
+  .mapa {
+    position: relative;
+    display: block;
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 6px 6px 0 rgba(198, 34, 43, 0.9);
+    transition:
+      transform var(--dur-out) var(--ease),
+      box-shadow var(--dur-out) var(--ease);
+  }
+  /* El mismo recorrido que los botones: el mapa es lo más grande que se pulsa
+     en toda la sección, y tiene que acusar el dedo igual que ellos. */
+  .mapa:active {
+    transform: translate(6px, 6px);
+    box-shadow: 0 0 0 rgba(198, 34, 43, 0.9);
+  }
+  .mapa img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+  .hueco {
+    display: block;
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background:
+      radial-gradient(circle at 50% 45%, rgba(198, 34, 43, 0.14), transparent 45%),
+      repeating-linear-gradient(0deg, rgba(26, 26, 26, 0.06) 0 1px, transparent 1px 46px),
+      repeating-linear-gradient(90deg, rgba(26, 26, 26, 0.06) 0 1px, transparent 1px 46px),
+      var(--paper-3);
+  }
+  .pin {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -100%);
+    text-align: center;
+  }
+  .punto {
+    display: block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--rojo);
+    margin: 0 auto;
+    box-shadow: 0 0 0 6px rgba(198, 34, 43, 0.2), 2px 2px 0 var(--ink);
+  }
+  .chapa {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    color: var(--paper);
+    background: var(--ink);
+    padding: 4px 10px;
+    border-radius: 3px;
+    margin-top: 8px;
+    display: inline-block;
+    white-space: nowrap;
+  }
+  /* Arriba y no abajo: en la esquina de abajo vive la chapa de «cómo llegar» y
+     se pisaban. */
+  .nota {
+    position: absolute;
+    left: 14px;
+    top: 12px;
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    color: var(--ink-dim);
+  }
+  /* La chapa de «cómo llegar» va sobre el mapa, no debajo: es la acción de esta
+     pieza y tiene que verse sin buscarla. */
+  .ir {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-stretch: var(--wd-rotulo);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: var(--fs-label);
+    color: var(--paper);
+    background: var(--ink);
+    border-radius: 3px;
+    padding: 9px 12px;
+  }
+</style>
