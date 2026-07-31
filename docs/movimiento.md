@@ -78,6 +78,22 @@ más lejos; Ochoa es una tasca y es seca.
     `transition: opacity 0s linear var(--dur-out)` hasta que el telón ha terminado de pasar. Si
     se desvanece a la vez, se ve un texto apagándose sobre un fondo que todavía sigue ahí, que
     son otra vez dos movimientos discutiendo.
+12. **Lo que sale del flujo deja un hueco, y hay que devolverlo.** La barra pasa a `fixed`
+    mientras dura el menú, así que la página de debajo perdía su alto de golpe y daba un tirón
+    hacia arriba de exactamente 62px justo al abrir. Se ve porque el telón todavía está cayendo
+    y no la tapa. `html.menu-open body { padding-top: var(--t-header-h) }` ocupa ese sitio. **Se
+    comprueba muestreando la posición de un elemento del fondo en cada frame de la apertura y
+    exigiendo que el máximo sea 0**, no mirando el estado final: el estado final ya era correcto
+    y el salto pasaba igual.
+13. **El reveal se calibra contra el movimiento al que acompaña, no en abstracto.** Un fade con
+    la quíntica estaba al 97% a mitad de su tiempo: cuando el telón llegaba, la pieza ya estaba
+    puesta y no se veía ninguna animación. Con `--ease-telon` y la espera de `--reveal`, cada
+    pieza está entre el 33% y el 60% cuando la descubren, y se ve terminar.
+14. **Una máscara sobre texto quieto no revela, corta.** Se probó un reveal de cortina con
+    `clip-path` sobre los nombres del menú y se retiró al verlo: dejaba media letra flotando y se
+    leía como un fallo de pintado. Un reveal de cortina exige que la palabra se desplace *dentro*
+    de la máscara, lo que pide un envoltorio más y recorta tildes y sombras duras. Para esto
+    basta un desplazamiento corto.
 
 ## Qué se mueve hoy
 

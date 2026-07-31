@@ -33,6 +33,15 @@ html {
 html.menu-open {
   overflow: hidden;
 }
+/* Y quieto de verdad: la barra pasa a `fixed` mientras dura el menú (ver
+   Nav.astro), o sea que sale del flujo y deja un hueco de su propio alto. Sin
+   devolverlo, la página de debajo daba un tirón hacia arriba de exactamente
+   esos 62px justo al abrir —se veía porque el telón todavía está cayendo y no
+   la tapa—. El relleno ocupa el sitio que la barra deja, así que el contenido
+   no se entera de que ha cambiado de posicionamiento. */
+html.menu-open body {
+  padding-top: var(--t-header-h);
+}
 body {
   margin: 0;
   background: var(--paper);

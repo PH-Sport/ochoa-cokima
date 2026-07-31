@@ -321,10 +321,15 @@ const t = es
   .panel[data-state="open"] .panel-foot {
     opacity: 1;
     transform: none;
+    /* Con la quíntica de la marca este reveal no se veía: frena tan pronto que
+       a mitad de su tiempo ya estaba al 97%, así que cuando el telón llegaba la
+       pieza estaba puesta y no se apreciaba ninguna animación. Va con la curva
+       del telón porque es a él a quien acompaña —al descubrirla, la pieza está
+       en torno al 70% de su entrada y se ve terminar. */
     transition:
-      opacity var(--dur-out) var(--ease),
-      transform var(--dur-out) var(--ease);
-    transition-delay: calc(var(--i) * var(--stagger));
+      opacity var(--dur-out) var(--ease-telon),
+      transform var(--dur-out) var(--ease-telon);
+    transition-delay: calc(var(--reveal) + var(--i) * var(--stagger));
   }
   /* El área del enlace se ciñe a su texto: estirada a todo el ancho, el foco
      encerraba un metro de vacío y el puntero cambiaba en sitios donde no hay
@@ -344,6 +349,14 @@ const t = es
      portada sobre la foto, con los papeles cambiados. La sombra vive en `.lbl`
      y no en el enlace porque el hover tiene que poder retirarla sin llevarse
      por delante la del número. */
+  /* Aquí se probó un reveal de cortina sobre la palabra, recortándola de arriba
+     abajo con `clip-path` para acompañar al telón. Se retiró tras verlo: una
+     máscara sobre texto quieto no revela, corta —se quedaba media letra
+     flotando y se leía como un fallo de pintado—. Un reveal de cortina solo
+     funciona si la palabra se desplaza dentro de la máscara, y eso pedía un
+     envoltorio más y recortar la tilde de «DÓNDE» y la sombra dura. El
+     desplazamiento corto de abajo hace el mismo trabajo sin ninguna de esas
+     aristas. */
   .lbl {
     text-shadow: 0.045em 0.05em 0 var(--ink);
     transition:

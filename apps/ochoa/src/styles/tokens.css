@@ -97,6 +97,13 @@
      antes la cascada iba al triple de lento que la persiana y el tercer enlace
      terminaba de aparecer 56ms después de que ya estuviera al descubierto. */
   --stagger: 30ms;
+  /* Lo que la cascada espera antes de arrancar. Es lo que tarda el telón en
+     llegar al bloque de enlaces, y sirve para que el reveal se esté viendo
+     cuando pasa por encima en vez de haber terminado ya. Sin esta espera las
+     piezas estaban puestas 73ms antes de ser descubiertas y no se veía ninguna
+     animación: aparecían hechas. Con ella, cada una está entre el 40% y el 90%
+     de su reveal en el instante en que el telón la descubre. */
+  --reveal: 90ms;
   /* La cinta rotulada es el único movimiento que no entra ni responde a un
      dedo: recorre. Por eso no puede salir de `--dur-in` ni de `--dur-out`, que
      miden gestos, y por eso su curva es lineal y no la quíntica de la marca —un
