@@ -48,6 +48,56 @@ const { title, description, locale, altPath } = Astro.props;
         document.documentElement.dataset.nav = sentido;
         if (ev.newDocument) ev.newDocument.documentElement.dataset.nav = sentido;
       });
+
+      /* La respuesta al dedo de todo lo que tiene relieve.
+       *
+       * No sale de `:active` porque en Safari de iOS ese estado no se aplica de
+       * forma fiable —hace falta un listener táctil en la página para que
+       * WebKit se digne, y aun así llega tarde—, y porque la subida tenía que
+       * arrancar en el mismo instante en que se levanta el dedo: entre soltar
+       * un enlace y tener la página nueva pasan poco más de 200ms, y los ocho
+       * botones de esta web son enlaces. Todo lo que empiece más tarde se lo
+       * lleva la navegación.
+       *
+       * `pointerdown` y no `touchstart`: cubre dedo, ratón y lápiz con un solo
+       * camino, y en el escritorio deja el hundido igual de vivo.
+       */
+      const PIEZAS = ".btn, .contacto a, .mapa, .consent-btn";
+
+      const montaTacto = () => {
+        for (const el of document.querySelectorAll<HTMLElement>(PIEZAS)) {
+          el.dataset.tacto = "";
+        }
+      };
+
+      const pieza = (t: EventTarget | null) =>
+        t instanceof Element ? (t.closest(PIEZAS) as HTMLElement | null) : null;
+
+      document.addEventListener(
+        "pointerdown",
+        (e) => {
+          const el = pieza(e.target);
+          if (!el) return;
+          el.classList.remove("soltando");
+          el.classList.add("tocando");
+        },
+        { passive: true },
+      );
+
+      /* En `pointerup` y en `pointercancel`: sin el segundo, arrastrar el dedo
+         fuera del botón para no pulsarlo lo dejaba hundido para siempre. */
+      const suelta = (e: Event) => {
+        const el = pieza(e.target) ?? document.querySelector<HTMLElement>(".tocando");
+        if (!el?.classList.contains("tocando")) return;
+        el.classList.remove("tocando");
+        el.classList.add("soltando");
+        el.addEventListener("animationend", () => el.classList.remove("soltando"), { once: true });
+      };
+      document.addEventListener("pointerup", suelta, { passive: true });
+      document.addEventListener("pointercancel", suelta, { passive: true });
+
+      montaTacto();
+      document.addEventListener("astro:page-load", montaTacto);
     </script>
 
     <script>

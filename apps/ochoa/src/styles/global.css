@@ -117,13 +117,36 @@ img {
      toca y se queda abajo un momento después de levantar el dedo, que es
      cuando por fin se ve. */
   transition:
-    transform var(--dur-in) var(--ease) var(--hold-tacto),
-    box-shadow var(--dur-in) var(--ease) var(--hold-tacto),
+    transform var(--dur-out) var(--ease),
+    box-shadow var(--dur-out) var(--ease),
     background var(--dur-out) var(--ease);
 }
-/* Ni el hover ni la pulsación esperan: el retardo es solo para la vuelta. Y la
-   ida usa la duración corta —baja de golpe, sube despacio—, que es como se
-   comporta una tecla de verdad. */
+/* La respuesta al dedo la gobierna `data-tacto` desde el script del layout, no
+   `:active`: en Safari de iOS ese estado solo se aplica de forma fiable si hay
+   un listener táctil en la página, y era la razón de que en el iPhone no se
+   viera nada. `:active` se queda como respaldo para quien navegue sin
+   JavaScript.
+
+   Cada pieza declara cuánto se hunde en `--tacto-d` y de qué color es su
+   sombra en `--tacto-sombra`; el fotograma de salida no se escribe, así que
+   cada una vuelve exactamente a la suya. */
+[data-tacto] {
+  --tacto-d: 3px;
+}
+[data-tacto].tocando {
+  transform: translate(var(--tacto-d), var(--tacto-d));
+  box-shadow: 0 0 0 var(--tacto-sombra, var(--ink));
+  transition: none;
+}
+[data-tacto].soltando {
+  animation: tacto-sube var(--dur-sube) var(--ease);
+}
+@keyframes tacto-sube {
+  from {
+    transform: translate(var(--tacto-d), var(--tacto-d));
+    box-shadow: 0 0 0 var(--tacto-sombra, var(--ink));
+  }
+}
 .btn:hover,
 .btn:active {
   transition-duration: var(--dur-out);

@@ -74,16 +74,15 @@
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --dur-in: 420ms;
   --dur-out: 160ms;
-  /* Lo que el botón se queda hundido después de soltarlo. Sin esta espera, el
-     recorrido entero ocurría debajo del dedo —que es justo lo que lo tapa— y
-     se perdía: el hundido solo se ve cuando el dedo ya no está. La ida sigue
-     siendo instantánea, que es lo que hace que responda; lo que se retrasa es
-     la vuelta.
-     220ms y no los 110 de la primera versión: con el dedo encima tapando la
-     pieza, la mitad de la espera se iba en descubrirla. Y la subida pasa a
-     `--dur-in`, que es la duración de lo que entra: sube despacio, como algo
-     que recupera su sitio, en vez de saltar. */
-  --hold-tacto: 220ms;
+  /* Lo que tarda el botón en recuperar su sitio al soltarlo.
+     Esto fue primero un retardo antes de la vuelta, y era un callejón: medido
+     en el navegador, entre soltar un enlace y tener la página nueva pasan unos
+     230ms, y los ocho botones de esta web son enlaces. Cualquier cosa que
+     empiece *después* de levantar el dedo se la lleva la navegación por
+     delante —en el iPhone no se veía nada—. Así que ya no se espera: la subida
+     arranca en el mismo instante en que se suelta y dura lo que cabe antes de
+     que la página se vaya. */
+  --dur-sube: 240ms;
   --shift: 14px;
   --stagger: 55ms; /* escalón entre hermanos en cascada */
   /* La cinta rotulada es el único movimiento que no entra ni responde a un

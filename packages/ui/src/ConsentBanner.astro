@@ -131,14 +131,14 @@ const t =
        que no hay ningún número repetido aquí. */
     box-shadow: var(--t-shadow-btn, none);
     transition:
-      transform var(--dur-in, 420ms) var(--ease, ease) var(--hold-tacto, 0ms),
-      box-shadow var(--dur-in, 420ms) var(--ease, ease) var(--hold-tacto, 0ms);
+      transform var(--dur-out, 160ms) var(--ease, ease),
+      box-shadow var(--dur-out, 160ms) var(--ease, ease);
   }
+  /* Respaldo para quien navegue sin JavaScript; con él, quien manda es el
+     `data-tacto` que pone la app. */
   .consent-btn:active {
     transform: translate(var(--t-shadow-btn-x, 0px), var(--t-shadow-btn-y, 1px));
     box-shadow: var(--t-shadow-btn-active, none);
-    transition-duration: var(--dur-out, 160ms);
-    transition-delay: 0s;
   }
   .consent-btn--ghost {
     background: transparent;

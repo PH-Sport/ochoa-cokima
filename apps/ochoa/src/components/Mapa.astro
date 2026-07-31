@@ -91,13 +91,14 @@ const t = es
     border-radius: var(--r-marco);
     overflow: hidden;
     box-shadow: 6px 6px 0 rgba(198, 34, 43, 0.9);
+    /* Se hunde el doble que un botón porque su sombra mide el doble, y su
+       sombra es roja: las dos cosas se las dice al mecanismo de `data-tacto`
+       del layout, que por defecto asume tres píxeles y tinta. */
+    --tacto-d: 6px;
+    --tacto-sombra: rgba(198, 34, 43, 0.9);
     transition:
-      transform var(--dur-in) var(--ease) var(--hold-tacto),
-      box-shadow var(--dur-in) var(--ease) var(--hold-tacto);
-  }
-  .mapa:active {
-    transition-duration: var(--dur-out);
-    transition-delay: 0s;
+      transform var(--dur-out) var(--ease),
+      box-shadow var(--dur-out) var(--ease);
   }
   /* El mismo recorrido que los botones: el mapa es lo más grande que se pulsa
      en toda la sección, y tiene que acusar el dedo igual que ellos. */
