@@ -15,7 +15,12 @@ const t = es
       price: "Precio",
       dish: "Plato",
       noHalf: "No se sirve en media ración",
-      sections: { carta: "Carta", postres: "Postres" } as Record<string, string>,
+      sections: {
+        pinchos: "Pinchos y tapas",
+        "con-pan": "Con pan",
+        raciones: "Raciones",
+        postres: "Postres",
+      } as Record<string, string>,
     }
   : {
       half: "Half",
@@ -23,13 +28,22 @@ const t = es
       price: "Price",
       dish: "Dish",
       noHalf: "Not served as a half portion",
-      sections: { carta: "Menu", postres: "Desserts" } as Record<string, string>,
+      sections: {
+        pinchos: "Pintxos & tapas",
+        "con-pan": "In bread",
+        raciones: "Sharing plates",
+        postres: "Desserts",
+      } as Record<string, string>,
     };
 
-// `order` es correlativo dentro de cada sección (carta 1..23, postres 1..2), no
-// un índice global: hay que agrupar por sección y ordenar dentro de ella, o los
-// postres se intercalan entre los platos salados.
-const SECTION_ORDER = ["carta", "postres"];
+// `order` es correlativo dentro de cada sección, no un índice global: hay que
+// agrupar por sección y ordenar dentro de ella, o los postres se intercalan
+// entre los platos salados.
+//
+// Las tres primeras son las que pidió la casa —pinchos y tapas, con pan,
+// raciones—; los postres van detrás porque están en la carta de sala y no
+// caben en ninguna de las tres.
+const SECTION_ORDER = ["pinchos", "con-pan", "raciones", "postres"];
 const sections = SECTION_ORDER.map((key) => {
   const items = dishes.filter((d) => d.section === key).sort((a, b) => a.order - b.order);
   return {
@@ -52,9 +66,10 @@ const cells = (price: MenuEntry["price"]) => {
 <div class="board">
   {sections.map((sec) => (
     <section class="sec">
-      {/* La primera sección no repite su título: lo dice el titular de la
-          página dos centímetros más arriba. */}
-      {sec.key !== "carta" && <h2 class="sec-title">{sec.title}</h2>}
+      {/* Todas llevan título desde que la carta se divide en cuatro: antes la
+          primera se lo callaba porque se llamaba «Carta» igual que el titular
+          de la página, y repetirlo sobraba. «Pinchos y tapas» no sobra. */}
+      <h2 class="sec-title">{sec.title}</h2>
 
       <table class="menu">
         <caption class="visually-hidden">{sec.title}</caption>
@@ -123,6 +138,10 @@ const cells = (price: MenuEntry["price"]) => {
      queda a la derecha no sobra: es donde entrarán las fotos. */
   .board {
     --carta-w: 44rem;
+    /* Aire contra el titular de la página. Desde que la primera sección también
+       lleva rótulo, «CARTA» y «PINCHOS Y TAPAS» quedaban a un renglón de
+       distancia y se leían como un titular de dos líneas. */
+    margin-top: clamp(24px, 4.5vw, 42px);
   }
   .menu {
     width: 100%;

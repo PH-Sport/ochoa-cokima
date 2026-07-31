@@ -117,13 +117,16 @@ img {
      toca y se queda abajo un momento después de levantar el dedo, que es
      cuando por fin se ve. */
   transition:
-    transform var(--dur-out) var(--ease) var(--hold-tacto),
-    box-shadow var(--dur-out) var(--ease) var(--hold-tacto),
+    transform var(--dur-in) var(--ease) var(--hold-tacto),
+    box-shadow var(--dur-in) var(--ease) var(--hold-tacto),
     background var(--dur-out) var(--ease);
 }
-/* Ni el hover ni la pulsación esperan: el retardo es solo para la vuelta. */
+/* Ni el hover ni la pulsación esperan: el retardo es solo para la vuelta. Y la
+   ida usa la duración corta —baja de golpe, sube despacio—, que es como se
+   comporta una tecla de verdad. */
 .btn:hover,
 .btn:active {
+  transition-duration: var(--dur-out);
   transition-delay: 0s;
 }
 .btn:hover {

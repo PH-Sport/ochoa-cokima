@@ -78,8 +78,12 @@
      recorrido entero ocurría debajo del dedo —que es justo lo que lo tapa— y
      se perdía: el hundido solo se ve cuando el dedo ya no está. La ida sigue
      siendo instantánea, que es lo que hace que responda; lo que se retrasa es
-     la vuelta. */
-  --hold-tacto: 110ms;
+     la vuelta.
+     220ms y no los 110 de la primera versión: con el dedo encima tapando la
+     pieza, la mitad de la espera se iba en descubrirla. Y la subida pasa a
+     `--dur-in`, que es la duración de lo que entra: sube despacio, como algo
+     que recupera su sitio, en vez de saltar. */
+  --hold-tacto: 220ms;
   --shift: 14px;
   --stagger: 55ms; /* escalón entre hermanos en cascada */
   /* La cinta rotulada es el único movimiento que no entra ni responde a un
@@ -106,6 +110,14 @@
   --t-accent-contrast: #ffffff;
   --t-radius: var(--r-marco);
   --t-radius-control: var(--r-btn);
+  /* El relieve de los botones que viven en @tombo/ui. Es la misma pieza que
+     usa el `.btn` de esta casa, publicada para que el cartel de cookies —que
+     es de todos— se hunda igual que todo lo demás sin que @tombo/ui sepa nada
+     de este rojo ni de esta tinta. */
+  --t-shadow-btn: 3px 3px 0 var(--ink);
+  --t-shadow-btn-x: 3px;
+  --t-shadow-btn-y: 3px;
+  --t-shadow-btn-active: 0 0 0 var(--ink);
   --t-card-border: 2px solid var(--ink);
   --t-shadow: 6px 6px 0 rgba(26, 26, 26, 0.9);
 

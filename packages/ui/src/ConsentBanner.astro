@@ -124,12 +124,21 @@ const t =
     border-radius: var(--t-radius-control, 4px);
     padding: 9px 16px;
     cursor: pointer;
-    transition: transform var(--dur-out, 160ms) var(--ease, ease);
+    /* El mismo relieve hundible que el resto de botones de la casa, si la app
+       lo define. `--t-shadow-btn` es la pieza de marca: sin ella —Cokima hoy—
+       esto se queda plano y solo se hunde un píxel, que es el comportamiento
+       de antes. El recorrido sale del propio desplazamiento de la sombra, así
+       que no hay ningún número repetido aquí. */
+    box-shadow: var(--t-shadow-btn, none);
+    transition:
+      transform var(--dur-in, 420ms) var(--ease, ease) var(--hold-tacto, 0ms),
+      box-shadow var(--dur-in, 420ms) var(--ease, ease) var(--hold-tacto, 0ms);
   }
-  /* Acusa el dedo. Sin relieve ni recorrido: esto flota sobre la página y no es
-     una pieza rotulada, así que se hunde un píxel y ya. */
   .consent-btn:active {
-    transform: translateY(1px);
+    transform: translate(var(--t-shadow-btn-x, 0px), var(--t-shadow-btn-y, 1px));
+    box-shadow: var(--t-shadow-btn-active, none);
+    transition-duration: var(--dur-out, 160ms);
+    transition-delay: 0s;
   }
   .consent-btn--ghost {
     background: transparent;

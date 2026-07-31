@@ -214,6 +214,12 @@ const t = es
   /* El panel cubre la pantalla entera por debajo de la barra. `visibility`, y no
      solo opacidad, para que cerrado no intercepte ni un clic; se retrasa hasta
      el final de la transición para que el desvanecido llegue a verse. */
+  /* El panel cae como una persiana en vez de aparecer con un fundido: se
+     descubre de arriba abajo, desde el borde de la barra. `clip-path` y no un
+     `translate` porque la persiana descubre el contenido donde ya está —los
+     nombres de sección no viajan— y así el escalonado de los enlaces se lee
+     como lo que cae detrás del telón, no como un segundo movimiento peleando
+     con el primero. Al cerrar, la misma persiana se recoge hacia arriba. */
   .panel {
     position: fixed;
     inset: 0;
@@ -222,17 +228,17 @@ const t = es
     padding-top: var(--t-header-h);
     overflow-y: auto;
     overscroll-behavior: contain;
-    opacity: 0;
+    clip-path: inset(0 0 100% 0);
     visibility: hidden;
     transition:
-      opacity var(--dur-out) var(--ease),
+      clip-path var(--dur-out) var(--ease),
       visibility 0s linear var(--dur-out);
   }
   .panel[data-state="open"] {
-    opacity: 1;
+    clip-path: inset(0 0 0 0);
     visibility: visible;
     transition:
-      opacity var(--dur-in) var(--ease),
+      clip-path var(--dur-in) var(--ease),
       visibility 0s;
   }
   .panel-in {
