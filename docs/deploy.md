@@ -1,8 +1,15 @@
 # Despliegue en Vercel
 
-> **Estado:** documentado, **no ejecutado** en Vercel. El código ya está listo (incluido el
-> blindaje de `SITE_URL`); falta crear los proyectos, y eso depende de decidir dominios y de
-> tener los accesos (ver `superpowers/specs/2026-07-18-webs-grupo-tombo-design.md` §12).
+> **Estado (2026-07-31): los dos proyectos existen y despliegan.** Cada push a `preview` publica
+> en su alias fijo, que está en `estado.md` §6. Lo que sigue pendiente son los **dominios
+> propios**, las **variables de entorno de producción** y el *Ignored Build Step* (§Infraestructura
+> de `estado.md`); `SITE_URL` bloquea a propósito los despliegues de producción mientras no haya
+> dominio.
+>
+> **No busques `.vercel/project.json` para saber si el repo está vinculado:** está en
+> `.gitignore` y la vinculación por Git vive en el panel de Vercel, no en el repositorio. Su
+> ausencia no significa nada. Este documento decía «no ejecutado» hasta el 2026-07-31 e indujo a
+> error justo por ahí.
 
 ## El concepto: un repo, dos proyectos
 
