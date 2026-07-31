@@ -96,6 +96,20 @@ const t = es
     transform: translate(3px, 3px);
     box-shadow: 0 0 0 var(--rojo);
   }
+  /* El hundido al dedo lo gobierna `[data-tacto].tocando` desde la hoja global,
+     que pesa (0,2,0). Pero Astro le añade el `[data-astro-cid-…]` a todo
+     selector de un componente con estilos con scope, así que `.contacto a` pesa
+     (0,2,1) y le gana: estas fichas ponían la clase y no se hundían —ni aquí ni
+     en la portada—, y encima al soltar daban un salto desde abajo, porque la
+     animación de vuelta sí corría por ser animación. Se reescribe aquí, con la
+     especificidad de la casa. Es el mismo tropiezo que ya tuvo el botón de la
+     barra: cada estado que se reescribe hay que reescribirlo entero y en el
+     mismo sitio. */
+  .contacto a.tocando {
+    transform: translate(var(--tacto-d, 3px), var(--tacto-d, 3px));
+    box-shadow: 0 0 0 var(--ink);
+    transition: none;
+  }
   .contacto svg {
     grid-area: icono;
     width: 22px;
@@ -121,17 +135,22 @@ const t = es
     line-height: 1.25;
   }
 
-  /* En el pie del menú el relieve sobra: ahí no hay nada más con sombra y dos
-     cajas levantadas pesaban más que los tres nombres de sección, que son lo
-     que se ha venido a leer. */
-  .compacto a {
-    box-shadow: none;
-    border-color: var(--line);
+  /* `compacto` ya no quiere decir «sin relieve», sino «sobre rojo». Cuando el
+     pie del menú era papel blanco, dos cajas levantadas pesaban más que los
+     tres nombres de sección y se les quitó la sombra; sobre el rojo pasa lo
+     contrario, y sin relieve se pierden. Así que conservan el de la portada
+     —el mismo que ya tiene «Reservar» en la barra— y solo cambia lo que el
+     fondo obliga: el hover deja de virar al rojo de la casa, que ahí no se ve,
+     y se queda en acortar la sombra. */
+  .compacto a:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
+    transform: translate(1px, 1px);
   }
-  .compacto a:hover,
   .compacto a:active {
-    box-shadow: none;
-    transform: none;
+    box-shadow: 0 0 0 var(--ink);
+    transform: translate(3px, 3px);
   }
 
   /* Una debajo de otra en todo el móvil. A dos columnas, «@tasquita.losochoa»

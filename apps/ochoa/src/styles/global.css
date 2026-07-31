@@ -133,20 +133,6 @@ img {
 [data-tacto] {
   --tacto-d: 3px;
 }
-[data-tacto].tocando {
-  transform: translate(var(--tacto-d), var(--tacto-d));
-  box-shadow: 0 0 0 var(--tacto-sombra, var(--ink));
-  transition: none;
-}
-[data-tacto].soltando {
-  animation: tacto-sube var(--dur-sube) var(--ease);
-}
-@keyframes tacto-sube {
-  from {
-    transform: translate(var(--tacto-d), var(--tacto-d));
-    box-shadow: 0 0 0 var(--tacto-sombra, var(--ink));
-  }
-}
 .btn:hover,
 .btn:active {
   transition-duration: var(--dur-out);
@@ -185,6 +171,29 @@ img {
 .btn.ghost:active {
   background: transparent;
   box-shadow: 0 0 0 var(--rojo);
+}
+
+/* El estado de tacto va DESPUÉS de los botones, y no antes, porque pesa lo
+   mismo que `.btn.ghost` y que `.btn:hover` —dos clases cada uno— y en un
+   empate de especificidad gana el que se declara el último. Colocado arriba,
+   el fantasma se hundía arrastrando su sombra de tres píxeles: bajaba, pero la
+   sombra bajaba con él, así que se leía como que se movía y no como que se
+   apoyaba en el papel. Es el mismo tropiezo del botón de la barra, que además
+   necesita reescribirlo en su propio componente porque el `[data-astro-cid-…]`
+   de los estilos con scope le da un punto más. */
+[data-tacto].tocando {
+  transform: translate(var(--tacto-d), var(--tacto-d));
+  box-shadow: 0 0 0 var(--tacto-sombra, var(--ink));
+  transition: none;
+}
+[data-tacto].soltando {
+  animation: tacto-sube var(--dur-sube) var(--ease);
+}
+@keyframes tacto-sube {
+  from {
+    transform: translate(var(--tacto-d), var(--tacto-d));
+    box-shadow: 0 0 0 var(--tacto-sombra, var(--ink));
+  }
 }
 
 /* Cuadro vichy rojo y blanco del mantel, generado sin imagen. Se usa como
