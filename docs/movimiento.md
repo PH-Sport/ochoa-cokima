@@ -94,6 +94,20 @@ más lejos; Ochoa es una tasca y es seca.
     leía como un fallo de pintado. Un reveal de cortina exige que la palabra se desplace *dentro*
     de la máscara, lo que pide un envoltorio más y recorta tildes y sombras duras. Para esto
     basta un desplazamiento corto.
+15. **El movimiento que hace el navegador también es movimiento nuestro.** En Chromium, ocultar
+    y devolver la barra de direcciones al deslizar **redimensiona el viewport de verdad**; en
+    Safari desde iOS 15 no, y por eso el vaivén solo se veía a trompicones en Brave. Ese resize
+    no se puede evitar, pero sí se puede dejar de estorbar, y había dos reglas heredadas
+    estorbando: `body { overflow-x: hidden }`, que al propagarse al viewport convertía el
+    documento en un scroller con desbordamiento tapado, y `scroll-behavior: smooth` en el
+    `<html>`, que animaba los reajustes de scroll que el navegador se da a sí mismo. **Las dos
+    eran vestigios:** medido en las dieciséis rutas de las dos webs a 360px, el ancho
+    desplazable sin el recorte es igual al visible, y no existe en el monorepo ni un `href="#"`
+    ni un `scrollIntoView` que el `smooth` pudiera animar —el único scroll suave, el de la tira
+    de platos, pide su `behavior` en la propia llamada—. Lo que se salga se recorta en la pieza
+    que se sale, nunca en el documento. Y la altura de la portada cuelga de `svh`, que por
+    definición no se mueve cuando la barra colapsa: `dvh` ahí habría hecho bailar la página
+    entera en cada gesto.
 
 ## Qué se mueve hoy
 

@@ -22,7 +22,13 @@
   box-sizing: border-box;
 }
 html {
-  scroll-behavior: smooth;
+  /* Sin `scroll-behavior: smooth`. No había en toda la web un solo anclaje
+     interno del que colgar —ni un `href="#"`, ni un `scrollIntoView`—, así que
+     no animaba ninguna navegación: la única que existe es la de la tira de
+     platos, y esa pide su `behavior: "smooth"` en la propia llamada. Lo que sí
+     hacía era animar los reajustes de scroll que el navegador se da a sí mismo,
+     y en Chromium el colapso de la barra de direcciones es uno de ellos. */
+
   /* El hueco de la barra de scroll se reserva siempre, esté o no. Así, cuando el
      menú oculta el desbordamiento, la página no se ensancha de golpe: sin esto
      todo el contenido daba un respingo lateral justo al abrir. En móvil, donde
@@ -52,7 +58,17 @@ body {
   line-height: var(--lh-body);
   font-kerning: normal;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* Sin `overflow-x: hidden`. El `overflow` del body se propaga al viewport
+     cuando el del `<html>` es `visible`, así que esta línea no recortaba una
+     caja: convertía el viewport entero en un scroller con desbordamiento
+     tapado. En Chromium eso enturbia el mecanismo que oculta y devuelve la
+     barra de direcciones al deslizar, que es el que se veía a trompicones en
+     Brave y no en Safari —donde ese colapso no redimensiona el viewport—.
+     Y no protegía nada: medido sin ella en las cinco rutas a 360px, el ancho
+     desplazable es idéntico al visible. Lo que desborda de verdad son las
+     tarjetas de la tira de platos, y de eso ya se ocupa su propio
+     `overflow-x: auto`. Si algún día algo vuelve a salirse, el sitio de
+     recortarlo es esa pieza, no el documento. */
 }
 a {
   color: inherit;

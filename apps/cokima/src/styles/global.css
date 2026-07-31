@@ -24,7 +24,11 @@
   box-sizing: border-box;
 }
 html {
-  scroll-behavior: smooth;
+  /* Sin `scroll-behavior: smooth`: no hay en toda la web un anclaje interno del
+     que colgar, así que no animaba ninguna navegación. Lo que sí animaba eran
+     los reajustes de scroll que se da el propio navegador, y en Chromium el
+     colapso de la barra de direcciones es uno de ellos. Ver `movimiento.md`. */
+
   /* El hueco de la barra de scroll se reserva siempre, esté o no. Así, cuando el
      menú oculta el desbordamiento, la página no se ensancha de golpe: sin esto
      todo el contenido daba un respingo lateral justo al abrir. En móvil, donde
@@ -43,7 +47,12 @@ body {
   font-size: 17px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* Sin `overflow-x: hidden`: el `overflow` del body se propaga al viewport, así
+     que no recortaba una caja sino que convertía el documento en un scroller con
+     desbordamiento tapado, y en Chromium eso enturbia el vaivén de la barra de
+     direcciones. Medido sin ella en las cuatro rutas a 360px, el ancho
+     desplazable es igual al visible: las tiras que se salen ya las recorta su
+     propio `overflow-x: auto`. Ver `movimiento.md`. */
 }
 /* grano sutil */
 body::before {

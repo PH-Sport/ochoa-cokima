@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-- **Corte:** 2026-07-31
+- **Corte:** 2026-08-01
 - **Rama de trabajo:** `preview` (desarrollo) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
 
@@ -8,8 +8,12 @@
 
 ## 0. Por dónde seguir
 
-El árbol está limpio y `preview` subido. Las dos tandas del 2026-07-31 (§3.quater y
-§3.quinquies) están commiteadas, construidas y con los 45 tests en verde.
+El árbol está limpio y `preview` subido. Las tandas del 2026-07-31 (§3.quater y §3.quinquies) y
+la del 2026-08-01 (§3.sexies) están commiteadas, construidas y con los 45 tests en verde.
+
+**Lo primero al retomar:** §3.sexies quitó los dos supresores del vaivén de la barra de
+direcciones en Chromium, pero eso **solo se confirma en un móvil de verdad**. Preguntar a Mario
+qué tal va en Brave antes de dar el asunto por cerrado.
 
 **Lo que espera respuesta de Mario, y sin lo cual no se puede avanzar:**
 
@@ -199,6 +203,40 @@ El problema no era la persiana, era el material. Diseño en
   arregla es que no mientan: el pie inglés marca «(ES)» y el `hreflang` deja de declarar que la
   versión inglesa del aviso legal es la home inglesa. `altPath` pasa a opcional en `Seo.astro` y
   `Base.astro` gana `altSeoPath`, porque navegar y declarar equivalencia son cosas distintas.
+
+## 3.sexies El vaivén de la barra del navegador en Chromium (2026-08-01)
+
+Mario lo describió probando en Brave: la barra de direcciones aparece y desaparece de forma
+irregular, «muy sensible a los cambios de dirección», y al hacerlo parece redimensionarse la
+página entera. **En Safari no pasa**, y esa asimetría es la pista: en Chromium el colapso de la
+barra redimensiona el viewport de verdad, mientras que Safari desde iOS 15 mueve solo el viewport
+visual. El resize no se puede evitar; lo que se ha quitado es lo que lo estorbaba.
+
+**Dos reglas heredadas, las dos vestigios, las dos fuera de las dos webs:**
+
+- **`body { overflow-x: hidden }`.** No recortaba una caja: el `overflow` del body se propaga al
+  viewport cuando el del `<html>` es `visible`, así que convertía el documento entero en un
+  scroller con desbordamiento tapado, que es justo lo que enturbia el mecanismo de Chromium.
+  **Y no protegía nada:** medido sin ella, el ancho desplazable es igual al visible en las ocho
+  rutas de Ochoa y las ocho de Cokima a 360px. Lo único que se sale son las tarjetas de la tira
+  de platos, y de eso ya se ocupa el `overflow-x: auto` de la propia tira.
+- **`scroll-behavior: smooth` en el `<html>`.** No animaba ninguna navegación, porque no hay en
+  todo el monorepo un solo `href="#"` ni un `scrollIntoView`; el único scroll suave que existe
+  —el de la tira de platos, `Highlights.astro:145`— pide su `behavior` en la propia llamada y no
+  depende de la regla. Lo que sí animaba eran los reajustes de scroll que se da el navegador.
+
+Se queda `scrollbar-gutter: stable`, que sí hace un trabajo real: sin él la página se ensancha de
+golpe al abrir el menú. Verificado tras el cambio: `scroll-behavior: auto`, `overflow-x: visible`
+y ancho desplazable igual al visible en las dieciséis rutas, con el menú **cerrado, abierto y
+cerrado otra vez**; la portada sigue a 62px con el menú abierto, así que el arreglo del salto de
+§3.quinquies sigue en pie. Regla 15 de `movimiento.md`.
+
+**Lo que no se ha podido comprobar aquí:** el vaivén de la barra solo se reproduce en un navegador
+móvil de verdad, y esta máquina no lo tiene. Los dos supresores están retirados y medidos, pero
+**confirmar la mejora es cosa de Mario en su Brave**. Si sigue igual, el siguiente sospechoso no
+es CSS heredado sino el diseño: nuestra `.nav` es `sticky` y compite con la barra del navegador
+por el mismo borde superior. La referencia que él cita —vercel.com— resuelve eso ocultando su
+propia cabecera al bajar y devolviéndola al subir, en vez de dejarla clavada.
 
 ## 3.quater La tanda del 2026-07-31: Sibuya como referencia y los retoques de Mario
 
