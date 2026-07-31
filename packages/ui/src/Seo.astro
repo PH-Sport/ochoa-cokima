@@ -5,8 +5,12 @@ interface Props {
   title: string;
   description: string;
   locale: "es" | "en";
-  /** Ruta equivalente en el otro idioma, p. ej. "/en/menu" desde "/carta". */
-  altPath: string;
+  /** Ruta equivalente en el otro idioma, p. ej. "/en/menu" desde "/carta".
+   *  Opcional: hay páginas que solo existen en un idioma —las legales de Ochoa
+   *  se publican solo en español— y ahí no se declara ninguna equivalencia.
+   *  Declarar una falsa es peor que no declarar nada: el emparejamiento tiene
+   *  que ser recíproco, y una legal apuntando a la home inglesa no lo es. */
+  altPath?: string;
   restaurant: RestaurantInfo;
   ogImage?: string;
 }
@@ -14,8 +18,9 @@ interface Props {
 const { title, description, locale, altPath, restaurant, ogImage } = Astro.props;
 const site = Astro.site ?? new URL("http://localhost:4321");
 const canonical = new URL(Astro.url.pathname, site);
-const alternate = new URL(altPath, site);
+const alternate = altPath ? new URL(altPath, site) : null;
 const altLocale = locale === "es" ? "en" : "es";
+const xDefault = altPath ? new URL(locale === "es" ? Astro.url.pathname : altPath, site) : null;
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -41,9 +46,13 @@ const jsonLd = {
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical.href} />
-<link rel="alternate" hreflang={locale} href={canonical.href} />
-<link rel="alternate" hreflang={altLocale} href={alternate.href} />
-<link rel="alternate" hreflang="x-default" href={new URL(locale === "es" ? Astro.url.pathname : altPath, site).href} />
+{alternate && xDefault && (
+  <>
+    <link rel="alternate" hreflang={locale} href={canonical.href} />
+    <link rel="alternate" hreflang={altLocale} href={alternate.href} />
+    <link rel="alternate" hreflang="x-default" href={xDefault.href} />
+  </>
+)}
 <meta property="og:type" content="website" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
