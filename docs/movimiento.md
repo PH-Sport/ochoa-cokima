@@ -14,13 +14,14 @@ Viven en `apps/<app>/src/styles/tokens.css`.
 | `--dur-in` | `420ms` | `520ms` | Lo que entra: un panel que aparece. |
 | `--dur-out` | `160ms` | `180ms` | Lo que responde a un dedo: pulsar, cerrar, un hover. |
 | `--shift` | `14px` | `18px` | Cuánto se desplaza lo que entra. |
-| `--stagger` | `55ms` | `65ms` | El escalón entre hermanos en cascada. |
+| `--stagger` | `30ms` | `65ms` | El escalón entre hermanos en cascada. |
 
-**Tres más, solo en Ochoa,** para movimientos que no son ni entrar ni responder a un dedo. Cada
+**Cuatro más, solo en Ochoa,** para movimientos que no son ni entrar ni responder a un dedo. Cada
 uno existe porque no cabía en los cinco de arriba, no porque hiciera falta un número nuevo:
 
 | Token | Ochoa | Para qué |
 |---|---|---|
+| `--ease-telon` | `cubic-bezier(0.45, 0.02, 0.55, 1)` | La curva de lo que **recorre la pantalla entera**. Ver la regla 9. |
 | `--dur-cinta` | `34s` | La cinta rotulada **recorre**. Lineal, no con la curva: un rótulo que acelera se lee como un fallo. |
 | `--dur-turno` | `3,5s` | Lo que la tira de platos **espera** antes de pasar al siguiente. |
 | `--dur-sube` | `240ms` | Lo que un botón tarda en **recuperar su sitio** tras soltarlo. |
@@ -61,6 +62,22 @@ más lejos; Ochoa es una tasca y es seca.
 8. **Comprobar que la regla existe no es comprobar que se ve.** Un efecto de pulsación se
    verifica simulando el toque —`page.mouse.down()` / `up()`— y muestreando la posición real a
    lo largo del tiempo. Leer el CSSOM dio dos versiones por buenas que en el móvil no se veían.
+9. **La curva se elige por la distancia que recorre, no por la marca.** La quíntica frena tan
+   pronto que sobre un recorrido largo deja de ser una frenada y se vuelve un golpe: medida a
+   390px, la persiana del menú se comía el 90% de sus 844px en 161ms y arrastraba 260ms más en
+   un movimiento que ya no se percibe. Está calibrada para los 14px de `--shift`. Lo que cruza
+   una pantalla usa `--ease-telon`, que reparte el recorrido.
+10. **Lo que aparece detrás de algo que se mueve no puede tardar lo que tarda ese algo.** Una
+    pieza que se revela tras un telón no viaja: entra en `--dur-out`, no en `--dur-in`. El menú
+    tenía las dos cosas en `--dur-in` y el resultado era que el telón descubría «La carta» a los
+    35ms y el texto no acababa de aparecer hasta los 420 — medio segundo de plancha roja vacía
+    con letras llegando encima. **La comprobación es cruzada:** para cada pieza, en qué
+    milisegundo la descubre el telón y en cuál está puesta. El desfase tiene que ser negativo —
+    puesta antes de ser descubierta—, nunca positivo.
+11. **Al cerrar, lo que se tapa no se desvanece.** El salto a invisible se retrasa con
+    `transition: opacity 0s linear var(--dur-out)` hasta que el telón ha terminado de pasar. Si
+    se desvanece a la vez, se ve un texto apagándose sobre un fondo que todavía sigue ahí, que
+    son otra vez dos movimientos discutiendo.
 
 ## Qué se mueve hoy
 
