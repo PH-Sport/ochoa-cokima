@@ -8,8 +8,8 @@
 
 ## 0. Por dónde seguir
 
-El árbol está limpio y `preview` subido. La tanda del 2026-07-31 (§3.quater) está commiteada,
-construida y con los 45 tests en verde.
+El árbol está limpio y `preview` subido. Las dos tandas del 2026-07-31 (§3.quater y
+§3.quinquies) están commiteadas, construidas y con los 45 tests en verde.
 
 **Lo que espera respuesta de Mario, y sin lo cual no se puede avanzar:**
 
@@ -22,6 +22,10 @@ construida y con los 45 tests en verde.
    pidió tres secciones y eso funde los dos rótulos; el orden los conserva pero el rótulo no.
 4. **Unificar «Idiazabal» / «Idiazábal»**, que el PDF del restaurante escribe de las dos formas
    según el plato. Está respetado tal cual viene.
+5. **Si las legales de Cokima deben arreglarse igual que las de Ochoa.** Sus tres páginas
+   declaran que su versión inglesa es la home inglesa, que es el mismo `hreflang` roto que se
+   corrigió el 31 en Ochoa (§3.quinquies). No se tocó porque Cokima quedaba fuera del alcance
+   de esa tanda; el arreglo es pasar `altSeoPath={null}`, y su `Base.astro` necesita la prop.
 
 **Lo que queda de trabajo, por orden de lo que más mueve la aguja:**
 
@@ -29,12 +33,12 @@ construida y con los 45 tests en verde.
    Ochoa se ha llevado la tipografía, la carta, las fotos reales, tres iteraciones de portada y
    toda la tanda del 31; Cokima solo el menú y el movimiento, de rebote. No tiene ni una foto
    real, su carta no se ha revisado desde la fase 2 y su portada sigue siendo la genérica.
-2. **La home en inglés de Ochoa está atrasada.** No tiene ni la sección «la casa» ni la cinta
-   rotulada, y mantiene su propio `.mapbox` en vez de `Mapa.astro`. Igualarla con la española.
-3. **Páginas nuevas (punto 6 de la fase 4).** Bloqueado por contenido: hay que decidir con Mario
+2. **Páginas nuevas (punto 6 de la fase 4).** Bloqueado por contenido: hay que decidir con Mario
    qué páginas y con qué material. No es trabajo de código hasta que eso esté.
-4. **Las cuatro fotos de Ochoa sin usar.** Ver `fotografia.md`: dos son asignables ya, una
+3. **Las cuatro fotos de Ochoa sin usar.** Ver `fotografia.md`: dos son asignables ya, una
    necesita que Mario confirme qué plato es y otra no identifica ningún plato.
+
+*(La home en inglés de Ochoa, que estaba aquí, se igualó con la española el 31 — §3.quinquies.)*
 
 **Cómo levantarlo:** los `pnpm dev` lanzados en segundo plano desde el agente se mueren solos en
 esta máquina. Lanzarlos desde una terminal propia.
@@ -160,6 +164,41 @@ cuadrícula perfecta del segundo, que quedaba rígida.
 atenuada sobre una foto oscurecida por el degradado, o sea gris oscuro sobre fondo oscuro. Se
 resuelve reescribiendo dentro de `.copy` los tokens `--t-text*` que consume, no parcheando el
 componente.
+
+## 3.quinquies La plancha roja del menú y la paridad del inglés (2026-07-31, tarde)
+
+Mario abrió el menú en el móvil y señaló la costura: barra roja arriba, folio blanco debajo.
+El problema no era la persiana, era el material. Diseño en
+`superpowers/specs/2026-07-31-panel-rojo-y-paridad-en-design.md`, plan en
+`superpowers/plans/2026-07-31-panel-rojo-y-paridad-en.md`.
+
+- **El panel es la misma plancha roja que la barra**, cuyo filete se apaga mientras dura el
+  menú. Se transparenta el color y no se quita el borde: `syncHeaderHeight()` mide la barra con
+  `getBoundingClientRect()` —el borde incluido— y quitarlo la encogería dos píxeles.
+- **Dentro, la fórmula del rótulo invertida:** papel con sombra tinta, que es la misma que ya
+  usa el titular de la portada sobre la foto con los papeles cambiados. El número de sección
+  baja a tinta y pasa a ser el único elemento oscuro.
+- **El panel reescribe los tokens `--t-*` que consumen sus hijos**, como hace `.copy` en la
+  portada. Eso destapó que sin `--t-open` el punto de «Abierto ahora» cae a `--t-accent`, que
+  es este mismo rojo, y habría desaparecido.
+- **La persiana por fin se ve:** cayendo blanca sobre contenido blanco no se notaba, y encima
+  gastaba sus primeros 62px por detrás de la barra. Ahora el recorte arranca en `--t-header-h`.
+- **El relieve al dedo estaba roto en media casa**, y se descubrió midiendo. `[data-tacto].tocando`
+  pesa (0,2,0) y Astro añade el `[data-astro-cid-…]` a todo selector de un componente con
+  estilos con scope, así que `.contacto a` pesa (0,2,1) y ganaba: las fichas ponían la clase, no
+  se hundían —tampoco en la portada— y al soltar daban un salto desde abajo porque la animación
+  de vuelta sí corría. El fantasma y el «Reservar» de la barra caían por otra vía: empataban a
+  especificidad y ganaba el último declarado. **Regla para el futuro: el bloque de tacto va
+  siempre después de los botones en la hoja global, y cualquier componente que reescriba
+  `box-shadow` tiene que reescribir también su `.tocando`.**
+- **La home inglesa alcanza a la española:** cinta, «la tasca» y «la casa» con el titular
+  partido, `Mapa.astro` real en vez del dibujo de pega, y las fichas de contacto. Con ella
+  mueren un `border-radius: 6px` suelto y las reglas de una portada retirada hace dos fases.
+- **Las legales se quedan en español a propósito** (decisión de Mario: el texto válido en España
+  es ese, y traducir un documento jurídico sin validar es un riesgo que no compensa). Lo que se
+  arregla es que no mientan: el pie inglés marca «(ES)» y el `hreflang` deja de declarar que la
+  versión inglesa del aviso legal es la home inglesa. `altPath` pasa a opcional en `Seo.astro` y
+  `Base.astro` gana `altSeoPath`, porque navegar y declarar equivalencia son cosas distintas.
 
 ## 3.quater La tanda del 2026-07-31: Sibuya como referencia y los retoques de Mario
 

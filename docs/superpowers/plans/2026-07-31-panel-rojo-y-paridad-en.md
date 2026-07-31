@@ -61,7 +61,7 @@ máquina. Levantar en el mismo turno en que se usa, o construir y servir el est�
 - Consumes: `--t-header-h`, que publica `menu-overlay.ts:128` midiendo el alto real de la barra.
 - Produces: el panel en rojo, sobre el que se apoyan las tareas 2 y 3.
 
-- [ ] **Step 1: Apagar el filete de la barra mientras el menú está abierto**
+- [x] **Step 1: Apagar el filete de la barra mientras el menú está abierto**
 
 En el bloque `.nav` de `Nav.astro`, añadir la transición, y al bloque `html.menu-open .nav` el
 color transparente:
@@ -93,7 +93,7 @@ color transparente:
   }
 ```
 
-- [ ] **Step 2: Poner el panel en rojo y arrancar la persiana en el borde de la barra**
+- [x] **Step 2: Poner el panel en rojo y arrancar la persiana en el borde de la barra**
 
 En la regla `.panel`, sustituir `background` y los dos `clip-path`:
 
@@ -124,7 +124,7 @@ En la regla `.panel`, sustituir `background` y los dos `clip-path`:
   }
 ```
 
-- [ ] **Step 3: Medir en el navegador que no queda costura**
+- [x] **Step 3: Medir en el navegador que no queda costura**
 
 Levantar `pnpm --filter ochoa dev`, abrir a 390px de ancho, pulsar «Menú» y evaluar:
 
@@ -142,13 +142,13 @@ const cs = getComputedStyle(nav);
 
 Expected: `altoBarra` 62, `bordeAbierto` con alfa 0, `fondoPanel` `rgb(198, 34, 43)`.
 
-- [ ] **Step 4: Comprobar que al cerrar el filete no parpadea**
+- [x] **Step 4: Comprobar que al cerrar el filete no parpadea**
 
 Cerrar el menú y capturar a los ~80ms (a mitad de la recogida). El borde debe estar volviendo
 progresivamente, no puesto del todo. Confirmar a ojo en la captura que no hay un salto de línea
 negra sobre el rojo.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/ochoa/src/components/Nav.astro
@@ -168,7 +168,7 @@ git commit -m "feat(ochoa): el menu deja de ser un folio bajo un rotulo"
 - Produces: los tokens `--t-text`, `--t-text-dim`, `--t-text-faint` y `--t-open` reescritos dentro
   de `.panel`, de los que cuelga `OpenState` y de los que colgará `Contacto` en la tarea 3.
 
-- [ ] **Step 1: Reescribir los tokens dentro del panel**
+- [x] **Step 1: Reescribir los tokens dentro del panel**
 
 Añadir al final de la regla `.panel` (la misma que se tocó en la tarea 1):
 
@@ -186,7 +186,7 @@ Añadir al final de la regla `.panel` (la misma que se tocó en la tarea 1):
     --t-open: var(--paper);
 ```
 
-- [ ] **Step 2: Invertir los nombres de sección y su respuesta**
+- [x] **Step 2: Invertir los nombres de sección y su respuesta**
 
 Sustituir las reglas `.panel-links a`, `.lbl`, el hover y el foco:
 
@@ -237,7 +237,7 @@ declara la sombra a `.lbl` en reposo y se retira en hover. Ajustar así:
   }
 ```
 
-- [ ] **Step 3: El número y el pie**
+- [x] **Step 3: El número y el pie**
 
 ```css
   .idx {
@@ -281,7 +281,7 @@ declara la sombra a `.lbl` en reposo y se retira en hover. Ajustar así:
   }
 ```
 
-- [ ] **Step 4: Medir la legibilidad real de todo lo que hay en el panel**
+- [x] **Step 4: Medir la legibilidad real de todo lo que hay en el panel**
 
 Con el menú abierto, a 390px:
 
@@ -301,11 +301,11 @@ Expected: los seis presentes y visibles; `.lbl` y `.lang` en blanco o casi; `.id
 `rgb(26, 26, 26)`. El `.dot` se comprueba por `backgroundColor`, que debe ser blanco y no
 `rgb(198, 34, 43)`.
 
-- [ ] **Step 5: Captura del panel abierto para revisión visual**
+- [x] **Step 5: Captura del panel abierto para revisión visual**
 
 Guardar una captura a 390px con el menú abierto. Es la que se le enseña a Mario.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add apps/ochoa/src/components/Nav.astro
@@ -323,7 +323,7 @@ git commit -m "feat(ochoa): el rotulo invertido dentro del menu"
 - Consumes: el panel rojo (tarea 1) y sus tokens (tarea 2).
 - Produces: nada que consuman tareas posteriores.
 
-- [ ] **Step 1: Cambiar lo que significa `compacto`**
+- [x] **Step 1: Cambiar lo que significa `compacto`**
 
 Sustituir el bloque `.compacto` entero:
 
@@ -351,7 +351,7 @@ Al borrar las reglas que ponían `box-shadow: none` y `border-color: var(--line)
 heredan de `.contacto a` el fondo papel, el borde de tinta de 1.5px, la sombra `3px 3px 0` y el
 radio `--r-caja`. No hay que repetir ninguno.
 
-- [ ] **Step 2: Comprobar que el relieve está y que el tacto engancha**
+- [x] **Step 2: Comprobar que el relieve está y que el tacto engancha**
 
 Con el menú abierto:
 
@@ -369,12 +369,12 @@ const cs = getComputedStyle(a);
 Expected: sombra de 3px en `rgb(26, 26, 26)`, fondo `rgb(255, 255, 255)`, radio `9px`, `tacto`
 `true`. **No hay que tocar JavaScript**: `Base.astro:65` ya incluye `.contacto a` en `PIEZAS`.
 
-- [ ] **Step 3: Comprobar el hundido**
+- [x] **Step 3: Comprobar el hundido**
 
 Disparar `pointerdown` sobre la ficha y confirmar que gana la clase `tocando` y que su
 `transform` deja de ser `none`; soltar y confirmar que vuelve.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add apps/ochoa/src/components/Contacto.astro
@@ -395,7 +395,7 @@ git commit -m "fix(ochoa): las fichas del menu se hunden como las de la portada"
 - Produces: `Base.astro` acepta `altSeoPath?: string | null`, que por defecto vale `altPath`.
   Pasando `null` no se emiten los `<link rel="alternate">` de idioma.
 
-- [ ] **Step 1: Hacer `altPath` opcional en `Seo.astro`**
+- [x] **Step 1: Hacer `altPath` opcional en `Seo.astro`**
 
 Cambiar la interfaz a `altPath?: string` y envolver las tres líneas de `alternate` (44-46) para
 que solo se emitan cuando hay equivalente:
@@ -421,7 +421,7 @@ protegerlo con `const alternate = altPath ? new URL(altPath, site) : null` y usa
     así que el emparejamiento no era recíproco y quedaba roto. */}
 ```
 
-- [ ] **Step 2: Separar en `Base.astro` la navegación de la declaración**
+- [x] **Step 2: Separar en `Base.astro` la navegación de la declaración**
 
 ```astro
 interface Props {
@@ -442,13 +442,13 @@ const { title, description, locale, altPath, altSeoPath = altPath } = Astro.prop
 Y pasar `altPath={altSeoPath ?? undefined}` al `<Seo />`, dejando el `<Nav altPath={altPath} />`
 como está.
 
-- [ ] **Step 3: Marcar las tres legales**
+- [x] **Step 3: Marcar las tres legales**
 
 En `aviso-legal.astro`, `privacidad.astro` y `cookies.astro`, añadir `altSeoPath={null}` al
 `<Base>`. El `altPath="/en/"` se queda: el selector sigue llevando a la home inglesa, que es lo
 único que hay.
 
-- [ ] **Step 4: Que el pie inglés diga la verdad**
+- [x] **Step 4: Que el pie inglés diga la verdad**
 
 En `Footer.astro`:
 
@@ -460,7 +460,7 @@ En `Footer.astro`:
     </span>
 ```
 
-- [ ] **Step 5: Verificar contra el HTML construido, no contra el fuente**
+- [x] **Step 5: Verificar contra el HTML construido, no contra el fuente**
 
 ```bash
 pnpm --filter ochoa build
@@ -471,7 +471,7 @@ grep -o 'Legal notice ([A-Z]*)' apps/ochoa/dist/en/index.html      # Legal notic
 
 Expected: cero `alternate` en el aviso legal, tres en la home española, y el pie inglés marcado.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/ui/src/Seo.astro apps/ochoa/src/layouts/Base.astro \
@@ -491,7 +491,7 @@ git commit -m "fix(seo): sin version inglesa no se declara equivalente"
 - Consumes: `Ticker.astro`, `Mapa.astro`, `Contacto.astro`, todos con prop `locale: "es" | "en"`
   ya soportada.
 
-- [ ] **Step 1: Traer las importaciones y los datos de las fotos**
+- [x] **Step 1: Traer las importaciones y los datos de las fotos**
 
 Copiar de `apps/ochoa/src/pages/index.astro:1-35` el bloque de frontmatter, ajustando las rutas
 (`../../` en vez de `../`) y traduciendo los `alt`:
@@ -517,7 +517,7 @@ const casa = [
 ];
 ```
 
-- [ ] **Step 2: Montar las cuatro secciones que faltan**
+- [x] **Step 2: Montar las cuatro secciones que faltan**
 
 Entre `<Highlights />` y el manifiesto, `<Ticker locale="en" />`. Después del manifiesto, las
 secciones «the tasca» y «the house», con el mismo markup que la española y estos textos:
@@ -564,14 +564,14 @@ secciones «the tasca» y «the house», con el mismo markup que la española y 
   </section>
 ```
 
-- [ ] **Step 3: Sustituir el mapa de pega por el real**
+- [x] **Step 3: Sustituir el mapa de pega por el real**
 
 En la sección `visita`, reemplazar el `<dl>` suelto y el `<div class="mapbox">` por la retícula de
 la española: `<Mapa locale="en" />` a la izquierda y, a la derecha, `<Contacto locale="en" />`
 sobre el `<dl class="info">` con `Address` y `Hours` (el teléfono y el Instagram ya los da
 `Contacto`, así que sus dos `<div class="block">` desaparecen).
 
-- [ ] **Step 4: Traer el CSS de la española y tirar el muerto**
+- [x] **Step 4: Traer el CSS de la española y tirar el muerto**
 
 Copiar de `index.astro` las reglas `.tasca`, `.tasca-grid`, `.tasca-photo`, `.txt`, `.casa`,
 `.titular-cristal`, `.cristal-shot`, `.wall`, `.casa-shot`, `.datos` y el `@media` de móvil.
@@ -579,7 +579,7 @@ Copiar de `index.astro` las reglas `.tasca`, `.tasca-grid`, `.tasca-photo`, `.tx
 de curvatura— y las reglas muertas `.hero`, `.hero-photo` y `.kicker` del `@media` final, que son
 de una portada que ya no existe.
 
-- [ ] **Step 5: Comparar las dos homes en el navegador**
+- [x] **Step 5: Comparar las dos homes en el navegador**
 
 Construir y abrir `/` y `/en/` a 390px. Evaluar en ambas:
 
@@ -590,7 +590,7 @@ Construir y abrir `/` y `/en/` a 390px. Evaluar en ambas:
 Expected: la misma lista de secciones en las dos, y `document.querySelector('.mapbox')` a `null`
 en la inglesa. Comprobar además que `.mapa` existe y que el muro tiene tres fotos.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add apps/ochoa/src/pages/en/index.astro
@@ -604,7 +604,7 @@ git commit -m "feat(ochoa): la home inglesa alcanza a la espanola"
 **Files:**
 - Modify: `apps/ochoa/src/pages/en/menu.astro:22`
 
-- [ ] **Step 1: Alinear la nota con la española**
+- [x] **Step 1: Alinear la nota con la española**
 
 La española (`carta.astro:22`) dice «Carta facilitada por el restaurante en julio de 2026. La
 carta de bebidas no se publica aquí.» La inglesa sigue diciendo «Menu from September 2025, the
@@ -614,14 +614,14 @@ latest published — pending confirmation by the restaurant», que dejó de ser 
       <p class="note">Menu provided by the restaurant in July 2026. The drinks list is not published here.</p>
 ```
 
-- [ ] **Step 2: Verificar en el HTML construido**
+- [x] **Step 2: Verificar en el HTML construido**
 
 ```bash
 pnpm --filter ochoa build && grep -o 'Menu provided by[^<]*' apps/ochoa/dist/en/menu/index.html
 grep -c 'September 2025' apps/ochoa/dist/en/menu/index.html   # 0
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add apps/ochoa/src/pages/en/menu.astro
@@ -635,7 +635,7 @@ git commit -m "fix(ochoa): la nota de la carta inglesa deja de citar una carta v
 **Files:**
 - Modify: `docs/estado.md` — §0 y §2
 
-- [ ] **Step 1: Suite y builds**
+- [x] **Step 1: Suite y builds**
 
 ```bash
 pnpm test && pnpm build
@@ -644,13 +644,13 @@ pnpm test && pnpm build
 Expected: 45 tests en verde y las dos apps `Complete!`. Si la cuenta de tests cambió sin haber
 tocado `packages/content` ni `packages/tracking`, parar e investigar.
 
-- [ ] **Step 2: Repaso visual final a 390px**
+- [x] **Step 2: Repaso visual final a 390px**
 
 Sobre el build, no sobre `dev` —la caché de Vite ha producido falsos positivos en este repo—:
 el menú abierto sin costura, los seis elementos del panel legibles, las fichas con relieve, y la
 home inglesa igual a la española sección por sección.
 
-- [ ] **Step 3: Comprobar que Cokima sigue intacta**
+- [x] **Step 3: Comprobar que Cokima sigue intacta**
 
 ```bash
 git diff --stat main -- apps/cokima packages/ui/src/menu-overlay.ts
@@ -659,13 +659,13 @@ git diff --stat main -- apps/cokima packages/ui/src/menu-overlay.ts
 Expected: vacío salvo lo que ya viniera de `preview`. El único cambio fuera de `apps/ochoa` debe
 ser `packages/ui/src/Seo.astro`.
 
-- [ ] **Step 4: Actualizar `docs/estado.md`**
+- [x] **Step 4: Actualizar `docs/estado.md`**
 
 Quitar de §0 el punto «La home en inglés de Ochoa está atrasada», que queda resuelto. Añadir a la
 lista de lo que espera respuesta de Mario que las legales se quedan en español a propósito. Anotar
 la tanda en §2.
 
-- [ ] **Step 5: Commit y push**
+- [x] **Step 5: Commit y push**
 
 ```bash
 git add docs/estado.md
