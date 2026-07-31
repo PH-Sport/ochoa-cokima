@@ -95,6 +95,11 @@ const t = es
     z-index: 60;
     background: var(--rojo);
     border-bottom: 2px solid var(--ink);
+    /* La vuelta del filete al cerrar tiene que durar lo que dura la persiana en
+       recogerse: `close()` retira la clase `menu-open` de golpe, así que sin
+       esto la línea negra reaparece de un salto sobre el rojo que todavía se
+       está retirando. */
+    transition: border-bottom-color var(--dur-out) var(--ease);
   }
   /* Con el menú abierto el documento deja de tener scroll, y una cabecera
      `sticky` sin scroll del que colgar cae a su posición en el flujo: si la
@@ -105,6 +110,14 @@ const t = es
     position: fixed;
     left: 0;
     right: 0;
+    /* Y el filete se apaga. El panel es `fixed; inset: 0` con relleno superior,
+       así que su rojo ya llega por detrás de la barra: basta con quitar la
+       línea para que las dos piezas se suelden, sin que nada se mueva de sitio.
+       Se transparenta el color en vez de quitar el borde porque
+       `syncHeaderHeight()` mide la barra con `getBoundingClientRect()` —el
+       borde incluido— para publicar `--t-header-h`, y quitarlo la encogería dos
+       píxeles arrastrando el relleno del panel y el offset de la carta. */
+    border-bottom-color: transparent;
   }
   .nav-in {
     display: flex;
@@ -148,6 +161,14 @@ const t = es
   .nav-actions .btn:active {
     background: var(--paper);
     transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--ink);
+  }
+  /* Y lo mismo para el estado que gobierna el dedo, que es el que se ve en el
+     móvil: la hoja global lo declara con `[data-tacto].tocando`, pero aquí el
+     `[data-astro-cid-…]` de los estilos con scope le añade un punto a
+     `.nav-actions .btn` y le gana. Sin esto, el botón bajaba arrastrando su
+     sombra en vez de apoyarse en el papel. */
+  .nav-actions .btn.tocando {
     box-shadow: 0 0 0 var(--ink);
   }
   /* Sin borde: era el recuadro lo que lo hacía parecer un control de sistema
@@ -220,22 +241,40 @@ const t = es
      nombres de sección no viajan— y así el escalonado de los enlaces se lee
      como lo que cae detrás del telón, no como un segundo movimiento peleando
      con el primero. Al cerrar, la misma persiana se recoge hacia arriba. */
+  /* El fondo es el rojo de la barra y no el papel: era esa costura —una plancha
+     de rótulo y debajo un folio— lo que partía la pantalla en dos materiales.
+     Con el mismo color, la persiana además se ve por primera vez: cayendo
+     blanca sobre contenido blanco no se notaba que caía. */
   .panel {
     position: fixed;
     inset: 0;
     z-index: 50;
-    background: var(--paper);
+    background: var(--rojo);
     padding-top: var(--t-header-h);
     overflow-y: auto;
     overscroll-behavior: contain;
-    clip-path: inset(0 0 100% 0);
+    /* El recorte arranca donde acaba la barra y no en cero: los primeros 62px
+       del barrido se gastaban por detrás de ella, donde no se ven, y la
+       persiana parecía tardar en arrancar. */
+    clip-path: inset(var(--t-header-h) 0 100% 0);
     visibility: hidden;
     transition:
       clip-path var(--dur-out) var(--ease),
       visibility 0s linear var(--dur-out);
+    /* Sobre el rojo, las piezas neutras que caen aquí dentro tienen que leerse
+       con los colores al revés. Se les reescriben los tokens que consumen en
+       vez de parchearlas desde fuera —lo mismo que hace `.copy` en la portada—,
+       así que cualquier pieza de @tombo/ui que se meta mañana se adapta sola.
+       `--t-open` arregla un fallo que hoy no se ve: sin declararlo, el punto de
+       «Abierto ahora» cae al acento de la marca, que es este mismo rojo, y
+       sobre el panel desaparecería. */
+    --t-text: var(--paper);
+    --t-text-dim: rgba(255, 255, 255, 0.9);
+    --t-text-faint: rgba(255, 255, 255, 0.62);
+    --t-open: var(--paper);
   }
   .panel[data-state="open"] {
-    clip-path: inset(0 0 0 0);
+    clip-path: inset(var(--t-header-h) 0 0 0);
     visibility: visible;
     transition:
       clip-path var(--dur-in) var(--ease),
@@ -284,18 +323,29 @@ const t = es
     gap: 0.5ch;
     padding: clamp(10px, 2.4vh, 20px) 0;
     font-size: clamp(2.1rem, 10vw, 3.4rem);
+    color: var(--paper);
+    text-shadow: none;
+  }
+  /* La fórmula del rótulo, invertida: sobre rojo la tinta pasa a ser el papel y
+     la sombra dura la pone la tinta. Es lo mismo que hace el titular de la
+     portada sobre la foto, con los papeles cambiados. La sombra vive en `.lbl`
+     y no en el enlace porque el hover tiene que poder retirarla sin llevarse
+     por delante la del número. */
+  .lbl {
+    text-shadow: 0.045em 0.05em 0 var(--ink);
+    transition:
+      color var(--dur-out) var(--ease),
+      text-shadow var(--dur-out) var(--ease);
+  }
+  /* Respuesta sin movimiento: el nombre baja a tinta y suelta la sombra. Antes
+     viraba al rojo de la casa, que sobre este fondo no se vería. */
+  .panel-links a:hover .lbl,
+  .panel-links a:focus-visible .lbl {
     color: var(--ink);
     text-shadow: none;
   }
-  .lbl {
-    transition: color var(--dur-out) var(--ease);
-  }
-  .panel-links a:hover .lbl,
-  .panel-links a:focus-visible .lbl {
-    color: var(--rojo);
-  }
   .panel-links a:focus-visible {
-    outline: 2px solid var(--rojo);
+    outline: 2px solid var(--paper);
     outline-offset: 4px;
   }
   /* El número es de la misma familia del cuerpo, apretado como una etiqueta de
@@ -305,7 +355,12 @@ const t = es
     font-size: var(--fs-label);
     font-weight: 700;
     font-stretch: var(--wd-rotulo);
-    color: var(--rojo);
+    /* En rojo sobre rojo era invisible. En tinta es el único elemento oscuro
+       del panel y hace de contrapunto al nombre en papel. Es `aria-hidden` y
+       puramente ordinal —el nombre de sección lleva toda la información—, así
+       que le aplica el 3:1 de componente no textual, que cumple sobre este
+       rojo. */
+    color: var(--ink);
     letter-spacing: 0.06em;
   }
   .panel-foot {
@@ -314,7 +369,9 @@ const t = es
     transition:
       opacity var(--dur-out) var(--ease),
       transform var(--dur-out) var(--ease);
-    border-top: 2px solid var(--ink);
+    /* El filete sigue ordenando el pie, pero en papel: en tinta volvía a partir
+       el color en dos, que es justo lo que se venía a quitar. */
+    border-top: 2px solid var(--paper);
     padding-top: 16px;
     display: grid;
     gap: 10px;
@@ -326,18 +383,21 @@ const t = es
     gap: 16px;
     flex-wrap: wrap;
   }
+  /* Estos tres se cuelgan de los tokens que el panel reescribe, no de la tinta
+     de la marca: así el día que cambie el fondo no hay tres colores sueltos que
+     buscar. */
   .addr {
     margin: 0;
     font-size: var(--fs-micro);
-    color: var(--ink-dim);
+    color: var(--t-text-dim);
   }
   .lang {
     font-family: var(--sans);
     font-size: 0.9rem;
-    color: var(--ink-dim);
+    color: var(--t-text-dim);
   }
   .lang b {
-    color: var(--ink);
+    color: var(--paper);
     font-weight: 600;
   }
 </style>
