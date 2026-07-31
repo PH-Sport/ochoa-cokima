@@ -72,6 +72,14 @@
   --r-marco: 12px; /* fotos, mapa y tarjetas grandes */
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* La quíntica de arriba frena tan pronto que sobre un recorrido largo se
+     convierte en un golpe: medida en el navegador, la persiana del menú se
+     comía el 90% de sus 844px en 161ms y luego se arrastraba 260ms más en un
+     movimiento que ya no se ve. Está calibrada para los 14px de `--shift`, no
+     para cruzar una pantalla. Esta reparte: la misma persiana pasa por los tres
+     enlaces a los 179, 197 y 214ms y llega al pie a 322ms, que es un ritmo que
+     el ojo sigue. Se usa solo en lo que recorre la pantalla entera. */
+  --ease-telon: cubic-bezier(0.45, 0.02, 0.55, 1);
   --dur-in: 420ms;
   --dur-out: 160ms;
   /* Lo que tarda el botón en recuperar su sitio al soltarlo.
@@ -84,7 +92,11 @@
      que la página se vaya. */
   --dur-sube: 240ms;
   --shift: 14px;
-  --stagger: 55ms; /* escalón entre hermanos en cascada */
+  /* El escalón va al ritmo al que el telón pasa por las piezas, que medido son
+     18ms de un enlace al siguiente, no al ritmo de un gesto. Con los 55ms de
+     antes la cascada iba al triple de lento que la persiana y el tercer enlace
+     terminaba de aparecer 56ms después de que ya estuviera al descubierto. */
+  --stagger: 30ms;
   /* La cinta rotulada es el único movimiento que no entra ni responde a un
      dedo: recorre. Por eso no puede salir de `--dur-in` ni de `--dur-out`, que
      miden gestos, y por eso su curva es lineal y no la quíntica de la marca —un

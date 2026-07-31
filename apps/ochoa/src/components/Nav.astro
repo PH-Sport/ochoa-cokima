@@ -259,7 +259,7 @@ const t = es
     clip-path: inset(var(--t-header-h) 0 100% 0);
     visibility: hidden;
     transition:
-      clip-path var(--dur-out) var(--ease),
+      clip-path var(--dur-out) var(--ease-telon),
       visibility 0s linear var(--dur-out);
     /* Sobre el rojo, las piezas neutras que caen aquí dentro tienen que leerse
        con los colores al revés. Se les reescriben los tokens que consumen en
@@ -277,7 +277,7 @@ const t = es
     clip-path: inset(var(--t-header-h) 0 0 0);
     visibility: visible;
     transition:
-      clip-path var(--dur-in) var(--ease),
+      clip-path var(--dur-in) var(--ease-telon),
       visibility 0s;
   }
   .panel-in {
@@ -296,21 +296,34 @@ const t = es
     margin-block: auto;
     padding: 0;
   }
-  /* La cascada: cada hermano entra un escalón más tarde que el anterior. Al
-     cerrar no hay cascada ni retardo —cerrar responde a un dedo y tiene que
-     sentirse inmediato—, y por eso el delay solo vive en el estado abierto. */
-  .panel-links li {
+  /* La cascada va DETRÁS del telón, no por su cuenta.
+     Esto estaba mal medido y era lo que hacía que el menú no se sintiera de una
+     pieza: los nombres tardaban en aparecer `--dur-in` —lo mismo que el telón
+     entero en cruzar la pantalla—, así que el telón descubría «La carta» a los
+     35ms y el texto no terminaba de materializarse hasta los 420. Durante casi
+     medio segundo se veía una plancha roja vacía con letras llegando encima.
+     Una pieza que aparece detrás de un telón no puede tardar lo mismo que el
+     telón: no viaja, se revela. Por eso ahora entra en `--dur-out`, que es la
+     duración de lo que responde en vez de recorrer. */
+  .panel-links li,
+  .panel-foot {
     opacity: 0;
     transform: translateY(var(--shift));
+    /* Al cerrar no se desvanecen: las tapa el telón. El salto a invisible se
+       retrasa hasta que ha terminado de recogerse, así que nunca se ve un texto
+       apagándose sobre un rojo que todavía sigue ahí. Cerrar responde a un dedo
+       y tiene que sentirse inmediato: cuanto menos se anime, mejor. */
     transition:
-      opacity var(--dur-out) var(--ease),
-      transform var(--dur-out) var(--ease);
+      opacity 0s linear var(--dur-out),
+      transform 0s linear var(--dur-out);
   }
   .panel[data-state="open"] .panel-links li,
   .panel[data-state="open"] .panel-foot {
     opacity: 1;
     transform: none;
-    transition-duration: var(--dur-in);
+    transition:
+      opacity var(--dur-out) var(--ease),
+      transform var(--dur-out) var(--ease);
     transition-delay: calc(var(--i) * var(--stagger));
   }
   /* El área del enlace se ciñe a su texto: estirada a todo el ancho, el foco
@@ -363,12 +376,10 @@ const t = es
     color: var(--ink);
     letter-spacing: 0.06em;
   }
+  /* Su entrada la declara la regla de la cascada, arriba, junto a la de los
+     enlaces: el pie es un escalón más de la misma y repetirla aquí —que es lo
+     que había— la pisaba, porque esta va después en la hoja. */
   .panel-foot {
-    opacity: 0;
-    transform: translateY(var(--shift));
-    transition:
-      opacity var(--dur-out) var(--ease),
-      transform var(--dur-out) var(--ease);
     /* El filete sigue ordenando el pie, pero en papel: en tinta volvía a partir
        el color en dos, que es justo lo que se venía a quitar. */
     border-top: 2px solid var(--paper);
