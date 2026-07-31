@@ -126,10 +126,15 @@ const t = es
     gap: 16px;
     height: 60px;
   }
+  /* El rótulo de la barra lleva la sombra dura de `.cartel` como el resto de los
+     titulares de la casa: la traía por la clase y aquí se le estaba apagando, así
+     que era el único sitio donde el nombre salía plano. No se repite el valor —se
+     deja que gane el de `.cartel`— para que siga a la fórmula si algún día cambia.
+     En `em`, así que la sombra crece con el cuerpo igual que en el titular de
+     portada: aquí, a 1,4rem, es del orden de un píxel. */
   .brand {
     font-size: 1.4rem;
     color: var(--paper);
-    text-shadow: none;
   }
   .nav-actions {
     display: flex;
