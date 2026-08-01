@@ -278,6 +278,50 @@ portada **0 tareas de rasterizado** (eran 116) y pintado de 3,3 ms (eran 11,5); 
 inglesa 0. Y **cero desbordamiento lateral en 24 combinaciones** (8 rutas × 3 anchos) recorriendo
 cada página entera, que es como hay que medirlo.
 
+### Cuarta vuelta: la barra ya no salta, pero se anuncia
+
+Con los saltos resueltos, Mario describe otra cosa: al deslizar, un amago mínimo en sentido
+contrario despliega la barra de direcciones **entera**, y en vercel.com no pasa. Se midió todo lo
+que podía explicarlo y **no era ninguna de las sospechas**:
+
+- **Listeners bloqueantes: ninguno.** Los de la casa son todos `passive`, y aceptar cookies no
+  añade ni uno (GTM aún no tiene ID). Descartado.
+- **Coste del gesto: somos más ligeros que la referencia.** Trazando un deslizamiento táctil real,
+  la portada gasta 0,6 ms de hilo principal y su tarea más larga es de 21 ms; **vercel.com gasta
+  7,9 ms y tiene una tarea de 123 ms**. Ninguna de las dos registra motivos de scroll en hilo
+  principal. Descartado.
+- **Micro-retrocesos de scroll: cero.** Un swipe estrictamente monótono no produce ni un
+  retroceso en las tres webs, así que la página no está pidiendo la barra por su cuenta.
+- **Y una corrección a lo que se dijo dos veces aquí:** *vercel.com **no** oculta su cabecera al
+  bajar.* Es `sticky top: 0`, 64px, y no se mueve — muestreado a seis alturas de scroll. Es la
+  misma solución que nuestra `.nav` de 62px. La idea de imitar un auto-ocultado que no existe
+  queda retirada.
+
+**Lo que sí difiere, comparando lo que cada web le declara al navegador:**
+
+| | Ochoa | vercel.com |
+|---|---|---|
+| `theme-color` | **ninguno** | `#FAFAFA`, el color de su propio fondo |
+| `viewport` | `…, viewport-fit=cover` | `…, maximum-scale=1` |
+
+- **Arreglado: `theme-color`.** Ochoa declara ahora `#c6222b` y Cokima `#150f0c`, que son los
+  colores sobre los que ya flota cada cabecera. En Chrome y Brave de Android eso tiñe la barra de
+  direcciones, así que deja de aparecer un bloque ajeno sobre la plancha roja: **la barra del
+  navegador y la de la web pasan a ser la misma superficie**, que es el mismo argumento por el
+  que el panel del menú dejó de ser blanco. Vercel hace exactamente esto, y por eso su barra no
+  se ve llegar. Ataca la **percepción**, que es la mitad del problema, y es un remate de marca
+  que interesa por sí solo.
+- **Sin tocar, decisión de Mario: `viewport-fit=cover`.** Es la única diferencia de comportamiento
+  que queda con la referencia y es candidato plausible —cambia cómo el navegador compone su UI
+  sobre la web—, pero **quitarlo tiene coste visible**: es lo que permite que la portada llegue a
+  sangre bajo el notch del iPhone en horizontal, y lo que hace que `env(safe-area-inset-bottom)`
+  del banner de cookies (`ConsentBanner.astro:160`) devuelva algo distinto de cero. Cambio de una
+  línea, reversible, pero no se aplica a ciegas por una hipótesis.
+
+**Y una advertencia de método:** el disparo de la barra ante un gesto mínimo hacia atrás **es el
+comportamiento nativo de Chromium** y no hay palanca CSS estándar para hacerlo más sordo. Si tras
+el `theme-color` sigue molestando, lo honesto es decir que no se puede eliminar, solo disimular.
+
 **Callejones descartados por medición, para no repetirlos:** la tira de platos **no** roba
 gestos (`scrollLeft` se queda a 0 con swipes a 15° y 30°, y el documento avanza igual dentro que
 fuera de ella); la altura del documento **no** cambia al cargar las fotos (las reserva el

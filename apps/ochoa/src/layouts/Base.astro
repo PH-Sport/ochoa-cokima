@@ -29,6 +29,15 @@ const { title, description, locale, altPath, altSeoPath = altPath } = Astro.prop
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    {/* El rojo de la casa también en la barra del navegador. En Chrome y Brave de
+        Android, `theme-color` tiñe la barra de direcciones: sin él sale del color
+        por defecto del navegador, y cada vez que asoma al deslizar aparece un
+        bloque ajeno justo encima de nuestra plancha roja, que es lo que la hacía
+        tan visible. Con el mismo rojo, la barra y la cabecera son la misma
+        superficie —el mismo argumento por el que el panel del menú dejó de ser
+        blanco—. Es lo que hace la referencia de Mario: vercel.com declara el
+        #FAFAFA de su propio fondo, y por eso su barra no se ve llegar. */}
+    <meta name="theme-color" content="#c6222b" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin />
