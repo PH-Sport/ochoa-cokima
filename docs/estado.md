@@ -337,13 +337,34 @@ colapsada en su línea fina casi todo el rato; en Ochoa alterna sin parar entre 
 desplegada entera. Y el patrón es que **se despliega justo cuando el contenido deja de moverse**,
 o sea al final del gesto o cuando el scroll pierde inercia.
 
-- **En prueba, decidido por Mario: fuera `viewport-fit=cover`** en las dos apps. Es una directiva
-  pensada para el iPhone —dice que la web quiere dibujarse bajo el notch, la barra de estado y la
-  barra del navegador—, y era la única diferencia declarada que quedaba con la referencia. Se
-  descartó antes por pensar en Android, donde pinta poco; en iOS es justo la pieza que gobierna
-  cómo la web convive con la interfaz del navegador. **Lo que se pierde:** la franja de la barra
-  de estado deja de ir en el rojo de la casa —se veía en el vídeo— y la portada ya no llega a
-  sangre bajo el notch en horizontal. **Si no cambia nada en el teléfono, esto vuelve.**
+- **`viewport-fit=cover`: probado y revertido el mismo día.** Se quitó porque era la única
+  diferencia declarada que quedaba con la referencia; volvió porque **lo llevaban las dos páginas
+  y el problema solo está en la portada**, así que no podía ser la causa. Se queda: es lo que
+  pone la franja de la barra de estado del iPhone en el rojo de la casa, lo que lleva la portada a
+  sangre bajo el notch y lo que da valor al `env(safe-area-inset-bottom)` del cartel de cookies.
+- **El `theme-color` tampoco era.** Se le presentó a Mario como un arreglo de «percepción» cuando
+  él describía un problema de comportamiento; era mezclar dos cosas para tapar que no había
+  explicación. Tiñe la barra, no cambia cuándo aparece, y en Brave de iPhone ni la tiñe. Se queda
+  puesto porque sirve en Chrome de Android y en Safari, pero **no cuenta como parte de esto**.
+
+### Sexta vuelta: acotado a la portada por pruebas de Mario
+
+Dos pruebas suyas en el mismo iPhone y el mismo Brave: **en la carta no ocurre** (se comporta como
+vercel.com) y **en un artículo de Wikipedia tampoco**. Luego la rara es nuestra portada, no la
+referencia, y la causa vive en algo que solo tiene ella.
+
+**Hipótesis principal, pendiente de confirmar en el teléfono: la tira de platos.**
+`Highlights.astro:143` monta un `setInterval` que cada `--dur-turno` (3,5 s) ejecuta
+`strip.scrollTo({ left: …, behavior: "smooth" })` — **un scroll animado que la portada se hace a
+sí misma**, sobre un contenedor que además lleva `scroll-snap-type: x mandatory`. Para iOS eso es
+actividad de scroll en curso, y al terminar el navegador reevalúa si enseña la barra. Encaja con
+la descripción literal de Mario —«cuando termina la animación, la barra vuelve a subir»— y con las
+tres páginas que no fallan: ninguna tiene una tira que se mueva sola. La tira solo se apaga con un
+gesto **sobre ella misma** (`strip.addEventListener`), así que deslizando por el resto de la
+página sigue con su turno.
+
+**La prueba que lo decide:** hacer el gesto en la zona baja de la portada, con la tira fuera de
+pantalla —el `IntersectionObserver` la pausa al 50%—. Si ahí la barra se queda abajo, es la tira.
 
 **Advertencia de método para la próxima:** preguntar en qué **dispositivo y navegador** se está
 viendo antes de construir el diagnóstico. «Brave» no dice el motor: en Android es Chromium y en
