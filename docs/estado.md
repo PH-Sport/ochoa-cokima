@@ -11,9 +11,12 @@
 El árbol está limpio y `preview` subido. Las tandas del 2026-07-31 (§3.quater y §3.quinquies) y
 la del 2026-08-01 (§3.sexies) están commiteadas, construidas y con los 45 tests en verde.
 
-**Lo primero al retomar:** §3.sexies quitó los dos supresores del vaivén de la barra de
-direcciones en Chromium, pero eso **solo se confirma en un móvil de verdad**. Preguntar a Mario
-qué tal va en Brave antes de dar el asunto por cerrado.
+**Lo primero al retomar: `barra-del-navegador-ios.md`.** Es un caso **abierto** y tiene su propio
+documento con todo lo probado, lo descartado y las recetas de medición. Resumen: Ochoa ya no da
+saltos y está sensiblemente mejor, pero sigue sin comportarse como el resto de webs en Brave de
+iPhone; **Cokima está peor porque no ha recibido los arreglos**, y portárselos es trabajo mecánico
+y lo más rentable de ahí (su portada sigue colgando de `100svh` sin congelar y tiene tres
+retículas `1fr` que pueden desbordar). **No repetir nada de la lista de descartes** de su §4.
 
 **Lo que espera respuesta de Mario, y sin lo cual no se puede avanzar:**
 
@@ -629,6 +632,7 @@ Sin cambios respecto a la spec §12, más una entrada nueva:
 |---|---|
 | `../.impeccable.md` | Contexto de diseño: para quién es cada web y cómo debe sentirse |
 | `movimiento.md` | Los cinco valores del movimiento, las reglas y qué se mueve |
+| `barra-del-navegador-ios.md` | **Caso abierto.** La barra de Brave en iPhone: lo arreglado, lo descartado y por dónde seguir |
 | `fotografia.md` | Qué fotos faltan, con qué nombre y dónde dejarlas |
 | `deploy.md` | Vercel: dos proyectos, modelo de ramas, env vars, dominios |
 | `estado-divergencia-layout.md` | Registro de la fase 2, tarea por tarea |
