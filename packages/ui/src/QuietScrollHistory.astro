@@ -1,0 +1,126 @@
+---
+/**
+ * Que el historial no se toque mientras se hace scroll.
+ *
+ * EL PROBLEMA. El `ClientRouter` de Astro engancha el final de cada scroll
+ * —`scrollend` donde existe, y donde no, un sondeo con `setInterval` cada 50 ms—
+ * y en cuanto la página se queda quieta escribe la posición en el historial:
+ *
+ *     const onScrollEnd = () => {
+ *       if (history.state && (scrollX !== history.state.scrollX || …)) {
+ *         updateScrollPosition({ scrollX, scrollY });   // → history.replaceState()
+ *       }
+ *     };
+ *     if ("onscrollend" in window) addEventListener("scrollend", onScrollEnd);
+ *     else { …setInterval(scrollInterval, 50)… }
+ *
+ * (`astro/dist/transitions/router.js`, `onScrollEnd` y el bloque que lo registra.)
+ *
+ * En los navegadores de iPhone que no son Safari —Brave, Firefox, Chrome, todos
+ * obligados a envolver el WKWebView de Apple— ese `replaceState` obliga a sacar
+ * la barra de direcciones. El navegador vigila el estado de navegación de la
+ * vista para pintar su propia barra, y no distingue entre «la URL ha cambiado»
+ * y «se ha reescrito el estado con la misma URL»: ante la duda, la enseña.
+ * Safari no lo hace porque su barra es parte del navegador, no un observador de
+ * la vista, y por eso el fallo solo se ve en los otros.
+ *
+ * Es lo que se veía: la barra se recogía al deslizar y volvía a salir entera
+ * justo al levantar el dedo, «como si esperase al minimísimo instante». Ese
+ * instante es el sondeo de 50 ms, que es la rama que corre en iOS —WebKit no
+ * tuvo `scrollend` hasta Safari 26.2—.
+ *
+ * Está reportado en Astro (withastro/astro#12285, «causes the browser address
+ * bar to reappear every time scrolling stops»), y **cerrado sin arreglar**: el
+ * mantenedor de las transiciones explicó que quitarlo sin más rompería la
+ * restauración de posición y que hacerlo bien pide rediseñar el guardado fuera
+ * del historial. Así que el arreglo tiene que ser nuestro.
+ *
+ * LA SOLUCIÓN. No suprimir el guardado, sino **retrasarlo**. El único momento en
+ * que esa posición hace falta es cuando se abandona la página; mientras el dedo
+ * está en la pantalla no le sirve a nadie. Así que se retiene la escritura y se
+ * vuelca en el último instante útil: al navegar, al ocultarse la pestaña y al
+ * descargarse el documento. Durante el scroll el historial no se toca, y la
+ * barra se queda recogida como en cualquier otra web.
+ *
+ * QUÉ SE FILTRA Y QUÉ NO. Sólo se retiene la escritura que **no cambia la URL** y
+ * que **sólo difiere en `scrollX`/`scrollY`**, que es exactamente la firma del
+ * guardado de scroll. Las otras cuatro llamadas del router pasan intactas: la
+ * escritura inicial (ahí `history.state` aún es `null`), la de navegación con
+ * `history: "replace"` (lleva URL), la del salto a un ancla y la que el propio
+ * Astro hace antes de cada navegación (cubierta por la ventana de navegación).
+ * `pushState` no se toca.
+ *
+ * LO QUE SE PIERDE. Ir atrás y luego adelante otra vez dentro de la misma
+ * sesión devuelve la segunda página arriba en vez de donde estaba. Es el precio
+ * conocido —el mismo que frenó al equipo de Astro— y no afecta al caso normal:
+ * la ida y la vuelta con el botón de atrás siguen restaurando la posición,
+ * porque esa se guarda antes de navegar y eso no se ha tocado.
+ *
+ * Va `is:inline` y antes de `<ClientRouter />` a propósito: los módulos son
+ * diferidos, así que un script clásico en el `<head>` corre siempre antes que el
+ * router y llega a tiempo de envolver la función.
+ */
+---
+
+<script is:inline>
+  (function () {
+    var nativo = history.replaceState.bind(history);
+    var pendiente = null;
+    // Ventana con caducidad en vez de un interruptor: si una navegación se
+    // queda a medias —alguien cancela el evento— el filtro se recupera solo en
+    // cinco segundos en vez de quedarse apagado para siempre.
+    var navegandoHasta = 0;
+
+    function soloCambiaElScroll(entrante, url) {
+      if (url != null) return false;
+      var actual = history.state;
+      if (!actual || !entrante || typeof entrante !== "object") return false;
+      for (var a in actual) {
+        if (a === "scrollX" || a === "scrollY") continue;
+        if (actual[a] !== entrante[a]) return false;
+      }
+      for (var b in entrante) {
+        if (b === "scrollX" || b === "scrollY") continue;
+        if (actual[b] !== entrante[b]) return false;
+      }
+      return true;
+    }
+
+    history.replaceState = function (entrante, sinUso, url) {
+      if (Date.now() > navegandoHasta && soloCambiaElScroll(entrante, url)) {
+        pendiente = entrante;
+        return;
+      }
+      pendiente = null;
+      return nativo(entrante, sinUso, url);
+    };
+
+    function vuelca() {
+      if (!pendiente) return;
+      var estado = pendiente;
+      pendiente = null;
+      try {
+        nativo(estado, "");
+      } catch (e) {
+        /* Safari corta a las 100 llamadas por ventana; si pasa, no es nada que
+           debamos arrastrar hasta la consola del visitante. */
+      }
+    }
+
+    // Al abandonar el documento: enlace externo, recarga, cierre.
+    addEventListener("pagehide", vuelca);
+    // Y en iOS, donde `pagehide` no siempre llega al cambiar de aplicación.
+    addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "hidden") vuelca();
+    });
+    // Al navegar con el router: se vuelca lo retenido y se abre la ventana en
+    // la que sus propias escrituras pasan sin filtrar.
+    document.addEventListener("astro:before-preparation", function () {
+      vuelca();
+      navegandoHasta = Date.now() + 5000;
+    });
+    document.addEventListener("astro:page-load", function () {
+      navegandoHasta = 0;
+    });
+  })();
+</script>

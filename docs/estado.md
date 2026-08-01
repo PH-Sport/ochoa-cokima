@@ -11,16 +11,17 @@
 El árbol está limpio y `preview` subido. Las tandas del 2026-07-31 (§3.quater y §3.quinquies) y
 la del 2026-08-01 (§3.sexies) están commiteadas, construidas y con los 45 tests en verde.
 
-**Lo primero al retomar: `barra-del-navegador-ios.md`, y dentro, su §4.bis.** Es un caso
-**abierto** con documento propio: lo arreglado, lo descartado y las recetas de medición.
+**La barra del navegador en iPhone quedó resuelta el 2026-08-01.** Era el `ClientRouter` de Astro,
+que escribe en el historial cada vez que el scroll se detiene; en los navegadores de iPhone que no
+son Safari eso obliga a sacar la barra de direcciones. El arreglo es
+`packages/ui/src/QuietScrollHistory.astro`. Todo el caso —la causa, la prueba que lo demostró en el
+Brave de Mario, la lista de descartes y **los tres errores de método que costaron cuatro vueltas**—
+está en `barra-del-navegador-ios.md`. Vale la pena leer su §8 antes de perseguir cualquier fallo
+que solo se vea en un móvil.
 
-Lo urgente de ahí: **`viewport-fit=cover` es el sospechoso principal y se descartó mal.** La carta
-llegó a comportarse bien con la directiva quitada y volvió a estropearse al devolverla. El
-descarte comparaba dos observaciones tomadas en estados distintos del código, que es un error a no
-repetir: **cada observación se anota con su commit**. Lo primero es volver a quitarlo y que Mario
-confirme. Después, portar a Cokima los arreglos de fondo, que es mecánico —su portada sigue en
-`100svh` sin congelar y tiene tres retículas `1fr` que pueden desbordar—. **No repetir nada de la
-lista de descartes de su §4.**
+De ahí queda una tarea suelta y mecánica: **portar a Cokima los dos arreglos de fondo que nunca
+recibió** —su portada sigue en `100svh` sin congelar y tiene tres retículas `1fr` que pueden
+desbordar—. No depende de nada.
 
 **Lo que espera respuesta de Mario, y sin lo cual no se puede avanzar:**
 

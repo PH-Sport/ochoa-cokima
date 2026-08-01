@@ -4,6 +4,7 @@ import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
 import Seo from "@tombo/ui/Seo.astro";
 import ConsentBanner from "@tombo/ui/ConsentBanner.astro";
+import QuietScrollHistory from "@tombo/ui/QuietScrollHistory.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import { RESTAURANT } from "../site.ts";
@@ -28,12 +29,13 @@ const { title, description, locale, altPath, altSeoPath = altPath } = Astro.prop
 <html lang={locale}>
   <head>
     <meta charset="utf-8" />
-    {/* `viewport-fit=cover` se quitó como prueba el 2026-08-01 y volvió el mismo
-        día: descartado por el propio experimento. Lo llevaban las dos páginas y
-        el problema solo estaba en la portada, así que no podía ser la causa.
-        Es lo que hace que la franja de la barra de estado del iPhone vaya en el
-        rojo de la casa y que la portada llegue a sangre bajo el notch, y lo que
-        da valor al `env(safe-area-inset-bottom)` del cartel de cookies. */}
+    {/* `viewport-fit=cover` llegó a parecer el culpable de que la barra del
+        navegador volviera a salir al deslizar en el iPhone. No lo era: la causa
+        estaba en el guardado de scroll del router, y está probada y arreglada
+        —ver `QuietScrollHistory.astro` y `docs/barra-del-navegador-ios.md`—.
+        Se queda porque es lo que hace que la franja de la barra de estado vaya
+        en el rojo de la casa y que la portada llegue a sangre bajo el notch, y
+        lo que da valor al `env(safe-area-inset-bottom)` del cartel de cookies. */}
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     {/* El rojo de la casa también en la barra del navegador. En Chrome y Brave de
         Android, `theme-color` tiñe la barra de direcciones: sin él sale del color
@@ -49,6 +51,10 @@ const { title, description, locale, altPath, altSeoPath = altPath } = Astro.prop
     <link rel="preload" href="/fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin />
     <Seo title={title} description={description} locale={locale} altPath={altSeoPath ?? undefined} restaurant={RESTAURANT} ogImage="/images/hero.jpg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    {/* Antes del router, que es a quien envuelve: en Brave de iPhone su
+        guardado de scroll era lo que devolvía la barra de direcciones al
+        levantar el dedo. El porqué entero, en el propio componente. */}
+    <QuietScrollHistory />
     <ClientRouter />
   </head>
   <body>

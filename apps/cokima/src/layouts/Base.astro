@@ -4,6 +4,7 @@ import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
 import Seo from "@tombo/ui/Seo.astro";
 import ConsentBanner from "@tombo/ui/ConsentBanner.astro";
+import QuietScrollHistory from "@tombo/ui/QuietScrollHistory.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import { RESTAURANT } from "../site.ts";
@@ -21,9 +22,9 @@ const { title, description, locale, altPath } = Astro.props;
 <html lang={locale}>
   <head>
     <meta charset="utf-8" />
-    {/* `viewport-fit=cover`: ver el Base de Ochoa. Se quitó como prueba y volvió,
-        descartado por el experimento. Es una decisión de plataforma y las dos
-        casas van igual. */}
+    {/* `viewport-fit=cover`: ver el Base de Ochoa. Llegó a parecer el culpable de
+        lo de la barra del navegador y no lo era. Es una decisión de plataforma y
+        las dos casas van igual. */}
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     {/* La barra del navegador, del mismo tizón que la web. Ver el Base de Ochoa,
         donde está el razonamiento: es el `--ground` sobre el que ya flota la
@@ -34,6 +35,9 @@ const { title, description, locale, altPath } = Astro.props;
     <link rel="preload" href="/fonts/bricolage-400.woff2" as="font" type="font/woff2" crossorigin />
     <Seo title={title} description={description} locale={locale} altPath={altPath} restaurant={RESTAURANT} ogImage="/images/hero.jpg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    {/* Antes del router, que es a quien envuelve. Ver el Base de Ochoa y el
+        propio componente: es lo que sacaba la barra del navegador al soltar. */}
+    <QuietScrollHistory />
     <ClientRouter />
   </head>
   <body>
