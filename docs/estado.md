@@ -252,14 +252,31 @@ tamaño y obliga a repintar 375×654, casi la pantalla entera. La carta no tiene
   recálculos de estilo de la portada en los mismos 10 de la carta. Verificado: pausada arriba y
   abajo, corriendo al volver **y por donde se quedó**, una sola instancia tras navegar y volver,
   y quieta con la pestaña detrás.
-- **Sin tocar, a la espera de Mario: la altura del hero.** Es la causa gorda, pero `svh` está
-  definido como **estable** frente al colapso de la barra, así que en teoría no debería dispararse
-  en Brave. El banco de pruebas no puede distinguirlo: `setViewportSize` mueve `svh`, `lvh` y
-  `dvh` a la vez. Ninguna variante de CSS lo arregla —`contain`, `content-visibility`,
-  `will-change`, `lvh`, imagen sobredimensionada: todas entre 37 y 62 tareas—; lo único que
-  funciona es que el alto deje de colgar del viewport, y eso pide JS de layout, que es deuda.
-  **La prueba que lo decide, y que solo Mario puede hacer:** si el vaivén va mal solo mientras
-  la portada está en pantalla y bien más abajo, es el hero.
+**Tercera vuelta, la que lo cierra.** Mario probó otra vez: **sigue igual por toda la portada,
+esté arriba o abajo**. Eso descartaba el hero… y en realidad lo señalaba, porque **las dos
+primeras tandas de medición se hicieron a `scrollY 0`** y esa ventana no valía para nada. Midiendo
+a 0, 1200, 2400 y 3200, el coste es constante en la portada (72-116 tareas) y **cero en la carta
+en todas**. Las capas de composición dieron la pista que faltaba: la del documento medía
+**513×4003** en la portada y 375×4258 en la carta, y se repintaba entera en cada resize.
+
+- **Arreglado: `.wall` sacaba 138px de scroll lateral a la portada.** `grid-template-columns:
+  repeat(2, 1fr)` con fotos dentro: un track `1fr` es `minmax(auto, 1fr)` y el mínimo automático
+  de una imagen es su tamaño intrínseco —1000px—, así que el track no encogía. Con
+  `minmax(0, 1fr)` la capa vuelve a 375 de ancho y el rasterizado cae a la mitad. **El
+  desbordamiento era preexistente y lo tapaba el `overflow-x: hidden`;** al retirarlo quedó
+  destapado, así que durante unas horas la portada tuvo scroll lateral de verdad.
+- **Arreglado: la portada deja de dimensionar su alto desde el viewport.** Es lo que quedaba, y
+  lo lleva a 0. Cuando cambia de alto empuja todo lo de debajo e **invalida la capa entera del
+  documento**, así que se repinta la página completa mires donde mires —de ahí que se notara
+  igual arriba que abajo—. El `calc(100svh …)` sigue en el CSS como respaldo y como valor del
+  primer pintado; el script lo congela en píxeles y **solo vuelve a medir cuando cambia el
+  ancho**. Verificado: mismo alto de siempre (654 = 844−62−128), quieto ante un cambio de solo
+  alto, y recolocado al rotar.
+
+**Estado final medido**, diez cambios de alto del viewport desde cuatro posiciones de scroll:
+portada **0 tareas de rasterizado** (eran 116) y pintado de 3,3 ms (eran 11,5); carta 0; home
+inglesa 0. Y **cero desbordamiento lateral en 24 combinaciones** (8 rutas × 3 anchos) recorriendo
+cada página entera, que es como hay que medirlo.
 
 **Callejones descartados por medición, para no repetirlos:** la tira de platos **no** roba
 gestos (`scrollLeft` se queda a 0 con swipes a 15° y 30°, y el documento avanza igual dentro que

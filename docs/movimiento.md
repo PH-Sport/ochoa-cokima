@@ -116,6 +116,23 @@ más lejos; Ochoa es una tasca y es seca.
     que se sale, nunca en el documento. Y la altura de la portada cuelga de `svh`, que por
     definición no se mueve cuando la barra colapsa: `dvh` ahí habría hecho bailar la página
     entera en cada gesto.
+16. **Nada que ocupe media pantalla dimensiona su alto desde el viewport.** Cuando la portada
+    cambia de alto empuja todo lo que tiene debajo e **invalida la capa entera del documento**:
+    se repinta la página completa, no el rectángulo que cambió. Por eso el vaivén de la barra se
+    notaba igual arriba que abajo, y por eso costó dar con ello —mirando solo la primera
+    pantalla, la portada parecía inocente—. Medido con un trace, diez cambios de alto disparaban
+    55 tareas de rasterizado desde cualquier posición de scroll, contra 0 en la carta; con el
+    alto congelado, 0 también, y el pintado baja de 11,5 ms a 3,3. El `calc(100svh …)` se queda
+    en el CSS como respaldo y como valor del primer pintado, y el script lo congela en píxeles
+    **volviendo a medir solo cuando cambia el ancho**, que es el único cambio de viewport que
+    afecta al cálculo: una rotación recoloca, un vaivén de barras no toca nada.
+17. **El desbordamiento lateral se mide recorriendo la página, no en el primer pantallazo.**
+    `.wall` le sacaba 138px de scroll lateral a la portada y se dio por limpia dos veces seguidas
+    porque se midió a `scrollY 0`, y esa retícula vive a mitad de página. La causa era
+    `grid-template-columns: repeat(2, 1fr)` con fotos dentro: un track `1fr` es en realidad
+    `minmax(auto, 1fr)`, y el mínimo automático de una imagen es su tamaño intrínseco —estas
+    declaran 1000px—, así que el track se negaba a encoger por mucho `width: 100%` que llevara la
+    foto. Se arregla con `minmax(0, 1fr)`, **en la pieza y no tapándolo en el documento**.
 
 ## Qué se mueve hoy
 

@@ -246,7 +246,10 @@ const casa = [
      ver index.astro, donde está el razonamiento entero. */
   .wall {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    /* `minmax(0, 1fr)`: ver index.astro, donde está el razonamiento. Sin el
+       cero, el mínimo intrínseco de las fotos empuja la retícula fuera de la
+       pantalla. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(12px, 2vw, 22px);
     margin-top: 1.6rem;
     padding-bottom: clamp(18px, 3vw, 34px);

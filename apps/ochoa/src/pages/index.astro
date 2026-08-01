@@ -265,7 +265,13 @@ const casa = [
      media foto empezada, que invita a seguir bajando. */
   .wall {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    /* `minmax(0, 1fr)` y no `1fr` a secas: un track `1fr` es en realidad
+       `minmax(auto, 1fr)`, y el mínimo automático de una imagen es su tamaño
+       intrínseco —estas declaran 1000px—, así que el track se negaba a bajar de
+       ahí por mucho `width: 100%` que llevara la foto. Medido a 375px, la
+       retícula se iba a 513 y sacaba 138px de scroll lateral a toda la portada.
+       El cero le da permiso al track para encoger. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(12px, 2vw, 22px);
     margin-top: 1.6rem;
     padding-bottom: clamp(18px, 3vw, 34px);
