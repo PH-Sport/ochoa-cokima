@@ -31,6 +31,53 @@ const piezas = es
   </div>
 </div>
 
+<script>
+  /* La cinta no corre mientras no se la ve, ni con la pestaña detrás. Es la
+   * regla 6 de `movimiento.md`, que la tira de platos ya cumplía y esta se
+   * había saltado: vive en la franja 1144-1185 de una página de casi 4000, o
+   * sea que estaba animándose en el 70% del recorrido sin que nadie la mirase.
+   *
+   * No es solo un gasto de batería. Chromium revalida las animaciones activas
+   * cada vez que le cambia el alto al viewport, y ocultar y devolver la barra
+   * de direcciones al deslizar es exactamente eso: medido, la portada hacía 20
+   * recálculos de estilo donde la carta hacía 10, y con la cinta parada baja a
+   * esos mismos 10.
+   */
+  let sueltaAnterior: (() => void) | undefined;
+
+  const montaCinta = () => {
+    const pista = document.querySelector<HTMLElement>(".pista");
+    if (!pista) return undefined;
+
+    const abort = new AbortController();
+    let aLaVista = false;
+    /* Las dos condiciones se evalúan juntas y no una en cada sitio: al volver
+       de segundo plano el observador no vuelve a disparar, así que preguntarle
+       solo a él dejaría la cinta parada para siempre. */
+    const revisa = () => pista.classList.toggle("quieta", !aLaVista || document.hidden);
+
+    const ojo = new IntersectionObserver(([e]) => {
+      aLaVista = e.isIntersecting;
+      revisa();
+    });
+    ojo.observe(pista);
+    document.addEventListener("visibilitychange", revisa, { signal: abort.signal });
+    revisa();
+
+    return () => {
+      ojo.disconnect();
+      abort.abort();
+    };
+  };
+
+  /* Mismo montaje que la tira de platos: se suelta el anterior antes de crear
+     otro, o cada visita a la portada dejaría un observador sobre nodos muertos. */
+  document.addEventListener("astro:page-load", () => {
+    sueltaAnterior?.();
+    sueltaAnterior = montaCinta();
+  });
+</script>
+
 <style>
   .cinta {
     overflow: hidden;
@@ -46,6 +93,12 @@ const piezas = es
     display: flex;
     width: max-content;
     animation: recorre var(--dur-cinta) linear infinite;
+  }
+  /* Se pausa, no se anula: al volver a la vista el rótulo sigue por donde se
+     quedó, y no da el salto de recomponerse desde el principio. La clase la
+     pone el script de arriba. */
+  .pista.quieta {
+    animation-play-state: paused;
   }
   /* Dos tandas idénticas y un desplazamiento de la mitad exacta: cuando la
      primera sale por la izquierda, la segunda está justo donde empezó la

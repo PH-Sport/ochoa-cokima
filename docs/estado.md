@@ -231,12 +231,46 @@ y ancho desplazable igual al visible en las dieciséis rutas, con el menú **cer
 cerrado otra vez**; la portada sigue a 62px con el menú abierto, así que el arreglo del salto de
 §3.quinquies sigue en pie. Regla 15 de `movimiento.md`.
 
-**Lo que no se ha podido comprobar aquí:** el vaivén de la barra solo se reproduce en un navegador
-móvil de verdad, y esta máquina no lo tiene. Los dos supresores están retirados y medidos, pero
-**confirmar la mejora es cosa de Mario en su Brave**. Si sigue igual, el siguiente sospechoso no
-es CSS heredado sino el diseño: nuestra `.nav` es `sticky` y compite con la barra del navegador
-por el mismo borde superior. La referencia que él cita —vercel.com— resuelve eso ocultando su
-propia cabecera al bajar y devolviéndola al subir, en vez de dejarla clavada.
+**Segunda vuelta, con el dato que lo cambia todo:** Mario probó y **la carta quedó perfecta, la
+portada no**. Eso descarta lo global y señala a algo que solo vive en la portada. Medido con
+`Performance.getMetrics` y un trace de Chromium, diez cambios de alto del viewport cuestan:
+
+| | recalcs de estilo | Paint | tareas de rasterizado |
+|---|---|---|---|
+| Portada | 20 | 9,0 ms | **45** |
+| Carta | 10 | 0,7 ms | **0** |
+
+**Dos causas, y una descartada que parecía la buena.** Mario preguntó si eran las imágenes:
+ocultarlas todas **no** baja el rasterizado (47 tareas), y de hecho las mediciones se hicieron con
+cinco de las seis sin cargar —`/_vercel/image` no existe fuera de Vercel, así que en local dan
+404—, o sea que **el coste real en producción es mayor que el medido**. Lo que dispara el
+rasterizado es **el `.hero`, cuya altura cuelga de `100svh`**: clavarlo en píxeles lo tira de 45
+tareas a 3 y el pintado de 9,0 ms a 2,5. Cualquier cambio de alto del viewport le cambia el
+tamaño y obliga a repintar 375×654, casi la pantalla entera. La carta no tiene nada así.
+
+- **Arreglado: la cinta rotulada se para cuando no se la ve** (regla 6, que incumplía). Deja los
+  recálculos de estilo de la portada en los mismos 10 de la carta. Verificado: pausada arriba y
+  abajo, corriendo al volver **y por donde se quedó**, una sola instancia tras navegar y volver,
+  y quieta con la pestaña detrás.
+- **Sin tocar, a la espera de Mario: la altura del hero.** Es la causa gorda, pero `svh` está
+  definido como **estable** frente al colapso de la barra, así que en teoría no debería dispararse
+  en Brave. El banco de pruebas no puede distinguirlo: `setViewportSize` mueve `svh`, `lvh` y
+  `dvh` a la vez. Ninguna variante de CSS lo arregla —`contain`, `content-visibility`,
+  `will-change`, `lvh`, imagen sobredimensionada: todas entre 37 y 62 tareas—; lo único que
+  funciona es que el alto deje de colgar del viewport, y eso pide JS de layout, que es deuda.
+  **La prueba que lo decide, y que solo Mario puede hacer:** si el vaivén va mal solo mientras
+  la portada está en pantalla y bien más abajo, es el hero.
+
+**Callejones descartados por medición, para no repetirlos:** la tira de platos **no** roba
+gestos (`scrollLeft` se queda a 0 con swipes a 15° y 30°, y el documento avanza igual dentro que
+fuera de ella); la altura del documento **no** cambia al cargar las fotos (las reserva el
+`aspect-ratio`, salto máximo 0 en las dos páginas); el `ResizeObserver` del nav **no** dispara al
+cambiar el alto (0 escrituras de `--t-header-h`); y la forma de la animación de la cinta da igual
+—porcentaje, `translate3d` o píxeles, todas cuestan lo mismo—: lo que cuesta es que corra.
+
+Si aun así siguiera, el siguiente sospechoso es de diseño: nuestra `.nav` es `sticky` y compite
+con la barra del navegador por el mismo borde superior. La referencia que él cita —vercel.com—
+oculta su propia cabecera al bajar y la devuelve al subir, en vez de dejarla clavada.
 
 ## 3.quater La tanda del 2026-07-31: Sibuya como referencia y los retoques de Mario
 

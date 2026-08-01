@@ -55,6 +55,14 @@ más lejos; Ochoa es una tasca y es seca.
 6. **Nada que se mueva solo sigue moviéndose después de que alguien lo toque.** La tira de
    platos avanza sola hasta el primer gesto y ahí se apaga para siempre: quien desliza ha dicho
    que prefiere conducir. Y no corre mientras no se la ve, ni con la pestaña en segundo plano.
+   **Esto vale para todo lo que se mueva solo, y la cinta rotulada se lo había saltado:** vivía
+   en la franja 1144-1185 de una portada de casi 4000, o sea animándose en el 70% del recorrido
+   sin que nadie la mirase. No es solo batería. **Chromium revalida todas las animaciones
+   activas cada vez que le cambia el alto al viewport**, y ocultar y devolver la barra de
+   direcciones al deslizar es exactamente eso: medido, la portada hacía 20 recálculos de estilo
+   donde la carta hacía 10, y parando la cinta baja a esos mismos 10. Se pausa con
+   `animation-play-state`, no se anula: al volver a la vista el rótulo sigue por donde iba en
+   vez de recomponerse desde el principio.
 7. **La respuesta al dedo no sale de `:active`.** En Safari de iOS ese estado no se aplica de
    forma fiable sin un listener táctil en la página. Va por `pointerdown`/`pointerup` desde el
    script del layout, marcando las piezas con `data-tacto`; `:active` se queda de respaldo para
