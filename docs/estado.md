@@ -19,9 +19,14 @@ Brave de Mario, la lista de descartes y **los tres errores de método que costar
 está en `barra-del-navegador-ios.md`. Vale la pena leer su §8 antes de perseguir cualquier fallo
 que solo se vea en un móvil.
 
-De ahí queda una tarea suelta y mecánica: **portar a Cokima los dos arreglos de fondo que nunca
-recibió** —su portada sigue en `100svh` sin congelar y tiene tres retículas `1fr` que pueden
-desbordar—. No depende de nada.
+**Cokima ya tiene los dos arreglos de fondo que le faltaban** (portada congelada y `minmax(0, 1fr)`
+en sus tres retículas), medidos antes y después: su portada pasaba de 623 a 561px cada vez que la
+barra asomaba, arrastrando el documento entero, y ahora no se mueve. Ojo con un matiz que quedó
+escrito en el §11 de ese documento: **sus retículas no desbordaban** —eso se había supuesto sin
+medir—; el `minmax` es prevención para cuando entren las fotos reales.
+
+Para llevarse el arreglo de la barra a otras webs nuestras de Astro está
+`receta-barra-ios-astro.md`, autocontenido. **phsport.es tiene el mismo caso.**
 
 **Lo que espera respuesta de Mario, y sin lo cual no se puede avanzar:**
 

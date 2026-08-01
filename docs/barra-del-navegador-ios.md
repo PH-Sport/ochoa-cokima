@@ -175,10 +175,34 @@ era de comportamiento, para tapar que no había explicación. Si no hay explicac
 - **Medir siempre a varias alturas de scroll y recorriendo la página entera.** Medir a `scrollY 0`
   dio por buenas dos veces cosas que estaban rotas.
 
-## 10. Lo que queda, y ya no depende de esto
+## 10. Para llevárselo a otro proyecto
 
-Portar a Cokima los dos arreglos de §6 que nunca recibió, que es mecánico y explica que su portada
-se viera peor que la de Ochoa: `Hero.astro:49` sigue en `height: calc(100svh - …)` sin congelar, y
-`pages/index.astro:117` `repeat(2, 1fr)`, `:132` y `en/index.astro:53` `1fr 1fr` son las mismas
-retículas que en Ochoa sacaban 138px de scroll lateral. **Hay que medirlo recorriendo la página
-entera**, no a `scrollY 0`.
+`receta-barra-ios-astro.md`, al lado de este. Es autocontenido y sirve para cualquier web hecha con
+Astro que use `<ClientRouter />`: la causa, un fragmento para comprobar en la consola si le afecta,
+el componente entero listo para copiar, dónde enchufarlo y qué se pierde. **phsport.es tiene el
+mismo caso** y es a donde va primero.
+
+## 11. Los arreglos que le faltaban a Cokima — hechos el mismo día
+
+Eran los dos de §6 que nunca recibió, y explican que su portada se viera peor que la de Ochoa.
+Medidos antes y después a 375px:
+
+| | antes | después |
+|---|---|---|
+| Portada, viewport 812 | 623px · documento 2990 | 623px · documento 2990 |
+| Portada, viewport 750 (barra asomando) | **561px · documento 2928** | **623px · documento 2990** |
+
+Es decir: cada vaivén de la barra le cambiaba el alto a la portada y arrastraba el documento
+entero, que es lo que invalida la capa. Congelada, deja de moverse; y al rotar —lo único que debe
+volver a medir— recalcula bien (420px en apaisado).
+
+**Lo del scroll lateral era distinto de lo que se suponía, y conviene dejarlo escrito.** Se dio por
+hecho que las retículas `1fr` de Cokima desbordaban como desbordaba la `.wall` de Ochoa. **No
+desbordaban**: medido recorriendo la página entera a 375px, `sobra: 0` en las ocho alturas, y los
+tracks daban 154px limpios. El motivo es que **Cokima no tiene fotos**: lo que hay dentro de su
+`.wall` son los huecos marcados, que no traen tamaño intrínseco. El `minmax(0, 1fr)` se puso igual
+—en `.wall` y en las dos `.visit-grid`— porque el desbordamiento aparecerá **el día que entren las
+fotos de verdad**, que es justo cuando nadie va a estar mirando esto.
+
+Lo único que sí sale por el lado es la tira de platos, que tiene su `overflow-x: auto` y es por
+diseño. Ya se había marcado como falso positivo antes; no volver a perseguirlo.

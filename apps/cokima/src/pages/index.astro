@@ -114,7 +114,16 @@ const casa = [
      lo contrario y quedaba rígida. */
   .wall {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    /* `minmax(0, 1fr)` y no `1fr` a secas: un track `1fr` es en realidad
+       `minmax(auto, 1fr)`, y el mínimo automático de una imagen es su tamaño
+       intrínseco, así que el track se niega a bajar de ahí por mucho
+       `width: 100%` que lleve la foto. En Ochoa eso sacaba 138px de scroll
+       lateral a toda la portada. Medido aquí a 375px, esta retícula hoy NO
+       desborda —da 154px por columna— porque lo que lleva dentro son los huecos
+       marcados, no fotos: el problema aparecerá el día que entren las de verdad,
+       que es justo cuando nadie va a estar mirando esto. El cero le da permiso
+       al track para encoger y no cuesta nada. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(12px, 2vw, 22px);
     margin-top: 1.6rem;
     padding-bottom: var(--desfase);
@@ -129,7 +138,9 @@ const casa = [
   }
   .visit-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* Mismo cero que en `.wall`: aquí la columna de la derecha acabará siendo un
+       mapa embebido, que es contenido con tamaño propio. */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: clamp(28px, 5vw, 56px);
     align-items: stretch;
     margin-top: 2rem;

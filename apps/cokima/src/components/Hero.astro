@@ -38,6 +38,63 @@ const es = locale === "es";
   </div>
 </header>
 
+<script>
+  /* La portada mide una vez y se queda quieta hasta que cambie el ancho.
+   *
+   * `svh` está definido como estable frente al colapso de la barra del
+   * navegador, pero basta con que un navegador toque el alto del viewport por
+   * cualquier motivo para que esta portada le cambie el tamaño, empuje todo lo
+   * que tiene debajo e invalide la capa entera del documento. Medido aquí antes
+   * de congelarla: al acortar el viewport 62px —lo que ocupa la barra al
+   * asomar—, la portada pasaba de 623 a 561px y el documento entero de 2990 a
+   * 2928. En Ochoa, donde se hizo primero, eso costaba 116 tareas de
+   * rasterizado desde cualquier posición de scroll, también con la portada
+   * fuera de pantalla, que es lo que despistaba.
+   *
+   * Solo se vuelve a medir cuando cambia el ANCHO, que es el único cambio de
+   * viewport que de verdad afecta a este cálculo: el alto entra por `svh` y el
+   * resto son `vw` y la cabecera. Así una rotación recoloca y un vaivén de
+   * barras no toca nada.
+   *
+   * Si el script no llega a correr, el `calc()` del CSS sigue mandando y la
+   * portada mide exactamente lo mismo: esto no añade una medida, congela la que
+   * ya había. El razonamiento largo está en el Hero de Ochoa.
+   */
+  let sueltaAnterior: (() => void) | undefined;
+
+  const montaPortada = () => {
+    const hero = document.querySelector<HTMLElement>(".hero");
+    if (!hero) return undefined;
+
+    const raiz = document.documentElement;
+    const abort = new AbortController();
+    let anchoMedido = -1;
+
+    const mide = () => {
+      if (window.innerWidth === anchoMedido) return;
+      anchoMedido = window.innerWidth;
+      /* Se retira el valor congelado para que el `calc()` vuelva a mandar, se
+         lee lo que da y se congela otra vez. Fuerza un reflujo, y por eso pasa
+         solo cuando cambia el ancho y no en cada gesto. */
+      raiz.style.removeProperty("--alto-portada");
+      raiz.style.setProperty("--alto-portada", `${Math.round(hero.getBoundingClientRect().height)}px`);
+    };
+
+    mide();
+    window.addEventListener("resize", mide, { passive: true, signal: abort.signal });
+
+    return () => {
+      abort.abort();
+      raiz.style.removeProperty("--alto-portada");
+    };
+  };
+
+  document.addEventListener("astro:page-load", () => {
+    sueltaAnterior?.();
+    sueltaAnterior = montaPortada();
+  });
+</script>
+
 <style>
   .hero {
     position: relative;
@@ -46,7 +103,10 @@ const es = locale === "es";
        plato. Además de la cabecera se resta una franja de asomo: sin ella la
        portada llena la pantalla al píxel y la tira de platos queda invisible
        hasta que alguien decide bajar. Que asome es el punto entero. */
-    height: calc(100svh - var(--t-header-h, 61px) - clamp(128px, 18vw, 156px));
+    /* El cálculo se queda como respaldo y como valor del primer pintado; en
+       cuanto el script mide, manda `--alto-portada`, que es ese mismo número
+       congelado en píxeles. El motivo está en el script. */
+    height: var(--alto-portada, calc(100svh - var(--t-header-h, 61px) - clamp(128px, 18vw, 156px)));
     min-height: 420px;
     display: flex;
     align-items: flex-end;
