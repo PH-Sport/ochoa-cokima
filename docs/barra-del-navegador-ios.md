@@ -1,8 +1,12 @@
 # La barra del navegador en iPhone — caso abierto
 
-**Estado: sin resolver al 100%.** Ochoa está sensiblemente mejor y ya no da saltos, pero sigue sin
+**Estado: sin resolver al 100%.** Ochoa ya no da saltos y está sensiblemente mejor, pero sigue sin
 comportarse como el resto de webs. Cokima está peor porque **no ha recibido los arreglos** (ver
-§5). Este documento existe para que la próxima sesión no repita nada de lo ya descartado.
+§5). Y **la carta, que llegó a comportarse bien, ha vuelto a estropearse** al devolver
+`viewport-fit=cover` — que es justo lo que lo señala como sospechoso principal (§4.bis).
+
+Este documento existe para que la próxima sesión no repita nada de lo ya descartado. **Empezar por
+§4.bis y §7.**
 
 Abierto el 2026-08-01 a partir de un reporte de Mario y un vídeo suyo.
 
@@ -60,25 +64,55 @@ El detalle de cada uno, en `estado.md` §3.sexies y en `movimiento.md` reglas 15
   comportamiento: **fue un error de razonamiento**, mezclar dos cosas para tapar que no había
   explicación. Tiñe la barra, no cambia cuándo aparece, y en Brave de iPhone ni la tiñe. Se queda
   puesto porque sirve en Chrome de Android y en Safari, pero no es parte de esto.
-- **`viewport-fit=cover`.** Se quitó como prueba y volvió el mismo día: **lo llevaban las dos
-  páginas y el problema solo estaba en la portada**, así que no podía ser la causa. Además es lo
-  que pone la barra de estado del iPhone en el rojo de la casa y lo que da valor al
-  `env(safe-area-inset-bottom)` del cartel de cookies.
+- ~~**`viewport-fit=cover`**~~ → **NO está descartado. Es el sospechoso principal, ver §4.bis.**
 - **Que vercel.com oculte su cabecera al bajar.** **Falso**, se dijo dos veces aquí antes de
   comprobarlo: su header es `sticky top: 0` de 64px y no se mueve, muestreado a seis alturas.
   Es la misma solución que nuestra `.nav` de 62px.
+
+## 4.bis El sospechoso principal: `viewport-fit=cover`
+
+**Por aquí hay que empezar la próxima sesión.**
+
+Se dio por descartado y **estaba mal descartado**. Esta es la cronología, que es lo que lo delata:
+
+| Commit | `viewport-fit=cover` | Lo que observó Mario |
+|---|---|---|
+| `8974d34` | **quitado** | portada «mejor, pero no al 100%»; **carta bien**; Wikipedia bien |
+| `d53439e` | **devuelto** | **la carta pasa a comportarse mal** |
+
+Es decir: **la única página que estaba «bien» lo estaba con la directiva quitada, y volvió a
+estropearse en cuanto se devolvió.** Y la portada, con la directiva quitada, también mejoró.
+
+**El error de razonamiento, para no repetirlo:** se argumentó que «lo llevaban las dos páginas y
+el problema solo estaba en la portada, luego no puede ser la causa». Suena sólido, pero comparaba
+**dos observaciones tomadas en estados distintos del código** — la de la carta era posterior a
+quitarlo—. Al mezclarlas en una misma tabla mental, el descarte parecía limpio. **Regla: cada
+observación se anota con el commit en el que se tomó, y solo se comparan observaciones del mismo
+estado.**
+
+**Qué hacer:** volver a quitarlo, confirmar con Mario que la carta se arregla otra vez, y solo
+entonces atacar lo que le quede a la portada, que es un problema **aparte y añadido**. El coste de
+quitarlo es conocido y hay que decidirlo con Mario: la franja de la barra de estado del iPhone
+deja de ir en el rojo de la casa, la portada ya no llega a sangre bajo el notch en horizontal, y
+el `env(safe-area-inset-bottom)` del cartel de cookies pasa a valer cero (deja de hacer falta:
+sin `cover` el viewport ya excluye esa zona). **Si el arreglo se confirma, merece la pena buscar
+una forma de recuperar el rojo de arriba sin la directiva** — por ejemplo con `theme-color`, que
+en Safari sí tiñe, aunque en Brave de iPhone no.
 
 ## 5. Lo que sabemos que acota el problema
 
 **Pruebas de Mario, mismo iPhone y mismo Brave:**
 
-| Página | Comportamiento |
-|---|---|
-| Carta de Ochoa | **Bien** — como Vercel |
-| Artículo de Wikipedia | **Bien** |
-| vercel.com | **Bien** |
-| Portada de Ochoa | Mejor que antes, pero **sigue raro** |
-| Portada de Cokima | **Peor que todas** |
+**Cada fila con el estado del código en que se tomó, que es donde estuvo el error:**
+
+| Página | Comportamiento | ¿`viewport-fit`? |
+|---|---|---|
+| Artículo de Wikipedia | **Bien** | (ajena) |
+| vercel.com | **Bien** | no lo usa |
+| Carta de Ochoa | **Bien** | **quitado** (`8974d34`) |
+| Carta de Ochoa | **Mal** | **devuelto** (`d53439e`) |
+| Portada de Ochoa | Mejor que antes, pero **sigue raro** | quitado |
+| Portada de Cokima | **Peor que todas** | quitado |
 
 Dos lecturas importantes:
 
@@ -116,9 +150,12 @@ de la tira y lejos del final.
 
 ## 7. Por dónde seguir
 
-1. **Portar a Cokima** los arreglos de §3 (hero congelado y `minmax(0, 1fr)`), y medir. Es lo más
+1. **Volver a quitar `viewport-fit=cover`** y que Mario confirme que la carta se arregla. Es el
+   sospechoso principal y el único cambio con evidencia de haber movido la aguja en las dos
+   direcciones. Ver §4.bis, incluido el coste visual que hay que decidir con él.
+2. **Portar a Cokima** los arreglos de §3 (hero congelado y `minmax(0, 1fr)`), y medir. Es lo más
    rentable y no depende de resolver el misterio.
-2. **Repetir la prueba de la tira** en la zona media de la portada, sin el sesgo del final.
+3. **Repetir la prueba de la tira** en la zona media de la portada, sin el sesgo del final.
 3. **Comparar contra Cokima ya arreglada**: su portada tiene tira horizontal pero **ni cinta ni
    turno automático**, así que es el control natural para separar «lo que se mueve solo» del resto.
 4. Si nada señala a una causa concreta, **considerar parar**. Queda Cokima entera por desmenuzar y
