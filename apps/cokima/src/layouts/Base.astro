@@ -21,7 +21,9 @@ const { title, description, locale, altPath } = Astro.props;
 <html lang={locale}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    {/* Sin `viewport-fit=cover`: ver el Base de Ochoa, donde está el razonamiento.
+        Es una decisión de plataforma y las dos casas van igual. */}
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     {/* La barra del navegador, del mismo tizón que la web. Ver el Base de Ochoa,
         donde está el razonamiento: es el `--ground` sobre el que ya flota la
         cabecera, así que la barra deja de anunciarse al asomar. */}

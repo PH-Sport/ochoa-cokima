@@ -318,9 +318,36 @@ que podía explicarlo y **no era ninguna de las sospechas**:
   del banner de cookies (`ConsentBanner.astro:160`) devuelva algo distinto de cero. Cambio de una
   línea, reversible, pero no se aplica a ciegas por una hipótesis.
 
-**Y una advertencia de método:** el disparo de la barra ante un gesto mínimo hacia atrás **es el
-comportamiento nativo de Chromium** y no hay palanca CSS estándar para hacerlo más sordo. Si tras
-el `theme-color` sigue molestando, lo honesto es decir que no se puede eliminar, solo disimular.
+### Quinta vuelta: el navegador no era el que se creía
+
+Mario grabó un vídeo y **el marco estaba mal desde el principio: es un iPhone.** Toda la sesión
+había razonado sobre Brave de Android, que usa Chromium. **Brave en iPhone está obligado por
+Apple a usar WebKit**, el motor de Safari. Consecuencias:
+
+- El mecanismo «Chromium redimensiona el viewport de verdad y Safari no» era correcto, pero **el
+  navegador de Mario está en el lado de Safari**. Los arreglos anteriores siguen siendo válidos
+  —los saltos eran reales y desaparecieron—, pero la explicación de por qué lo eran no aplica a
+  este último síntoma.
+- **El `theme-color` no hace nada aquí.** Tiñe la barra en Chrome de Android y en Safari; en el
+  vídeo, la barra inferior de Brave sigue saliendo oscura. Se deja puesto porque sí sirve en los
+  otros navegadores y no cuesta nada, pero no es la solución de esto.
+
+**Lo que el vídeo sí demuestra, fotograma a fotograma:** en vercel.com la barra se queda
+colapsada en su línea fina casi todo el rato; en Ochoa alterna sin parar entre colapsada y
+desplegada entera. Y el patrón es que **se despliega justo cuando el contenido deja de moverse**,
+o sea al final del gesto o cuando el scroll pierde inercia.
+
+- **En prueba, decidido por Mario: fuera `viewport-fit=cover`** en las dos apps. Es una directiva
+  pensada para el iPhone —dice que la web quiere dibujarse bajo el notch, la barra de estado y la
+  barra del navegador—, y era la única diferencia declarada que quedaba con la referencia. Se
+  descartó antes por pensar en Android, donde pinta poco; en iOS es justo la pieza que gobierna
+  cómo la web convive con la interfaz del navegador. **Lo que se pierde:** la franja de la barra
+  de estado deja de ir en el rojo de la casa —se veía en el vídeo— y la portada ya no llega a
+  sangre bajo el notch en horizontal. **Si no cambia nada en el teléfono, esto vuelve.**
+
+**Advertencia de método para la próxima:** preguntar en qué **dispositivo y navegador** se está
+viendo antes de construir el diagnóstico. «Brave» no dice el motor: en Android es Chromium y en
+iPhone es WebKit, y el razonamiento entero cambia. Aquí costó cuatro vueltas descubrirlo.
 
 **Callejones descartados por medición, para no repetirlos:** la tira de platos **no** roba
 gestos (`scrollLeft` se queda a 0 con swipes a 15° y 30°, y el documento avanza igual dentro que

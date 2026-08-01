@@ -28,7 +28,19 @@ const { title, description, locale, altPath, altSeoPath = altPath } = Astro.prop
 <html lang={locale}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    {/* Sin `viewport-fit=cover`. Es una directiva pensada para el iPhone: dice que
+        la web quiere dibujarse por debajo de las zonas del sistema —el notch, la
+        barra de estado, la barra inferior del navegador—. En un vídeo de Brave en
+        iPhone, la barra de direcciones se desplegaba entera cada vez que el
+        gesto perdía inercia, y esta era la única diferencia declarada que
+        quedaba frente a vercel.com, que no la usa. Se retira como prueba.
+        Lo que se pierde: la franja de la barra de estado deja de ir en rojo de la
+        casa, y la portada ya no llega a sangre bajo el notch en horizontal.
+        Lo que no se pierde: el `env(safe-area-inset-bottom)` del cartel de
+        cookies pasa a valer cero, pero deja de hacer falta —sin `cover` el
+        viewport ya excluye esa zona—. Si no cambia nada en el teléfono, esto
+        vuelve. */}
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     {/* El rojo de la casa también en la barra del navegador. En Chrome y Brave de
         Android, `theme-color` tiñe la barra de direcciones: sin él sale del color
         por defecto del navegador, y cada vez que asoma al deslizar aparece un
