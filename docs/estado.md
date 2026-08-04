@@ -25,9 +25,8 @@ barra asomaba, arrastrando el documento entero, y ahora no se mueve. Ojo con un 
 escrito en el §11 de ese documento: **sus retículas no desbordaban** —eso se había supuesto sin
 medir—; el `minmax` es prevención para cuando entren las fotos reales.
 
-Para llevarse el arreglo de la barra a otras webs nuestras de Astro está
-`receta-barra-ios-astro.md`, autocontenido. **phsport.es tiene el mismo caso**, aunque no es lo
-siguiente: Mario lo dio por entrado en fase de optimización el 2026-08-04, con su propio hilo.
+Para llevarse el arreglo de la barra a otra web de Astro está `receta-barra-ios-astro.md`,
+autocontenido. Le pasa a cualquiera que monte `<ClientRouter />`.
 
 **El orden lo fijó Mario el 2026-08-04: primero pulir unos detalles de Ochoa, y Cokima después.**
 No están enumerados todavía —los dirá él—, así que no darlos por supuestos ni empezar Cokima antes.

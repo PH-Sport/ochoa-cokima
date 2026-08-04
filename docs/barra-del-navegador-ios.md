@@ -6,7 +6,7 @@ Safari, esa escritura obliga a sacar la barra de direcciones. El arreglo está e
 `packages/ui/src/QuietScrollHistory.astro`, enchufado en los dos `Base.astro`.
 
 Confirmado por Mario en su Brave de iPhone con una prueba A/B que aislaba esa única variable: en el
-modo con la escritura, la barra se comporta como en Ochoa, Cokima y phsport.es; sin ella, como en
+modo con la escritura, la barra se comporta como en Ochoa y Cokima; sin ella, como en
 Vercel y Wikipedia.
 
 Abierto el 2026-08-01 a partir de un reporte suyo y un vídeo. Cerrado el mismo día.
@@ -77,7 +77,7 @@ mismo número de disparos— salvo si se llama o no a `replaceState`. Ninguna ll
 
 | Modo | `replaceState` al parar el scroll | Lo que vio |
 |---|---|---|
-| A | sí | igual que Ochoa, Cokima y phsport.es |
+| A | sí | igual que Ochoa y Cokima |
 | B | no | igual que Vercel y Wikipedia |
 
 **Este es el método que faltaba en las tandas anteriores**, y la razón de que se descartaran cosas
@@ -86,7 +86,8 @@ enlazadas entre sí. Todo lo demás se había medido en Chromium de escritorio, 
 existe.
 
 La medición de contraste, en Chromium sobre las tres webs, escrituras de historial durante el
-scroll: **Wikipedia 0** · **phsport.es sí** · **Ochoa sí**.
+scroll: **Wikipedia 0** · **Ochoa sí**. Otra web nuestra con `<ClientRouter />`, medida igual, daba
+lo mismo que Ochoa.
 
 ## 5. El arreglo
 
@@ -179,8 +180,8 @@ era de comportamiento, para tapar que no había explicación. Si no hay explicac
 
 `receta-barra-ios-astro.md`, al lado de este. Es autocontenido y sirve para cualquier web hecha con
 Astro que use `<ClientRouter />`: la causa, un fragmento para comprobar en la consola si le afecta,
-el componente entero listo para copiar, dónde enchufarlo y qué se pierde. **phsport.es tiene el
-mismo caso** y es a donde va primero.
+el componente entero listo para copiar, dónde enchufarlo y qué se pierde. **Le pasa a cualquier web
+hecha con Astro que monte `<ClientRouter />`**, así que conviene tenerlo a mano.
 
 ## 11. Los arreglos que le faltaban a Cokima — hechos el mismo día
 

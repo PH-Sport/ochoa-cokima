@@ -5,8 +5,7 @@ deslizar hacia abajo y **vuelve a salir entera justo al levantar el dedo**, en v
 recogida como en cualquier otra web. En Safari no pasa.
 
 **A quién le pasa:** a cualquier web hecha con Astro que use `<ClientRouter />` (antes
-`<ViewTransitions />`). Diagnosticado y resuelto en Ochoa y Cokima el 2026-08-01; **phsport.es
-tiene exactamente el mismo caso**.
+`<ViewTransitions />`). Diagnosticado y resuelto en Ochoa y Cokima el 2026-08-01.
 
 ---
 
