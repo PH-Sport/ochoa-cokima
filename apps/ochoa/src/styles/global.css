@@ -34,6 +34,14 @@ html {
      todo el contenido daba un respingo lateral justo al abrir. En móvil, donde
      la barra se superpone, no reserva nada. */
   scrollbar-gutter: stable;
+
+  /* iOS y Android pintan de su cuenta un recuadro translúcido sobre lo que se
+     toca, y aquí sobra: `[data-tacto]` ya acusa el dedo hundiendo la pieza
+     contra su propia sombra. Los dos a la vez se pisan —el rectángulo gris del
+     sistema no es de nadie y tapa el hundido justo mientras ocurre—. Se apaga
+     en la raíz porque la propiedad se hereda, así que cubre todo el documento
+     sin listar un solo selector. */
+  -webkit-tap-highlight-color: transparent;
 }
 /* Fondo quieto con el menú abierto. La clase la pone `menu-overlay.ts`. */
 html.menu-open {

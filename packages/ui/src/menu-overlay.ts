@@ -62,22 +62,31 @@ export function mountMenuOverlay(nav: HTMLElement): MenuOverlayHandle | null {
     if (next) label.textContent = next;
   };
 
-  const open = () => {
+  /* Mover el foco por script no dice de dónde venía el usuario, y el navegador
+     resuelve la duda heredando: si el elemento que lo tenía antes mostraba el
+     anillo de `:focus-visible`, el siguiente lo muestra también. Como el menú se
+     pasa el foco de la barra al panel y de vuelta, basta con que el anillo entre
+     una vez —un Tab, una navegación— para que se quede rebotando entre los dos
+     aunque después solo se use el ratón. De ahí que salga «a ratos».
+     `focusVisible` corta esa herencia y lo decide cada llamada, que es quien
+     sabe si la orden vino del dedo o del teclado. Donde no esté soportado, la
+     opción se ignora y queda el comportamiento de antes. */
+  const open = (conAnillo = false) => {
     if (isOpen()) return;
     lockScroll();
     panel.dataset.state = "open";
     panel.removeAttribute("inert");
     btn.setAttribute("aria-expanded", "true");
     syncLabel(true);
-    focusablesOf(panel)[0]?.focus();
+    focusablesOf(panel)[0]?.focus({ focusVisible: conAnillo });
   };
 
   /* El foco vuelve al botón ANTES de marcar el panel como inerte: al revés, el
      navegador expulsa el foco a ninguna parte y se pierde el sitio en la página
      para quien navega con teclado. */
-  const close = (returnFocus = false) => {
+  const close = (returnFocus = false, conAnillo = false) => {
     if (!isOpen()) return;
-    if (returnFocus) btn.focus();
+    if (returnFocus) btn.focus({ focusVisible: conAnillo });
     panel.dataset.state = "closed";
     panel.setAttribute("inert", "");
     btn.setAttribute("aria-expanded", "false");
@@ -85,7 +94,18 @@ export function mountMenuOverlay(nav: HTMLElement): MenuOverlayHandle | null {
     unlockScroll();
   };
 
-  btn.addEventListener("click", () => (isOpen() ? close(true) : open()), { signal });
+  /* `detail` cuenta los clics de ratón que trae el evento: con Enter o Espacio
+     sobre el botón vale 0, porque no ha habido ninguno. Es la forma de saber si
+     esto lo ha pedido un dedo o un teclado sin espiar toda la página. */
+  btn.addEventListener(
+    "click",
+    (e) => {
+      const teclado = e.detail === 0;
+      if (isOpen()) close(true, teclado);
+      else open(teclado);
+    },
+    { signal },
+  );
 
   /* Navegar desde el menú lo cierra. Con View Transitions el documento no se
      recarga: sin esto, el overlay sobreviviría a la navegación y el scroll
@@ -103,7 +123,9 @@ export function mountMenuOverlay(nav: HTMLElement): MenuOverlayHandle | null {
     (e) => {
       if (!isOpen()) return;
       if (e.key === "Escape") {
-        close(true);
+        // Cerrar con Escape es teclado por definición: aquí el anillo sí tiene
+        // que volver con el foco, o quien navega así pierde de vista dónde está.
+        close(true, true);
         return;
       }
       if (e.key !== "Tab") return;
