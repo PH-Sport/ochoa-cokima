@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import vercel from "@astrojs/vercel";
 import sitemap from "@astrojs/sitemap";
 import { resolveSiteUrl } from "@tombo/config/site-url";
+import { EN_OBRAS, RUTAS_CONOCENOS } from "./src/conocenos.ts";
 
 export default defineConfig({
   // Dominio pendiente de decisión del cliente: se fija vía SITE_URL (spec §8).
@@ -25,7 +26,15 @@ export default defineConfig({
       minimumCacheTTL: 60 * 60 * 24 * 30,
     },
   }),
-  integrations: [sitemap()],
+  // Mientras «Conócenos» sea un andamio, no entra en el sitemap: ya lleva
+  // `noindex`, y anunciar en el mapa una página que se pide no indexar son dos
+  // señales que se contradicen. El interruptor está en `src/conocenos.ts`.
+  integrations: [
+    sitemap({
+      filter: (page) =>
+        !EN_OBRAS || !RUTAS_CONOCENOS.some((ruta) => new URL(page).pathname.replace(/\/$/, "") === ruta),
+    }),
+  ],
   i18n: {
     defaultLocale: "es",
     locales: ["es", "en"],

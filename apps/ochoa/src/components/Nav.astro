@@ -13,16 +13,22 @@ const es = locale === "es";
 // "La carta" abre la cascada porque es lo que se viene a buscar. Reservar va
 // segundo aunque también esté fijo en la barra: quien abre el menú está
 // decidiendo, y ahí es donde tiene que encontrarlo.
+// «Conócenos» cierra la cascada a propósito: es contenido de marca, y ponerlo
+// por delante empujaría hacia abajo lo que se viene a buscar y lo que convierte.
+// El escalonado de la persiana sale de `--i`, así que el cuarto elemento entra
+// solo, sin tocar una línea de CSS.
 const links = es
   ? [
       { href: "/carta", label: "La carta" },
       { href: "/reservas", label: "Reservar" },
       { href: "/#visita", label: "Dónde estamos" },
+      { href: "/conocenos", label: "Conócenos" },
     ]
   : [
       { href: "/en/menu", label: "Menu" },
       { href: "/en/reservations", label: "Book" },
       { href: "/en/#visit", label: "Find us" },
+      { href: "/en/about", label: "About us" },
     ];
 const home = es ? "/" : "/en/";
 const reserve = es ? "/reservas" : "/en/reservations";

@@ -13,9 +13,14 @@ interface Props {
   altPath?: string;
   restaurant: RestaurantInfo;
   ogImage?: string;
+  /** Página que existe pero todavía no debe indexarse: la que está montada con
+   *  huecos de contenido a la espera de material. `follow` y no `nofollow`
+   *  porque los enlaces que salen de ella —a la carta, a reservas— sí valen;
+   *  lo que no vale es que la página en obras compita en los resultados. */
+  noindex?: boolean;
 }
 
-const { title, description, locale, altPath, restaurant, ogImage } = Astro.props;
+const { title, description, locale, altPath, restaurant, ogImage, noindex = false } = Astro.props;
 const site = Astro.site ?? new URL("http://localhost:4321");
 const canonical = new URL(Astro.url.pathname, site);
 const alternate = altPath ? new URL(altPath, site) : null;
@@ -45,6 +50,7 @@ const jsonLd = {
 
 <title>{title}</title>
 <meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, follow" />}
 <link rel="canonical" href={canonical.href} />
 {alternate && xDefault && (
   <>

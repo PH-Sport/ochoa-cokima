@@ -1,0 +1,210 @@
+---
+/**
+ * El cuerpo de «Conócenos», compartido por la página española y la inglesa.
+ *
+ * Vive aquí y no dentro de cada página por lo mismo que la home tiene sus
+ * secciones en componentes: los bloques son los mismos en los dos idiomas y lo
+ * único que cambia es el texto. Así, cuando llegue el material de verdad, se
+ * escribe una vez la estructura y dos veces las palabras, en vez de mantener
+ * dos maquetaciones que se van separando sin que nadie lo note —que es
+ * exactamente lo que le pasó a la home inglesa hasta el 31—.
+ *
+ * Mientras no haya contenido, cada bloque enseña su hueco con lo que hay que
+ * contar dentro. Los huecos los decide `showPhotoGuides()`, la misma puerta que
+ * las rejillas de foto: se ven en dev y en las previews por rama, y no existen
+ * en producción.
+ */
+import { showPhotoGuides } from "@tombo/config/photo-guides";
+import CopyGuide from "@tombo/ui/CopyGuide.astro";
+import PhotoGuide from "@tombo/ui/PhotoGuide.astro";
+
+interface Props {
+  locale: "es" | "en";
+}
+const { locale } = Astro.props;
+const es = locale === "es";
+const guias = showPhotoGuides();
+
+const t = es
+  ? {
+      eyebrow: "Conócenos",
+      // No repite «La tasca que te mereces»: ese es el lema del cristal y el
+      // titular de la portada, y dos páginas peleando por la misma frase se
+      // restan entre ellas en vez de sumar. Este dice lo que la página hace.
+      h1: "La casa por dentro",
+      entradilla: {
+        bloque: "Entradilla",
+        pide:
+          "Dos frases que digan quién es Los Ochoa a alguien que nunca ha entrado. No lo que se come: qué clase de sitio es.",
+        lineas: 2,
+      },
+      historia: {
+        rotulo: "La historia",
+        bloque: "La historia",
+        pide:
+          "Desde cuándo está abierta, quién la abrió y si el local era otra cosa antes. Si hay una familia Ochoa de verdad detrás, aquí es donde se cuenta.",
+        lineas: 5,
+      },
+      cocina: {
+        rotulo: "La cocina",
+        bloque: "La cocina",
+        pide:
+          "Quién lleva los fogones y de dónde sale el producto. Por qué el tapeo de siempre acaba saliendo con sabores que no son los de siempre.",
+        lineas: 4,
+      },
+      equipo: {
+        rotulo: "El equipo",
+        bloque: "El equipo",
+        pide:
+          "Quién está detrás de la barra cada día. Nombres, si se pueden dar, y cuánto llevan aquí.",
+        lineas: 3,
+      },
+      cierre: "Se ve mejor sentado",
+      verCarta: "Ver la carta",
+      reservar: "Reservar mesa",
+      hrefCarta: "/carta",
+      hrefReserva: "/reservas",
+    }
+  : {
+      eyebrow: "About us",
+      // Ver la nota del titular español. En inglés «the house from inside» no
+      // dice nada; la barra sí, que es el sitio del que va la página.
+      h1: "Behind the bar",
+      entradilla: {
+        bloque: "Intro",
+        pide:
+          "Two lines saying what Los Ochoa is to someone who has never walked in. Not the food: the kind of place it is.",
+        lineas: 2,
+      },
+      historia: {
+        rotulo: "The story",
+        bloque: "The story",
+        pide:
+          "How long it has been open, who opened it, and what the place was before. If there is a real Ochoa family behind it, this is where it goes.",
+        lineas: 5,
+      },
+      cocina: {
+        rotulo: "The kitchen",
+        bloque: "The kitchen",
+        pide:
+          "Who runs the kitchen and where the produce comes from. Why the usual tapas end up tasting unusual.",
+        lineas: 4,
+      },
+      equipo: {
+        rotulo: "The team",
+        bloque: "The team",
+        pide: "Who is behind the bar every day. Names, if we can use them, and how long they have been here.",
+        lineas: 3,
+      },
+      cierre: "Better seen from a table",
+      verCarta: "See the menu",
+      reservar: "Book a table",
+      hrefCarta: "/en/menu",
+      hrefReserva: "/en/reservations",
+    };
+---
+
+<article class="conocenos">
+  <header class="cabecera">
+    <div class="wrap">
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h1 class="cartel">{t.h1}</h1>
+      {guias && (
+        <div class="entradilla">
+          <CopyGuide bloque={t.entradilla.bloque} pide={t.entradilla.pide} lineas={t.entradilla.lineas} />
+        </div>
+      )}
+    </div>
+  </header>
+
+  {/* Los tres bloques del cuerpo comparten forma —filete, rótulo y texto— porque
+      son la misma clase de cosa leídos uno detrás de otro. Lo que los separa es
+      el ritmo: el del equipo lleva foto al lado, y por eso rompe a dos columnas. */}
+  <section class="bloque">
+    <div class="wrap">
+      <div class="rule"></div>
+      <h2 class="cartel rotulo">{t.historia.rotulo}</h2>
+      {guias && <CopyGuide bloque={t.historia.bloque} pide={t.historia.pide} lineas={t.historia.lineas} />}
+    </div>
+  </section>
+
+  <section class="bloque">
+    <div class="wrap">
+      <div class="rule"></div>
+      <h2 class="cartel rotulo">{t.cocina.rotulo}</h2>
+      {guias && <CopyGuide bloque={t.cocina.bloque} pide={t.cocina.pide} lineas={t.cocina.lineas} />}
+    </div>
+  </section>
+
+  <section class="bloque">
+    <div class="wrap">
+      <div class="rule"></div>
+      <h2 class="cartel rotulo">{t.equipo.rotulo}</h2>
+      <div class="equipo-grid">
+        {guias && <CopyGuide bloque={t.equipo.bloque} pide={t.equipo.pide} lineas={t.equipo.lineas} />}
+        {guias && (
+          <PhotoGuide
+            file="apps/ochoa/src/assets/casa/equipo.jpg"
+            ratio="4 / 3"
+            note="LosOchoa-9 es candidata: el bocadillo en las manos con el banco rojo detrás. Es la única foto que tenemos con gente."
+          />
+        )}
+      </div>
+    </div>
+  </section>
+
+  <section class="cierre">
+    <div class="wrap">
+      <div class="rule"></div>
+      <h2 class="cartel rotulo">{t.cierre}</h2>
+      <p class="acciones">
+        <a href={t.hrefReserva} class="btn">{t.reservar}</a>
+        <a href={t.hrefCarta} class="btn ghost">{t.verCarta}</a>
+      </p>
+    </div>
+  </section>
+</article>
+
+<style>
+  .cabecera {
+    padding: clamp(40px, 7vw, 76px) 0 0;
+  }
+  h1 {
+    font-size: clamp(2.4rem, 8vw, 4.4rem);
+    margin: 0.1rem 0 0;
+    max-width: 14ch;
+  }
+  .entradilla {
+    margin-top: clamp(20px, 3vw, 32px);
+    max-width: 54ch;
+  }
+  .bloque,
+  .cierre {
+    padding: clamp(34px, 6vw, 60px) 0 0;
+  }
+  .rotulo {
+    font-size: clamp(1.5rem, 4.2vw, 2.3rem);
+    margin: 0.9rem 0 1.1rem;
+  }
+  /* El texto del equipo manda y la foto acompaña, así que la columna de la
+     izquierda es la ancha. Por debajo de 820px —el mismo corte que usa la página
+     de reservas— se apilan, con la foto detrás del texto y no delante: quien
+     llega en móvil viene leyendo. */
+  .equipo-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: clamp(20px, 3.5vw, 40px);
+    align-items: start;
+  }
+  @media (max-width: 820px) {
+    .equipo-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 0 0 clamp(40px, 7vw, 76px);
+  }
+</style>

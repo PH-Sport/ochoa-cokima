@@ -75,7 +75,14 @@ const casa = [
           nuevos</em> y con la mejor calidad de producto — de la ensaladilla al cachopín, pasando
           por unas gyozas de txistorra.
         </p>
-        <p><a href="/carta" class="btn ghost">Ver la carta completa</a></p>
+        {/* El enlace de contexto va aquí y no en el pie: «La tasca» es donde la
+            home insinúa que hay una historia detrás, así que es donde tiene
+            sentido ofrecerla. Es además lo que le da peso interno a la página
+            nueva, que si solo cuelga del menú no lo tiene. */}
+        <p class="acciones">
+          <a href="/carta" class="btn ghost">Ver la carta completa</a>
+          <a href="/conocenos" class="btn ghost">Conócenos</a>
+        </p>
       </div>
     </div>
   </section>
@@ -193,6 +200,14 @@ const casa = [
     grid-template-columns: 0.92fr 1.08fr;
     gap: clamp(28px, 5vw, 60px);
     align-items: center;
+  }
+  /* Dos botones en hueco, uno al lado del otro. Envuelven en vez de encogerse
+     porque los dos llevan sombra dura y su recorrido al pulsar cuenta con tener
+     los tres píxeles libres: apretados en una línea se pisarían al hundirse. */
+  .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
   }
   @media (max-width: 860px) {
     .tasca-grid {

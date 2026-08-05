@@ -1,0 +1,101 @@
+---
+/**
+ * Rejilla guía de texto: el hueco de un párrafo que todavía no está escrito.
+ *
+ * Es el hermano de `PhotoGuide.astro` y sigue su misma regla: no disimula que
+ * falta material, lo señala. Dice qué hay que contar ahí y cuánto sitio ocupa,
+ * para poder decidir la página entera antes de tener una sola frase escrita.
+ *
+ * Por qué existe habiendo ya `PhotoGuide`: una foto que falta se sustituye
+ * dejando un archivo, y el hueco desaparece solo; un texto que falta hay que
+ * escribirlo y venir a ponerlo aquí. Lo que se enseña también es distinto —el
+ * encuadre en un caso, el volumen y el tono en el otro—, y mezclarlos en un
+ * componente con banderas habría dejado dos mitades que no se usan nunca a la vez.
+ *
+ * **Nunca se renderiza en producción.** Quien lo usa pregunta primero a
+ * `showPhotoGuides()` de `@tombo/config/photo-guides`, la misma puerta que ya
+ * garantiza por código que las rejillas de foto no salen publicadas.
+ */
+interface Props {
+  /** El bloque que falta, tal como se llamará en la página: «La historia». */
+  bloque: string;
+  /** Qué hay que contar aquí. Es la pregunta que se le hace al restaurante. */
+  pide: string;
+  /** Cuántas líneas ocupará, para ver el volumen real contra el resto. */
+  lineas?: number;
+}
+const { bloque, pide, lineas = 3 } = Astro.props;
+
+/* Las líneas no salen todas del mismo largo: un bloque de barras iguales se lee
+   como una tabla y no como un párrafo, y lo que se está midiendo aquí es
+   precisamente cuánto texto cabe. La última va corta, como acaba un párrafo de
+   verdad. */
+const anchos = ["100%", "96%", "99%", "93%", "97%", "91%"];
+const barras = Array.from({ length: Math.max(1, lineas) }, (_, i) =>
+  i === lineas - 1 ? "58%" : anchos[i % anchos.length],
+);
+---
+
+<div class="copy-guide" data-photo-guide>
+  <p class="tag">Falta texto · {bloque}</p>
+  <p class="pide">{pide}</p>
+  <div class="lineas" aria-hidden="true">
+    {barras.map((w) => <span style={`--w:${w}`}></span>)}
+  </div>
+</div>
+
+<style>
+  /* La misma trama diagonal y el mismo borde discontinuo que la rejilla de foto:
+     a un metro de distancia tiene que leerse como obra, y las dos clases de
+     hueco como la misma clase de cosa. */
+  .copy-guide {
+    container-type: inline-size;
+    padding: clamp(14px, 2.2vw, 20px);
+    border: 2px dashed var(--t-line);
+    border-radius: var(--t-radius, 4px);
+    background-image: repeating-linear-gradient(
+      45deg,
+      color-mix(in oklch, var(--t-text) 6%, transparent) 0 2px,
+      transparent 2px 11px
+    );
+  }
+  .tag {
+    margin: 0;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--t-accent);
+  }
+  /* Lo que hay que contar va legible y no en letra de nota al pie: es la única
+     parte del hueco que hace trabajo, porque es la pregunta que se lleva uno al
+     restaurante. */
+  .pide {
+    margin: 0.5rem 0 0;
+    max-width: 52ch;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    color: var(--t-text-dim);
+  }
+  /* Y debajo, el volumen: las barras dicen cuánto sitio va a ocupar el párrafo
+     cuando exista, que es lo que no se puede juzgar leyendo la instrucción. */
+  .lineas {
+    display: grid;
+    gap: 7px;
+    margin-top: 0.9rem;
+  }
+  .lineas span {
+    width: var(--w);
+    height: 9px;
+    border-radius: 2px;
+    background: color-mix(in oklch, var(--t-text) 11%, transparent);
+  }
+  @container (max-width: 320px) {
+    .pide {
+      font-size: 0.8rem;
+    }
+    .lineas span {
+      height: 7px;
+    }
+  }
+</style>

@@ -68,7 +68,11 @@ const casa = [
           surprise you</em> and the best produce there is — from the Russian salad to the
           cachopín, by way of txistorra gyozas.
         </p>
-        <p><a href="/en/menu" class="btn ghost">See the full menu</a></p>
+        {/* Mismo par que en la home española: ver §«La tasca» de `index.astro`. */}
+        <p class="acciones">
+          <a href="/en/menu" class="btn ghost">See the full menu</a>
+          <a href="/en/about" class="btn ghost">About us</a>
+        </p>
       </div>
     </div>
   </section>
@@ -185,6 +189,12 @@ const casa = [
     grid-template-columns: 0.92fr 1.08fr;
     gap: clamp(28px, 5vw, 60px);
     align-items: center;
+  }
+  /* Ver el comentario en la home española. */
+  .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
   }
   @media (max-width: 860px) {
     .tasca-grid {

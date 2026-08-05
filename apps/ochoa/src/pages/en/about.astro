@@ -1,0 +1,31 @@
+---
+import Base from "../../layouts/Base.astro";
+import Conocenos from "../../components/Conocenos.astro";
+import { EN_OBRAS } from "../../conocenos.ts";
+import { RESTAURANT } from "../../site.ts";
+
+const site = Astro.site ?? new URL("http://localhost:4321");
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  name: "About us · Tasquita Los Ochoa",
+  url: new URL("/en/about", site).href,
+  inLanguage: "en",
+  mainEntity: {
+    "@type": "Restaurant",
+    name: RESTAURANT.name,
+    url: new URL("/en/", site).href,
+  },
+};
+---
+
+<Base
+  title="About us · Tasquita Los Ochoa"
+  description="Who we are: the story of Tasquita Los Ochoa, the classic tasca on Paseo de la Castellana, its kitchen and the people behind the bar."
+  locale="en"
+  altPath="/conocenos"
+  noindex={EN_OBRAS}
+>
+  <Conocenos locale="en" />
+  {!EN_OBRAS && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />}
+</Base>

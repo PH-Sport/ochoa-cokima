@@ -21,9 +21,11 @@ interface Props {
    *  declarar equivalencia no son lo mismo, y las legales solo en español
    *  tienen lo primero pero no lo segundo. */
   altSeoPath?: string | null;
+  /** Para la página que está montada pero aún sin contenido real. Ver `Seo.astro`. */
+  noindex?: boolean;
 }
 
-const { title, description, locale, altPath, altSeoPath = altPath } = Astro.props;
+const { title, description, locale, altPath, altSeoPath = altPath, noindex = false } = Astro.props;
 ---
 
 <html lang={locale}>
@@ -49,13 +51,17 @@ const { title, description, locale, altPath, altSeoPath = altPath } = Astro.prop
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin />
-    <Seo title={title} description={description} locale={locale} altPath={altSeoPath ?? undefined} restaurant={RESTAURANT} ogImage="/images/hero.jpg" />
+    <Seo title={title} description={description} locale={locale} altPath={altSeoPath ?? undefined} restaurant={RESTAURANT} ogImage="/images/hero.jpg" noindex={noindex} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     {/* Antes del router, que es a quien envuelve: en Brave de iPhone su
         guardado de scroll era lo que devolvía la barra de direcciones al
         levantar el dedo. El porqué entero, en el propio componente. */}
     <QuietScrollHistory />
     <ClientRouter />
+    {/* Lo que una página concreta necesite en la cabecera y no valga para todas
+        —hoy, el JSON-LD propio de «Conócenos»—. Va después del router para no
+        meterse entre él y `QuietScrollHistory`, cuyo orden sí importa. */}
+    <slot name="head" />
   </head>
   <body>
     <Nav locale={locale} altPath={altPath} />
