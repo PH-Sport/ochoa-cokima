@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-- **Corte:** 2026-08-01
+- **Corte:** 2026-08-04
 - **Rama de trabajo:** `preview` (desarrollo) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
 
@@ -29,9 +29,21 @@ Para llevarse el arreglo de la barra a otra web de Astro está `receta-barra-ios
 autocontenido. Le pasa a cualquiera que monte `<ClientRouter />`.
 
 **El orden lo fijó Mario el 2026-08-04: primero pulir unos detalles de Ochoa, y Cokima después.**
-No están enumerados todavía —los dirá él—, así que no darlos por supuestos ni empezar Cokima antes.
 Eso reordena la lista de más abajo, donde Cokima figura como lo más rentable: sigue siéndolo, pero
 va en segundo lugar.
+
+**De esos detalles ya hay dos hechos (§3.septies): el recuadro de foco al pulsar y la página
+«Conócenos».** Lo que queda pendiente de ellos, y es lo primero al retomar:
+
+1. **Escribir el contenido de «Conócenos».** La página está montada, navegable y enlazada, pero
+   su cuerpo son cuatro rejillas de texto que dicen qué hay que contar. Hasta que haya material
+   lleva `noindex` y no entra en el sitemap; **el interruptor es `EN_OBRAS` en
+   `apps/ochoa/src/conocenos.ts`, y ponerlo en `false` es el único paso** —de ahí salen a la vez
+   el indexado, el sitemap y el JSON-LD.
+2. **Las cuatro fotos de Ochoa sin usar** siguen igual: `apps/ochoa/src/assets/dishes/` está
+   vacío y sus seis destacados salen sin imagen. `LosOchoa-6` y `LosOchoa-2` son asignables ya;
+   `LosOchoa-7` necesita que Mario confirme si el brioche es el croissant de rabo de toro o el
+   dúo; `LosOchoa-9` es la candidata del nuevo hueco del equipo.
 
 **Lo que espera respuesta de Mario, y sin lo cual no se puede avanzar:**
 
@@ -55,8 +67,9 @@ va en segundo lugar.
    Ochoa se ha llevado la tipografía, la carta, las fotos reales, tres iteraciones de portada y
    toda la tanda del 31; Cokima solo el menú y el movimiento, de rebote. No tiene ni una foto
    real, su carta no se ha revisado desde la fase 2 y su portada sigue siendo la genérica.
-2. **Páginas nuevas (punto 6 de la fase 4).** Bloqueado por contenido: hay que decidir con Mario
-   qué páginas y con qué material. No es trabajo de código hasta que eso esté.
+2. **Páginas nuevas (punto 6 de la fase 4).** «Conócenos» ya está construida en los dos idiomas
+   (§3.septies) y solo espera texto. Si hacen falta más páginas, hay que decidir con Mario cuáles
+   y con qué material; no es trabajo de código hasta que eso esté.
 3. **Las cuatro fotos de Ochoa sin usar.** Ver `fotografia.md`: dos son asignables ya, una
    necesita que Mario confirme qué plato es y otra no identifica ningún plato.
 
@@ -149,8 +162,10 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
 - [ ] `formatPortionPrice` (en `packages/content/src/portions.ts`) se quedó sin usuarios al
       pasar la carta a dos columnas: ya nadie elige una porción, se pintan las dos. Desde que la
       carta del 2026-07-31 va a precio único, **tampoco queda ni un plato con media ración** en
-      Ochoa. Sigue exportada y con sus cinco tests, y el esquema conserva el soporte por si
-      vuelven. Retirarla —o no— cuando se limpie el paquete.
+      Ochoa. **El 2026-08-04 Mario cerró el asunto: la carta puesta es la vigente y las medias
+      raciones no vuelven**, así que la función es código muerto y se retira con sus cinco tests
+      la próxima vez que se toque `packages/content`. El esquema sí conserva el formato
+      `{ half, full }`, que no estorba y describe una carta que podría volver a tenerlo.
 - [ ] Astro avisa al construir de que no puede generar el JSON schema de las colecciones
       `menu-es`/`menu-en` (`Cannot read properties of undefined (reading 'def')`). Es
       incompatibilidad de versiones entre zod y el generador de tipos de editor; **la validación
@@ -398,6 +413,46 @@ cambiar el alto (0 escrituras de `--t-header-h`); y la forma de la animación de
 Si aun así siguiera, el siguiente sospechoso es de diseño: nuestra `.nav` es `sticky` y compite
 con la barra del navegador por el mismo borde superior. La referencia que él cita —vercel.com—
 oculta su propia cabecera al bajar y la devuelve al subir, en vez de dejarla clavada.
+
+## 3.septies El recuadro de foco y «Conócenos» (2026-08-04)
+
+Mario describió un recuadro que salía «a ratos» al pulsar con el dedo o con el ratón, y que él
+solo quería ver al tabular. Eran **dos causas distintas**, y se separaron midiendo.
+
+**En escritorio no se reproducía.** Con la home instrumentada y clics de ratón reales sobre el
+botón del menú, el logo, «Reservar», los tres enlaces del panel, «Ver la carta» y la tira de
+platos, todo daba `:focus-visible = false` y `outline: none`; con Tab, `true` y anillo. Las 14
+reglas de foco del repo ya usaban `:focus-visible`, así que **ahí no había nada que arreglar** —y
+tocarlo habría roto el teclado—. Dos avisos de método que costaron vueltas: `requestAnimationFrame`
+no corre con la pestaña en segundo plano y deja el instrumental mudo sin dar error, y cuando la
+ventana pierde el foco del sistema los clics siguen llegando al DOM pero el teclado ya no, así que
+`focusin` deja de dispararse y todo parece limpio.
+
+- **Móvil: faltaba `-webkit-tap-highlight-color`** en todo el repo, así que iOS y Android pintaban
+  su propio recuadro encima, compitiendo con el hundido de `[data-tacto]` justo mientras ocurre.
+  Apagado en la raíz de las dos webs, donde se hereda sin listar un selector.
+- **Escritorio: la herencia del foco programático.** `menu-overlay.ts` mueve el foco en las dos
+  direcciones —al panel al abrir, al botón al cerrar— y el navegador, que no sabe de dónde venía
+  el usuario, **hereda el anillo del elemento anterior**. Basta que entre una vez para quedarse
+  rebotando entre los dos aunque después solo se use el ratón: eso era el «a ratos». Ahora cada
+  llamada declara lo que quiere con `focus({ focusVisible })`, y quién decide es `e.detail === 0`,
+  que distingue el Enter del clic sin espiar la página. Confirmado por Mario en su Brave.
+
+**«Conócenos» (`/conocenos` y `/en/about`)** nace montada y vacía a propósito. Cuarta entrada del
+menú —detrás de «Dónde estamos», para no empujar hacia abajo lo que convierte—, enlazada también
+desde «La tasca» en las dos homes, que es lo que le da peso interno. El cuerpo son cuatro rejillas
+de texto (`CopyGuide.astro`, hermano de `PhotoGuide`) que dicen qué hay que contar en cada bloque,
+más el hueco de foto del equipo. Los dos idiomas salen de un solo componente,
+`components/Conocenos.astro`, para que no se separen como se separó la home inglesa.
+
+**Lo que impide que perjudique al SEO estando en obras:** `EN_OBRAS` en `src/conocenos.ts` la deja
+con `noindex, follow`, fuera del sitemap (filtro en `astro.config.mjs`) y sin su JSON-LD
+`AboutPage`. Un solo interruptor gobierna las tres cosas, y ponerlo en `false` cuando haya texto es
+todo lo que hay que hacer. De paso, `Seo.astro` gana la prop `noindex` y el `Base.astro` de Ochoa
+un `<slot name="head" />` para el JSON-LD propio de una página.
+
+El titular no repite «La tasca que te mereces»: ese es el lema del cristal y el de la portada, y
+dos páginas peleando por la misma frase se restan. Dice «La casa por dentro» / «Behind the bar».
 
 ## 3.quater La tanda del 2026-07-31: Sibuya como referencia y los retoques de Mario
 

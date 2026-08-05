@@ -85,6 +85,7 @@ Cokima siguen siendo rejillas.** Las cuatro van apaisadas 4:3 en dos columnas de
 | Ochoa | `src/assets/casa/rotulo.jpg` | ✅ `LosOchoa-1`: el rótulo pintado en el cristal. |
 | Ochoa | `src/assets/casa/vermu.jpg` | ✅ `LosOchoa-4`: vermú con banderilla sobre mármol. |
 | Ochoa | `src/assets/casa/comedor.jpg` | ✅ `LosOchoa-3`: banco corrido rojo y mesas de mármol. |
+| Ochoa | `src/assets/casa/equipo.jpg` | Hueco nuevo, en «Conócenos». **`LosOchoa-9` es la candidata**: el bocadillo en las manos con el banco rojo detrás, la única foto con gente que tenemos. Va 4:3 junto al texto del equipo. |
 | Cokima | `src/assets/casa/pase.jpg` | El pase de cocina en servicio, con la llama. |
 | Cokima | `src/assets/casa/sala.jpg` | La sala de noche, luz baja y mesas llenas. |
 | Cokima | `src/assets/casa/producto.jpg` | Producto en crudo sobre fondo negro, luz dura. |
@@ -93,8 +94,14 @@ Cokima siguen siendo rejillas.** Las cuatro van apaisadas 4:3 en dos columnas de
 ## Las rejillas guía
 
 Cada hueco de foto se dibuja en pantalla con su proporción, la regla de tercios y el nombre
-del archivo que hay que dejar. **Quince en total**: once de plato y las cuatro de la casa de Cokima. Las cuatro de la casa de
+del archivo que hay que dejar. **Dieciséis en total**: once de plato, las cuatro de la casa de
+Cokima y la del equipo de Ochoa, que nació con «Conócenos». Las otras cuatro de la casa de
 Ochoa ya son fotos reales.
+
+**Desde el 2026-08-04 hay también rejillas de texto** (`CopyGuide.astro`), que marcan el
+párrafo que falta y dicen qué hay que contar en él. Son cuatro, todas en «Conócenos», y pasan
+por la misma puerta: `showPhotoGuides()`. Se explican solas en pantalla, así que la lista de
+lo que hay que preguntarle al restaurante se lee en la propia página en vez de en un documento.
 
 Se ven en `dev` y en las previews por rama, y **no existen en producción**: no es cuestión de
 acordarse de apagarlas, lo decide `showPhotoGuides()` (`packages/config/src/photo-guides.mjs`)
