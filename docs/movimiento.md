@@ -16,7 +16,7 @@ Viven en `apps/<app>/src/styles/tokens.css`.
 | `--shift` | `14px` | `18px` | Cuánto se desplaza lo que entra. |
 | `--stagger` | `30ms` | `65ms` | El escalón entre hermanos en cascada. |
 
-**Seis más, solo en Ochoa,** para movimientos que no son ni entrar ni responder a un dedo. Cada
+**Siete más, solo en Ochoa,** para movimientos que no son ni entrar ni responder a un dedo. Cada
 uno existe porque no cabía en los cinco de arriba, no porque hiciera falta un número nuevo:
 
 | Token | Ochoa | Para qué |
@@ -28,6 +28,7 @@ uno existe porque no cabía en los cinco de arriba, no porque hiciera falta un n
 | `--dur-firma` | `280ms` | Lo que la sombra dura tarda en **despegarse** del rótulo en la entrada. No es entrar: el rótulo ya está ahí, lo que aparece es su relieve. |
 | `--espera-firma` | `700ms` | El **retardo** de la recogida de la entrada, contado desde el arranque —no una duración—. Deja 420ms de rótulo quieto y entero después de la firma. |
 | `--dur-recogida` | `700ms` | Lo que la plancha de la entrada tarda en **recogerse hasta ser la barra**. No sale de `--dur-in`: ese mide un panel que aparece y esto recorre la pantalla entera. |
+| `--tuerce` | `4deg` | Cuánto se **tuerce** lo que llega antes de encajar. Es a la rotación lo que `--shift` es al desplazamiento: la medida de un gesto. Un rótulo de bar se monta pieza a pieza y nunca queda a plomo. |
 
 Y una escala de curvatura, que no es movimiento pero sigue la misma disciplina de no escribir
 números sueltos en los componentes: `--r-chapa` 4px, `--r-btn` 7px, `--r-caja` 9px, `--r-marco`
@@ -113,14 +114,13 @@ más lejos; Ochoa es una tasca y es seca.
     de la máscara, lo que pide un envoltorio más y recorta tildes y sombras duras. Para el menú
     basta un desplazamiento corto.
 
-    **La entrada sí lo usa, y por eso funciona: cumple esa condición y las tres objeciones se
-    resolvieron una a una.** El envoltorio de más existe —dos, `.mascara` y `.tinta`—; no hay
-    tildes que recortar porque el rótulo es «LOS OCHOA» en versales; y la sombra dura se salva
-    recortando **por un solo lado**, con `clip-path: inset(0 -0.25em 0 0)`: al ras arriba, que es
-    por donde entra el texto, y con 28px de aire a la derecha para los 5px que la sombra se
-    despega. Medido: el texto no sobresale ni un píxel de la máscara en reposo. La regla, formulada
-    del derecho: **una cortina vale cuando el texto se mueve y el recorte se aplica solo por donde
-    entra.**
+    **La entrada llegó a usarla y se retiró igual, esta vez no por un fallo técnico.** Se hizo
+    cumpliendo la condición —la palabra se desplazaba dentro de la máscara— y las tres objeciones
+    quedaron resueltas: dos envoltorios, versales sin tildes que recortar y el recorte aplicado
+    solo por arriba, dejando aire a la derecha para la sombra. Medido, el texto no sobresalía ni
+    un píxel. Y aun así Mario la cambió por el encaje de dos mitades, porque **una cortina es
+    sobria por naturaleza y esta casa es una tasca**. Vale la pena recordarlo cuando una técnica
+    esté impecable: correcta no es lo mismo que adecuada.
 15. **El movimiento que hace el navegador también es movimiento nuestro.** En Chromium, ocultar
     y devolver la barra de direcciones al deslizar **redimensiona el viewport de verdad**; en
     Safari desde iOS 15 no, y por eso el vaivén solo se veía a trompicones en Brave. Ese resize
@@ -180,6 +180,22 @@ más lejos; Ochoa es una tasca y es seca.
     Poniéndole la clase, el residuo de alto baja de 0,43px a **0,01px**, que es la señal de que el
     problema nunca fue el redondeo del glifo sino no compartir proporciones. Y es el mismo
     argumento por el que `.brand` borró su `text-shadow` en vez de copiar el valor.
+21. **Un `z-index` alto no sirve de nada dentro de un contexto de apilamiento ajeno.** Los botones
+    de la barra tenían que entrar por encima de la plancha de la entrada, y ponerles `z-index: 81`
+    contra el 80 de la plancha no hizo absolutamente nada: la barra es `sticky` con `z-index: 60`,
+    o sea que **crea su propio contexto** y todo lo que hay dentro se ordena solo respecto a sus
+    hermanos. Quien tiene que subir es la barra entera. Y al subirla, su fondo tapaba el rótulo que
+    viaja por debajo, así que se apaga —el fondo y el filete— y hace de fondo la plancha, que es
+    exactamente el mismo rojo. **Lo que sube es siempre el contexto, no la pieza**, y subirlo
+    obliga a revisar qué tapaba antes.
+22. **En Astro, un `:global()` por trozos deja fuera lo que hay entre medias.** Escrito como
+    `:global(html[data-intro]) :global(.nav-actions) > *`, el combinador y el `*` se quedan sin
+    envolver y el compilador les añade el ámbito **del componente que escribe la regla**: salió
+    `.nav-actions > [data-astro-cid-<el-de-Intro>]`, y los botones llevan el de `Nav.astro`, así
+    que la regla no le aplicaba a nada. No hay error, no hay aviso: sencillamente no pasa nada.
+    **Cuando una regla cruza la frontera de un componente, se envuelve la cadena entera en un solo
+    `:global(...)`.** Es pariente de lo que ya documenta la regla del hundido: lo que se estiliza
+    desde fuera hay que comprobarlo en el CSS de salida, no darlo por escrito.
 
 ## Qué se mueve hoy
 
@@ -194,6 +210,7 @@ más lejos; Ochoa es una tasca y es seca.
 | Tira de platos (Ochoa) | El turno se rellena y pasa al siguiente | `scaleX`, `--dur-turno` |
 | Portada | El titular se aparta del cartel de cookies | `translateY`, `--dur-out` |
 | Entre páginas | Barrido lateral, bidireccional | `translateX`, `--dur-in` |
-| Entrada a la web (Ochoa) | El rótulo cae dentro de una máscara, se le despega la sombra, y la plancha se recoge hasta ser la barra con el rótulo aterrizando dentro | `clip-path` + `transform`, `--dur-in`, `--dur-firma`, `--espera-firma`, `--dur-recogida` |
+| Entrada a la web (Ochoa) | «LOS» y «OCHOA» llegan torcidas de lados opuestos y encajan, se les despega la sombra, y la plancha se recoge hasta ser la barra con el rótulo aterrizando dentro | `transform`, `--dur-in`, `--tuerce`, `--stagger`, `--dur-firma` |
+| Entrada a la web (Ochoa) | La plancha se recoge y los botones de la barra entran desde el borde derecho | `clip-path` + `transform`, `--espera-firma`, `--dur-recogida`, `--ease-telon` |
 
 Y ya. Todo lo demás está quieto a propósito.

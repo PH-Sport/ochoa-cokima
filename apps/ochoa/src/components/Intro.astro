@@ -1,11 +1,15 @@
 ---
-// La entrada: una plancha roja con el rótulo que se recoge hasta medir
-// exactamente la barra, mientras el rótulo viaja y encoge hasta su sitio dentro
-// de ella. No estrena vocabulario —es el telón del menú y la plancha de la
-// barra haciendo un gesto nuevo— y por eso la costura no se ve: al terminar la
-// recogida, debajo hay el mismo rojo.
+// La entrada: «LOS» y «OCHOA» llegan de lados opuestos, cada una torcida, y se
+// enderezan al encajar. Después la plancha roja se recoge hasta medir
+// exactamente la barra, con el rótulo viajando hasta su sitio dentro de ella y
+// los botones deslizándose desde el borde derecho.
 //
-// El diseño entero, con las dos variantes descartadas y sus motivos, está en
+// No estrena vocabulario: es el telón del menú y la plancha de la barra
+// haciendo un gesto nuevo, y por eso la costura no se ve —al terminar la
+// recogida, debajo hay el mismo rojo—. El encaje de dos piezas es el rótulo de
+// bar montado a mano, que nunca queda a plomo.
+//
+// El diseño entero, con las variantes descartadas y sus motivos, está en
 // docs/superpowers/specs/2026-08-06-entrada-ochoa-design.md.
 //
 // Sin props: el rótulo es el nombre del bar y se escribe igual en los dos
@@ -14,12 +18,8 @@
 
 <div class="intro" data-intro-plancha aria-hidden="true" inert>
   <span class="marca cartel" data-intro-marca>
-    <span class="mascara">
-      <span class="tinta">
-        <span class="capa sombra">Los Ochoa</span>
-        <span class="capa papel">Los Ochoa</span>
-      </span>
-    </span>
+    <span class="capa sombra"><i class="p1">Los</i> <i class="p2">Ochoa</i></span>
+    <span class="capa papel"><i class="p1">Los</i> <i class="p2">Ochoa</i></span>
   </span>
 </div>
 
@@ -48,11 +48,12 @@
     background: var(--rojo);
     padding: 0 max(16px, 4vw);
     pointer-events: none;
+    /* Las dos mitades del rótulo entran desde fuera de la pantalla, y lo que se
+       sale ensancha el documento si no se recorta aquí. Se recorta en la pieza
+       que lo provoca, nunca en el documento (regla 17). */
+    overflow: hidden;
   }
 
-  /* El rótulo son dos capas superpuestas y no un `text-shadow`, porque lo que
-     se anima es el despegue de la sombra y eso tiene que ser un `transform`.
-     Animar la sombra directamente repinta en cada fotograma (regla 2). */
   /* Lleva la clase `.cartel` y no una copia de su fórmula. Aquí se reimplementó
      al principio —solo familia e interlineado— y el resultado fue que el rótulo
      de la entrada decía «Los Ochoa» mientras el de la barra decía «LOS OCHOA»:
@@ -74,28 +75,6 @@
        color tampoco importa porque cada capa declara el suyo. */
     text-shadow: none;
   }
-  /* El recorte por el que cae el rótulo. Un reveal de cortina solo funciona si
-     la palabra se desplaza DENTRO de la máscara —la regla 14 lo dice tras
-     retirar uno que recortaba texto quieto en el menú— y aquí se cumple: una
-     línea, todo mayúsculas y sin tildes que cortar.
-
-     `clip-path` en vez de `overflow: hidden` para poder recortar por un lado y
-     no por otro: al ras arriba, que es por donde entra, y con aire a la derecha,
-     porque la sombra dura se despega hacia allí y quedaría guillotinada. Por
-     abajo no hace falta: las versales se apoyan en la línea base y el hueco de
-     los descendentes le sobra a la sombra. */
-  .mascara {
-    display: block;
-    clip-path: inset(0 -0.25em 0 0);
-  }
-  /* Lo que viaja dentro de la máscara. Arranca fuera, por arriba: si esperase
-     puesto, al soltarse la animación daría un salto hasta su posición inicial
-     antes de caer. */
-  .tinta {
-    display: block;
-    position: relative;
-    transform: translateY(-100%);
-  }
   .capa {
     display: block;
   }
@@ -111,11 +90,46 @@
     position: relative;
     color: var(--paper);
   }
+  /* Las dos mitades del rótulo. `<i>` sin cursiva: es la etiqueta más corta que
+     queda para partir una palabra sin añadir significado, y aquí la partición
+     es puramente de montaje. */
+  .p1,
+  .p2 {
+    display: inline-block;
+    font-style: normal;
+  }
 
-  /* Mientras la entrada está puesta, el rótulo de la barra espera apagado: dos
-     copias visibles a la vez cantarían el truco justo al aterrizar. */
-  :global(html[data-intro] .brand) {
-    opacity: 0;
+  /* ── El encaje ────────────────────────────────────────────────────────
+     Cada mitad llega de un lado, torcida, y se endereza al juntarse. El
+     desplazamiento va en porcentaje del ancho de cada palabra, así que las dos
+     salen de la pantalla aunque midan distinto.
+     El desfase entre ellas es `--stagger` doblado: con el escalón simple —30ms,
+     calibrado para una cascada vertical de hermanos— dos piezas que llegan de
+     lados opuestos se leen como simultáneas y el encaje deja de contarse. */
+  :global(html[data-intro]) .p1 {
+    transform: translateX(-260%) rotate(calc(-1 * var(--tuerce)));
+  }
+  :global(html[data-intro]) .p2 {
+    transform: translateX(160%) rotate(var(--tuerce));
+  }
+  :global(html[data-intro]) .sombra {
+    transform: translate(0, 0);
+  }
+
+  /* Las fases se encadenan sin huecos y sin estrenar ninguna duración:
+       0    → 420ms   «LOS» llega y se endereza          (--dur-in)
+       60   → 480ms   «OCHOA» llega y se endereza        (--dur-in, +2 escalones)
+       420  → 700ms   la sombra se despega               (--dur-firma)
+       700  → 1400ms  la plancha se recoge hasta ser la barra, el rótulo
+                      aterriza dentro y los botones entran por la derecha */
+  :global(html[data-intro="va"]) .p1 {
+    animation: encaja-izq var(--dur-in) var(--ease) both;
+  }
+  :global(html[data-intro="va"]) .p2 {
+    animation: encaja-der var(--dur-in) var(--ease) calc(var(--stagger) * 2) both;
+  }
+  :global(html[data-intro="va"]) .sombra {
+    animation: firma var(--dur-firma) var(--ease) var(--dur-in) both;
   }
 
   /* `data-intro="va"` y no `"si"`: la animación no arranca hasta que el script
@@ -127,18 +141,90 @@
   :global(html[data-intro="va"]) .marca {
     animation: aterriza var(--dur-recogida) var(--ease-telon) var(--espera-firma) both;
   }
-  /* Las tres fases se encadenan sin huecos y sin estrenar ningún valor: la
-     caída usa `--dur-in`, que es literalmente «lo que entra», y la firma
-     arranca justo cuando esa termina. Sus dos duraciones suman exactamente
-     `--espera-firma`, que es cuando la plancha empieza a recogerse:
-       0    → 420ms   el rótulo cae dentro de la máscara
-       420  → 700ms   la sombra se despega
-       700  → 1400ms  la plancha se recoge y el rótulo aterriza en la barra */
-  :global(html[data-intro="va"]) .tinta {
-    animation: cae var(--dur-in) var(--ease) both;
+
+  /* ── Los botones de la barra ──────────────────────────────────────────
+     Se descubrían de golpe cuando la plancha se retiraba, que es justo lo que
+     la regla 10 prohíbe: lo que aparece detrás de algo que se mueve no puede
+     materializarse sin más.
+     Entran DURANTE la recogida y no después, flotando por encima de la plancha
+     —de ahí el z-index—. Como la plancha es exactamente el rojo de la barra, se
+     leen como si ya estuvieran en su sitio, y todo converge en el mismo
+     instante en vez de dejar un hueco muerto al final.
+     La barra recorta mientras dura la entrada, porque un botón desplazado fuera
+     ensancharía el documento (regla 17). */
+  /* La barra sube por encima de la plancha, y para eso tiene que subir ENTERA:
+     es `sticky` con `z-index: 60`, así que crea su propio contexto de
+     apilamiento y cualquier z-index que se le ponga a un hijo solo compite
+     dentro de ella. Subir solo `.nav-actions` a 81 no servía de nada —los
+     botones seguían tapados—, y se ve al primer vistazo pero no lo canta
+     ningún error.
+     Al subirla, su fondo taparía el rótulo que viaja por debajo, así que se
+     apaga: la plancha es exactamente este mismo rojo y hace de fondo por ella.
+     El filete también, o cruzaría la plancha con una línea negra durante toda
+     la entrada; vuelve con la transición que `.nav` ya tiene declarada, la
+     misma que usa al cerrar el menú. */
+  /* Cada selector va envuelto en UN SOLO `:global()` con la cadena entera. Con
+     `:global(a) :global(b) > *` el combinador y el `*` se quedan fuera y Astro
+     les añade el ámbito de ESTE componente: la regla salía como
+     `.nav-actions > [data-astro-cid-u43ozx4m]`, y los botones llevan el cid de
+     `Nav.astro`, así que no le aplicaba a nada. No da ningún error; sencillamente
+     no hace nada. */
+  :global(html[data-intro] .nav) {
+    overflow: hidden;
+    z-index: 81;
+    background: transparent;
+    border-bottom-color: transparent;
   }
-  :global(html[data-intro="va"]) .sombra {
-    animation: firma var(--dur-firma) var(--ease) var(--dur-in) both;
+  :global(html[data-intro] .nav-actions > *) {
+    transform: translateX(160%);
+  }
+  /* Frenan con la quíntica de la casa, que es la que frena como frena un objeto
+     de verdad. El que está más a la derecha llega primero: es de donde vienen. */
+  :global(html[data-intro="va"] .nav-actions > .menu-btn) {
+    animation: llega var(--dur-recogida) var(--ease) var(--espera-firma) both;
+  }
+  :global(html[data-intro="va"] .nav-actions > .btn) {
+    animation: llega var(--dur-recogida) var(--ease)
+      calc(var(--espera-firma) + var(--stagger) * 2) both;
+  }
+
+  /* Mientras la entrada está puesta, el rótulo de la barra espera apagado: dos
+     copias visibles a la vez cantarían el truco justo al aterrizar. */
+  :global(html[data-intro] .brand) {
+    opacity: 0;
+  }
+
+  @keyframes encaja-izq {
+    from {
+      transform: translateX(-260%) rotate(calc(-1 * var(--tuerce)));
+    }
+    to {
+      transform: translateX(0) rotate(0);
+    }
+  }
+  @keyframes encaja-der {
+    from {
+      transform: translateX(160%) rotate(var(--tuerce));
+    }
+    to {
+      transform: translateX(0) rotate(0);
+    }
+  }
+  @keyframes firma {
+    from {
+      transform: translate(0, 0);
+    }
+    to {
+      transform: translate(0.045em, 0.05em);
+    }
+  }
+  @keyframes llega {
+    from {
+      transform: translateX(160%);
+    }
+    to {
+      transform: translateX(0);
+    }
   }
 
   /* La plancha no se va: se recoge hasta medir exactamente la barra. */
@@ -156,22 +242,6 @@
     }
     to {
       transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--s, 1));
-    }
-  }
-  @keyframes cae {
-    from {
-      transform: translateY(-100%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-  @keyframes firma {
-    from {
-      transform: translate(0, 0);
-    }
-    to {
-      transform: translate(0.045em, 0.05em);
     }
   }
 </style>

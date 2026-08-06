@@ -38,17 +38,31 @@ centrado, papel sobre rojo. Entonces:
 
 | Desde | Hasta | Qué pasa | Con qué |
 |---|---|---|---|
-| 0 ms | 420 ms | El rótulo **cae dentro de una máscara** | `transform`, `--dur-in`, `--ease` |
+| 0 ms | 420 ms | **«LOS» llega desde la izquierda**, torcida, y se endereza | `transform`, `--dur-in`, `--tuerce`, `--ease` |
+| 60 ms | 480 ms | **«OCHOA» llega desde la derecha**, torcida, y encaja con la anterior | `transform`, `--dur-in`, `--stagger`×2 |
 | 420 ms | 700 ms | La sombra dura **se despega** del rótulo | `transform`, `--dur-firma`, `--ease` |
-| 700 ms | 1400 ms | La plancha **se recoge hasta medir la barra** y el rótulo **viaja y encoge hasta su sitio dentro de ella** | `clip-path` + `transform`, `--dur-recogida`, `--ease-telon` |
+| 700 ms | 1400 ms | La plancha **se recoge hasta medir la barra**, el rótulo **aterriza dentro** y los **botones entran desde el borde derecho** | `clip-path` + `transform`, `--dur-recogida`, `--ease-telon` |
 
-Las tres fases encajan sin huecos y **sin estrenar ningún valor para la caída**: usa `--dur-in`,
-que es literalmente «lo que entra», y su duración más la de la firma suman exactamente
-`--espera-firma`. La caída se añadió porque el rótulo «aparecía de repente y ya» (Mario). Es un
-reveal de cortina, que la regla 14 solo admite si la palabra se desplaza *dentro* de la máscara:
-se cumple, y las tres objeciones de esa regla se resuelven en el componente — dos envoltorios,
-sin tildes que recortar (versales), y el recorte aplicado **solo por arriba**, dejando aire a la
-derecha para que la sombra dura no quede guillotinada al despegarse.
+Las fases encajan sin huecos y **sin estrenar ninguna duración**: el encaje usa `--dur-in`, que es
+literalmente «lo que entra», y su duración más la de la firma suman exactamente `--espera-firma`.
+
+**Por qué el encaje de dos mitades y no otra cosa.** Mario pidió «algo más juguetón, que grite
+tapa y caña jefe», y eligió esto sobre un boceto con cuatro gestos. Es el rótulo de bar montado a
+mano, que nunca queda a plomo: de ahí `--tuerce`, cuatro grados, que es a la rotación lo que
+`--shift` es al desplazamiento. El desfase entre las dos mitades es `--stagger` doblado, porque
+con el escalón simple —calibrado para una cascada vertical de hermanos— dos piezas que llegan de
+lados opuestos se leen como simultáneas y el encaje deja de contarse.
+
+**Descartadas por el camino, todas construidas y vistas en movimiento:** una cortina (el rótulo
+cayendo dentro de una máscara — técnicamente impecable, pero sobria para una tasca), un rótulo
+llegando deslizado como un plato por la barra, y un cartel columpiándose como el que cuelga en su
+fachada, que además rompía la regla 1.
+
+**Los botones de la barra entran con la plancha, no después.** Se descubrían de golpe al retirarse
+la entrada, que es exactamente lo que prohíbe la regla 10. Entran **durante** la recogida y por
+encima de la plancha: como es el mismo rojo que la barra, se leen como si ya estuvieran en su
+sitio y todo converge en el mismo instante, sin hueco muerto al final. El que está más a la
+derecha llega primero, que es de donde vienen.
 
 Total: **1,4 s.**
 

@@ -140,6 +140,12 @@
      entera de arriba abajo. Es el mismo motivo por el que la curva es
      `--ease-telon` y no la quíntica de la marca (regla 9). */
   --dur-recogida: 700ms;
+  /* Cuánto se tuerce lo que llega antes de encajar. Es a la rotación lo que
+     `--shift` es al desplazamiento: la medida de un gesto, no un adorno. Un
+     rótulo de bar se monta pieza a pieza y nunca queda a plomo, y cuatro
+     grados es lo que hace falta para que se note que lo colgó alguien y no una
+     imprenta —por debajo no se lee, por encima parece un error de maquetación. */
+  --tuerce: 4deg;
 
   /* Mapeo a las variables neutras de @tombo/ui */
   --t-text: var(--ink);

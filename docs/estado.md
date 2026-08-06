@@ -439,11 +439,12 @@ sobre un boceto con tres variantes reproducibles, y **la elección es provisiona
 separa el andamiaje del gesto para que cambiarla cueste dos `@keyframes`. Todo el detalle, con
 las dos descartadas y sus motivos, en `superpowers/specs/2026-08-06-entrada-ochoa-design.md`.
 
-**Qué hace.** Una plancha roja con el rótulo se recoge hasta medir exactamente la barra, mientras
-el rótulo viaja y encoge hasta su sitio dentro de ella. **1,4 s**, repartidos mitad y mitad: 700 ms
-para que el rótulo se plante y se lea, 700 ms para que se vaya. No estrena vocabulario: es el telón
-del menú y la plancha de la barra haciendo un gesto nuevo, y la costura no se ve porque al terminar
-la recogida debajo hay el mismo rojo.
+**Qué hace.** Sobre una plancha roja, «LOS» y «OCHOA» llegan torcidas de lados opuestos y encajan;
+se les despega la sombra dura; y después la plancha se recoge hasta medir exactamente la barra,
+con el rótulo aterrizando dentro y los botones entrando desde el borde derecho. **1,4 s**,
+repartidos mitad y mitad: 700 ms para que el rótulo se monte y se lea, 700 ms para que se vaya a su
+sitio. No estrena vocabulario: es el telón del menú y la plancha de la barra haciendo un gesto
+nuevo, y la costura no se ve porque al terminar la recogida debajo hay el mismo rojo.
 
 **Dos correcciones de Mario al verla en el móvil**, y las dos valen más que su arreglo:
 
@@ -458,13 +459,19 @@ la recogida debajo hay el mismo rojo.
   tres fases por igual. Nace `--dur-recogida`, porque `--dur-in` mide un panel que aparece y esto
   recorre la pantalla entera. Y el seguro sube de 3 s a 4,5 s: con la entrada en 1,4 s se habría
   quedado sin margen sobre el peor caso legítimo y podría haber cortado una entrada que iba bien.
-- **El rótulo «aparecía de repente y ya».** Ahora **cae dentro de una máscara** en los primeros
-  420 ms. Es un reveal de cortina, que es justo lo que la regla 14 hizo retirar del menú, y se
-  admite aquí porque cumple su condición —la palabra se desplaza *dentro* de la máscara— y porque
-  sus tres objeciones se resuelven: dos envoltorios, versales sin tildes que recortar, y el
-  recorte aplicado **solo por arriba** para que la sombra dura tenga sitio al despegarse. La regla
-  14 queda reescrita con el caso, formulada del derecho. No estrena ningún valor: la caída usa
-  `--dur-in` y encaja exactamente con `--espera-firma`.
+- **El rótulo «aparecía de repente y ya», y luego la solución era demasiado seria.** Primero se
+  hizo caer dentro de una máscara; funcionaba y estaba medido, pero Mario pidió «algo más
+  juguetón, que grite tapa y caña jefe». Sobre un boceto con cuatro gestos eligió el **encaje de
+  dos mitades**: «LOS» y «OCHOA» llegan torcidas de lados opuestos y se enderezan al juntarse. Es
+  el rótulo de bar montado a mano, que nunca queda a plomo. Nace `--tuerce` (4deg), que es a la
+  rotación lo que `--shift` es al desplazamiento. **La cortina retirada deja una lección que
+  quedó escrita en la regla 14: correcta no es lo mismo que adecuada.**
+- **Los botones de la barra se descubrían de golpe**, que es lo que prohíbe la regla 10 —lo vio
+  Mario sin conocerla—. Ahora entran desde el borde derecho **durante** la recogida y por encima
+  de la plancha, así que todo converge en el mismo instante en vez de dejar un hueco muerto.
+  Costó dos fallos que no dan ningún error y son las reglas 21 y 22, nuevas: un `z-index` alto no
+  vale dentro de un contexto de apilamiento ajeno —la barra es `sticky` y encierra a sus hijos—,
+  y en Astro un `:global()` troceado deja el combinador fuera y la regla no aplica a nada.
 
 **Cuándo sale.** Cuatro puertas, y basta que una diga que no: `prefers-reduced-motion`, tipo de
 navegación `reload` o `back_forward`, `sessionStorage` ya marcado, y si no, sale. Traducido:
