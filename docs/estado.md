@@ -458,6 +458,13 @@ la recogida debajo hay el mismo rojo.
   tres fases por igual. Nace `--dur-recogida`, porque `--dur-in` mide un panel que aparece y esto
   recorre la pantalla entera. Y el seguro sube de 3 s a 4,5 s: con la entrada en 1,4 s se habría
   quedado sin margen sobre el peor caso legítimo y podría haber cortado una entrada que iba bien.
+- **El rótulo «aparecía de repente y ya».** Ahora **cae dentro de una máscara** en los primeros
+  420 ms. Es un reveal de cortina, que es justo lo que la regla 14 hizo retirar del menú, y se
+  admite aquí porque cumple su condición —la palabra se desplaza *dentro* de la máscara— y porque
+  sus tres objeciones se resuelven: dos envoltorios, versales sin tildes que recortar, y el
+  recorte aplicado **solo por arriba** para que la sombra dura tenga sitio al despegarse. La regla
+  14 queda reescrita con el caso, formulada del derecho. No estrena ningún valor: la caída usa
+  `--dur-in` y encaja exactamente con `--espera-firma`.
 
 **Cuándo sale.** Cuatro puertas, y basta que una diga que no: `prefers-reduced-motion`, tipo de
 navegación `reload` o `back_forward`, `sessionStorage` ya marcado, y si no, sale. Traducido:

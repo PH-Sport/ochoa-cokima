@@ -38,9 +38,17 @@ centrado, papel sobre rojo. Entonces:
 
 | Desde | Hasta | Qué pasa | Con qué |
 |---|---|---|---|
-| 0 ms | 280 ms | La sombra dura **se despega** del rótulo | `transform`, `--dur-firma`, `--ease` |
-| 280 ms | 700 ms | El rótulo, quieto y entero | los 420 ms que sobran del retardo |
+| 0 ms | 420 ms | El rótulo **cae dentro de una máscara** | `transform`, `--dur-in`, `--ease` |
+| 420 ms | 700 ms | La sombra dura **se despega** del rótulo | `transform`, `--dur-firma`, `--ease` |
 | 700 ms | 1400 ms | La plancha **se recoge hasta medir la barra** y el rótulo **viaja y encoge hasta su sitio dentro de ella** | `clip-path` + `transform`, `--dur-recogida`, `--ease-telon` |
+
+Las tres fases encajan sin huecos y **sin estrenar ningún valor para la caída**: usa `--dur-in`,
+que es literalmente «lo que entra», y su duración más la de la firma suman exactamente
+`--espera-firma`. La caída se añadió porque el rótulo «aparecía de repente y ya» (Mario). Es un
+reveal de cortina, que la regla 14 solo admite si la palabra se desplaza *dentro* de la máscara:
+se cumple, y las tres objeciones de esa regla se resuelven en el componente — dos envoltorios,
+sin tildes que recortar (versales), y el recorte aplicado **solo por arriba**, dejando aire a la
+derecha para que la sombra dura no quede guillotinada al despegarse.
 
 Total: **1,4 s.**
 

@@ -110,8 +110,17 @@ más lejos; Ochoa es una tasca y es seca.
 14. **Una máscara sobre texto quieto no revela, corta.** Se probó un reveal de cortina con
     `clip-path` sobre los nombres del menú y se retiró al verlo: dejaba media letra flotando y se
     leía como un fallo de pintado. Un reveal de cortina exige que la palabra se desplace *dentro*
-    de la máscara, lo que pide un envoltorio más y recorta tildes y sombras duras. Para esto
+    de la máscara, lo que pide un envoltorio más y recorta tildes y sombras duras. Para el menú
     basta un desplazamiento corto.
+
+    **La entrada sí lo usa, y por eso funciona: cumple esa condición y las tres objeciones se
+    resolvieron una a una.** El envoltorio de más existe —dos, `.mascara` y `.tinta`—; no hay
+    tildes que recortar porque el rótulo es «LOS OCHOA» en versales; y la sombra dura se salva
+    recortando **por un solo lado**, con `clip-path: inset(0 -0.25em 0 0)`: al ras arriba, que es
+    por donde entra el texto, y con 28px de aire a la derecha para los 5px que la sombra se
+    despega. Medido: el texto no sobresale ni un píxel de la máscara en reposo. La regla, formulada
+    del derecho: **una cortina vale cuando el texto se mueve y el recorte se aplica solo por donde
+    entra.**
 15. **El movimiento que hace el navegador también es movimiento nuestro.** En Chromium, ocultar
     y devolver la barra de direcciones al deslizar **redimensiona el viewport de verdad**; en
     Safari desde iOS 15 no, y por eso el vaivén solo se veía a trompicones en Brave. Ese resize
@@ -185,6 +194,6 @@ más lejos; Ochoa es una tasca y es seca.
 | Tira de platos (Ochoa) | El turno se rellena y pasa al siguiente | `scaleX`, `--dur-turno` |
 | Portada | El titular se aparta del cartel de cookies | `translateY`, `--dur-out` |
 | Entre páginas | Barrido lateral, bidireccional | `translateX`, `--dur-in` |
-| Entrada a la web (Ochoa) | La plancha se recoge hasta ser la barra y el rótulo aterriza dentro | `clip-path` + `transform`, `--dur-firma`, `--espera-firma`, `--dur-in`, `--ease-telon` |
+| Entrada a la web (Ochoa) | El rótulo cae dentro de una máscara, se le despega la sombra, y la plancha se recoge hasta ser la barra con el rótulo aterrizando dentro | `clip-path` + `transform`, `--dur-in`, `--dur-firma`, `--espera-firma`, `--dur-recogida` |
 
 Y ya. Todo lo demás está quieto a propósito.

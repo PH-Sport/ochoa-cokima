@@ -14,8 +14,12 @@
 
 <div class="intro" data-intro-plancha aria-hidden="true" inert>
   <span class="marca cartel" data-intro-marca>
-    <span class="capa sombra">Los Ochoa</span>
-    <span class="capa papel">Los Ochoa</span>
+    <span class="mascara">
+      <span class="tinta">
+        <span class="capa sombra">Los Ochoa</span>
+        <span class="capa papel">Los Ochoa</span>
+      </span>
+    </span>
   </span>
 </div>
 
@@ -70,6 +74,28 @@
        color tampoco importa porque cada capa declara el suyo. */
     text-shadow: none;
   }
+  /* El recorte por el que cae el rótulo. Un reveal de cortina solo funciona si
+     la palabra se desplaza DENTRO de la máscara —la regla 14 lo dice tras
+     retirar uno que recortaba texto quieto en el menú— y aquí se cumple: una
+     línea, todo mayúsculas y sin tildes que cortar.
+
+     `clip-path` en vez de `overflow: hidden` para poder recortar por un lado y
+     no por otro: al ras arriba, que es por donde entra, y con aire a la derecha,
+     porque la sombra dura se despega hacia allí y quedaría guillotinada. Por
+     abajo no hace falta: las versales se apoyan en la línea base y el hueco de
+     los descendentes le sobra a la sombra. */
+  .mascara {
+    display: block;
+    clip-path: inset(0 -0.25em 0 0);
+  }
+  /* Lo que viaja dentro de la máscara. Arranca fuera, por arriba: si esperase
+     puesto, al soltarse la animación daría un salto hasta su posición inicial
+     antes de caer. */
+  .tinta {
+    display: block;
+    position: relative;
+    transform: translateY(-100%);
+  }
   .capa {
     display: block;
   }
@@ -101,8 +127,18 @@
   :global(html[data-intro="va"]) .marca {
     animation: aterriza var(--dur-recogida) var(--ease-telon) var(--espera-firma) both;
   }
+  /* Las tres fases se encadenan sin huecos y sin estrenar ningún valor: la
+     caída usa `--dur-in`, que es literalmente «lo que entra», y la firma
+     arranca justo cuando esa termina. Sus dos duraciones suman exactamente
+     `--espera-firma`, que es cuando la plancha empieza a recogerse:
+       0    → 420ms   el rótulo cae dentro de la máscara
+       420  → 700ms   la sombra se despega
+       700  → 1400ms  la plancha se recoge y el rótulo aterriza en la barra */
+  :global(html[data-intro="va"]) .tinta {
+    animation: cae var(--dur-in) var(--ease) both;
+  }
   :global(html[data-intro="va"]) .sombra {
-    animation: firma var(--dur-firma) var(--ease) both;
+    animation: firma var(--dur-firma) var(--ease) var(--dur-in) both;
   }
 
   /* La plancha no se va: se recoge hasta medir exactamente la barra. */
@@ -120,6 +156,14 @@
     }
     to {
       transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--s, 1));
+    }
+  }
+  @keyframes cae {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
     }
   }
   @keyframes firma {
