@@ -1,0 +1,129 @@
+---
+// La entrada: una plancha roja con el rótulo que se recoge hasta medir
+// exactamente la barra, mientras el rótulo viaja y encoge hasta su sitio dentro
+// de ella. No estrena vocabulario —es el telón del menú y la plancha de la
+// barra haciendo un gesto nuevo— y por eso la costura no se ve: al terminar la
+// recogida, debajo hay el mismo rojo.
+//
+// El diseño entero, con las dos variantes descartadas y sus motivos, está en
+// docs/superpowers/specs/2026-08-06-entrada-ochoa-design.md.
+//
+// Sin props: el rótulo es el nombre del bar y se escribe igual en los dos
+// idiomas. El día que haya algo que traducir aquí, entrará una.
+---
+
+<div class="intro" data-intro-plancha aria-hidden="true" inert>
+  <span class="marca" data-intro-marca>
+    <span class="capa sombra">Los Ochoa</span>
+    <span class="capa papel">Los Ochoa</span>
+  </span>
+</div>
+
+<script>
+  import { initEntrada } from "@tombo/ui/intro.ts";
+
+  // El descriptor de la fuente del rótulo, que es lo único de la entrada que es
+  // marca: @tombo/ui no sabe que esta casa rotula en Anton.
+  initEntrada("400 1em Anton");
+</script>
+
+<style>
+  /* Solo existe si el script del `<head>` ha decidido que sale. Mientras tanto
+     no hay ni caja: la web se ve entera desde el primer frame, que es también
+     lo que pasa sin JavaScript. */
+  .intro {
+    display: none;
+  }
+  :global(html[data-intro]) .intro {
+    display: grid;
+    place-items: center;
+    position: fixed;
+    inset: 0;
+    /* Por encima de todo: panel del menú 50, barra 60, cartel de cookies 60. */
+    z-index: 80;
+    background: var(--rojo);
+    padding: 0 max(16px, 4vw);
+    pointer-events: none;
+  }
+
+  /* El rótulo son dos capas superpuestas y no un `text-shadow`, porque lo que
+     se anima es el despegue de la sombra y eso tiene que ser un `transform`.
+     Animar la sombra directamente repinta en cada fotograma (regla 2). */
+  .marca {
+    position: relative;
+    display: inline-block;
+    /* El viaje se calcula desde esta esquina: `initEntrada` publica --tx, --ty
+       y --s midiendo los dos rectángulos, porque de dónde sale y a dónde llega
+       dependen del ancho de la pantalla y del cuerpo de la fuente. Cualquier
+       número fijo sería falso en algún móvil. */
+    transform-origin: left top;
+    font-family: var(--display);
+    font-size: clamp(2.6rem, 13vw, 7rem);
+    /* El interlineado del cartel de la casa, no uno propio. El viaje escala por
+       ancho, así que si el rótulo de aquí y el de la barra no comparten
+       proporción el alto no cuadra: con `line-height: 1` contra el 0,96 de
+       `.cartel`, las letras aterrizaban 0,67px por debajo de su sitio. Medido. */
+    line-height: var(--lh-cartel);
+    white-space: nowrap;
+  }
+  .capa {
+    display: block;
+  }
+  .sombra {
+    position: absolute;
+    inset: 0;
+    color: var(--ink);
+    /* Puesta ya en su sitio: si el script no llegara a arrancar la animación,
+       el rótulo se ve correcto y no a medio hacer. */
+    transform: translate(0.045em, 0.05em);
+  }
+  .papel {
+    position: relative;
+    color: var(--paper);
+  }
+
+  /* Mientras la entrada está puesta, el rótulo de la barra espera apagado: dos
+     copias visibles a la vez cantarían el truco justo al aterrizar. */
+  :global(html[data-intro] .brand) {
+    opacity: 0;
+  }
+
+  /* `data-intro="va"` y no `"si"`: la animación no arranca hasta que el script
+     ha medido el viaje. Si arrancara sola, con el módulo llegando tarde el
+     rótulo aterrizaría en un sitio inventado. */
+  :global(html[data-intro="va"]) .intro {
+    animation: recoge var(--dur-in) var(--ease-telon) var(--espera-firma) both;
+  }
+  :global(html[data-intro="va"]) .marca {
+    animation: aterriza var(--dur-in) var(--ease-telon) var(--espera-firma) both;
+  }
+  :global(html[data-intro="va"]) .sombra {
+    animation: firma var(--dur-firma) var(--ease) both;
+  }
+
+  /* La plancha no se va: se recoge hasta medir exactamente la barra. */
+  @keyframes recoge {
+    from {
+      clip-path: inset(0 0 0 0);
+    }
+    to {
+      clip-path: inset(0 0 calc(100% - var(--t-header-h, 62px)) 0);
+    }
+  }
+  @keyframes aterriza {
+    from {
+      transform: translate(0, 0) scale(1);
+    }
+    to {
+      transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--s, 1));
+    }
+  }
+  @keyframes firma {
+    from {
+      transform: translate(0, 0);
+    }
+    to {
+      transform: translate(0.045em, 0.05em);
+    }
+  }
+</style>

@@ -44,7 +44,9 @@ const t = es
 
 <nav class="nav">
   <div class="wrap nav-in">
-    <a class="brand cartel" href={home}>Los Ochoa</a>
+    {/* `data-intro-destino`: es aquí donde aterriza el rótulo de la entrada, y
+        de donde se dispara al volver a la home desde otra página. */}
+    <a class="brand cartel" href={home} data-intro-destino>Los Ochoa</a>
     <div class="nav-actions">
       <a href={reserve} class="btn">{t.reserve}</a>
       <button

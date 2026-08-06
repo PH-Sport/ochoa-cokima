@@ -117,6 +117,18 @@
      colgado—. Cuando alguien toca la tira, esta cuenta se apaga para siempre:
      quien desliza ha dicho que prefiere conducir. */
   --dur-turno: 3.5s;
+  /* La entrada a la web. Dos valores que no cabían en los cinco de base porque
+     no miden ni entrar ni responder a un dedo.
+
+     Lo que la sombra dura tarda en despegarse del rótulo. Es el gesto de un
+     cartel pintado, y no es «entrar»: el rótulo ya está ahí, lo que aparece es
+     su relieve. Se anima moviendo una segunda capa de tinta con `transform`,
+     nunca animando `text-shadow`, que repinta en cada fotograma. */
+  --dur-firma: 210ms;
+  /* El retardo de la recogida, contado desde el arranque —no una duración—.
+     Deja 110ms de rótulo quieto y entero después de la firma; sin ellos la
+     plancha empieza a irse antes de que el nombre se haya llegado a leer. */
+  --espera-firma: 320ms;
 
   /* Mapeo a las variables neutras de @tombo/ui */
   --t-text: var(--ink);
