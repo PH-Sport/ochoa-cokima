@@ -97,9 +97,11 @@ atributo. Si la decisión llegara después, se vería la web un instante y *lueg
 encima, que es peor que no tener entrada.
 
 **El apagado por `prefers-reduced-motion` va en el script, no en el CSS.** La regla de
-`global.css:287` anula transiciones, y aquí eso no basta: anular la animación dejaría la plancha
-roja puesta para siempre. Es la excepción a la regla 5 de `movimiento.md`, y hay que anotarla
-allí.
+`global.css:287` no deja la plancha puesta —su `animation-duration: 0.01ms !important` la
+retiraría al instante—, pero eso es justo lo que hay que evitar: un **destello rojo a pantalla
+completa de un fotograma**, que para quien pide menos movimiento es peor que la animación
+entera. La entrada no se atenúa; no se pinta. Es la excepción a la regla 5 de `movimiento.md`,
+y hay que anotarla allí.
 
 **Sin JavaScript no hay entrada**, y la web se ve entera desde el primer frame. Es la
 degradación correcta, no un descuido.
