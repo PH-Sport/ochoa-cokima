@@ -25,8 +25,9 @@ uno existe porque no cabía en los cinco de arriba, no porque hiciera falta un n
 | `--dur-cinta` | `34s` | La cinta rotulada **recorre**. Lineal, no con la curva: un rótulo que acelera se lee como un fallo. |
 | `--dur-turno` | `3,5s` | Lo que la tira de platos **espera** antes de pasar al siguiente. |
 | `--dur-sube` | `240ms` | Lo que un botón tarda en **recuperar su sitio** tras soltarlo. |
-| `--dur-firma` | `210ms` | Lo que la sombra dura tarda en **despegarse** del rótulo en la entrada. No es entrar: el rótulo ya está ahí, lo que aparece es su relieve. |
-| `--espera-firma` | `320ms` | El **retardo** de la recogida de la entrada, contado desde el arranque —no una duración—. Deja 110ms de rótulo quieto y entero después de la firma. |
+| `--dur-firma` | `280ms` | Lo que la sombra dura tarda en **despegarse** del rótulo en la entrada. No es entrar: el rótulo ya está ahí, lo que aparece es su relieve. |
+| `--espera-firma` | `700ms` | El **retardo** de la recogida de la entrada, contado desde el arranque —no una duración—. Deja 420ms de rótulo quieto y entero después de la firma. |
+| `--dur-recogida` | `700ms` | Lo que la plancha de la entrada tarda en **recogerse hasta ser la barra**. No sale de `--dur-in`: ese mide un panel que aparece y esto recorre la pantalla entera. |
 
 Y una escala de curvatura, que no es movimiento pero sigue la misma disciplina de no escribir
 números sueltos en los componentes: `--r-chapa` 4px, `--r-btn` 7px, `--r-caja` 9px, `--r-marco`
@@ -159,13 +160,17 @@ más lejos; Ochoa es una tasca y es seca.
     llega no puede dejar media web tapada; y **lo que se mide en `display: none` mide cero**, así
     que la pieza se oculta con `visibility` o se mide después de declararla visible. Con el cero,
     el rótulo encogía en el sitio en lugar de aterrizar, y eso **no se ve en una captura**.
-20. **Dos piezas que tienen que encajar comparten fórmula tipográfica, no solo familia.** El
-    rótulo de la entrada aterriza sobre el de la barra escalando por ancho. Llevaba
-    `line-height: 1` mientras el de la barra hereda el `0.96` de `.cartel`, y esa diferencia
-    dejaba las letras 0,67px por debajo de su sitio: el ancho encajaba y el alto no. Queda un
-    residuo de 0,43px que es redondeo del glifo a cuerpo pequeño —el ancho de Anton a 22px no es
-    exactamente una quinta parte del que tiene a 112— y que no se corrige, porque exigiría
-    escalas distintas en X e Y y eso deforma la letra.
+20. **Dos piezas que tienen que encajar comparten la regla, no una copia de sus valores.** El
+    rótulo de la entrada aterriza sobre el de la barra, y los dos son «el rótulo de la casa»: la
+    fórmula está en `.cartel`. Se reimplementó a mano —familia e interlineado— y salieron dos
+    fallos de la misma raíz, uno métrico y otro visible a simple vista: el `line-height: 1` propio
+    contra el `0.96` heredado dejaba las letras 0,67px por debajo de su sitio, y **faltaban el
+    `text-transform` y el `letter-spacing`, así que la entrada decía «Los Ochoa» mientras la barra
+    decía «LOS OCHOA»**. Lo cazó Mario al primer vistazo, no la medición: ninguna de las
+    comprobaciones de geometría podía verlo, porque el aterrizaje era exacto — sobre otra palabra.
+    Poniéndole la clase, el residuo de alto baja de 0,43px a **0,01px**, que es la señal de que el
+    problema nunca fue el redondeo del glifo sino no compartir proporciones. Y es el mismo
+    argumento por el que `.brand` borró su `text-shadow` en vez de copiar el valor.
 
 ## Qué se mueve hoy
 

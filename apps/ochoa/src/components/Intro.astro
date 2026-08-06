@@ -13,7 +13,7 @@
 ---
 
 <div class="intro" data-intro-plancha aria-hidden="true" inert>
-  <span class="marca" data-intro-marca>
+  <span class="marca cartel" data-intro-marca>
     <span class="capa sombra">Los Ochoa</span>
     <span class="capa papel">Los Ochoa</span>
   </span>
@@ -49,6 +49,12 @@
   /* El rótulo son dos capas superpuestas y no un `text-shadow`, porque lo que
      se anima es el despegue de la sombra y eso tiene que ser un `transform`.
      Animar la sombra directamente repinta en cada fotograma (regla 2). */
+  /* Lleva la clase `.cartel` y no una copia de su fórmula. Aquí se reimplementó
+     al principio —solo familia e interlineado— y el resultado fue que el rótulo
+     de la entrada decía «Los Ochoa» mientras el de la barra decía «LOS OCHOA»:
+     faltaban el `text-transform` y el `letter-spacing`. Mario lo vio al primer
+     vistazo. Dos piezas que tienen que encajar no comparten *valores*,
+     comparten *la regla*: es lo mismo que hizo `.brand` con su sombra. */
   .marca {
     position: relative;
     display: inline-block;
@@ -57,14 +63,12 @@
        dependen del ancho de la pantalla y del cuerpo de la fuente. Cualquier
        número fijo sería falso en algún móvil. */
     transform-origin: left top;
-    font-family: var(--display);
     font-size: clamp(2.6rem, 13vw, 7rem);
-    /* El interlineado del cartel de la casa, no uno propio. El viaje escala por
-       ancho, así que si el rótulo de aquí y el de la barra no comparten
-       proporción el alto no cuadra: con `line-height: 1` contra el 0,96 de
-       `.cartel`, las letras aterrizaban 0,67px por debajo de su sitio. Medido. */
-    line-height: var(--lh-cartel);
     white-space: nowrap;
+    /* Lo único que se le quita a `.cartel`: su sombra se hereda a las dos capas
+       y aquí la sombra ES una capa, la de tinta, que es la que se despega. El
+       color tampoco importa porque cada capa declara el suyo. */
+    text-shadow: none;
   }
   .capa {
     display: block;
@@ -92,10 +96,10 @@
      ha medido el viaje. Si arrancara sola, con el módulo llegando tarde el
      rótulo aterrizaría en un sitio inventado. */
   :global(html[data-intro="va"]) .intro {
-    animation: recoge var(--dur-in) var(--ease-telon) var(--espera-firma) both;
+    animation: recoge var(--dur-recogida) var(--ease-telon) var(--espera-firma) both;
   }
   :global(html[data-intro="va"]) .marca {
-    animation: aterriza var(--dur-in) var(--ease-telon) var(--espera-firma) both;
+    animation: aterriza var(--dur-recogida) var(--ease-telon) var(--espera-firma) both;
   }
   :global(html[data-intro="va"]) .sombra {
     animation: firma var(--dur-firma) var(--ease) both;

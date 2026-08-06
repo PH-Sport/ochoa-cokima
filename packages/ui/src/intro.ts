@@ -23,10 +23,17 @@ export const CLAVE_SESION = "ochoa:entrada";
  *  igual y la web queda visible. No es un adorno: el script que pinta la plancha
  *  es síncrono y el que la retira no, así que sin esto un error de red o un
  *  módulo que no llega dejarían la pantalla en rojo.
+ *
+ *  **Tiene que quedar por encima del peor caso legítimo, o corta una entrada
+ *  que iba bien.** Hoy ese peor caso son unos 2,5s: lo que tarde en llegar el
+ *  módulo (~500ms en una red lenta) + `ESPERA_FUENTE` + los 1,4s que dura la
+ *  animación de Ochoa. Estaba en 3000 cuando la entrada duraba 740ms y al
+ *  alargarla se quedó sin margen. Si la animación vuelve a crecer, esto sube.
+ *
  *  Se exporta porque quien lo arma es el script inline del `<head>`, que lo
  *  interpola desde aquí: escribirlo a mano allí serían dos fuentes para el
  *  mismo número. */
-export const SEGURO = 3000;
+export const SEGURO = 4500;
 
 /** Cuántos ms se espera como mucho a que llegue la fuente antes de medir igual.
  *  Con la de respaldo el rótulo mide otra cosa y el aterrizaje cae torcido, pero

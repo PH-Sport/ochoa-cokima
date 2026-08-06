@@ -38,11 +38,17 @@ centrado, papel sobre rojo. Entonces:
 
 | Desde | Hasta | Qué pasa | Con qué |
 |---|---|---|---|
-| 0 ms | 210 ms | La sombra dura **se despega** del rótulo | `transform`, `--dur-firma`, `--ease` |
-| 210 ms | 320 ms | El rótulo, quieto y entero | los 110 ms que sobran del retardo |
-| 320 ms | 740 ms | La plancha **se recoge hasta medir la barra** y el rótulo **viaja y encoge hasta su sitio dentro de ella** | `clip-path` + `transform`, `--dur-in`, `--ease-telon` |
+| 0 ms | 280 ms | La sombra dura **se despega** del rótulo | `transform`, `--dur-firma`, `--ease` |
+| 280 ms | 700 ms | El rótulo, quieto y entero | los 420 ms que sobran del retardo |
+| 700 ms | 1400 ms | La plancha **se recoge hasta medir la barra** y el rótulo **viaja y encoge hasta su sitio dentro de ella** | `clip-path` + `transform`, `--dur-recogida`, `--ease-telon` |
 
-Total: **740 ms.**
+Total: **1,4 s.**
+
+**Duraba 740 ms y Mario la alargó al verla en el móvil:** «la animación se nota muy poco». El
+diagnóstico que salió de ahí importa más que el número: el problema no era la velocidad del
+movimiento, era que **no daba tiempo a leer el nombre antes de que empezara a marcharse**. Por eso
+el reparto nuevo es mitad y mitad —700 ms para que el rótulo se plante y se lea, 700 ms para que
+se vaya— y no un estiramiento proporcional de las tres fases.
 
 Lo que cuenta el gesto es verdad: la barra roja de la web es esa misma plancha, y el rótulo de la
 barra es ese mismo rótulo. No cambia de fuente, ni de color, ni de tratamiento de sombra — solo
@@ -186,9 +192,11 @@ rótulo que contiene es decorativo — el nombre del sitio ya está en el `<h1>`
 La entrada **no retrasa la carga**: la página se carga por detrás, y de hecho tapa el momento en
 que la foto de portada se está decodificando, que hoy se ve en crudo.
 
-Pero un velo opaco sobre la portada **puede empujar el LCP** que mide Google. Por debajo de
-~800 ms el impacto es asumible, y por eso la entrada está en 740 y no en el segundo largo que
-gastan las webs que hacen esto mal. **Hay que medirlo después**, no darlo por bueno.
+Pero un velo opaco sobre la portada **puede empujar el LCP** que mide Google, y esto ya no es un
+matiz: al pasar de 740 ms a 1,4 s, la entrada entra de lleno en el terreno donde esa métrica se
+resiente. El umbral de «bueno» de Google está en 2,5 s, así que 1,4 s de velo deja poco margen
+para el resto de la carga en una red móvil normal. **Es una decisión tomada con el dato delante**
+—Mario la alargó sabiéndolo—, pero **hay que medirlo**, y si sale mal la palanca es este número.
 
 ## 12. Verificación
 

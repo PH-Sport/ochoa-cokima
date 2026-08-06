@@ -440,9 +440,24 @@ separa el andamiaje del gesto para que cambiarla cueste dos `@keyframes`. Todo e
 las dos descartadas y sus motivos, en `superpowers/specs/2026-08-06-entrada-ochoa-design.md`.
 
 **Qué hace.** Una plancha roja con el rótulo se recoge hasta medir exactamente la barra, mientras
-el rótulo viaja y encoge hasta su sitio dentro de ella. 740 ms. No estrena vocabulario: es el
-telón del menú y la plancha de la barra haciendo un gesto nuevo, y la costura no se ve porque al
-terminar la recogida debajo hay el mismo rojo.
+el rótulo viaja y encoge hasta su sitio dentro de ella. **1,4 s**, repartidos mitad y mitad: 700 ms
+para que el rótulo se plante y se lea, 700 ms para que se vaya. No estrena vocabulario: es el telón
+del menú y la plancha de la barra haciendo un gesto nuevo, y la costura no se ve porque al terminar
+la recogida debajo hay el mismo rojo.
+
+**Dos correcciones de Mario al verla en el móvil**, y las dos valen más que su arreglo:
+
+- **El rótulo decía «Los Ochoa» y el de la barra «LOS OCHOA».** El componente reimplementaba a
+  mano la fórmula de `.cartel` —familia e interlineado— en vez de usar la clase, así que se dejó
+  por el camino el `text-transform` y el `letter-spacing`. **Ninguna de las mediciones podía
+  cazarlo**: el aterrizaje daba desvío 0 porque era exacto… sobre otra palabra. Con la clase
+  puesta, el residuo de alto además cae de 0,43 px a 0,01. Regla 20 de `movimiento.md`, reescrita.
+- **«La animación se nota muy poco», y la alargó a 1,4 s.** El diagnóstico que salió de ahí es lo
+  aprovechable: el problema no era la velocidad del movimiento sino que no daba tiempo a leer el
+  nombre antes de que empezara a marcharse. De ahí el reparto mitad y mitad en vez de estirar las
+  tres fases por igual. Nace `--dur-recogida`, porque `--dur-in` mide un panel que aparece y esto
+  recorre la pantalla entera. Y el seguro sube de 3 s a 4,5 s: con la entrada en 1,4 s se habría
+  quedado sin margen sobre el peor caso legítimo y podría haber cortado una entrada que iba bien.
 
 **Cuándo sale.** Cuatro puertas, y basta que una diga que no: `prefers-reduced-motion`, tipo de
 navegación `reload` o `back_forward`, `sessionStorage` ya marcado, y si no, sale. Traducido:
@@ -467,9 +482,11 @@ recargar ni con el botón de atrás *con la sesión limpia* (para probar la puer
 dejan la página en el mismo píxel. Tests: 45 → 57. `@tombo/ui` no tenía ninguno y ahora tiene
 vitest.
 
-**Pendiente y sin medir: el efecto sobre el LCP.** Un velo opaco sobre la portada puede empujar
-la métrica que mide Google. Está en 740 ms para que el impacto sea asumible, pero eso es una
-previsión, no una medida.
+**Pendiente y sin medir: el efecto sobre el LCP, y ahora importa más.** Un velo opaco sobre la
+portada puede empujar esa métrica, y al pasar de 740 ms a 1,4 s la entrada entra de lleno en el
+terreno donde se resiente: el umbral de «bueno» de Google son 2,5 s, así que 1,4 s de velo deja
+poco margen para el resto de la carga en una red móvil. Mario la alargó con el dato delante, pero
+**esto hay que medirlo**, y si sale mal la palanca es ese número.
 
 Tres reglas nuevas en `movimiento.md` (18, 19 y 20) y la primera excepción a la regla 5, que
 merece leerse: el apagado por `prefers-reduced-motion` no vale para una pieza que **solo existe
