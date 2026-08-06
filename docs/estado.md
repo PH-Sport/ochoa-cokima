@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-- **Corte:** 2026-08-04
+- **Corte:** 2026-08-06
 - **Rama de trabajo:** `preview` (desarrollo) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
 
@@ -8,8 +8,9 @@
 
 ## 0. Por dónde seguir
 
-El árbol está limpio y `preview` subido. Las tandas del 2026-07-31 (§3.quater y §3.quinquies) y
-la del 2026-08-01 (§3.sexies) están commiteadas, construidas y con los 45 tests en verde.
+Las tandas hasta la del 2026-08-04 están commiteadas, construidas y en verde. **La del 2026-08-06
+—la entrada a la web, §3.octies— está commiteada y construida, pero NO subida: Mario pidió
+expresamente no pushear a `preview`.** Los tests pasan de 45 a 57.
 
 **La barra del navegador en iPhone quedó resuelta el 2026-08-01.** Era el `ClientRouter` de Astro,
 que escribe en el historial cada vez que el scroll se detiene; en los navegadores de iPhone que no
@@ -32,8 +33,18 @@ autocontenido. Le pasa a cualquiera que monte `<ClientRouter />`.
 Eso reordena la lista de más abajo, donde Cokima figura como lo más rentable: sigue siéndolo, pero
 va en segundo lugar.
 
-**De esos detalles ya hay dos hechos (§3.septies): el recuadro de foco al pulsar y la página
-«Conócenos».** Lo que queda pendiente de ellos, y es lo primero al retomar:
+**De esos detalles ya hay tres hechos: el recuadro de foco al pulsar y la página «Conócenos»
+(§3.septies), y la entrada a la web (§3.octies).**
+
+De la entrada quedan dos cosas anotadas, ninguna bloqueante:
+
+- **Su efecto sobre el LCP está sin medir.** Un velo opaco sobre la portada puede empujar esa
+  métrica. Está calibrada en 740 ms para que el impacto sea asumible, pero es una previsión.
+- **La variante es provisional y el disparo desde el rótulo está a prueba**, los dos por decisión
+  de Mario. El segundo se apaga con `INTRO_EN_RETORNO` en `packages/ui/src/intro.ts` sin tocar
+  nada más.
+
+Lo que queda pendiente de los otros dos, y es lo primero al retomar:
 
 1. **Escribir el contenido de «Conócenos».** La página está montada, navegable y enlazada, pero
    su cuerpo son cuatro rejillas de texto que dicen qué hay que contar. Hasta que haya material
@@ -413,6 +424,50 @@ cambiar el alto (0 escrituras de `--t-header-h`); y la forma de la animación de
 Si aun así siguiera, el siguiente sospechoso es de diseño: nuestra `.nav` es `sticky` y compite
 con la barra del navegador por el mismo borde superior. La referencia que él cita —vercel.com—
 oculta su propia cabecera al bajar y la devuelve al subir, en vez de dejarla clavada.
+
+## 3.octies La entrada a la web (2026-08-06)
+
+Mario la pidió «sencilla pero llamativa», con una restricción que mandaba sobre todo lo demás:
+«no queremos generar fricción a todo el que entre haciéndole esperar una animación». Se eligió
+sobre un boceto con tres variantes reproducibles, y **la elección es provisional**: el diseño
+separa el andamiaje del gesto para que cambiarla cueste dos `@keyframes`. Todo el detalle, con
+las dos descartadas y sus motivos, en `superpowers/specs/2026-08-06-entrada-ochoa-design.md`.
+
+**Qué hace.** Una plancha roja con el rótulo se recoge hasta medir exactamente la barra, mientras
+el rótulo viaja y encoge hasta su sitio dentro de ella. 740 ms. No estrena vocabulario: es el
+telón del menú y la plancha de la barra haciendo un gesto nuevo, y la costura no se ve porque al
+terminar la recogida debajo hay el mismo rojo.
+
+**Cuándo sale.** Cuatro puertas, y basta que una diga que no: `prefers-reduced-motion`, tipo de
+navegación `reload` o `back_forward`, `sessionStorage` ya marcado, y si no, sale. Traducido:
+siempre que se entra desde fuera —en cualquier página, también `/carta`— y nunca al recargar
+estando dentro. **La decisión se toma antes del primer pintado**, en un script inline del
+`<head>`; tomarla después enseñaría la web y luego la taparía.
+
+**La función de decisión no está escrita dos veces.** El script inline se construye con
+`decideEntrada.toString()`, así que lo que corre en el navegador es exactamente lo que cubren los
+tests. Hay un test que vigila que la función siga sin referenciar nada de su módulo, que es lo que
+rompería el truco en silencio.
+
+**Sin JavaScript no hay entrada** y la web se ve entera desde el primer frame. Y hay un seguro de
+3 s en el propio script inline: es síncrono y el que retira la plancha no lo es.
+
+**El rótulo de la barra vuelve a la home con la entrada puesta**, salvo si ya estás en la home
+—decisión de Mario—. A prueba, detrás de `INTRO_EN_RETORNO` en `packages/ui/src/intro.ts`.
+
+**Verificado midiendo, no de vista:** aterriza con desvío 0 en x, en y y en ancho; no sale al
+recargar ni con el botón de atrás *con la sesión limpia* (para probar la puerta y no el
+`sessionStorage`); sí sale al llegar desde fuera a `/carta`; y los cuatro estados de la entrada
+dejan la página en el mismo píxel. Tests: 45 → 57. `@tombo/ui` no tenía ninguno y ahora tiene
+vitest.
+
+**Pendiente y sin medir: el efecto sobre el LCP.** Un velo opaco sobre la portada puede empujar
+la métrica que mide Google. Está en 740 ms para que el impacto sea asumible, pero eso es una
+previsión, no una medida.
+
+Tres reglas nuevas en `movimiento.md` (18, 19 y 20) y la primera excepción a la regla 5, que
+merece leerse: el apagado por `prefers-reduced-motion` no vale para una pieza que **solo existe
+para moverse**, porque atenuarla deja un destello rojo de un fotograma.
 
 ## 3.septies El recuadro de foco y «Conócenos» (2026-08-04)
 

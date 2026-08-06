@@ -16,7 +16,7 @@ Viven en `apps/<app>/src/styles/tokens.css`.
 | `--shift` | `14px` | `18px` | Cuánto se desplaza lo que entra. |
 | `--stagger` | `30ms` | `65ms` | El escalón entre hermanos en cascada. |
 
-**Cuatro más, solo en Ochoa,** para movimientos que no son ni entrar ni responder a un dedo. Cada
+**Seis más, solo en Ochoa,** para movimientos que no son ni entrar ni responder a un dedo. Cada
 uno existe porque no cabía en los cinco de arriba, no porque hiciera falta un número nuevo:
 
 | Token | Ochoa | Para qué |
@@ -25,6 +25,8 @@ uno existe porque no cabía en los cinco de arriba, no porque hiciera falta un n
 | `--dur-cinta` | `34s` | La cinta rotulada **recorre**. Lineal, no con la curva: un rótulo que acelera se lee como un fallo. |
 | `--dur-turno` | `3,5s` | Lo que la tira de platos **espera** antes de pasar al siguiente. |
 | `--dur-sube` | `240ms` | Lo que un botón tarda en **recuperar su sitio** tras soltarlo. |
+| `--dur-firma` | `210ms` | Lo que la sombra dura tarda en **despegarse** del rótulo en la entrada. No es entrar: el rótulo ya está ahí, lo que aparece es su relieve. |
+| `--espera-firma` | `320ms` | El **retardo** de la recogida de la entrada, contado desde el arranque —no una duración—. Deja 110ms de rótulo quieto y entero después de la firma. |
 
 Y una escala de curvatura, que no es movimiento pero sigue la misma disciplina de no escribir
 números sueltos en los componentes: `--r-chapa` 4px, `--r-btn` 7px, `--r-caja` 9px, `--r-marco`
@@ -51,7 +53,14 @@ más lejos; Ochoa es una tasca y es seca.
    se van todos a la vez. Cerrar con cascada es hacer esperar a quien ya ha decidido irse.
 5. **El apagado vive en un sitio.** La regla `prefers-reduced-motion` de `global.css` anula
    todas las transiciones y también las de View Transitions, que el navegador ejecuta por su
-   cuenta. Ningún componente necesita su propio `@media` de apagado.
+   cuenta. Ningún componente necesita su propio `@media` de apagado. **Con una excepción, y por
+   una razón que conviene entender: la entrada.** Ese bloque no la dejaría puesta —su
+   `animation-duration: 0.01ms !important` la retiraría al instante—, pero eso es justo lo que
+   hay que evitar: un **destello rojo a pantalla completa de un fotograma**, que para quien pide
+   menos movimiento es peor que la animación entera. La regla vale cuando lo que se apaga es
+   *cómo* se mueve algo que va a estar ahí de todas formas; no vale cuando la pieza **solo
+   existe para moverse**. Esas no se atenúan: no se pintan, y eso hay que decidirlo antes del
+   primer pintado, en el script. Ver `intro.ts`.
 6. **Nada que se mueva solo sigue moviéndose después de que alguien lo toque.** La tira de
    platos avanza sola hasta el primer gesto y ahí se apaga para siempre: quien desliza ha dicho
    que prefiere conducir. Y no corre mientras no se la ve, ni con la pestaña en segundo plano.
@@ -133,6 +142,30 @@ más lejos; Ochoa es una tasca y es seca.
     `minmax(auto, 1fr)`, y el mínimo automático de una imagen es su tamaño intrínseco —estas
     declaran 1000px—, así que el track se negaba a encoger por mucho `width: 100%` que llevara la
     foto. Se arregla con `minmax(0, 1fr)`, **en la pieza y no tapándolo en el documento**.
+18. **`animationend` burbujea, y quien escucha el final de una secuencia tiene que filtrar por
+    objetivo.** En la entrada se animan tres piezas a la vez —la plancha, el rótulo y su sombra—
+    y el listener vive en la plancha, que es la que manda porque es la que tapa. Sin
+    `if (e.target === plancha)`, la firma de la sombra —que termina a los 210ms, dentro del
+    rótulo— habría retirado la entrada a mitad del viaje. **No lo habría cazado ningún test
+    unitario**, porque la lógica de decisión estaba bien: el fallo estaba en quién escucha a
+    quién. Lo mismo vale para `transitionend`.
+19. **Una animación que depende de una medida no puede arrancar sola desde el CSS.** El rótulo de
+    la entrada viaja hasta donde esté el de la barra, y eso se mide en cliente. Si el CSS
+    arrancase el movimiento al pintar, un módulo que llegue tarde lo mandaría a un sitio
+    inventado. Por eso hay dos estados y no uno: `data-intro="si"` lo pinta quieto y
+    `data-intro="va"` lo suelta, y entre los dos ocurre la medida. Dos corolarios, los dos
+    medidos: **la fuente tiene que estar cargada antes de medir** —con la de respaldo el rótulo
+    mide otra cosa y el aterrizaje cae torcido—, con tope de tiempo porque una fuente que no
+    llega no puede dejar media web tapada; y **lo que se mide en `display: none` mide cero**, así
+    que la pieza se oculta con `visibility` o se mide después de declararla visible. Con el cero,
+    el rótulo encogía en el sitio en lugar de aterrizar, y eso **no se ve en una captura**.
+20. **Dos piezas que tienen que encajar comparten fórmula tipográfica, no solo familia.** El
+    rótulo de la entrada aterriza sobre el de la barra escalando por ancho. Llevaba
+    `line-height: 1` mientras el de la barra hereda el `0.96` de `.cartel`, y esa diferencia
+    dejaba las letras 0,67px por debajo de su sitio: el ancho encajaba y el alto no. Queda un
+    residuo de 0,43px que es redondeo del glifo a cuerpo pequeño —el ancho de Anton a 22px no es
+    exactamente una quinta parte del que tiene a 112— y que no se corrige, porque exigiría
+    escalas distintas en X e Y y eso deforma la letra.
 
 ## Qué se mueve hoy
 
@@ -147,5 +180,6 @@ más lejos; Ochoa es una tasca y es seca.
 | Tira de platos (Ochoa) | El turno se rellena y pasa al siguiente | `scaleX`, `--dur-turno` |
 | Portada | El titular se aparta del cartel de cookies | `translateY`, `--dur-out` |
 | Entre páginas | Barrido lateral, bidireccional | `translateX`, `--dur-in` |
+| Entrada a la web (Ochoa) | La plancha se recoge hasta ser la barra y el rótulo aterriza dentro | `clip-path` + `transform`, `--dur-firma`, `--espera-firma`, `--dur-in`, `--ease-telon` |
 
 Y ya. Todo lo demás está quieto a propósito.
