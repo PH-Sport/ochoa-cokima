@@ -8,9 +8,15 @@
 
 ## 0. Por dónde seguir
 
-Las tandas hasta la del 2026-08-04 están commiteadas, construidas y en verde. **La del 2026-08-06
-—la entrada a la web, §3.octies— está commiteada y construida, pero NO subida: Mario pidió
-expresamente no pushear a `preview`.** Los tests pasan de 45 a 57.
+Las tandas hasta la del 2026-08-04 están commiteadas, construidas y en verde. Los tests pasan de
+45 a 57.
+
+**La del 2026-08-06 —la entrada a la web, §3.octies— NO está en `preview`.** Mario pidió
+expresamente no pushear ahí, y luego que se subiera a una rama aparte para verla en el móvil. Vive
+en **`tmp/entrada-ochoa`**, desplegada en `ochoa-git-tmp-entrada-ochoa-rodz-dev.vercel.app`. Es
+temporal y está pendiente de su visto bueno: cuando decida, o se fusiona en `preview` o se
+descarta, y la rama se borra en los dos casos. Mientras tanto, `preview` y `tmp/entrada-ochoa`
+divergen solo en esta tanda.
 
 **La barra del navegador en iPhone quedó resuelta el 2026-08-01.** Era el `ClientRouter` de Astro,
 que escribe en el historial cada vez que el scroll se detiene; en los navegadores de iPhone que no
