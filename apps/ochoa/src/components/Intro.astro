@@ -175,8 +175,23 @@
     background: transparent;
     border-bottom-color: transparent;
   }
+  /* `--fuera` es la distancia medida de cada botón al borde de la ventana, y la
+     publica `initEntrada`. El valor de reserva es `100vw` y no un porcentaje:
+     **tiene que ser seguro, no aproximado**. Aquí hubo un `160%` que parecía
+     razonable y no lo era —el porcentaje es del ancho de cada botón, así que
+     uno de 62px se apartaba 99px y en escritorio, con el margen de la barra,
+     seguía dentro de la pantalla: asomaban desde el primer fotograma—. Con
+     `100vw` sale cualquier pieza esté donde esté, y la medida solo sirve para
+     que el viaje sea el justo en vez de cruzar la pantalla entera (regla 9). */
   :global(html[data-intro] .nav-actions > *) {
-    transform: translateX(160%);
+    transform: translateX(var(--fuera, 100vw));
+    /* Sin esto, apartarlos NO es instantáneo: estos botones llevan
+       `transition: transform` para el hundido al tacto, así que el navegador
+       anima también este desplazamiento y se les ve **salir** hacia la derecha
+       durante los primeros 160ms en vez de estar ya fuera. Era el «se asoma
+       ligeramente» que vio Mario. La transición vuelve sola al retirarse la
+       entrada, porque el selector deja de aplicar. */
+    transition: none;
   }
   /* Frenan con la quíntica de la casa, que es la que frena como frena un objeto
      de verdad. El que está más a la derecha llega primero: es de donde vienen. */
@@ -220,7 +235,7 @@
   }
   @keyframes llega {
     from {
-      transform: translateX(160%);
+      transform: translateX(var(--fuera, 100vw));
     }
     to {
       transform: translateX(0);

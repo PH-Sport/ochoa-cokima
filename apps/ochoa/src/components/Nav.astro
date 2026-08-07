@@ -47,7 +47,10 @@ const t = es
     {/* `data-intro-destino`: es aquí donde aterriza el rótulo de la entrada, y
         de donde se dispara al volver a la home desde otra página. */}
     <a class="brand cartel" href={home} data-intro-destino>Los Ochoa</a>
-    <div class="nav-actions">
+    {/* `data-intro-aparta`: lo que la entrada saca fuera de la ventana para que
+        vuelva deslizándose por el borde derecho. El nombre de la clase es cosa
+        de esta casa, así que el contrato con @tombo/ui va por atributo. */}
+    <div class="nav-actions" data-intro-aparta>
       <a href={reserve} class="btn">{t.reserve}</a>
       <button
         type="button"

@@ -70,8 +70,13 @@ export interface Circunstancias {
  */
 export function decideEntrada(c: Circunstancias): boolean {
   if (c.menosMovimiento) return false;
-  // Recargar y volver atrás son la misma situación: ya estabas dentro.
-  if (c.tipo === "reload" || c.tipo === "back_forward") return false;
+  // Volver atrás no es llegar: es deshacer. Ahí nunca.
+  if (c.tipo === "back_forward") return false;
+  /* Recargar SÍ la enseña, y por delante de la marca de sesión. Es un gesto
+     deliberado —F5, el botón de recargar, o el tirón hacia abajo en el móvil—
+     y quien lo hace está pidiendo la página otra vez desde cero. Decisión de
+     Mario, que al principio la quería justo al revés. */
+  if (c.tipo === "reload") return true;
   if (c.yaVisto) return false;
   return true;
 }
@@ -114,6 +119,42 @@ function mideViaje(marca: HTMLElement, destino: HTMLElement): boolean {
   return true;
 }
 
+/** Aparta fuera de la ventana lo que tenga que entrar deslizándose por el borde.
+ *
+ * Esto empezó siendo un `translateX(160%)` en el CSS y se veía mal: **el
+ * porcentaje es del ancho de cada pieza**, y un botón de 62px apartado 99px
+ * sigue dentro de la pantalla si la barra tiene margen a la derecha, que es lo
+ * que pasa en escritorio. Los botones se quedaban asomando desde el primer
+ * fotograma.
+ *
+ * Lo que hace falta no es una proporción sino una distancia: de cada pieza al
+ * borde derecho de la ventana. Por eso se mide, igual que el viaje del rótulo,
+ * y por el mismo motivo — cualquier número fijo es falso en algún ancho.
+ *
+ * Se mide con el desplazamiento anulado —si no, se mediría la posición ya
+ * apartada y cada pasada la mandaría más lejos— y **con la transición apagada**.
+ * Esto último no es una precaución: estos botones llevan `transition: transform`,
+ * así que al anular el desplazamiento el navegador empieza a animarlo y
+ * `getBoundingClientRect()` devuelve la posición *en curso*, no la real. Medido
+ * así, a «Reservar» le salía una distancia negativa de 1284px, que lo habría
+ * hecho entrar por el lado contrario cruzando la pantalla entera.
+ */
+function apartaBordeDerecho(): void {
+  const zona = document.querySelector<HTMLElement>("[data-intro-aparta]");
+  if (!zona) return;
+  for (const el of Array.from(zona.children) as HTMLElement[]) {
+    const transicion = el.style.transition;
+    const previo = el.style.transform;
+    el.style.transition = "none";
+    el.style.transform = "none";
+    const r = el.getBoundingClientRect(); // fuerza el reflujo y lee ya sin transición
+    el.style.transform = previo;
+    el.style.transition = transicion;
+    // +8px de holgura para las sombras duras, que sobresalen de la caja.
+    el.style.setProperty("--fuera", `${Math.ceil(window.innerWidth - r.left) + 8}px`);
+  }
+}
+
 /** Quita la entrada de en medio y devuelve el rótulo de la barra. */
 function retira(): void {
   document.documentElement.removeAttribute("data-intro");
@@ -147,6 +188,7 @@ function montaEntrada(fuenteDelRotulo: string): void {
   const arranca = () => {
     if (raiz.dataset.intro !== "si") return; // el seguro se adelantó
     if (!mideViaje(marca, destino)) return retira();
+    apartaBordeDerecho();
     raiz.dataset.intro = "va";
   };
 

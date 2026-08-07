@@ -8,29 +8,37 @@ describe("decideEntrada", () => {
     expect(decideEntrada(llegada)).toBe(true);
   });
 
-  it("no sale al recargar", () => {
-    expect(decideEntrada({ ...llegada, tipo: "reload" })).toBe(false);
+  /* Recargar es un gesto deliberado: F5, el botón del navegador o el tirón
+     hacia abajo en el móvil. Quien lo hace pide la página otra vez desde cero,
+     así que la entrada sale — y sale por delante de la marca de sesión, que si
+     no la taparía siempre (recargar implica haber estado ya). */
+  it("sale al recargar, aunque ya se hubiera visto", () => {
+    expect(decideEntrada({ ...llegada, tipo: "reload" })).toBe(true);
+    expect(decideEntrada({ ...llegada, tipo: "reload", yaVisto: true })).toBe(true);
   });
 
   it("no sale con el botón de atrás", () => {
     expect(decideEntrada({ ...llegada, tipo: "back_forward" })).toBe(false);
+    // Ni aunque sea la primera vez en esta pestaña: volver atrás no es llegar.
+    expect(decideEntrada({ tipo: "back_forward", yaVisto: false, menosMovimiento: false })).toBe(false);
   });
 
   it("no sale si ya se vio en esta sesión", () => {
     expect(decideEntrada({ ...llegada, yaVisto: true })).toBe(false);
   });
 
+  /* Menos movimiento gana a todo, incluida la recarga deliberada: quien lo pide
+     no quiere ver la animación por mucho que pulse F5. */
   it("no sale para quien pide menos movimiento", () => {
     expect(decideEntrada({ ...llegada, menosMovimiento: true })).toBe(false);
+    expect(decideEntrada({ tipo: "reload", yaVisto: false, menosMovimiento: true })).toBe(false);
   });
 
-  /* Las puertas son independientes: que una diga que no basta, aunque las
-     demás digan que sí. Esto es lo que evita que un refactor las convierta
-     sin querer en un `&&` donde una domine a las otras. */
-  it("basta una puerta cerrada", () => {
-    expect(decideEntrada({ tipo: "reload", yaVisto: false, menosMovimiento: false })).toBe(false);
-    expect(decideEntrada({ tipo: "navigate", yaVisto: true, menosMovimiento: false })).toBe(false);
-    expect(decideEntrada({ tipo: "navigate", yaVisto: false, menosMovimiento: true })).toBe(false);
+  /* El orden de las puertas es parte del contrato, no un detalle: `reload`
+     tiene que resolverse ANTES que `yaVisto` o nunca saldría al recargar. */
+  it("recargar pesa más que la marca de sesión, y menos que reduced-motion", () => {
+    expect(decideEntrada({ tipo: "reload", yaVisto: true, menosMovimiento: false })).toBe(true);
+    expect(decideEntrada({ tipo: "reload", yaVisto: true, menosMovimiento: true })).toBe(false);
   });
 
   /* `prerender` es una llegada de verdad: el navegador ha precargado la página

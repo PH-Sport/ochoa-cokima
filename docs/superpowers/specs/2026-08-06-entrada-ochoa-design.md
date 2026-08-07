@@ -104,16 +104,22 @@ declarar la variante.
 
 ## 4. Cuándo sale
 
-Cuatro puertas, en orden. Basta que una diga no:
+Cuatro puertas, **y el orden es parte del contrato**:
 
-1. `prefers-reduced-motion: reduce` → **no**.
-2. Tipo de navegación `reload` o `back_forward` → **no**.
-3. `sessionStorage` ya marcado → **no**.
-4. En cualquier otro caso → **sí**, y marca `sessionStorage`.
+1. `prefers-reduced-motion: reduce` → **no**. Gana a todo lo demás.
+2. Tipo de navegación `back_forward` → **no**. Volver atrás no es llegar: es deshacer.
+3. Tipo de navegación `reload` → **sí**, y por delante de la puerta 4.
+4. `sessionStorage` ya marcado → **no**. En cualquier otro caso, **sí**, y marca.
 
-Traducido a lo que pidió Mario: sale **siempre que se entra desde fuera** —una búsqueda, un
-enlace compartido, una pestaña nueva— y **no sale al recargar estando dentro**. La puerta 2 cubre
-de propina el botón de atrás, que es la misma situación.
+Traducido: sale **siempre que se entra desde fuera** —una búsqueda, un enlace compartido, una
+pestaña nueva— y **también al recargar a propósito**, sea con F5, con el botón del navegador o con
+el tirón hacia abajo del móvil.
+
+**Lo de recargar cambió a mitad de camino.** Mario lo pidió primero al revés —«si estamos dentro
+de la web y recargamos, no debe aparecer»— y después de verlo decidió que una recarga es un gesto
+deliberado: quien la hace está pidiendo la página otra vez desde cero. Por eso la puerta 3 va
+**antes** que la 4: recargar implica haber estado ya, así que con el orden inverso la marca de
+sesión la taparía siempre y no saldría nunca. Hay un test que fija justamente ese orden.
 
 Sale en **todas las páginas**, no solo en la home. Es lo que Mario eligió sabiendo que el tráfico
 de búsqueda aterriza sobre todo en `/carta`. La variante funciona igual en cualquiera de ellas

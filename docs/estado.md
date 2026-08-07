@@ -469,15 +469,24 @@ nuevo, y la costura no se ve porque al terminar la recogida debajo hay el mismo 
 - **Los botones de la barra se descubrían de golpe**, que es lo que prohíbe la regla 10 —lo vio
   Mario sin conocerla—. Ahora entran desde el borde derecho **durante** la recogida y por encima
   de la plancha, así que todo converge en el mismo instante en vez de dejar un hueco muerto.
-  Costó dos fallos que no dan ningún error y son las reglas 21 y 22, nuevas: un `z-index` alto no
-  vale dentro de un contexto de apilamiento ajeno —la barra es `sticky` y encierra a sus hijos—,
-  y en Astro un `:global()` troceado deja el combinador fuera y la regla no aplica a nada.
+  Costó cuatro fallos que no dan ningún error y son las reglas 21 a 24, nuevas: un `z-index` alto
+  no vale dentro de un contexto de apilamiento ajeno —la barra es `sticky` y encierra a sus
+  hijos—; en Astro un `:global()` troceado deja el combinador fuera y la regla no aplica a nada;
+  **una transición heredada convierte en movimiento lo que querías instantáneo y falsea las
+  medidas que tomes en ese momento** —los botones llevan `transition: transform` para el tacto, y
+  eso hacía que se les viera *salir* al apartarlos (el «se asoma ligeramente» que cazó Mario) y
+  que una medición diera −1284px, que los habría hecho entrar por el lado contrario—; y un valor
+  de reserva tiene que ser seguro y no aproximado, que es lo que no era el `160%` inicial.
 
-**Cuándo sale.** Cuatro puertas, y basta que una diga que no: `prefers-reduced-motion`, tipo de
-navegación `reload` o `back_forward`, `sessionStorage` ya marcado, y si no, sale. Traducido:
-siempre que se entra desde fuera —en cualquier página, también `/carta`— y nunca al recargar
-estando dentro. **La decisión se toma antes del primer pintado**, en un script inline del
-`<head>`; tomarla después enseñaría la web y luego la taparía.
+**Cuándo sale.** Cuatro puertas **en un orden que es parte del contrato**: `prefers-reduced-motion`
+la apaga siempre; `back_forward` nunca la enseña; `reload` **sí**, y por delante de la marca de
+sesión; y si no, sale salvo que la pestaña ya la haya visto. Traducido: siempre que se entra desde
+fuera —en cualquier página, también `/carta`— y también al recargar a propósito, con F5 o con el
+tirón hacia abajo del móvil. **Mario pidió lo de recargar primero al revés y lo cambió al verlo**;
+el orden importa porque recargar implica haber estado ya, así que con las puertas al revés la
+marca de sesión lo taparía siempre. Hay un test que fija ese orden.
+**La decisión se toma antes del primer pintado**, en un script inline del `<head>`; tomarla
+después enseñaría la web y luego la taparía.
 
 **La función de decisión no está escrita dos veces.** El script inline se construye con
 `decideEntrada.toString()`, así que lo que corre en el navegador es exactamente lo que cubren los

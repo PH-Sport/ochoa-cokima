@@ -196,6 +196,24 @@ más lejos; Ochoa es una tasca y es seca.
     **Cuando una regla cruza la frontera de un componente, se envuelve la cadena entera en un solo
     `:global(...)`.** Es pariente de lo que ya documenta la regla del hundido: lo que se estiliza
     desde fuera hay que comprobarlo en el CSS de salida, no darlo por escrito.
+23. **Una transición heredada convierte en movimiento lo que querías instantáneo — y falsea
+    cualquier medida que tomes en ese momento.** Los botones de la barra llevan
+    `transition: transform` para el hundido al tacto. La entrada los aparta fuera de la ventana
+    antes de empezar, y esa transición hacía dos estropicios a la vez: **se les veía salir**
+    deslizándose hacia la derecha durante los primeros 160ms en vez de estar ya fuera —el «se
+    asoma ligeramente» que cazó Mario—, y al anular el desplazamiento para medir su posición real,
+    `getBoundingClientRect()` devolvía **la posición en curso de la transición**, no la de reposo:
+    a un botón le salió una distancia negativa de 1284px, que lo habría hecho entrar por el lado
+    contrario cruzando la pantalla entera. Las dos curas son la misma: `transition: none` mientras
+    dure el estado, y apagarla también durante la medida. **Antes de posicionar o medir algo que
+    no escribiste tú, mira qué transiciones arrastra.**
+24. **Un valor de reserva tiene que ser seguro, no aproximado.** Para sacar los botones de la
+    pantalla se puso `translateX(160%)`, que suena razonable y no lo es: el porcentaje es del ancho
+    de **cada pieza**, así que uno de 62px se apartaba 99px y con el margen de la barra en
+    escritorio seguía dentro del viewport. Ahora la distancia real se mide y se publica en
+    `--fuera`, y el `var()` cae en `100vw`, que saca cualquier cosa esté donde esté. La medida no
+    está para que funcione —de eso se encarga la reserva— sino para que el viaje sea el justo en
+    vez de cruzar la pantalla entera, que es lo que convierte la quíntica en un golpe (regla 9).
 
 ## Qué se mueve hoy
 
