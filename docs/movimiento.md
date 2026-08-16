@@ -16,7 +16,7 @@ Viven en `apps/<app>/src/styles/tokens.css`.
 | `--shift` | `14px` | `18px` | Cuánto se desplaza lo que entra. |
 | `--stagger` | `30ms` | `65ms` | El escalón entre hermanos en cascada. |
 
-**Cuatro más, solo en Ochoa,** para movimientos que no son ni entrar ni responder a un dedo. Cada
+**Siete más, solo en Ochoa,** para movimientos que no son ni entrar ni responder a un dedo. Cada
 uno existe porque no cabía en los cinco de arriba, no porque hiciera falta un número nuevo:
 
 | Token | Ochoa | Para qué |
@@ -25,6 +25,10 @@ uno existe porque no cabía en los cinco de arriba, no porque hiciera falta un n
 | `--dur-cinta` | `34s` | La cinta rotulada **recorre**. Lineal, no con la curva: un rótulo que acelera se lee como un fallo. |
 | `--dur-turno` | `3,5s` | Lo que la tira de platos **espera** antes de pasar al siguiente. |
 | `--dur-sube` | `240ms` | Lo que un botón tarda en **recuperar su sitio** tras soltarlo. |
+| `--dur-firma` | `280ms` | Lo que la sombra dura tarda en **despegarse** del rótulo en la entrada. No es entrar: el rótulo ya está ahí, lo que aparece es su relieve. |
+| `--espera-firma` | `700ms` | El **retardo** de la recogida de la entrada, contado desde el arranque —no una duración—. Deja 420ms de rótulo quieto y entero después de la firma. |
+| `--dur-recogida` | `700ms` | Lo que la plancha de la entrada tarda en **recogerse hasta ser la barra**. No sale de `--dur-in`: ese mide un panel que aparece y esto recorre la pantalla entera. |
+| `--tuerce` | `4deg` | Cuánto se **tuerce** lo que llega antes de encajar. Es a la rotación lo que `--shift` es al desplazamiento: la medida de un gesto. Un rótulo de bar se monta pieza a pieza y nunca queda a plomo. |
 
 Y una escala de curvatura, que no es movimiento pero sigue la misma disciplina de no escribir
 números sueltos en los componentes: `--r-chapa` 4px, `--r-btn` 7px, `--r-caja` 9px, `--r-marco`
@@ -51,7 +55,14 @@ más lejos; Ochoa es una tasca y es seca.
    se van todos a la vez. Cerrar con cascada es hacer esperar a quien ya ha decidido irse.
 5. **El apagado vive en un sitio.** La regla `prefers-reduced-motion` de `global.css` anula
    todas las transiciones y también las de View Transitions, que el navegador ejecuta por su
-   cuenta. Ningún componente necesita su propio `@media` de apagado.
+   cuenta. Ningún componente necesita su propio `@media` de apagado. **Con una excepción, y por
+   una razón que conviene entender: la entrada.** Ese bloque no la dejaría puesta —su
+   `animation-duration: 0.01ms !important` la retiraría al instante—, pero eso es justo lo que
+   hay que evitar: un **destello rojo a pantalla completa de un fotograma**, que para quien pide
+   menos movimiento es peor que la animación entera. La regla vale cuando lo que se apaga es
+   *cómo* se mueve algo que va a estar ahí de todas formas; no vale cuando la pieza **solo
+   existe para moverse**. Esas no se atenúan: no se pintan, y eso hay que decidirlo antes del
+   primer pintado, en el script. Ver `intro.ts`.
 6. **Nada que se mueva solo sigue moviéndose después de que alguien lo toque.** La tira de
    platos avanza sola hasta el primer gesto y ahí se apaga para siempre: quien desliza ha dicho
    que prefiere conducir. Y no corre mientras no se la ve, ni con la pestaña en segundo plano.
@@ -100,8 +111,16 @@ más lejos; Ochoa es una tasca y es seca.
 14. **Una máscara sobre texto quieto no revela, corta.** Se probó un reveal de cortina con
     `clip-path` sobre los nombres del menú y se retiró al verlo: dejaba media letra flotando y se
     leía como un fallo de pintado. Un reveal de cortina exige que la palabra se desplace *dentro*
-    de la máscara, lo que pide un envoltorio más y recorta tildes y sombras duras. Para esto
+    de la máscara, lo que pide un envoltorio más y recorta tildes y sombras duras. Para el menú
     basta un desplazamiento corto.
+
+    **La entrada llegó a usarla y se retiró igual, esta vez no por un fallo técnico.** Se hizo
+    cumpliendo la condición —la palabra se desplazaba dentro de la máscara— y las tres objeciones
+    quedaron resueltas: dos envoltorios, versales sin tildes que recortar y el recorte aplicado
+    solo por arriba, dejando aire a la derecha para la sombra. Medido, el texto no sobresalía ni
+    un píxel. Y aun así Mario la cambió por el encaje de dos mitades, porque **una cortina es
+    sobria por naturaleza y esta casa es una tasca**. Vale la pena recordarlo cuando una técnica
+    esté impecable: correcta no es lo mismo que adecuada.
 15. **El movimiento que hace el navegador también es movimiento nuestro.** En Chromium, ocultar
     y devolver la barra de direcciones al deslizar **redimensiona el viewport de verdad**; en
     Safari desde iOS 15 no, y por eso el vaivén solo se veía a trompicones en Brave. Ese resize
@@ -133,6 +152,68 @@ más lejos; Ochoa es una tasca y es seca.
     `minmax(auto, 1fr)`, y el mínimo automático de una imagen es su tamaño intrínseco —estas
     declaran 1000px—, así que el track se negaba a encoger por mucho `width: 100%` que llevara la
     foto. Se arregla con `minmax(0, 1fr)`, **en la pieza y no tapándolo en el documento**.
+18. **`animationend` burbujea, y quien escucha el final de una secuencia tiene que filtrar por
+    objetivo.** En la entrada se animan tres piezas a la vez —la plancha, el rótulo y su sombra—
+    y el listener vive en la plancha, que es la que manda porque es la que tapa. Sin
+    `if (e.target === plancha)`, la firma de la sombra —que termina a los 210ms, dentro del
+    rótulo— habría retirado la entrada a mitad del viaje. **No lo habría cazado ningún test
+    unitario**, porque la lógica de decisión estaba bien: el fallo estaba en quién escucha a
+    quién. Lo mismo vale para `transitionend`.
+19. **Una animación que depende de una medida no puede arrancar sola desde el CSS.** El rótulo de
+    la entrada viaja hasta donde esté el de la barra, y eso se mide en cliente. Si el CSS
+    arrancase el movimiento al pintar, un módulo que llegue tarde lo mandaría a un sitio
+    inventado. Por eso hay dos estados y no uno: `data-intro="si"` lo pinta quieto y
+    `data-intro="va"` lo suelta, y entre los dos ocurre la medida. Dos corolarios, los dos
+    medidos: **la fuente tiene que estar cargada antes de medir** —con la de respaldo el rótulo
+    mide otra cosa y el aterrizaje cae torcido—, con tope de tiempo porque una fuente que no
+    llega no puede dejar media web tapada; y **lo que se mide en `display: none` mide cero**, así
+    que la pieza se oculta con `visibility` o se mide después de declararla visible. Con el cero,
+    el rótulo encogía en el sitio en lugar de aterrizar, y eso **no se ve en una captura**.
+20. **Dos piezas que tienen que encajar comparten la regla, no una copia de sus valores.** El
+    rótulo de la entrada aterriza sobre el de la barra, y los dos son «el rótulo de la casa»: la
+    fórmula está en `.cartel`. Se reimplementó a mano —familia e interlineado— y salieron dos
+    fallos de la misma raíz, uno métrico y otro visible a simple vista: el `line-height: 1` propio
+    contra el `0.96` heredado dejaba las letras 0,67px por debajo de su sitio, y **faltaban el
+    `text-transform` y el `letter-spacing`, así que la entrada decía «Los Ochoa» mientras la barra
+    decía «LOS OCHOA»**. Lo cazó Mario al primer vistazo, no la medición: ninguna de las
+    comprobaciones de geometría podía verlo, porque el aterrizaje era exacto — sobre otra palabra.
+    Poniéndole la clase, el residuo de alto baja de 0,43px a **0,01px**, que es la señal de que el
+    problema nunca fue el redondeo del glifo sino no compartir proporciones. Y es el mismo
+    argumento por el que `.brand` borró su `text-shadow` en vez de copiar el valor.
+21. **Un `z-index` alto no sirve de nada dentro de un contexto de apilamiento ajeno.** Los botones
+    de la barra tenían que entrar por encima de la plancha de la entrada, y ponerles `z-index: 81`
+    contra el 80 de la plancha no hizo absolutamente nada: la barra es `sticky` con `z-index: 60`,
+    o sea que **crea su propio contexto** y todo lo que hay dentro se ordena solo respecto a sus
+    hermanos. Quien tiene que subir es la barra entera. Y al subirla, su fondo tapaba el rótulo que
+    viaja por debajo, así que se apaga —el fondo y el filete— y hace de fondo la plancha, que es
+    exactamente el mismo rojo. **Lo que sube es siempre el contexto, no la pieza**, y subirlo
+    obliga a revisar qué tapaba antes.
+22. **En Astro, un `:global()` por trozos deja fuera lo que hay entre medias.** Escrito como
+    `:global(html[data-intro]) :global(.nav-actions) > *`, el combinador y el `*` se quedan sin
+    envolver y el compilador les añade el ámbito **del componente que escribe la regla**: salió
+    `.nav-actions > [data-astro-cid-<el-de-Intro>]`, y los botones llevan el de `Nav.astro`, así
+    que la regla no le aplicaba a nada. No hay error, no hay aviso: sencillamente no pasa nada.
+    **Cuando una regla cruza la frontera de un componente, se envuelve la cadena entera en un solo
+    `:global(...)`.** Es pariente de lo que ya documenta la regla del hundido: lo que se estiliza
+    desde fuera hay que comprobarlo en el CSS de salida, no darlo por escrito.
+23. **Una transición heredada convierte en movimiento lo que querías instantáneo — y falsea
+    cualquier medida que tomes en ese momento.** Los botones de la barra llevan
+    `transition: transform` para el hundido al tacto. La entrada los aparta fuera de la ventana
+    antes de empezar, y esa transición hacía dos estropicios a la vez: **se les veía salir**
+    deslizándose hacia la derecha durante los primeros 160ms en vez de estar ya fuera —el «se
+    asoma ligeramente» que cazó Mario—, y al anular el desplazamiento para medir su posición real,
+    `getBoundingClientRect()` devolvía **la posición en curso de la transición**, no la de reposo:
+    a un botón le salió una distancia negativa de 1284px, que lo habría hecho entrar por el lado
+    contrario cruzando la pantalla entera. Las dos curas son la misma: `transition: none` mientras
+    dure el estado, y apagarla también durante la medida. **Antes de posicionar o medir algo que
+    no escribiste tú, mira qué transiciones arrastra.**
+24. **Un valor de reserva tiene que ser seguro, no aproximado.** Para sacar los botones de la
+    pantalla se puso `translateX(160%)`, que suena razonable y no lo es: el porcentaje es del ancho
+    de **cada pieza**, así que uno de 62px se apartaba 99px y con el margen de la barra en
+    escritorio seguía dentro del viewport. Ahora la distancia real se mide y se publica en
+    `--fuera`, y el `var()` cae en `100vw`, que saca cualquier cosa esté donde esté. La medida no
+    está para que funcione —de eso se encarga la reserva— sino para que el viaje sea el justo en
+    vez de cruzar la pantalla entera, que es lo que convierte la quíntica en un golpe (regla 9).
 
 18. **El movimiento ambiental se delata por la cadencia, no por el efecto.** Mario pidió botones
     «vivos» y un aviso de scroll, y en los dos avisó: nada de patrones típicos de IA. Lo típico
@@ -181,5 +262,7 @@ más lejos; Ochoa es una tasca y es seca.
 | Entrada (Cokima) | Una chispa baja por un riel, avisando de que hay más | `stroke-dashoffset`, 3,2s |
 | Entrada (Cokima) | La cabecera, el cartel de cookies y el aviso entran al deslizar | `opacity` + `visibility`, `--dur-in` / `--dur-out` |
 | Entre páginas | Barrido lateral, bidireccional | `translateX`, `--dur-in` |
+| Entrada a la web (Ochoa) | «LOS» y «OCHOA» llegan torcidas de lados opuestos y encajan, se les despega la sombra, y la plancha se recoge hasta ser la barra con el rótulo aterrizando dentro | `transform`, `--dur-in`, `--tuerce`, `--stagger`, `--dur-firma` |
+| Entrada a la web (Ochoa) | La plancha se recoge y los botones de la barra entran desde el borde derecho | `clip-path` + `transform`, `--espera-firma`, `--dur-recogida`, `--ease-telon` |
 
 Y ya. Todo lo demás está quieto a propósito.

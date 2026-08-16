@@ -2,8 +2,10 @@
 
 - **Corte:** 2026-08-16
 - **Rama de trabajo:** `tmp/entrada-cokima` (el rediseño de Cokima, en curso) · `preview`
-  (desarrollo) · `main` (producción, sin nada nuevo aún)
+  (desarrollo, todo lo demás integrado) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
+- **Esta es la versión buena del documento.** La que hay en `preview` solo cuenta lo integrado y
+  remite aquí.
 
 ---
 
@@ -11,6 +13,11 @@
 
 **COKIMA SE ESTÁ REHACIENDO ENTERA, y eso es lo único que importa ahora mismo.** El trabajo vive
 en la rama `tmp/entrada-cokima`, no en `preview`.
+
+**Y esto se desarrolla desde dos ordenadores** —un Mac prestado y el HP de Mario—, que el
+2026-08-16 estuvo a punto de costar caro: el HP llevaba diez días sin `fetch`, con una rama local
+llamada `preview` que en realidad era otra cosa. **Antes de leer nada más, §1.1.** Se resume en
+`git fetch --all --prune` nada más sentarse, y en no pushear una rama sin mirar a dónde apunta.
 
 **Antes de tocar nada, leer `cokima-el-rediseno.md`.** Explica por qué se descartó todo lo que se
 propuso antes de llegar aquí, y sin eso la mitad de las decisiones de `Entrada.astro` parecen
@@ -38,8 +45,10 @@ conversación con él, no una tarea que ejecutar por cuenta propia.**
 2. **Identificar diez fotos de plato** con el restaurante. Sin eso no pueden ir en la carta. Ver
    `fotografia.md`.
 3. **Decidir si `tmp/entrada-cokima` se fusiona en `preview`**: o se fusiona o se descarta, y se
-   borra en los dos casos. Con el mismo trato que quedó planteado para `tmp/entrada-ochoa`, que
-   por cierto **sigue esperando decisión desde el 5 de agosto** con diez commits dentro.
+   borra en los dos casos. Es el mismo trato que tuvo `tmp/entrada-ochoa`, **que ya se cerró el
+   2026-08-16**: llevaba diez días parada con la tanda terminada y en verde dentro, y entró en
+   `preview` con `--no-ff` para que se pueda sacar de un tirón (§3.octies). **Esta no está en ese
+   punto**: la entrada nueva convive con la portada vieja debajo, y eso está a medias a propósito.
 4. La clave de Google Maps, validar la carta en inglés, si «fríos» y «calientes» se separan, y
    unificar «Idiazabal» / «Idiazábal». Detalle en §4.
 
@@ -69,8 +78,8 @@ paso**. Sigue esperando material.
 `ignoreCommand` por app; detalle y pruebas en `deploy.md`. Confirmado en real: al subir la rama de
 Cokima, Ochoa quedó en `CANCELED`.
 
-**Cómo levantarlo:** los `pnpm dev` lanzados en segundo plano desde el agente se mueren solos en
-esta máquina. Lanzarlos desde una terminal propia. Para ver el resultado sin `dev`, sirve
+**Cómo levantarlo:** los `pnpm dev` lanzados en segundo plano desde el agente se mueren solos, y
+ha pasado en las dos máquinas. Lanzarlos desde una terminal propia. Para ver el resultado sin `dev`, sirve
 `apps/cokima/.vercel/output/static` tras un `pnpm --filter cokima build` — pero recuerda que el
 optimizador de imágenes de Vercel no existe fuera de Vercel y habrá que suplir `/_vercel/image`.
 
@@ -101,9 +110,50 @@ Detalle en `deploy.md` §Modelo de ramas.
 borra en los dos casos. Mientras tanto **no se integra**, porque la entrada nueva convive con la
 portada vieja debajo y eso está a medias a propósito.
 
-> Ojo: `tmp/entrada-ochoa` sigue abierta y sin resolver desde el 2026-08-05, con diez commits de
-> la entrada animada de Ochoa. Son dos ramas temporales vivas a la vez y no tienen nada que ver
-> entre sí.
+**Es la única rama temporal viva.** `tmp/entrada-ochoa` se cerró el 2026-08-16 y se borró: su
+tanda está dentro de `preview` (§3.octies) y su alias de Vercel murió con ella. Llegó a haber dos
+a la vez, en dos ordenadores distintos, y eso fue justo lo que se lió. **Una cada vez.**
+
+### 1.1 Cambiar de ordenador
+
+El proyecto se desarrolla en dos máquinas —un Mac prestado y el HP de Mario—, nunca a la vez.
+El 2026-08-16 se descubrió que las dos tenían árboles distintos: el HP llevaba desde el día 7 sin
+`fetch`, y su rama local `preview` no era `preview` sino la punta de `tmp/entrada-ochoa`, con un
+botón de «Sync Changes 10↑» en Cursor esperando a que alguien lo pulsara. Habría empujado a
+`origin/preview` exactamente la tanda que Mario había pedido no subir ahí.
+
+No se perdió nada porque el trabajo estaba respaldado en su rama remota, pero la lección va
+escrita aquí para que no dependa de esa suerte:
+
+**Al sentarse en cualquiera de las dos máquinas, antes de leer código ni documentación:**
+
+```bash
+git fetch --all --prune
+git status -sb          # ¿cuántos commits arriba y abajo, y de qué rama?
+git branch -vv          # ¿a dónde apunta de verdad cada rama local?
+```
+
+**Las tres reglas que salieron de aquel susto:**
+
+1. **No fiarse del nombre de una rama local.** Una rama llamada `preview` puede estar en otro
+   sitio. `git branch -vv` dice la verdad; el rótulo de Cursor, no.
+2. **No pulsar «Sync Changes» sin mirar qué commits son.** El botón no distingue entre subir tu
+   trabajo y contaminar la rama de integración.
+3. **Rama temporal que se abre, rama que se sube a `origin` el mismo día.** Un disco duro no es
+   una copia de seguridad, y aquí no se trabaja siempre desde el mismo.
+
+Si una rama local ha derivado, se devuelve a su sitio **después** de comprobar que su contenido
+vive en `origin`:
+
+```bash
+git branch -r --contains <sha>   # ¿está respaldado en alguna rama remota?
+git checkout preview
+git reset --hard origin/preview
+```
+
+**Al terminar en una máquina:** subir todo lo que tenga valor —`git push` de la rama de trabajo—,
+y dejar el corte de este documento con la fecha del día. Lo que no está en `origin` no existe
+para la otra máquina.
 
 ---
 
@@ -425,7 +475,11 @@ Si aun así siguiera, el siguiente sospechoso es de diseño: nuestra `.nav` es `
 con la barra del navegador por el mismo borde superior. La referencia que él cita —vercel.com—
 oculta su propia cabecera al bajar y la devuelve al subir, en vez de dejarla clavada.
 
-## 3.octies La entrada de Cokima (2026-08-14 al 16) — en `tmp/entrada-cokima`
+## 3.nonies La entrada de Cokima (2026-08-14 al 16) — en `tmp/entrada-cokima`
+
+> Se numeró `3.octies` mientras esta rama estuvo aislada, y ese número ya lo tenía la entrada de
+> Los Ochoa en `preview`. Al juntarlas el 2026-08-16 pasó a `nonies`, que es la que le toca por
+> fecha. Si algún documento de esta rama todavía la llama `octies`, es de antes.
 
 **El porqué de todo esto está en `cokima-el-rediseno.md`.** Aquí solo queda lo que hay que saber
 para no romperlo.
@@ -466,6 +520,90 @@ ninguna de esas medidas seguirá valiendo. Por eso el rótulo lleva una sombra a
 es lo único que aguanta un fondo que se mueve. **Cuando el vídeo esté, hay que volver a medir.**
 
 ---
+
+## 3.octies La entrada de Los Ochoa (2026-08-06) — ya en `preview`
+
+Mario la pidió «sencilla pero llamativa», con una restricción que mandaba sobre todo lo demás:
+«no queremos generar fricción a todo el que entre haciéndole esperar una animación». Se eligió
+sobre un boceto con tres variantes reproducibles, y **la elección es provisional**: el diseño
+separa el andamiaje del gesto para que cambiarla cueste dos `@keyframes`. Todo el detalle, con
+las dos descartadas y sus motivos, en `superpowers/specs/2026-08-06-entrada-ochoa-design.md`.
+
+**Qué hace.** Sobre una plancha roja, «LOS» y «OCHOA» llegan torcidas de lados opuestos y encajan;
+se les despega la sombra dura; y después la plancha se recoge hasta medir exactamente la barra,
+con el rótulo aterrizando dentro y los botones entrando desde el borde derecho. **1,4 s**,
+repartidos mitad y mitad: 700 ms para que el rótulo se monte y se lea, 700 ms para que se vaya a su
+sitio. No estrena vocabulario: es el telón del menú y la plancha de la barra haciendo un gesto
+nuevo, y la costura no se ve porque al terminar la recogida debajo hay el mismo rojo.
+
+**Dos correcciones de Mario al verla en el móvil**, y las dos valen más que su arreglo:
+
+- **El rótulo decía «Los Ochoa» y el de la barra «LOS OCHOA».** El componente reimplementaba a
+  mano la fórmula de `.cartel` —familia e interlineado— en vez de usar la clase, así que se dejó
+  por el camino el `text-transform` y el `letter-spacing`. **Ninguna de las mediciones podía
+  cazarlo**: el aterrizaje daba desvío 0 porque era exacto… sobre otra palabra. Con la clase
+  puesta, el residuo de alto además cae de 0,43 px a 0,01. Regla 20 de `movimiento.md`, reescrita.
+- **«La animación se nota muy poco», y la alargó a 1,4 s.** El diagnóstico que salió de ahí es lo
+  aprovechable: el problema no era la velocidad del movimiento sino que no daba tiempo a leer el
+  nombre antes de que empezara a marcharse. De ahí el reparto mitad y mitad en vez de estirar las
+  tres fases por igual. Nace `--dur-recogida`, porque `--dur-in` mide un panel que aparece y esto
+  recorre la pantalla entera. Y el seguro sube de 3 s a 4,5 s: con la entrada en 1,4 s se habría
+  quedado sin margen sobre el peor caso legítimo y podría haber cortado una entrada que iba bien.
+- **El rótulo «aparecía de repente y ya», y luego la solución era demasiado seria.** Primero se
+  hizo caer dentro de una máscara; funcionaba y estaba medido, pero Mario pidió «algo más
+  juguetón, que grite tapa y caña jefe». Sobre un boceto con cuatro gestos eligió el **encaje de
+  dos mitades**: «LOS» y «OCHOA» llegan torcidas de lados opuestos y se enderezan al juntarse. Es
+  el rótulo de bar montado a mano, que nunca queda a plomo. Nace `--tuerce` (4deg), que es a la
+  rotación lo que `--shift` es al desplazamiento. **La cortina retirada deja una lección que
+  quedó escrita en la regla 14: correcta no es lo mismo que adecuada.**
+- **Los botones de la barra se descubrían de golpe**, que es lo que prohíbe la regla 10 —lo vio
+  Mario sin conocerla—. Ahora entran desde el borde derecho **durante** la recogida y por encima
+  de la plancha, así que todo converge en el mismo instante en vez de dejar un hueco muerto.
+  Costó cuatro fallos que no dan ningún error y son las reglas 21 a 24, nuevas: un `z-index` alto
+  no vale dentro de un contexto de apilamiento ajeno —la barra es `sticky` y encierra a sus
+  hijos—; en Astro un `:global()` troceado deja el combinador fuera y la regla no aplica a nada;
+  **una transición heredada convierte en movimiento lo que querías instantáneo y falsea las
+  medidas que tomes en ese momento** —los botones llevan `transition: transform` para el tacto, y
+  eso hacía que se les viera *salir* al apartarlos (el «se asoma ligeramente» que cazó Mario) y
+  que una medición diera −1284px, que los habría hecho entrar por el lado contrario—; y un valor
+  de reserva tiene que ser seguro y no aproximado, que es lo que no era el `160%` inicial.
+
+**Cuándo sale.** Cuatro puertas **en un orden que es parte del contrato**: `prefers-reduced-motion`
+la apaga siempre; `back_forward` nunca la enseña; `reload` **sí**, y por delante de la marca de
+sesión; y si no, sale salvo que la pestaña ya la haya visto. Traducido: siempre que se entra desde
+fuera —en cualquier página, también `/carta`— y también al recargar a propósito, con F5 o con el
+tirón hacia abajo del móvil. **Mario pidió lo de recargar primero al revés y lo cambió al verlo**;
+el orden importa porque recargar implica haber estado ya, así que con las puertas al revés la
+marca de sesión lo taparía siempre. Hay un test que fija ese orden.
+**La decisión se toma antes del primer pintado**, en un script inline del `<head>`; tomarla
+después enseñaría la web y luego la taparía.
+
+**La función de decisión no está escrita dos veces.** El script inline se construye con
+`decideEntrada.toString()`, así que lo que corre en el navegador es exactamente lo que cubren los
+tests. Hay un test que vigila que la función siga sin referenciar nada de su módulo, que es lo que
+rompería el truco en silencio.
+
+**Sin JavaScript no hay entrada** y la web se ve entera desde el primer frame. Y hay un seguro de
+3 s en el propio script inline: es síncrono y el que retira la plancha no lo es.
+
+**El rótulo de la barra vuelve a la home con la entrada puesta**, salvo si ya estás en la home
+—decisión de Mario—. A prueba, detrás de `INTRO_EN_RETORNO` en `packages/ui/src/intro.ts`.
+
+**Verificado midiendo, no de vista:** aterriza con desvío 0 en x, en y y en ancho; no sale al
+recargar ni con el botón de atrás *con la sesión limpia* (para probar la puerta y no el
+`sessionStorage`); sí sale al llegar desde fuera a `/carta`; y los cuatro estados de la entrada
+dejan la página en el mismo píxel. Tests: 45 → 57. `@tombo/ui` no tenía ninguno y ahora tiene
+vitest.
+
+**Pendiente y sin medir: el efecto sobre el LCP, y ahora importa más.** Un velo opaco sobre la
+portada puede empujar esa métrica, y al pasar de 740 ms a 1,4 s la entrada entra de lleno en el
+terreno donde se resiente: el umbral de «bueno» de Google son 2,5 s, así que 1,4 s de velo deja
+poco margen para el resto de la carga en una red móvil. Mario la alargó con el dato delante, pero
+**esto hay que medirlo**, y si sale mal la palanca es ese número.
+
+Tres reglas nuevas en `movimiento.md` (18, 19 y 20) y la primera excepción a la regla 5, que
+merece leerse: el apagado por `prefers-reduced-motion` no vale para una pieza que **solo existe
+para moverse**, porque atenuarla deja un destello rojo de un fotograma.
 
 ## 3.septies El recuadro de foco y «Conócenos» (2026-08-04)
 

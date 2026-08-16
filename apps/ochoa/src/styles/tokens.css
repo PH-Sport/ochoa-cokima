@@ -117,6 +117,35 @@
      colgado—. Cuando alguien toca la tira, esta cuenta se apaga para siempre:
      quien desliza ha dicho que prefiere conducir. */
   --dur-turno: 3.5s;
+  /* La entrada a la web. Tres valores que no cabían en los cinco de base porque
+     no miden ni entrar ni responder a un dedo.
+
+     Suman 1,4s, y el reparto es mitad y mitad a propósito: 700ms para que el
+     rótulo se plante y se lea, 700ms para que se vaya a su sitio. La primera
+     versión duraba 740ms en total y Mario dijo que «se nota muy poco» — el
+     problema no era la velocidad del movimiento, era que no daba tiempo a leer
+     el nombre antes de que empezara a marcharse.
+
+     Lo que la sombra dura tarda en despegarse del rótulo. Es el gesto de un
+     cartel pintado, y no es «entrar»: el rótulo ya está ahí, lo que aparece es
+     su relieve. Se anima moviendo una segunda capa de tinta con `transform`,
+     nunca animando `text-shadow`, que repinta en cada fotograma. */
+  --dur-firma: 280ms;
+  /* El retardo de la recogida, contado desde el arranque —no una duración—.
+     Deja 420ms de rótulo quieto y entero después de la firma, que es lo que se
+     tarda en leer un nombre de tres sílabas sin prisa. */
+  --espera-firma: 700ms;
+  /* Lo que la plancha tarda en recogerse hasta ser la barra. No sale de
+     `--dur-in`: ese mide un panel que aparece, y esto recorre la pantalla
+     entera de arriba abajo. Es el mismo motivo por el que la curva es
+     `--ease-telon` y no la quíntica de la marca (regla 9). */
+  --dur-recogida: 700ms;
+  /* Cuánto se tuerce lo que llega antes de encajar. Es a la rotación lo que
+     `--shift` es al desplazamiento: la medida de un gesto, no un adorno. Un
+     rótulo de bar se monta pieza a pieza y nunca queda a plomo, y cuatro
+     grados es lo que hace falta para que se note que lo colgó alguien y no una
+     imprenta —por debajo no se lee, por encima parece un error de maquetación. */
+  --tuerce: 4deg;
 
   /* Mapeo a las variables neutras de @tombo/ui */
   --t-text: var(--ink);

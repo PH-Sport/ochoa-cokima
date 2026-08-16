@@ -5,7 +5,9 @@ import { ClientRouter } from "astro:transitions";
 import Seo from "@tombo/ui/Seo.astro";
 import ConsentBanner from "@tombo/ui/ConsentBanner.astro";
 import QuietScrollHistory from "@tombo/ui/QuietScrollHistory.astro";
+import { decideEntrada, CLAVE_SESION, SEGURO } from "@tombo/ui/intro.ts";
 import Nav from "../components/Nav.astro";
+import Intro from "../components/Intro.astro";
 import Footer from "../components/Footer.astro";
 import { RESTAURANT } from "../site.ts";
 
@@ -26,6 +28,39 @@ interface Props {
 }
 
 const { title, description, locale, altPath, altSeoPath = altPath, noindex = false } = Astro.props;
+
+/* La entrada se decide ANTES del primer pintado o no sirve de nada: si la
+   decisión llegara después, se vería la web un instante y LUEGO la plancha roja
+   encima, que es peor que no tener entrada. Por eso este guion va inline y
+   síncrono en el `<head>`, y no en un `<script>` de Astro, que sale como módulo
+   diferido.
+
+   `decideEntrada` se serializa en vez de reescribirse aquí: así la lógica que
+   corre en el navegador es exactamente la que cubren los tests de
+   `packages/ui/test/intro.test.ts`, y no dos copias que se separan con el
+   tiempo. Hay un test que vigila que la función siga siendo serializable.
+
+   Sin JavaScript no se pone nada y la web se ve entera desde el primer frame,
+   que es la degradación correcta. */
+const guionEntrada = `
+(function () {
+  var raiz = document.documentElement;
+  var decide = ${decideEntrada.toString()};
+  var nav = performance.getEntriesByType("navigation")[0];
+  var yaVisto = false;
+  try { yaVisto = sessionStorage.getItem(${JSON.stringify(CLAVE_SESION)}) === "1"; } catch (e) {}
+  if (!decide({
+    tipo: (nav && nav.type) || "navigate",
+    yaVisto: yaVisto,
+    menosMovimiento: matchMedia("(prefers-reduced-motion: reduce)").matches
+  })) return;
+  raiz.dataset.intro = "si";
+  try { sessionStorage.setItem(${JSON.stringify(CLAVE_SESION)}, "1"); } catch (e) {}
+  /* El seguro. Este script es síncrono y el que retira la plancha no lo es: sin
+     esto, un módulo que no llegue deja la pantalla en rojo. */
+  setTimeout(function () { raiz.removeAttribute("data-intro"); }, ${SEGURO});
+})();
+`;
 ---
 
 <html lang={locale}>
@@ -53,6 +88,10 @@ const { title, description, locale, altPath, altSeoPath = altPath, noindex = fal
     <link rel="preload" href="/fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin />
     <Seo title={title} description={description} locale={locale} altPath={altSeoPath ?? undefined} restaurant={RESTAURANT} ogImage="/images/hero.jpg" noindex={noindex} />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    {/* La entrada, decidida antes de que se pinte nada. Va después del preload
+        de las fuentes para no retrasarlo: el rótulo de la plancha es Anton, y
+        cuanto antes empiece a bajar, antes puede medirse el viaje. */}
+    <script is:inline set:html={guionEntrada}></script>
     {/* Antes del router, que es a quien envuelve: en Brave de iPhone su
         guardado de scroll era lo que devolvía la barra de direcciones al
         levantar el dedo. El porqué entero, en el propio componente. */}
@@ -65,6 +104,9 @@ const { title, description, locale, altPath, altSeoPath = altPath, noindex = fal
   </head>
   <body>
     <Nav locale={locale} altPath={altPath} />
+    {/* Después de la barra a propósito: el rótulo al que aterriza la entrada
+        vive dentro de ella y tiene que existir ya en el DOM cuando se mide. */}
+    <Intro />
     <slot />
     <Footer locale={locale} />
     <ConsentBanner locale={locale} cookiesPath="/cookies" />
