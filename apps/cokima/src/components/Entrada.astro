@@ -1,0 +1,401 @@
+---
+// apps/cokima/src/components/Entrada.astro
+//
+// La landing de Cokima: la pantalla entera es el plato, y encima solo el claim
+// y dos botones. Sustituye al Hero heredado, que era la portada de Ochoa con
+// otra foto —foto a sangre, titular abajo a la izquierda y una tira de platos
+// asomando por debajo—.
+//
+// EL VÍDEO TODAVÍA NO EXISTE. Mario lo va a montar en Higgsfield con cuatro
+// fotos de platos. La etiqueta `<video>` NO se pinta hasta que el archivo esté
+// de verdad en `public/video/`: se comprueba aquí, al construir. La primera
+// versión lo pintaba siempre confiando en `preload="none"`, y dejaba cuatro
+// 404 en la consola de cada visita —el navegador pide las dos fuentes, y el
+// script las volvía a pedir al llamar a load()—. Con la comprobación, hoy se
+// ve el póster y el día que aparezca el archivo se ve el vídeo, sin tocar nada.
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { Image } from "astro:assets";
+import OpenState from "@tombo/ui/OpenState.astro";
+import { showPhotoGuides } from "@tombo/config/photo-guides";
+import { RESTAURANT } from "../site.ts";
+import poster from "../assets/entrada-poster.jpg";
+
+const publico = (n: string) => fileURLToPath(new URL(`../../public/video/${n}`, import.meta.url));
+const hayMp4 = existsSync(publico("entrada.mp4"));
+const hayWebm = existsSync(publico("entrada.webm"));
+const hayVideo = hayMp4 || hayWebm;
+
+interface Props {
+  locale: "es" | "en";
+}
+const { locale } = Astro.props;
+const es = locale === "es";
+
+const t = es
+  ? {
+      claim: ["Puedes comer en cualquier sitio.", "Pero será solo comer."],
+      carta: "Ver carta",
+      reservar: "Reservar",
+      alt: "Un plato de Cokima servido en la mesa del restaurante",
+      hueco:
+        "Falta el vídeo: cuatro platos en bucle y sin sonido, en public/video/entrada.mp4. En cuanto esté, se pone solo.",
+    }
+  : {
+      claim: ["You can eat anywhere.", "But it will just be eating."],
+      carta: "See the menu",
+      reservar: "Book a table",
+      alt: "A Cokima dish served at the restaurant",
+      hueco:
+        "Video missing: four dishes on a loop, no sound, at public/video/entrada.mp4. It appears on its own once it is there.",
+    };
+
+const hrefCarta = es ? "/carta" : "/en/menu";
+const hrefReserva = es ? "/reservas" : "/en/reservations";
+const guias = showPhotoGuides();
+---
+
+<section class="entrada" id="top">
+  {/* El póster es una imagen de verdad y no un fotograma: mientras no haya
+      vídeo es lo único que se ve, y en iPhone con el ahorro de energía puesto
+      seguirá siendo lo único que se vea aunque el vídeo exista. Por eso se
+      procesa como cualquier otra foto de la casa, con sus tamaños. */}
+  <Image
+    src={poster}
+    alt={t.alt}
+    widths={[420, 720, 1080, 1440]}
+    sizes="100vw"
+    quality={74}
+    loading="eager"
+    fetchpriority="high"
+    class="cartel"
+  />
+
+  {hayVideo && (
+    <video
+      class="cinta"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="none"
+      aria-hidden="true"
+      tabindex="-1"
+    >
+      {hayWebm && <source src="/video/entrada.webm" type="video/webm" />}
+      {hayMp4 && <source src="/video/entrada.mp4" type="video/mp4" />}
+    </video>
+  )}
+
+  {/* Un velo que sube desde abajo, no una capa uniforme: apagar la imagen
+      entera es lo que vuelve intercambiables a las webs de restaurante, y ya
+      se decidió así en la portada anterior. Aquí el degradado llega más arriba
+      porque debajo no hay una línea de texto, hay tres y dos botones. */}
+  <div class="velo"></div>
+
+  <div class="wrap pie">
+    <OpenState hours={RESTAURANT.openingHours} locale={locale} />
+
+    <h1 class="claim">
+      {t.claim[0]}<br /><span class="quiebro">{t.claim[1]}</span>
+    </h1>
+
+    <div class="botones">
+      <a class="btn" href={hrefCarta}>{t.carta}</a>
+      <a class="btn ghost" href={hrefReserva}>{t.reservar}</a>
+    </div>
+  </div>
+
+  {guias && <p class="hueco">{t.hueco}</p>}
+
+  {/* Centinela: mientras este píxel del final de la entrada siga en pantalla,
+      la cabecera flota sin fondo. En cuanto se va por arriba, vuelve a ser una
+      barra normal. Va aquí y no en el Nav porque es la entrada la que pide que
+      la cabecera se aparte, no la cabecera la que sabe de portadas. */}
+  <i class="centinela" aria-hidden="true"></i>
+</section>
+
+<script>
+  /* La portada mide una vez y se queda quieta hasta que cambie el ancho.
+   *
+   * Es el mismo congelado que ya llevaba el Hero anterior, y sigue haciendo
+   * falta por lo mismo: en cuanto un navegador toca el alto del viewport —y
+   * ocultar la barra de direcciones al deslizar es exactamente eso—, una
+   * portada dimensionada en `svh` cambia de tamaño, empuja todo lo que tiene
+   * debajo e invalida la capa entera del documento. Medido en su día: la
+   * portada pasaba de 623 a 561px y arrastraba el documento de 2990 a 2928.
+   *
+   * Solo se vuelve a medir cuando cambia el ANCHO, que es el único cambio de
+   * viewport que de verdad afecta al cálculo. Una rotación recoloca; un vaivén
+   * de barras no toca nada.
+   *
+   * Si el script no llega a correr, manda el `calc()` del CSS y la portada
+   * mide exactamente lo mismo: esto no añade una medida, congela la que ya
+   * había. El caso entero está en docs/barra-del-navegador-ios.md.
+   */
+  let sueltaAnterior: (() => void) | undefined;
+
+  const montaEntrada = () => {
+    const entrada = document.querySelector<HTMLElement>(".entrada");
+    if (!entrada) return undefined;
+
+    const raiz = document.documentElement;
+    const abort = new AbortController();
+    let anchoMedido = -1;
+
+    const mide = () => {
+      if (window.innerWidth === anchoMedido) return;
+      anchoMedido = window.innerWidth;
+      raiz.style.removeProperty("--alto-entrada");
+      raiz.style.setProperty(
+        "--alto-entrada",
+        `${Math.round(entrada.getBoundingClientRect().height)}px`,
+      );
+    };
+
+    mide();
+    window.addEventListener("resize", mide, { passive: true, signal: abort.signal });
+
+    return () => {
+      abort.abort();
+      raiz.style.removeProperty("--alto-entrada");
+    };
+  };
+
+  /* El vídeo no se pide hasta que se sabe que se puede reproducir: con
+   * `preload="none"` el navegador no descarga nada por su cuenta, así que sin
+   * esto no llegaría a sonar ni el primer fotograma. Y no se pide en absoluto
+   * si quien mira ha dicho que no quiere movimiento, o si el archivo todavía no
+   * existe —que es el caso hoy—: en los dos casos se queda el póster, que es
+   * una foto real y no un hueco. */
+  const montaCinta = () => {
+    const cinta = document.querySelector<HTMLVideoElement>(".cinta");
+    if (!cinta) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    cinta.load();
+    /* En iPhone con el ahorro de energía activado, `play()` se rechaza aunque
+       el vídeo esté silenciado. No es un error que haya que registrar: es el
+       teléfono diciendo que no, y la respuesta correcta es quedarse en el
+       póster. */
+    cinta.play().then(
+      () => cinta.classList.add("puesta"),
+      () => {},
+    );
+  };
+
+  /* Mientras la entrada ocupa la pantalla, la cabecera flota encima sin fondo y
+   * sin su botón de reservar, que abajo está a tamaño de pulgar. El estado vive
+   * en el <html> para que lo lea el Nav sin que ninguno de los dos importe al
+   * otro. */
+  let sueltaCabecera: (() => void) | undefined;
+
+  const montaCabecera = () => {
+    const centinela = document.querySelector(".centinela");
+    const raiz = document.documentElement;
+    if (!centinela) {
+      /* Otras páginas no tienen entrada. Con el router de Astro el <html>
+         sobrevive a la navegación, así que hay que borrar la marca a mano o la
+         carta hereda una cabecera transparente sobre nada. */
+      raiz.removeAttribute("data-sobre-entrada");
+      return undefined;
+    }
+
+    const ojo = new IntersectionObserver(
+      ([e]) => raiz.toggleAttribute("data-sobre-entrada", e.isIntersecting),
+      { threshold: 0 },
+    );
+    ojo.observe(centinela);
+
+    return () => {
+      ojo.disconnect();
+      raiz.removeAttribute("data-sobre-entrada");
+    };
+  };
+
+  document.addEventListener("astro:page-load", () => {
+    sueltaAnterior?.();
+    sueltaCabecera?.();
+    sueltaAnterior = montaEntrada();
+    sueltaCabecera = montaCabecera();
+    montaCinta();
+  });
+</script>
+
+<style>
+  .entrada {
+    position: relative;
+    /* La pantalla entera, y no la pantalla menos la cabecera: aquí la cabecera
+       flota encima en vez de ocupar sitio. `svh` y no `vh` por lo de siempre —
+       `vh` cuenta con la barra del navegador retraída y recorta los botones por
+       abajo justo en el móvil, que es donde más importan. El valor congelado lo
+       publica el script. */
+    height: var(--alto-entrada, 100svh);
+    /* Y se sube por debajo de la cabecera. La barra es `sticky`, así que aunque
+       parezca flotar SÍ reserva sus 61px en el flujo: sin este margen la entrada
+       empezaba debajo de ella y se salía otro tanto por abajo. Medido: su final
+       caía en y=904 con un viewport de 844, y el centinela nunca llegaba a
+       entrar en pantalla, así que la cabecera no se volvía transparente jamás.
+       `--t-header-h` lo republica el Nav en cliente con el alto real. */
+    margin-top: calc(-1 * var(--t-header-h, 61px));
+    min-height: 520px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .cartel,
+  .cinta {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+  /* El vídeo entra por encima del póster y solo cuando ya está reproduciéndose:
+     así no hay ni un fotograma en negro entre la foto y la cinta. */
+  .cinta {
+    z-index: -1;
+    opacity: 0;
+    transition: opacity var(--dur-in) var(--ease);
+  }
+  .cinta.puesta {
+    opacity: 1;
+  }
+  .velo {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    /* Los topes salen de medir dónde cae el texto, no de tantear: el claim
+       ocupa del 37% al 55% de la altura contando desde abajo, y el estado llega
+       al 59%. Con la curva anterior —0.52 al 46%— el píxel más claro que queda
+       bajo el claim daba 2,13:1 con el texto hueso, cuando un titular de 40px
+       necesita 3:1. Así que el velo se mantiene denso hasta pasado el 62% y
+       solo entonces se abre, que es lo que deja el plato limpio arriba, que es
+       donde se mira. */
+    background: linear-gradient(
+      to top,
+      rgba(21, 15, 12, 0.97) 0%,
+      rgba(21, 15, 12, 0.9) 32%,
+      rgba(21, 15, 12, 0.81) 62%,
+      rgba(21, 15, 12, 0.18) 86%,
+      rgba(21, 15, 12, 0) 100%
+    );
+  }
+  /* El velo tiene que ir por encima del vídeo, no solo del póster. */
+  .cinta.puesta ~ .velo {
+    z-index: -1;
+  }
+
+  .pie {
+    position: relative;
+    width: 100%;
+    display: grid;
+    gap: clamp(14px, 2.4vh, 22px);
+    /* El cartel de cookies vive en esta misma esquina durante la primera
+       visita. `--t-consent-h` lo publica el propio cartel y vuelve a 0 al
+       decidir. Se aparta con `transform` y no con relleno: mover el relleno
+       obliga a recalcular la disposición en cada fotograma y el resultado en
+       pantalla es idéntico. */
+    padding-bottom: clamp(26px, 5vh, 56px);
+    transform: translateY(calc(-1 * var(--t-consent-h, 0px)));
+    transition: transform var(--dur-out) var(--ease);
+  }
+
+  .claim {
+    margin: 0;
+    font-weight: 800;
+    /* Sube hasta 5.2rem en escritorio, pero en móvil manda el `vw`: en la
+       referencia el titular ocupa un tercio de la pantalla y es lo que hace que
+       la entrada se lea como un cartel y no como una web con una foto. */
+    font-size: clamp(2.5rem, 9.2vw, 5.2rem);
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+    max-width: 15ch;
+    text-wrap: balance;
+    /* Una sombra ancha y muy difusa, no un contorno: sobre el póster el velo ya
+       basta, pero en cuanto entre el vídeo el fondo cambiará en cada fotograma
+       y no hay degradado que valga para todos. Esto oscurece lo justo bajo las
+       letras y es invisible sobre una zona ya oscura. */
+    text-shadow: 0 2px 28px rgba(21, 15, 12, 0.85);
+  }
+  /* El bermellón de la marca es muy oscuro para ponerlo sobre un fondo casi
+     negro: medido, la segunda mitad del claim se quedaba en 1,73:1. El
+     `--vermilion-2` es el mismo rojo de la casa un punto más vivo y sube a
+     rango legible sin traer un color nuevo. */
+  .quiebro {
+    color: var(--vermilion-2);
+  }
+
+  .botones {
+    display: grid;
+    gap: 10px;
+    /* Apilados y a todo el ancho en móvil, que es como están en la referencia y
+       como se pulsan con el pulgar. En cuanto hay sitio se ponen en fila y
+       dejan de estirarse: un botón de 600px de ancho no lo pulsa nadie. */
+    width: 100%;
+    max-width: 420px;
+  }
+  @media (min-width: 620px) {
+    .botones {
+      display: flex;
+      gap: 12px;
+      max-width: none;
+    }
+  }
+  .botones .btn {
+    /* La píldora sale de `--r-control`, que es la decisión de marca: aquí todo
+       lo que se pulsa es redondo del todo, al revés que en la tasca. */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 14px 30px;
+    font-size: 1rem;
+    letter-spacing: 0.01em;
+  }
+  .botones .btn.ghost {
+    /* El contorno claro y no el borde tenue de `.ghost`: sobre una foto, una
+       línea al 12% de opacidad no se ve. */
+    border-color: rgba(243, 234, 221, 0.55);
+    background: rgba(21, 15, 12, 0.28);
+    backdrop-filter: blur(6px);
+  }
+  .botones .btn.ghost:hover {
+    border-color: var(--bone);
+    background: rgba(21, 15, 12, 0.5);
+  }
+
+  /* El hueco del vídeo, solo en desarrollo y en las previews por rama. Lo
+     decide `showPhotoGuides()` y hay tests que fijan que en producción no
+     existe: no es cuestión de acordarse de quitarlo. */
+  /* Un píxel al final de la sección, sin tamaño ni color: solo existe para que
+     el observador tenga algo que mirar. */
+  .centinela {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+  }
+
+  .hueco {
+    position: absolute;
+    left: 50%;
+    top: 16px;
+    transform: translateX(-50%);
+    margin: 0;
+    z-index: 2;
+    max-width: min(92%, 30rem);
+    text-align: center;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    color: var(--bone);
+    background: rgba(21, 15, 12, 0.82);
+    border: 1px dashed var(--ember);
+    border-radius: var(--r-caja);
+    padding: 7px 12px;
+    backdrop-filter: blur(4px);
+  }
+</style>

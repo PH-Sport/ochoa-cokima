@@ -106,7 +106,7 @@ img {
   color: #fff;
   padding: 12px 22px;
   border: 0;
-  border-radius: 3px;
+  border-radius: var(--r-control);
   cursor: pointer;
   /* Responde a un dedo, así que va con la duración corta: lo que reacciona a
      una pulsación tiene que sentirse instantáneo. */

@@ -25,7 +25,28 @@
   --t-surface: var(--ground-2);
   --t-accent: var(--vermilion);
   --t-accent-contrast: #fff;
-  --t-radius: 6px;
+
+  /* CURVATURA. Ochoa tiene cuatro escalones que crecen con la pieza —4, 7, 9 y
+     12— y su comentario dice que dejan de crecer en las grandes «donde seguir
+     subiendo la convertiría en una pastilla». Cokima toma la decisión contraria
+     en ese mismo eje, y ahí está media diferencia entre las dos casas:
+
+       lo que se PULSA  -> píldora siempre, sin escala. El radio no es un valor,
+                           es la mitad de la altura de la pieza, así que un
+                           botón alto y uno bajo salen igual de redondos.
+       lo que se MIRA   -> escala proporcional de tres pasos, que sí crece con
+                           el tamaño. Una foto grande no puede llevar la misma
+                           esquina que una etiqueta.
+
+     Y no hay un radio único suelto: el 6px plano que había antes se usaba igual
+     para un botón que para una tarjeta. */
+  --r-control: 999px; /* botones, chapas, cualquier cosa pulsable */
+  --r-caja: 10px; /* fichas y piezas de ~55-90px */
+  --r-panel: 14px; /* paneles y bloques medianos */
+  --r-marco: 20px; /* fotos, mapa y superficies grandes */
+
+  --t-radius: var(--r-panel);
+  --t-radius-control: var(--r-control);
   --t-card-border: 1px solid var(--ground-3);
   --t-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
 

@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import { pickFeatured } from "@tombo/content";
 import Base from "../../layouts/Base.astro";
-import Hero from "../../components/Hero.astro";
+import Entrada from "../../components/Entrada.astro";
 import Highlights from "../../components/Highlights.astro";
 
 const featured = pickFeatured((await getCollection("menu-en")).map((e) => e.data));
@@ -14,7 +14,7 @@ const featured = pickFeatured((await getCollection("menu-en")).map((e) => e.data
   locale="en"
   altPath="/"
 >
-  <Hero locale="en" />
+  <Entrada locale="en" />
 
   <Highlights dishes={featured} locale="en" href="/en/menu" />
 

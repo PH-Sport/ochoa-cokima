@@ -100,6 +100,26 @@ const telHref = `tel:${RESTAURANT.telephone.replace(/\s/g, "")}`;
     background: rgba(21, 15, 12, 0.82);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
+    /* `background-color` y no el atajo `background`: el atajo arrastra imagen,
+       posición y tamaño, que aquí no cambian, y transicionarlo entero es más
+       caro sin que se vea distinto. */
+    transition:
+      background-color var(--dur-out) var(--ease),
+      border-color var(--dur-out) var(--ease);
+  }
+  /* Sobre la entrada la cabecera desaparece como barra y deja solo el rótulo y
+     la hamburguesa flotando sobre el plato: el marco de la referencia. Lo marca
+     el centinela de Entrada.astro. Con el menú abierto vuelve el fondo, o los
+     enlaces del panel se leerían sobre la foto. */
+  :global(html[data-sobre-entrada]:not(.menu-open)) .nav {
+    background-color: transparent;
+    backdrop-filter: none;
+    border-bottom-color: transparent;
+  }
+  /* Y se va el botón de reservar, que abajo está a tamaño de pulgar. Repetirlo
+     aquí arriba, pequeño, era pedir dos veces lo mismo en la misma pantalla. */
+  :global(html[data-sobre-entrada]:not(.menu-open)) .nav-actions .btn {
+    display: none;
   }
   /* Con el menú abierto el documento deja de tener scroll, y una cabecera
      `sticky` sin scroll del que colgar cae a su posición en el flujo: si la

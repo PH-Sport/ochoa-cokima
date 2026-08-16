@@ -4,7 +4,7 @@ import { pickFeatured } from "@tombo/content";
 import { showPhotoGuides } from "@tombo/config/photo-guides";
 import PhotoGuide from "@tombo/ui/PhotoGuide.astro";
 import Base from "../layouts/Base.astro";
-import Hero from "../components/Hero.astro";
+import Entrada from "../components/Entrada.astro";
 import Highlights from "../components/Highlights.astro";
 
 const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data));
@@ -29,7 +29,7 @@ const casa = [
   locale="es"
   altPath="/en/"
 >
-  <Hero locale="es" />
+  <Entrada locale="es" />
 
   <Highlights dishes={featured} locale="es" href="/carta" />
 
