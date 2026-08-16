@@ -72,5 +72,36 @@ rompe el build a propósito, y así debe seguir.
 Las `tmp/*` son temporales y esperan decisión de Mario: o se fusionan o se descartan, y se borran
 en los dos casos. **Una viva cada vez** — llegó a haber dos, en dos ordenadores, y eso fue el lío.
 
-Al terminar en una máquina: subir la rama de trabajo y dejar el corte de `docs/estado.md` con la
-fecha del día. Lo que no está en `origin` no existe para la otra máquina.
+## Al cerrar: escribir para el que venga
+
+**La continuidad la sostiene el repositorio, no la memoria de nadie.** La del agente se borra al
+acabar la sesión, y la de Mario cambia de ordenador. Si algo importa y no está escrito aquí, se ha
+perdido — y lo que se pierde antes es siempre lo mismo: **el porqué**. Un agente que solo lee
+*qué* se hizo vuelve a proponer lo que ya se descartó, y esa vuelta ya se ha pagado más de una vez.
+
+Esto no es un ideal: es el estándar que este repositorio ya tiene. Los últimos veinte commits
+promedian **29 líneas** de mensaje, y `docs/cokima-el-rediseno.md` dedica secciones enteras a *lo
+que se propuso y se descartó*, *lo que NO está y es deliberado*, *las trampas que costaron tiempo*
+y *lo que no hay que volver a discutir*. **Mantener ese listón, no bajarlo.**
+
+Antes de cerrar una tanda:
+
+1. **`docs/estado.md`, siempre.** Es el punto de entrada. Actualizar el corte con la fecha del día
+   y la §0 «por dónde seguir» —qué está hecho, qué está a medias y a propósito, qué espera a
+   Mario—. Un documento que dice algo que ya no es cierto hace más daño que no decir nada.
+2. **El commit explica por qué, no qué.** El diff ya cuenta el qué. El mensaje cuenta el problema
+   real, qué se probó y falló, y qué decisión se tomó — con el número medido, no con la impresión.
+3. **Lo descartado se escribe con su motivo.** Si no, vuelve. Cada dirección que Mario paró está
+   registrada precisamente para que nadie la reproponga creyéndola nueva.
+4. **Las trampas se convierten en regla.** Lo que costó tiempo y no daba ningún error va a las
+   reglas numeradas de `docs/movimiento.md` o a la §correspondiente del caso. Ahí está el valor
+   que no se ve en el código.
+5. **Lo medido va con su número y su método.** «Se ve bien» no es un dato; «desvío 0 en x, y y
+   ancho, medido con la sesión limpia» sí. Y si algo no se ha medido, se dice que no se ha medido.
+6. **Una decisión grande merece documento propio**, con el molde de `cokima-el-rediseno.md`: el
+   problema real, la distinción que ordena, lo descartado, y lo que no hay que volver a discutir.
+7. **Nada inventado.** Ni contenido de las cartas, ni horarios, ni datos del local, ni resultados
+   que no se hayan comprobado. Donde falta material se deja el hueco marcado y se dice que falta.
+
+Y lo logístico, que sin ello lo anterior no viaja: **subir la rama de trabajo**. Lo que no está en
+`origin` no existe para la otra máquina.
