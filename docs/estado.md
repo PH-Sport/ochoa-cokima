@@ -142,13 +142,24 @@ git branch -vv          # ¿a dónde apunta de verdad cada rama local?
 3. **Rama temporal que se abre, rama que se sube a `origin` el mismo día.** Un disco duro no es
    una copia de seguridad, y aquí no se trabaja siempre desde el mismo.
 
-Si una rama local ha derivado, se devuelve a su sitio **después** de comprobar que su contenido
-vive en `origin`:
+Si una rama local ha derivado, **se prueba primero el camino que no destruye nada**:
+
+```bash
+git checkout preview
+git pull --ff-only      # si avanza, no había divergencia real: se acabó
+```
+
+Es exactamente lo que le toca al HP: sus diez commits acabaron dentro de `preview` al fusionarse
+la entrada de Ochoa, así que su rama local es un **ancestro** de `origin/preview` y sube sola sin
+perder nada. **El `--ff-only` es el seguro**: si hubiera commits realmente divergentes se niega a
+moverse, en vez de tejer un merge a ciegas.
+
+Solo si se niega hay divergencia de verdad. Y entonces se comprueba dónde vive lo que se va a
+tirar **antes** de tirarlo:
 
 ```bash
 git branch -r --contains <sha>   # ¿está respaldado en alguna rama remota?
-git checkout preview
-git reset --hard origin/preview
+git reset --hard origin/preview  # solo con esa respuesta en la mano
 ```
 
 **Al terminar en una máquina:** subir todo lo que tenga valor —`git push` de la rama de trabajo—,
