@@ -1,5 +1,9 @@
 # Instrucciones del repositorio
 
+> **Este fichero es la fuente única.** `AGENTS.md` y `.cursor/rules/proyecto.mdc` existen solo
+> para que otros agentes —el de Cursor, entre otros— lleguen hasta aquí, y repiten **únicamente**
+> el bloque de arranque. Si tocas ese bloque, tócalo en los tres; si discrepan, manda este.
+
 ## Antes de nada: sincronizar, y luego leer
 
 **Este proyecto se desarrolla desde dos ordenadores** —el HP de Mario y un Mac prestado—, nunca a

@@ -1,0 +1,41 @@
+---
+description: Instrucciones del repositorio ochoa-cokima: sincronizar antes de leer, y documentar al cerrar
+globs:
+alwaysApply: true
+---
+
+# Instrucciones del repositorio
+
+**Las instrucciones completas están en `CLAUDE.md`, en la raíz. Léelo entero antes de hacer nada**
+—incluido antes de explorar el código o de hacer preguntas—. Aquí solo está el arranque, que es lo
+que no puede fallar. Si algo de aquí discrepa de `CLAUDE.md`, manda `CLAUDE.md`.
+
+## Antes de nada: sincronizar, y luego leer
+
+Este proyecto se desarrolla desde **dos ordenadores** —el HP de Mario y un Mac prestado—, nunca a
+la vez. Los árboles se separan enseguida, y el 2026-08-16 costó un susto: una rama local llamada
+`preview` que en realidad era otra, con diez commits listos para acabar donde no debían.
+
+```bash
+git fetch --all --prune
+git branch -vv                              # a dónde apunta DE VERDAD cada rama local
+git checkout preview && git pull --ff-only  # si se niega, hay divergencia real: parar y avisar
+git checkout tmp/entrada-cokima             # la rama de trabajo viva
+pnpm install
+```
+
+**El orden importa:** `fetch` mueve las referencias remotas, **no** el árbol de trabajo. Leer
+`docs/estado.md` antes del `pull` es leer una versión caducada creyéndola al día.
+
+Después: `CLAUDE.md`, `docs/estado.md` §0 y §1.1, y `docs/cokima-el-rediseno.md`.
+
+## No pulsar «Sync Changes» a ciegas
+
+El botón no distingue entre subir tu trabajo y contaminar la rama de integración. Antes de
+sincronizar desde la interfaz, mirar **qué** commits son y **a dónde** apunta la rama.
+
+## Al cerrar
+
+`CLAUDE.md` § «Al cerrar: escribir para el que venga». La continuidad entre las dos máquinas la
+sostiene lo que se escribe —el porqué, lo descartado, lo medido y las trampas—, no la memoria de
+nadie: la del agente se borra y la de Mario cambia de ordenador.
