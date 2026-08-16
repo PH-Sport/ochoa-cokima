@@ -100,6 +100,17 @@ const guias = showPhotoGuides();
   </h1>
 
   <div class="wrap pie">
+    {/* El aviso de que hay más abajo. NO es el ratoncito con la ruedita ni la
+        flecha que rebota: los dos son el mismo cliché y se reconocen antes de
+        entenderlos. Aquí es un pulso de luz que baja por un riel, que es como
+        se enciende un tubo de neón —y de neón sabe este local—. Decorativo del
+        todo: la página se desliza igual sin él, así que no entra en el árbol de
+        accesibilidad ni le habla a nadie. */}
+    <svg class="baja" viewBox="0 0 2 40" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <line class="riel" x1="1" y1="0" x2="1" y2="40" />
+      <line class="chispa" x1="1" y1="0" x2="1" y2="40" pathLength="100" />
+    </svg>
+
     <div class="botones">
       <a class="btn" href={hrefCarta}>{t.carta}</a>
       <a class="btn ghost" href={hrefReserva}>{t.reservar}</a>
@@ -330,9 +341,70 @@ const guias = showPhotoGuides();
     color: color-mix(in srgb, var(--bone) 34%, var(--bone-dim));
   }
 
+  /* ── El pulso que baja ──────────────────────────────────────────────────
+     Un riel apenas visible y una chispa que lo recorre de arriba abajo, se va
+     por el extremo y deja una pausa antes de volver. Sin rebote y sin vuelta
+     atrás: lo que rebota es un muelle, y esto es luz.
+
+     Va con `stroke-dashoffset` sobre `pathLength="100"`, así que el trazo se
+     mide en porcentaje y no en píxeles: cambiar el alto del riel no descuadra
+     la animación. Y la pausa está dentro de los propios fotogramas —cae en el
+     55% del ciclo y el resto espera fuera de vista—, que sale más barato que
+     encadenar dos animaciones. */
+  .baja {
+    justify-self: center;
+    width: 2px;
+    height: clamp(26px, 4.4vh, 40px);
+    /* La separación que pidió Mario: el pulso no puede quedar pegado al botón
+       ni parecer parte de él. */
+    margin-bottom: clamp(18px, 3vh, 28px);
+    overflow: visible;
+  }
+  /* El riel tiene que verse aunque tenuemente: al 22% daba 1,54:1 sobre la foto
+     —invisible— y durante el segundo y medio de pausa no quedaba nada en
+     pantalla, así que la chispa aparecía de la nada en vez de recorrer algo. */
+  .riel {
+    stroke: rgba(243, 234, 221, 0.36);
+    stroke-width: 2;
+  }
+  .chispa {
+    stroke: var(--bone);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-dasharray: 26 100;
+    animation: pulso-baja 3.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  }
+  @keyframes pulso-baja {
+    0% {
+      stroke-dashoffset: 26;
+      opacity: 0;
+    }
+    14% {
+      opacity: 1;
+    }
+    48% {
+      opacity: 1;
+    }
+    55% {
+      stroke-dashoffset: -100;
+      opacity: 0;
+    }
+    100% {
+      stroke-dashoffset: -100;
+      opacity: 0;
+    }
+  }
+  /* Igual que el rescoldo: nada se mueve cuando no se le ve. Y en cuanto se
+     empieza a bajar el aviso sobra, porque ya se ha hecho caso. */
+  :global(html:not([data-sobre-entrada])) .chispa {
+    animation-play-state: paused;
+  }
+
   .pie {
     position: relative;
     width: 100%;
+    display: grid;
+    justify-items: center;
     /* Pegados abajo, que es lo que pidió Mario, pero nunca por debajo de la
        barra de gestos del iPhone: con `viewport-fit=cover` la página llega al
        borde físico y sin el `env()` los botones acabarían debajo del pasamanos.
