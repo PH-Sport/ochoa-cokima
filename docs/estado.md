@@ -11,7 +11,12 @@
 
 ## 0. Por dónde seguir
 
-**COKIMA SE ESTÁ REHACIENDO ENTERA, y eso es lo único que importa ahora mismo.** El trabajo vive
+**Mario alterna entre las dos webs y dice al empezar la sesión a cuál ataca. Esperar a que lo
+diga, en vez de deducirlo de este documento.** Lo de abajo cuenta dónde quedó cada cosa, no qué
+toca hoy: que el trabajo a medias sea el de Cokima no significa que la sesión vaya de Cokima.
+Queda derogado el orden del 2026-08-04 —«primero Ochoa y Cokima después»—, que ya no rige.
+
+**COKIMA SE ESTÁ REHACIENDO ENTERA, y es lo que tiene trabajo abierto.** El trabajo vive
 en la rama `tmp/entrada-cokima`, no en `preview`.
 
 **Y esto se desarrolla desde dos ordenadores** —un Mac prestado y el HP de Mario—, que el
