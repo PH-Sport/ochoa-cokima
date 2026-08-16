@@ -1,10 +1,10 @@
 ---
 // apps/cokima/src/components/Entrada.astro
 //
-// La landing de Cokima: la pantalla entera es el plato y encima NADA salvo dos
-// botones. Ni titular, ni rótulo, ni hamburguesa, ni el estado de abierto, ni
-// el cartel de cookies: todo eso aparece al deslizar. Es una decisión de Mario
-// y conviene no erosionarla añadiendo «solo una cosita más».
+// La landing de Cokima: la pantalla entera es el plato, el nombre en el medio y
+// dos botones abajo. Y nada más. Ni claim, ni hamburguesa, ni el estado de
+// abierto, ni el cartel de cookies: todo eso aparece al deslizar. Es una
+// decisión de Mario y conviene no erosionarla añadiendo «solo una cosita más».
 //
 // Sustituye al Hero heredado, que era la portada de Ochoa con otra foto —foto a
 // sangre, titular abajo a la izquierda y una tira de platos asomando debajo—.
@@ -35,7 +35,6 @@ const es = locale === "es";
 
 const t = es
   ? {
-      titulo: "Cokima — Kitchen Madness, restaurante en Madrid",
       carta: "Ver carta",
       reservar: "Reservar",
       alt: "Un plato de Cokima servido en la mesa del restaurante",
@@ -43,7 +42,6 @@ const t = es
         "Falta el vídeo: cuatro platos en bucle y sin sonido, en public/video/entrada.mp4. En cuanto esté, se pone solo.",
     }
   : {
-      titulo: "Cokima — Kitchen Madness, restaurant in Madrid",
       carta: "See the menu",
       reservar: "Book a table",
       alt: "A Cokima dish served at the restaurant",
@@ -93,13 +91,13 @@ const guias = showPhotoGuides();
       se decidió así en la portada anterior. */}
   <div class="velo"></div>
 
-  {/* El titular existe pero no se ve. Mario quiere la entrada limpia —solo los
-      dos botones—, y una página sin `<h1>` se queda sin encabezado para Google
-      y para quien navega con lector de pantalla, que es justo quien no puede
-      deducirlo de la foto. Así que se queda, oculto a la vista y disponible
-      para todo lo demás. El claim vuelve a verse más abajo, cuando se
-      construya lo que va debajo. */}
-  <h1 class="solo-lectores">{t.titulo}</h1>
+  {/* El rótulo en el centro. Y como ahora el nombre se ve de verdad, el `<h1>`
+      deja de tener que ir escondido para que la página conserve su encabezado:
+      es el mismo elemento haciendo las dos cosas. */}
+  <h1 class="rotulo">
+    <span class="nombre">Cokima</span>
+    <span class="sub">Kitchen Madness</span>
+  </h1>
 
   <div class="wrap pie">
     <div class="botones">
@@ -232,6 +230,11 @@ const guias = showPhotoGuides();
        `vh` cuenta con la barra del navegador retraída y recorta los botones por
        abajo justo en el móvil, que es donde más importan. El valor congelado lo
        publica el script. */
+    /* Dos filas: el rótulo flota en todo el hueco libre y los botones se apoyan
+       abajo. Con `flex-end`, que es como estaba, el rótulo habría quedado
+       pegado a los botones en vez de en el medio. */
+    display: grid;
+    grid-template-rows: 1fr auto;
     height: var(--alto-entrada, 100svh);
     /* Y se sube por debajo de la cabecera. La barra es `sticky`, así que aunque
        parezca flotar SÍ reserva sus 61px en el flujo: sin este margen la entrada
@@ -241,8 +244,6 @@ const guias = showPhotoGuides();
        `--t-header-h` lo republica el Nav en cliente con el alto real. */
     margin-top: calc(-1 * var(--t-header-h, 61px));
     min-height: 520px;
-    display: flex;
-    align-items: flex-end;
     overflow: hidden;
     isolation: isolate;
   }
@@ -290,26 +291,54 @@ const guias = showPhotoGuides();
     z-index: -1;
   }
 
+  /* El rótulo, centrado en todo el hueco que dejan los botones. */
+  .rotulo {
+    position: relative;
+    align-self: center;
+    justify-self: center;
+    margin: 0;
+    text-align: center;
+    display: grid;
+    gap: clamp(6px, 1.2vh, 12px);
+    /* La misma sombra ancha y difusa que llevaba el claim, y por el mismo
+       motivo: cuando entre el vídeo el fondo cambiará en cada fotograma y no
+       hay degradado que sirva para todos. */
+    text-shadow: 0 2px 28px rgba(21, 15, 12, 0.85);
+  }
+  .nombre {
+    font-weight: 800;
+    font-size: clamp(3.2rem, 16vw, 7rem);
+    line-height: 0.9;
+    /* El nombre respira en vez de apretarse: es un rótulo, no un titular de
+       lectura, y los titulares de esta casa van con tracking negativo. */
+    letter-spacing: 0.01em;
+  }
+  .sub {
+    font-weight: 600;
+    font-size: clamp(0.78rem, 3.2vw, 1rem);
+    letter-spacing: 0.34em;
+    /* El tracking abre por los dos lados y descentra la línea respecto al
+       nombre; el margen izquierdo compensa el hueco que sobra a la derecha. */
+    margin-left: 0.34em;
+    text-transform: uppercase;
+    /* Ni el hueso entero —competiría con el nombre— ni `--bone-dim`, que a este
+       tamaño se quedaba en 4,37:1 sobre la foto y el mínimo son 4,5. Un punto
+       más claro que el apagado, sin traer un color nuevo a la paleta. La
+       primera línea es el respaldo para quien no entienda `color-mix`: se
+       quedaría sin color de texto y heredaría el hueso a secas. */
+    color: var(--bone-dim);
+    color: color-mix(in srgb, var(--bone) 34%, var(--bone-dim));
+  }
+
   .pie {
     position: relative;
     width: 100%;
-    /* Sin apartarse por `--t-consent-h`: el cartel de cookies ya no aparece
-       mientras se está en la entrada, así que aquí no hay nada de lo que
-       huir. Vuelve a su sitio, y con él el desplazamiento, en cuanto se baja. */
-    padding-bottom: clamp(26px, 5vh, 56px);
-  }
-
-  /* Presente para Google y para un lector de pantalla, invisible para el resto.
-     Recorte y no `display: none`, que lo sacaría también del árbol de
-     accesibilidad y dejaría la página sin encabezado de verdad. */
-  .solo-lectores {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: 0;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
+    /* Pegados abajo, que es lo que pidió Mario, pero nunca por debajo de la
+       barra de gestos del iPhone: con `viewport-fit=cover` la página llega al
+       borde físico y sin el `env()` los botones acabarían debajo del pasamanos.
+       Sin apartarse por `--t-consent-h`, además: el cartel de cookies ya no
+       aparece mientras se está en la entrada. */
+    padding-bottom: calc(clamp(14px, 2.2vh, 26px) + env(safe-area-inset-bottom, 0px));
   }
 
   .botones {
@@ -330,12 +359,17 @@ const guias = showPhotoGuides();
   }
   .botones .btn {
     /* La píldora sale de `--r-control`, que es la decisión de marca: aquí todo
-       lo que se pulsa es redondo del todo, al revés que en la tasca. */
+       lo que se pulsa es redondo del todo, al revés que en la tasca.
+
+       Achatados, como los quería Mario, pero no por debajo de 48px: es el área
+       que hace falta para acertar con el pulgar sin mirar, y una píldora ancha
+       y baja engaña —parece más grande de lo que es de alto—. Con 48 se ve
+       claramente más plano que los 54 de antes y se sigue pulsando bien. */
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 52px;
-    padding: 14px 30px;
+    min-height: 48px;
+    padding: 10px 30px;
     font-size: 1rem;
     letter-spacing: 0.01em;
   }
