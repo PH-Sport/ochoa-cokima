@@ -338,7 +338,7 @@ const guias = showPhotoGuides();
        borde físico y sin el `env()` los botones acabarían debajo del pasamanos.
        Sin apartarse por `--t-consent-h`, además: el cartel de cookies ya no
        aparece mientras se está en la entrada. */
-    padding-bottom: calc(clamp(14px, 2.2vh, 26px) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
   }
 
   .botones {
@@ -383,6 +383,90 @@ const guias = showPhotoGuides();
   .botones .btn.ghost:hover {
     border-color: var(--bone);
     background: rgba(21, 15, 12, 0.5);
+  }
+
+  /* ── El rescoldo ────────────────────────────────────────────────────────
+     Mario los quería «vivos», con una sombra que se mueva, y avisó de no caer
+     en lo de siempre. Lo de siempre es: un brillo que barre la pieza de
+     izquierda a derecha, un halo que late con ritmo, o un borde de degradado
+     girando. Los tres se reconocen al primer vistazo porque tienen CADENCIA —
+     se les oye el compás— y porque el gesto no significa nada.
+
+     Esto es otra cosa. Cokima es un mundo de brasa: sus colores se llaman
+     `vermilion` y `ember`, el local tiene un mural de fuego y un neón. Y una
+     brasa no late ni barre: su luz se mueve poco, despacio y sin compás. De ahí
+     las tres reglas de este efecto:
+
+       1. LENTO      19 y 26 segundos por vuelta. A esa velocidad no se ve
+                     moverse; se nota que no está quieto, que es distinto.
+       2. POCO       tres píxeles de recorrido y un 3% de escala. Si se aprecia
+                     el desplazamiento, ya es demasiado.
+       3. SIN COMPÁS los fotogramas clave caen en 23%, 41%, 68% y 86%, que no
+                     son equidistantes, y los dos botones llevan duraciones y
+                     retardos distintos. Nunca coinciden, así que no hay pulso
+                     que seguir.
+
+     Se anima un pseudo-elemento con `transform` y no la `box-shadow` del botón:
+     una sombra animada repinta en cada fotograma, y esto se compone en la GPU
+     sin tocar el dibujo. */
+  .botones .btn {
+    position: relative;
+    z-index: 0;
+  }
+  .botones .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    /* El sólido irradia su propio rojo. */
+    background: var(--vermilion);
+    filter: blur(11px);
+    opacity: 0.4;
+    animation: rescoldo 19s ease-in-out infinite;
+  }
+  /* El de contorno no irradia color —sería un botón rojo disfrazado—: lo que se
+     mueve detrás es el propio fondo de la casa, y sirve para despegarlo de la
+     foto, que es lo que de verdad le hace falta ahí. */
+  .botones .btn.ghost::before {
+    background: var(--ground);
+    filter: blur(16px);
+    opacity: 0.55;
+    animation-duration: 26s;
+    animation-delay: -7s;
+  }
+  @keyframes rescoldo {
+    0% {
+      transform: translate3d(-2px, 1px, 0) scale(1);
+      opacity: 0.36;
+    }
+    23% {
+      transform: translate3d(2px, -1px, 0) scale(1.02);
+      opacity: 0.5;
+    }
+    41% {
+      transform: translate3d(3px, 2px, 0) scale(1.01);
+      opacity: 0.41;
+    }
+    68% {
+      transform: translate3d(-1px, -2px, 0) scale(1.03);
+      opacity: 0.52;
+    }
+    86% {
+      transform: translate3d(-3px, 0, 0) scale(1.01);
+      opacity: 0.39;
+    }
+    100% {
+      transform: translate3d(-2px, 1px, 0) scale(1);
+      opacity: 0.36;
+    }
+  }
+  /* Nada se mueve fuera de pantalla: es la regla 6 de `movimiento.md`, la misma
+     por la que la cinta rotulada de la tasca se para cuando no se la ve. Aquí
+     el aviso llega gratis, porque `data-sobre-entrada` ya dice si la entrada
+     sigue delante. */
+  :global(html:not([data-sobre-entrada])) .botones .btn::before {
+    animation-play-state: paused;
   }
 
   /* Un píxel al final de la sección, sin tamaño ni color: solo existe para que
