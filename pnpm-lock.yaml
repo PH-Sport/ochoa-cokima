@@ -86,6 +86,10 @@ importers:
       astro:
         specifier: ^6.0.0
         version: 6.4.8(@types/node@24.13.3)(@vercel/functions@3.7.5)(rollup@4.62.2)
+    devDependencies:
+      vitest:
+        specifier: ^3.0.0
+        version: 3.2.7(@types/debug@4.1.13)(@types/node@24.13.3)
 
 packages:
 
