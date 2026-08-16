@@ -2,7 +2,37 @@
 
 ## Estado
 
-**Ochoa ya tiene fotos reales del local; Cokima no.** El 2026-07-30 aparecieron **nueve fotos
+**Desde el 2026-08-14, Cokima tiene mejor material que Ochoa.** Aparecieron **diecinueve fotos
+suyas** en la misma web vieja del grupo, que nadie había mirado, y Mario aportó **seis más del
+local** el 16. Veinticinco en total, cuando la web usaba una.
+
+- `wp-content/uploads/2021/09/` → `cokima-1-1`, `cokima-2-1`, `cokima-3-1`, `cokima-4-1`,
+  `cokima-5-1`, `cokima-6`, `cokima-7`, `cokima-8`. Todas `.jpg` a 1000×1000.
+- `wp-content/uploads/2022/10/` → `1`, `2`, `3`, `1-copia`, `2-copia`, `3-copia`, `1-copia-2`,
+  `2-copia-2`, `1-copia-3`, `1-PORTADA`, `2-PORTADA`. **A 4000×4000**, mejor que nada de Ochoa.
+- Las seis de Mario, en su iCloud Drive (`cokima-fotos/`), **apaisadas** a ~3500×2500 y en
+  Display P3 — **hay que convertirlas a sRGB al procesarlas** o el ocre de las sillas se va
+  hacia el verde. Con `sharp` es `.withIccProfile('srgb')`.
+
+**Lo que enseñan, y que no sabíamos:** el local tiene **dos murales**, no uno —el sol sobre
+hormigón y un segundo con un personaje de ojos en aspa bajo la palabra *Madness*, rodeado de los
+nombres de sus propios platos escritos a mano—; un **neón de pared entera** que dice «Orgasm, at
+the first bite» sobre una rejilla con cientos de polaroids de clientes; y que **las sillas son
+ocre mostaza, no naranjas** (en la foto antigua engañaba la luz).
+
+**Lo que sigue faltando: saber qué plato es cada foto.** De las doce de plato solo dos son
+seguras —la tarta de queso y las croquetas—. **Una foto solo se asigna a un plato cuando hay
+certeza de que es ese plato**, así que las otras diez no pueden entrar en la carta. Se le preparó
+a Mario una hoja de contactos numerada para que el restaurante las identifique; está pendiente.
+Para fondos y ambiente sí se usan, porque ahí no afirman nada.
+
+En `cokima-fotos/para-el-video/` de su iCloud hay cinco elegidas para el vídeo de la entrada,
+**todas sin manos a la vista**: los generadores de vídeo deforman dedos y en un plano cerrado de
+comida eso canta.
+
+---
+
+**Ochoa ya tiene fotos reales del local.** El 2026-07-30 aparecieron **nueve fotos
 en la web vieja del grupo** que nadie había mirado:
 `grupotombo.com/wp-content/uploads/2021/09/LosOchoa-1..9.jpg`, a 1000×1000. Con ellas se
 resolvieron la portada de Ochoa y las cuatro de «la casa». **Quedan cuatro sin usar y son

@@ -134,6 +134,37 @@ más lejos; Ochoa es una tasca y es seca.
     declaran 1000px—, así que el track se negaba a encoger por mucho `width: 100%` que llevara la
     foto. Se arregla con `minmax(0, 1fr)`, **en la pieza y no tapándolo en el documento**.
 
+18. **El movimiento ambiental se delata por la cadencia, no por el efecto.** Mario pidió botones
+    «vivos» y un aviso de scroll, y en los dos avisó: nada de patrones típicos de IA. Lo típico
+    —el brillo que barre la pieza, el halo que late, el borde de degradado girando, el ratoncito
+    con la ruedita, la flecha que rebota— no se reconoce por *qué* hace, sino porque **se le oye
+    el compás** y porque el gesto no dice nada del sitio. Las dos piezas de la entrada de Cokima
+    se hicieron contra eso, con tres condiciones que valen para cualquier movimiento que solo
+    esté ahí para dar vida:
+
+    - **Lento hasta que no se vea moverse.** El rescoldo de los botones recorre 6px en horizontal
+      y 3,9 en vertical a lo largo de 19 segundos: **0,52 píxeles por segundo**. No se ve
+      moverse; se nota que no está muerto, que no es lo mismo.
+    - **Poco.** Escala entre 1 y 1,03, opacidad entre 0,36 y 0,52. Si se aprecia el
+      desplazamiento, ya es demasiado.
+    - **Sin compás.** Los fotogramas caen en 23%, 41%, 68% y 86% —no equidistantes— y las dos
+      piezas llevan duraciones distintas y primas entre sí (19s y 26s), con retardo negativo. No
+      coinciden nunca, así que no hay pulso que seguir.
+
+    Y el gesto sale del sitio: Cokima es un mundo de brasa y de neón —sus colores se llaman
+    `vermilion` y `ember`, y el local tiene un mural de fuego—, así que los botones respiran como
+    un rescoldo y el aviso de scroll es una chispa que baja por un riel, como se enciende un tubo.
+    Se anima un pseudo-elemento con `transform`, nunca la `box-shadow` del botón: una sombra
+    animada repinta en cada fotograma y esto se compone en la GPU.
+
+19. **Tocar una animación por la Web Animations API la desacopla del CSS, y eso falsea la
+    comprobación siguiente.** Al verificar que el rescoldo se pausaba fuera de pantalla salió que
+    no se pausaba. La regla estaba bien: el test había hecho antes `anim.currentTime = ...` y
+    `anim.play()` para muestrear el recorrido, y a partir de ahí la animación deja de obedecer al
+    `animation-play-state` del CSS. En página limpia se pausaba. **Cuando una medición contradice
+    a otra, sospechar del instrumento antes que del código**, y repetirla en una página recién
+    cargada. Es la hermana de la regla 8.
+
 ## Qué se mueve hoy
 
 | Dónde | Qué | Con qué |
@@ -146,6 +177,9 @@ más lejos; Ochoa es una tasca y es seca.
 | Cinta rotulada (Ochoa) | Recorre en bucle | `translateX`, `--dur-cinta` |
 | Tira de platos (Ochoa) | El turno se rellena y pasa al siguiente | `scaleX`, `--dur-turno` |
 | Portada | El titular se aparta del cartel de cookies | `translateY`, `--dur-out` |
+| Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |
+| Entrada (Cokima) | Una chispa baja por un riel, avisando de que hay más | `stroke-dashoffset`, 3,2s |
+| Entrada (Cokima) | La cabecera, el cartel de cookies y el aviso entran al deslizar | `opacity` + `visibility`, `--dur-in` / `--dur-out` |
 | Entre páginas | Barrido lateral, bidireccional | `translateX`, `--dur-in` |
 
 Y ya. Todo lo demás está quieto a propósito.

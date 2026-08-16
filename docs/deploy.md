@@ -55,20 +55,48 @@ comportamiento esperado hasta que lleguen los accesos.
 
 ## Evitar que cada push reconstruya las dos webs
 
-Por defecto, cualquier push dispara el build de **ambos** proyectos: cambiar un precio de
-Los Ochoa redesplegaría también Cokima. Se corrige con el *Ignored Build Step*
-(Settings → Git), idéntico en los dos proyectos:
+**Implementado el 2026-08-16.** Hasta entonces cualquier push disparaba el build de **ambos**
+proyectos, y no era teórico: de los veinte despliegues anteriores de Cokima, la mayoría eran
+commits que no la tocaban —«fix(ochoa): los botones dejan de asomar», «docs: fuera las
+referencias cruzadas»—. Lo levantó Mario al verlo.
 
-```bash
-git diff --quiet HEAD^ HEAD -- . ../../packages ../../pnpm-lock.yaml
+Va en el repo y no en el panel, que es donde estaba planteado antes: un `ignoreCommand` en el
+`vercel.json` de cada app, apuntando a un script común.
+
+```
+apps/cokima/vercel.json   →  sh ../../scripts/vercel-ignore.sh apps/cokima
+apps/ochoa/vercel.json    →  sh ../../scripts/vercel-ignore.sh apps/ochoa
 ```
 
-El comando se ejecuta desde el Root Directory, así que `.` es la app correspondiente.
-Semántica de Vercel: **salida 0 → se omite el build; salida distinta de 0 → se construye**.
-Es decir: si no ha cambiado nada de esta app, ni de los paquetes compartidos, ni las
-dependencias, no se reconstruye. Un cambio en `packages/ui` reconstruye las dos, que es lo
-correcto. Si el comando falla (p. ej. `HEAD^` no resuelve en un clon superficial), devuelve
-distinto de 0 y se construye igualmente: el fallo va del lado seguro.
+**Vercel interpreta el código de salida al revés de lo habitual: 0 salta el build, 1 construye.**
+Y da la casualidad de que `git diff --quiet` devuelve exactamente eso —0 si no hay cambios—, así
+que el script termina en ese comando y no traduce nada.
+
+Reconstruye si cambia la propia app, `packages/`, el lockfile o la configuración del workspace:
+las dos apps dependen de los cuatro paquetes, así que un cambio ahí sí tiene que llegar a las
+dos. Ya no reconstruye nada un cambio en `docs/` ni en la app de la otra marca.
+
+Tres detalles que no son evidentes y que conviene no «simplificar»:
+
+- **El `cd` a la raíz del repo.** El comando corre desde el Root Directory de cada proyecto y las
+  rutas de `git diff` se resuelven contra el directorio actual. Sin ese `cd`, la comparación se
+  haría sobre rutas que no existen y no detectaría nada — es decir, saltaría siempre.
+- **Las dos salidas de seguridad devuelven 1 (construir).** El clon de Vercel es superficial y
+  puede no traer `HEAD^`; y sin argumento no hay forma de decidir. En la duda, se construye.
+- **Requiere «Include source files outside of the Root Directory»** activo en los dos proyectos.
+  Ya lo está, o los `workspace:*` no resolverían y no construiría ninguna.
+
+Probado contra cuatro commits reales del historial antes de subirlo:
+
+| commit | qué toca | resultado |
+|---|---|---|
+| `487d8b3` | solo `docs/` | saltan las dos |
+| `4d09cff` | solo Cokima | construye Cokima, salta Ochoa |
+| `f4d2367` | `packages/ui` | construyen las dos |
+| `9e803f2` | Ochoa + `packages/ui` | construyen las dos |
+
+Y confirmado en producción con el primer push a `tmp/entrada-cokima`: Cokima construyó y **Ochoa
+quedó en `CANCELED`**.
 
 ## Dominios y SEO
 

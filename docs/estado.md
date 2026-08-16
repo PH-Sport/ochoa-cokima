@@ -1,86 +1,87 @@
 # Estado del proyecto
 
-- **Corte:** 2026-08-04
-- **Rama de trabajo:** `preview` (desarrollo) · `main` (producción, sin nada nuevo aún)
+- **Corte:** 2026-08-16
+- **Rama de trabajo:** `tmp/entrada-cokima` (el rediseño de Cokima, en curso) · `preview`
+  (desarrollo) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
 
 ---
 
 ## 0. Por dónde seguir
 
-El árbol está limpio y `preview` subido. Las tandas del 2026-07-31 (§3.quater y §3.quinquies) y
-la del 2026-08-01 (§3.sexies) están commiteadas, construidas y con los 45 tests en verde.
+**COKIMA SE ESTÁ REHACIENDO ENTERA, y eso es lo único que importa ahora mismo.** El trabajo vive
+en la rama `tmp/entrada-cokima`, no en `preview`.
 
-**La barra del navegador en iPhone quedó resuelta el 2026-08-01.** Era el `ClientRouter` de Astro,
-que escribe en el historial cada vez que el scroll se detiene; en los navegadores de iPhone que no
-son Safari eso obliga a sacar la barra de direcciones. El arreglo es
-`packages/ui/src/QuietScrollHistory.astro`. Todo el caso —la causa, la prueba que lo demostró en el
-Brave de Mario, la lista de descartes y **los tres errores de método que costaron cuatro vueltas**—
-está en `barra-del-navegador-ios.md`. Vale la pena leer su §8 antes de perseguir cualquier fallo
-que solo se vea en un móvil.
+**Antes de tocar nada, leer `cokima-el-rediseno.md`.** Explica por qué se descartó todo lo que se
+propuso antes de llegar aquí, y sin eso la mitad de las decisiones de `Entrada.astro` parecen
+arbitrarias. En dos frases: Cokima era *literalmente* Ochoa con dos secciones menos —mismos
+componentes, mismos nombres de clase—, Mario lo paró, y la distinción que ordena el rediseño es
+suya: **Ochoa es transacción social** («pido lo de siempre, me siento y a charlar con mi gente»)
+y **Cokima es experiencia pícara**.
 
-**Cokima ya tiene los dos arreglos de fondo que le faltaban** (portada congelada y `minmax(0, 1fr)`
-en sus tres retículas), medidos antes y después: su portada pasaba de 623 a 561px cada vez que la
-barra asomaba, arrastrando el documento entero, y ahora no se mueve. Ojo con un matiz que quedó
-escrito en el §11 de ese documento: **sus retículas no desbordaban** —eso se había supuesto sin
-medir—; el `minmax` es prevención para cuando entren las fotos reales.
+**Lo construido:** la landing. `apps/cokima/src/components/Entrada.astro` — la pantalla entera es
+el plato, el nombre en el medio, dos botones píldora abajo, y **nada más**: el rótulo de la
+cabecera, la hamburguesa, el cartel de cookies y el aviso del vídeo aparecen al deslizar. Es una
+decisión explícita de Mario y no hay que erosionarla añadiendo «solo una cosita más».
 
-Para llevarse el arreglo de la barra a otra web de Astro está `receta-barra-ios-astro.md`,
-autocontenido. Le pasa a cualquiera que monte `<ClientRouter />`.
+**LO SIGUIENTE, Y ESTÁ SIN DECIDIR: qué va debajo de la entrada.** Hoy debajo sigue la portada
+vieja —`Highlights`, manifiesto, casa, visita—, que es exactamente el esqueleto de Ochoa que se
+quería tirar. Mario dejó dicho «enseguida vamos con lo que ocurre al scrollear»: **es una
+conversación con él, no una tarea que ejecutar por cuenta propia.**
 
-**El orden lo fijó Mario el 2026-08-04: primero pulir unos detalles de Ochoa, y Cokima después.**
-Eso reordena la lista de más abajo, donde Cokima figura como lo más rentable: sigue siéndolo, pero
-va en segundo lugar.
+**Lo que espera a Mario:**
 
-**De esos detalles ya hay dos hechos (§3.septies): el recuadro de foco al pulsar y la página
-«Conócenos».** Lo que queda pendiente de ellos, y es lo primero al retomar:
+1. **El vídeo de la entrada**, que monta él en Higgsfield. Va a
+   `apps/cokima/public/video/entrada.mp4`; la etiqueta `<video>` no se pinta hasta que el archivo
+   exista, así que aparece solo. Se le dejaron cinco fotos en su iCloud Drive
+   (`cokima-fotos/para-el-video/`).
+2. **Identificar diez fotos de plato** con el restaurante. Sin eso no pueden ir en la carta. Ver
+   `fotografia.md`.
+3. **Decidir si `tmp/entrada-cokima` se fusiona en `preview`**: o se fusiona o se descarta, y se
+   borra en los dos casos. Con el mismo trato que quedó planteado para `tmp/entrada-ochoa`, que
+   por cierto **sigue esperando decisión desde el 5 de agosto** con diez commits dentro.
+4. La clave de Google Maps, validar la carta en inglés, si «fríos» y «calientes» se separan, y
+   unificar «Idiazabal» / «Idiazábal». Detalle en §4.
 
-1. **Escribir el contenido de «Conócenos».** La página está montada, navegable y enlazada, pero
-   su cuerpo son cuatro rejillas de texto que dicen qué hay que contar. Hasta que haya material
-   lleva `noindex` y no entra en el sitemap; **el interruptor es `EN_OBRAS` en
-   `apps/ochoa/src/conocenos.ts`, y ponerlo en `false` es el único paso** —de ahí salen a la vez
-   el indexado, el sitemap y el JSON-LD.
-2. **Las cuatro fotos de Ochoa sin usar** siguen igual: `apps/ochoa/src/assets/dishes/` está
-   vacío y sus seis destacados salen sin imagen. `LosOchoa-6` y `LosOchoa-2` son asignables ya;
-   `LosOchoa-7` necesita que Mario confirme si el brioche es el croissant de rabo de toro o el
-   dúo; `LosOchoa-9` es la candidata del nuevo hueco del equipo.
+**Deuda de Cokima que sigue ahí y queda fuera de este hilo:** sus tres páginas legales arrastran
+el `hreflang` roto que se corrigió en Ochoa el 31 de julio —declaran que su versión inglesa es la
+home inglesa—. El arreglo es pasar `altSeoPath={null}` y su `Base.astro` necesita esa prop.
 
-**Lo que espera respuesta de Mario, y sin lo cual no se puede avanzar:**
+**Y `Hero.astro` y `Embers.astro` de Cokima quedan huérfanos a propósito.** No se borran hasta
+que el rediseño cierre.
 
-1. **La clave de Google Maps.** `Mapa.astro` está montado y dibuja el callejero con la paleta
-   de la casa en cuanto exista `PUBLIC_GOOGLE_MAPS_KEY`; mientras tanto enseña el hueco
-   marcado. El «cómo llegar» ya funciona porque no depende de ninguna API.
-2. **Validar la carta en inglés con el restaurante.** Traducida entera el 31, pero es un
-   documento comercial y la tradujo el agente con criterio propio, no con su visto bueno.
-3. **Si «fríos» y «calientes» deben volver a separarse** dentro de «Pinchos y tapas». Alberto
-   pidió tres secciones y eso funde los dos rótulos; el orden los conserva pero el rótulo no.
-4. **Unificar «Idiazabal» / «Idiazábal»**, que el PDF del restaurante escribe de las dos formas
-   según el plato. Está respetado tal cual viene.
-5. **Si las legales de Cokima deben arreglarse igual que las de Ochoa.** Sus tres páginas
-   declaran que su versión inglesa es la home inglesa, que es el mismo `hreflang` roto que se
-   corrigió el 31 en Ochoa (§3.quinquies). No se tocó porque Cokima quedaba fuera del alcance
-   de esa tanda; el arreglo es pasar `altSeoPath={null}`, y su `Base.astro` necesita la prop.
+---
 
-**Lo que queda de trabajo, por orden de lo que más mueve la aguja:**
+### Lo cerrado en agosto, por si hace falta el contexto
 
-1. **Desmenuzar Cokima.** Es lo más rentable y lo que Mario lleva señalando desde el principio.
-   Ochoa se ha llevado la tipografía, la carta, las fotos reales, tres iteraciones de portada y
-   toda la tanda del 31; Cokima solo el menú y el movimiento, de rebote. No tiene ni una foto
-   real, su carta no se ha revisado desde la fase 2 y su portada sigue siendo la genérica.
-2. **Páginas nuevas (punto 6 de la fase 4).** «Conócenos» ya está construida en los dos idiomas
-   (§3.septies) y solo espera texto. Si hacen falta más páginas, hay que decidir con Mario cuáles
-   y con qué material; no es trabajo de código hasta que eso esté.
-3. **Las cuatro fotos de Ochoa sin usar.** Ver `fotografia.md`: dos son asignables ya, una
-   necesita que Mario confirme qué plato es y otra no identifica ningún plato.
+**La barra del navegador en iPhone (2026-08-01).** Era el `ClientRouter` de Astro, que hace
+`history.replaceState` cada vez que el scroll se detiene. El arreglo es
+`packages/ui/src/QuietScrollHistory.astro`. Todo el caso está en `barra-del-navegador-ios.md`, y
+**su §8 —los tres errores de método— vale más que el arreglo**. La receta portable, para
+cualquier web con `<ClientRouter />`, en `receta-barra-ios-astro.md`.
 
-*(La home en inglés de Ochoa, que estaba aquí, se igualó con la española el 31 — §3.quinquies.)*
+**«Conócenos» de Ochoa (2026-08-04)** está montada y navegable en los dos idiomas, pero su cuerpo
+son cuatro rejillas de texto que dicen qué falta contar. Lleva `noindex` y fuera del sitemap; **el
+interruptor es `EN_OBRAS` en `apps/ochoa/src/conocenos.ts`, y ponerlo en `false` es el único
+paso**. Sigue esperando material.
+
+**Los despliegues cruzados (2026-08-16).** Cada push reconstruía las dos webs. Resuelto con un
+`ignoreCommand` por app; detalle y pruebas en `deploy.md`. Confirmado en real: al subir la rama de
+Cokima, Ochoa quedó en `CANCELED`.
 
 **Cómo levantarlo:** los `pnpm dev` lanzados en segundo plano desde el agente se mueren solos en
-esta máquina. Lanzarlos desde una terminal propia.
+esta máquina. Lanzarlos desde una terminal propia. Para ver el resultado sin `dev`, sirve
+`apps/cokima/.vercel/output/static` tras un `pnpm --filter cokima build` — pero recuerda que el
+optimizador de imágenes de Vercel no existe fuera de Vercel y habrá que suplir `/_vercel/image`.
 
-**El repo está vinculado a Vercel y cada push a `preview` despliega.** Los alias fijos están en
-§6. No buscar `.vercel/project.json` para comprobarlo: está en `.gitignore` y la vinculación por
-Git vive en el panel de Vercel, no en el repo. El 31 se dedujo mal justo por ahí.
+**Y no sondear las previews en bucle esperando a que estén listas:** activa el checkpoint anti-bot
+de Vercel y a partir de ahí devuelve `403` a curl y a Playwright, con lo que los greps empiezan a
+devolver cero coincidencias y parece que el despliegue ha fallado. El estado se pregunta a la API
+de Vercel (`list_deployments` → `state: READY`).
+
+**El repo está vinculado a Vercel y cada push despliega.** Los alias fijos están en §6. No buscar
+`.vercel/project.json` para comprobarlo: está en `.gitignore` y la vinculación por Git vive en el
+panel de Vercel, no en el repo. El 31 se dedujo mal justo por ahí.
 
 ---
 
@@ -90,9 +91,19 @@ Git vive en el panel de Vercel, no en el repo. El 31 se dedujo mal justo por ah�
 |---|---|---|
 | `main` | Producción | falla a propósito sin `SITE_URL` |
 | `preview` | **Desarrollo — todo se integra aquí** | alias fijo por rama (ver §6) |
+| `tmp/entrada-cokima` | **Abierta.** El rediseño de Cokima | `cokima-git-tmp-entrada-cokima-rodz-dev.vercel.app` |
 
 Ramas de tema opcionales y efímeras: nacen de `preview` y vuelven a `preview`.
 Detalle en `deploy.md` §Modelo de ramas.
+
+**`tmp/entrada-cokima` es temporal y espera decisión de Mario**, igual que hizo
+`tmp/entrada-ochoa` en su momento: cuando decida, o se fusiona en `preview` o se descarta, y se
+borra en los dos casos. Mientras tanto **no se integra**, porque la entrada nueva convive con la
+portada vieja debajo y eso está a medias a propósito.
+
+> Ojo: `tmp/entrada-ochoa` sigue abierta y sin resolver desde el 2026-08-05, con diez commits de
+> la entrada animada de Ochoa. Son dos ramas temporales vivas a la vez y no tienen nada que ver
+> entre sí.
 
 ---
 
@@ -414,6 +425,48 @@ Si aun así siguiera, el siguiente sospechoso es de diseño: nuestra `.nav` es `
 con la barra del navegador por el mismo borde superior. La referencia que él cita —vercel.com—
 oculta su propia cabecera al bajar y la devuelve al subir, en vez de dejarla clavada.
 
+## 3.octies La entrada de Cokima (2026-08-14 al 16) — en `tmp/entrada-cokima`
+
+**El porqué de todo esto está en `cokima-el-rediseno.md`.** Aquí solo queda lo que hay que saber
+para no romperlo.
+
+`Entrada.astro` sustituye al `Hero` heredado. Cuatro commits, todos en la rama:
+
+| commit | qué |
+|---|---|
+| `5a19f0f` | la entrada a pantalla completa, con póster y dos botones píldora |
+| `5e810c6` | se vacía: rótulo, hamburguesa, cookies y aviso pasan a aparecer al deslizar |
+| `5349e85` | el nombre al medio; botones a 48px y el aire de abajo a 18 |
+| `0cf1b7c` | el pulso de luz que avisa de que hay más abajo |
+
+**Las piezas que se sostienen unas a otras**, y por eso se rompen juntas si se toca una:
+
+- **`data-sobre-entrada`** en el `<html>`. Lo pone y lo quita un `IntersectionObserver` sobre un
+  centinela de un píxel al final de la sección. De él cuelgan **cinco** comportamientos: la
+  cabecera transparente, la desaparición de sus tres piezas, el cartel de cookies, el aviso del
+  vídeo y la pausa de las dos animaciones. Vive en `Entrada.astro` porque **es la entrada la que
+  pide que la cabecera se aparte**, no la cabecera la que sabe de portadas. Y se limpia al
+  navegar, o la carta heredaría una cabecera transparente sobre nada.
+- **`margin-top: calc(-1 * var(--t-header-h))`** en la sección. La cabecera es `sticky` y reserva
+  sus 61px en el flujo aunque parezca flotar; sin ese margen la entrada terminaba en y=904 con una
+  ventana de 844 y el centinela no llegaba a entrar en pantalla nunca.
+- **`--alto-entrada`**, el mismo congelado de alto que ya llevaba el `Hero`. Ver la regla 16 de
+  `movimiento.md`: nada que ocupe media pantalla dimensiona su alto desde el viewport.
+- **El `<h1>` es el propio rótulo del centro.** Hubo una versión con el `h1` oculto y ya no hace
+  falta: si alguien quita el nombre de la pantalla, tiene que devolver el encabezado por otro
+  lado o la página se queda sin él.
+
+**Contrastes medidos sobre el póster** (peor píxel de cada franja, con el velo compuesto): nombre
+11,7:1 · «Kitchen Madness» 5,95:1 · riel del pulso 2,49:1. El velo tiene los topes que tiene
+porque se calcularon sobre la **posición medida** del texto, no a ojo; el claim que había antes
+daba 2,13:1 con la curva anterior.
+
+**Y el aviso que más importa:** en cuanto entre el vídeo, el fondo cambiará en cada fotograma y
+ninguna de esas medidas seguirá valiendo. Por eso el rótulo lleva una sombra ancha y difusa, que
+es lo único que aguanta un fondo que se mueve. **Cuando el vídeo esté, hay que volver a medir.**
+
+---
+
 ## 3.septies El recuadro de foco y «Conócenos» (2026-08-04)
 
 Mario describió un recuadro que salía «a ratos» al pulsar con el dedo o con el ratón, y que él
@@ -700,6 +753,7 @@ Sin cambios respecto a la spec §12, más una entrada nueva:
 
 | Documento | Qué es |
 |---|---|
+| `cokima-el-rediseno.md` | **Léelo primero.** Por qué Cokima se rehace, qué se descartó y por qué cada decisión de la entrada es la que es |
 | `../.impeccable.md` | Contexto de diseño: para quién es cada web y cómo debe sentirse |
 | `movimiento.md` | Los cinco valores del movimiento, las reglas y qué se mueve |
 | `barra-del-navegador-ios.md` | **Caso abierto.** La barra de Brave en iPhone: lo arreglado, lo descartado y por dónde seguir |
