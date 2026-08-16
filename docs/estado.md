@@ -1,22 +1,39 @@
 # Estado del proyecto
 
-- **Corte:** 2026-08-06
-- **Rama de trabajo:** `preview` (desarrollo) · `main` (producción, sin nada nuevo aún)
+- **Corte:** 2026-08-16
+- **Rama de trabajo:** `tmp/entrada-cokima` (el rediseño de Cokima, en curso) · `preview`
+  (desarrollo, todo lo demás integrado) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
 
 ---
 
 ## 0. Por dónde seguir
 
-Las tandas hasta la del 2026-08-04 están commiteadas, construidas y en verde. Los tests pasan de
-45 a 57.
+**Estás en `preview` y el trabajo vivo no está aquí.** Cokima se está rehaciendo entera desde el
+2026-08-16 y es lo único que importa ahora mismo:
 
-**La del 2026-08-06 —la entrada a la web, §3.octies— NO está en `preview`.** Mario pidió
-expresamente no pushear ahí, y luego que se subiera a una rama aparte para verla en el móvil. Vive
-en **`tmp/entrada-ochoa`**, desplegada en `ochoa-git-tmp-entrada-ochoa-rodz-dev.vercel.app`. Es
-temporal y está pendiente de su visto bueno: cuando decida, o se fusiona en `preview` o se
-descarta, y la rama se borra en los dos casos. Mientras tanto, `preview` y `tmp/entrada-ochoa`
-divergen solo en esta tanda.
+```bash
+git fetch --all --prune
+git checkout tmp/entrada-cokima
+```
+
+En esa rama, **antes de tocar nada, leer `cokima-el-rediseno.md`**: explica por qué se descartó
+todo lo que se propuso antes de llegar ahí, y sin eso la mitad de las decisiones de
+`Entrada.astro` parecen arbitrarias. **La versión de este documento que hay en esa rama es la
+buena y manda sobre esta**, que solo cuenta lo que está integrado.
+
+**El proyecto se desarrolla en dos ordenadores** —un Mac prestado y el HP de Mario—, y eso ya
+costó un susto el 2026-08-16. El procedimiento para cambiar de máquina es la §1.1 y **no es
+opcional**: `git fetch --all --prune` antes de nada, y nunca pushear una rama local sin mirar
+primero a dónde apunta.
+
+**La entrada de Los Ochoa (§3.octies) ya está aquí dentro.** Se construyó el 2026-08-06 en
+`tmp/entrada-ochoa` porque Mario pidió expresamente no pushearla a `preview`, y luego que se
+subiera a una rama aparte para verla en el móvil. Ahí se quedó diez días. Se fusionó el
+2026-08-16 con la tanda cerrada, sus doce tests en verde y las dos correcciones que Mario pidió
+tras verla ya aplicadas; la rama se borró y su alias de Vercel murió con ella —ahora se ve en el
+alias de `preview`—. Si hay que sacarla, se deshace entera con `git revert -m 1` sobre el commit
+de fusión, sin tocar nada más.
 
 **La barra del navegador en iPhone quedó resuelta el 2026-08-01.** Era el `ClientRouter` de Astro,
 que escribe en el historial cada vez que el scroll se detiene; en los navegadores de iPhone que no
@@ -36,11 +53,9 @@ Para llevarse el arreglo de la barra a otra web de Astro está `receta-barra-ios
 autocontenido. Le pasa a cualquiera que monte `<ClientRouter />`.
 
 **El orden lo fijó Mario el 2026-08-04: primero pulir unos detalles de Ochoa, y Cokima después.**
-Eso reordena la lista de más abajo, donde Cokima figura como lo más rentable: sigue siéndolo, pero
-va en segundo lugar.
-
-**De esos detalles ya hay tres hechos: el recuadro de foco al pulsar y la página «Conócenos»
-(§3.septies), y la entrada a la web (§3.octies).**
+**Esa primera mitad está cumplida** —el recuadro de foco al pulsar y la página «Conócenos»
+(§3.septies), y la entrada a la web (§3.octies)—, y por eso desde el 2026-08-16 el turno es de
+Cokima, en `tmp/entrada-cokima`.
 
 De la entrada quedan dos cosas anotadas, ninguna bloqueante:
 
@@ -80,10 +95,11 @@ Lo que queda pendiente de los otros dos, y es lo primero al retomar:
 
 **Lo que queda de trabajo, por orden de lo que más mueve la aguja:**
 
-1. **Desmenuzar Cokima.** Es lo más rentable y lo que Mario lleva señalando desde el principio.
-   Ochoa se ha llevado la tipografía, la carta, las fotos reales, tres iteraciones de portada y
-   toda la tanda del 31; Cokima solo el menú y el movimiento, de rebote. No tiene ni una foto
-   real, su carta no se ha revisado desde la fase 2 y su portada sigue siendo la genérica.
+1. **Desmenuzar Cokima. Empezado el 2026-08-16 y en curso en `tmp/entrada-cokima`** —el detalle
+   de esa tanda está en el `estado.md` de esa rama, no en este—. Es lo más rentable y lo que
+   Mario lleva señalando desde el principio: Ochoa se llevó la tipografía, la carta, las fotos
+   reales, tres iteraciones de portada y toda la tanda del 31; Cokima solo el menú y el
+   movimiento, de rebote. Sigue sin una sola foto real y su carta no se revisa desde la fase 2.
 2. **Páginas nuevas (punto 6 de la fase 4).** «Conócenos» ya está construida en los dos idiomas
    (§3.septies) y solo espera texto. Si hacen falta más páginas, hay que decidir con Mario cuáles
    y con qué material; no es trabajo de código hasta que eso esté.
@@ -92,8 +108,8 @@ Lo que queda pendiente de los otros dos, y es lo primero al retomar:
 
 *(La home en inglés de Ochoa, que estaba aquí, se igualó con la española el 31 — §3.quinquies.)*
 
-**Cómo levantarlo:** los `pnpm dev` lanzados en segundo plano desde el agente se mueren solos en
-esta máquina. Lanzarlos desde una terminal propia.
+**Cómo levantarlo:** los `pnpm dev` lanzados en segundo plano desde el agente se mueren solos, y
+ha pasado en las dos máquinas. Lanzarlos desde una terminal propia.
 
 **El repo está vinculado a Vercel y cada push a `preview` despliega.** Los alias fijos están en
 §6. No buscar `.vercel/project.json` para comprobarlo: está en `.gitignore` y la vinculación por
@@ -107,9 +123,52 @@ Git vive en el panel de Vercel, no en el repo. El 31 se dedujo mal justo por ah�
 |---|---|---|
 | `main` | Producción | falla a propósito sin `SITE_URL` |
 | `preview` | **Desarrollo — todo se integra aquí** | alias fijo por rama (ver §6) |
+| `tmp/entrada-cokima` | **Abierta.** El rediseño de Cokima, en curso | `cokima-git-tmp-entrada-cokima-rodz-dev.vercel.app` |
 
 Ramas de tema opcionales y efímeras: nacen de `preview` y vuelven a `preview`.
 Detalle en `deploy.md` §Modelo de ramas.
+
+**`tmp/entrada-cokima` es temporal y espera decisión de Mario:** cuando decida, o se fusiona en
+`preview` o se descarta, y se borra en los dos casos. Mientras tanto **no se integra**, porque la
+entrada nueva convive con la portada vieja debajo y eso está a medias a propósito. Es el mismo
+trato que tuvo `tmp/entrada-ochoa`, que ya se cerró (§0).
+
+### 1.1 Cambiar de ordenador
+
+El proyecto se desarrolla en dos máquinas —un Mac prestado y el HP de Mario—, nunca a la vez.
+El 2026-08-16 se descubrió que las dos tenían árboles distintos: el HP llevaba desde el día 7 sin
+`fetch`, y su rama local `preview` no era `preview` sino la punta de `tmp/entrada-ochoa`, con un
+botón de «Sync Changes 10↑» en Cursor esperando a que alguien lo pulsara. Habría empujado a
+`origin/preview` exactamente la tanda que Mario había pedido no subir ahí.
+
+No se perdió nada porque el trabajo estaba respaldado en su rama remota, pero la lección va
+escrita aquí para que no dependa de esa suerte:
+
+**Al sentarse en cualquiera de las dos máquinas, antes de leer código ni documentación:**
+
+```bash
+git fetch --all --prune
+git status -sb          # ¿cuántos commits arriba y abajo, y de qué rama?
+git branch -vv          # ¿a dónde apunta de verdad cada rama local?
+```
+
+**Las tres reglas que salieron de aquel susto:**
+
+1. **No fiarse del nombre de una rama local.** Una rama llamada `preview` puede estar en otro
+   sitio. `git branch -vv` dice la verdad; el rótulo de Cursor, no.
+2. **No pulsar «Sync Changes» sin mirar qué commits son.** El botón no distingue entre subir tu
+   trabajo y contaminar la rama de integración.
+3. **Rama temporal que se abre, rama que se sube a `origin` el mismo día.** Un disco duro no es
+   una copia de seguridad, y aquí no se trabaja siempre desde el mismo.
+
+Si una rama local ha derivado, se devuelve a su sitio **después** de comprobar que su contenido
+vive en `origin`:
+
+```bash
+git branch -r --contains <sha>   # ¿está respaldado en alguna rama remota?
+git checkout preview
+git reset --hard origin/preview
+```
 
 ---
 
