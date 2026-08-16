@@ -1,10 +1,13 @@
 ---
 // apps/cokima/src/components/Entrada.astro
 //
-// La landing de Cokima: la pantalla entera es el plato, y encima solo el claim
-// y dos botones. Sustituye al Hero heredado, que era la portada de Ochoa con
-// otra foto —foto a sangre, titular abajo a la izquierda y una tira de platos
-// asomando por debajo—.
+// La landing de Cokima: la pantalla entera es el plato y encima NADA salvo dos
+// botones. Ni titular, ni rótulo, ni hamburguesa, ni el estado de abierto, ni
+// el cartel de cookies: todo eso aparece al deslizar. Es una decisión de Mario
+// y conviene no erosionarla añadiendo «solo una cosita más».
+//
+// Sustituye al Hero heredado, que era la portada de Ochoa con otra foto —foto a
+// sangre, titular abajo a la izquierda y una tira de platos asomando debajo—.
 //
 // EL VÍDEO TODAVÍA NO EXISTE. Mario lo va a montar en Higgsfield con cuatro
 // fotos de platos. La etiqueta `<video>` NO se pinta hasta que el archivo esté
@@ -16,9 +19,7 @@
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { Image } from "astro:assets";
-import OpenState from "@tombo/ui/OpenState.astro";
 import { showPhotoGuides } from "@tombo/config/photo-guides";
-import { RESTAURANT } from "../site.ts";
 import poster from "../assets/entrada-poster.jpg";
 
 const publico = (n: string) => fileURLToPath(new URL(`../../public/video/${n}`, import.meta.url));
@@ -34,7 +35,7 @@ const es = locale === "es";
 
 const t = es
   ? {
-      claim: ["Puedes comer en cualquier sitio.", "Pero será solo comer."],
+      titulo: "Cokima — Kitchen Madness, restaurante en Madrid",
       carta: "Ver carta",
       reservar: "Reservar",
       alt: "Un plato de Cokima servido en la mesa del restaurante",
@@ -42,7 +43,7 @@ const t = es
         "Falta el vídeo: cuatro platos en bucle y sin sonido, en public/video/entrada.mp4. En cuanto esté, se pone solo.",
     }
   : {
-      claim: ["You can eat anywhere.", "But it will just be eating."],
+      titulo: "Cokima — Kitchen Madness, restaurant in Madrid",
       carta: "See the menu",
       reservar: "Book a table",
       alt: "A Cokima dish served at the restaurant",
@@ -89,17 +90,18 @@ const guias = showPhotoGuides();
 
   {/* Un velo que sube desde abajo, no una capa uniforme: apagar la imagen
       entera es lo que vuelve intercambiables a las webs de restaurante, y ya
-      se decidió así en la portada anterior. Aquí el degradado llega más arriba
-      porque debajo no hay una línea de texto, hay tres y dos botones. */}
+      se decidió así en la portada anterior. */}
   <div class="velo"></div>
 
+  {/* El titular existe pero no se ve. Mario quiere la entrada limpia —solo los
+      dos botones—, y una página sin `<h1>` se queda sin encabezado para Google
+      y para quien navega con lector de pantalla, que es justo quien no puede
+      deducirlo de la foto. Así que se queda, oculto a la vista y disponible
+      para todo lo demás. El claim vuelve a verse más abajo, cuando se
+      construya lo que va debajo. */}
+  <h1 class="solo-lectores">{t.titulo}</h1>
+
   <div class="wrap pie">
-    <OpenState hours={RESTAURANT.openingHours} locale={locale} />
-
-    <h1 class="claim">
-      {t.claim[0]}<br /><span class="quiebro">{t.claim[1]}</span>
-    </h1>
-
     <div class="botones">
       <a class="btn" href={hrefCarta}>{t.carta}</a>
       <a class="btn ghost" href={hrefReserva}>{t.reservar}</a>
@@ -291,41 +293,23 @@ const guias = showPhotoGuides();
   .pie {
     position: relative;
     width: 100%;
-    display: grid;
-    gap: clamp(14px, 2.4vh, 22px);
-    /* El cartel de cookies vive en esta misma esquina durante la primera
-       visita. `--t-consent-h` lo publica el propio cartel y vuelve a 0 al
-       decidir. Se aparta con `transform` y no con relleno: mover el relleno
-       obliga a recalcular la disposición en cada fotograma y el resultado en
-       pantalla es idéntico. */
+    /* Sin apartarse por `--t-consent-h`: el cartel de cookies ya no aparece
+       mientras se está en la entrada, así que aquí no hay nada de lo que
+       huir. Vuelve a su sitio, y con él el desplazamiento, en cuanto se baja. */
     padding-bottom: clamp(26px, 5vh, 56px);
-    transform: translateY(calc(-1 * var(--t-consent-h, 0px)));
-    transition: transform var(--dur-out) var(--ease);
   }
 
-  .claim {
+  /* Presente para Google y para un lector de pantalla, invisible para el resto.
+     Recorte y no `display: none`, que lo sacaría también del árbol de
+     accesibilidad y dejaría la página sin encabezado de verdad. */
+  .solo-lectores {
+    position: absolute;
+    width: 1px;
+    height: 1px;
     margin: 0;
-    font-weight: 800;
-    /* Sube hasta 5.2rem en escritorio, pero en móvil manda el `vw`: en la
-       referencia el titular ocupa un tercio de la pantalla y es lo que hace que
-       la entrada se lea como un cartel y no como una web con una foto. */
-    font-size: clamp(2.5rem, 9.2vw, 5.2rem);
-    line-height: 0.96;
-    letter-spacing: -0.03em;
-    max-width: 15ch;
-    text-wrap: balance;
-    /* Una sombra ancha y muy difusa, no un contorno: sobre el póster el velo ya
-       basta, pero en cuanto entre el vídeo el fondo cambiará en cada fotograma
-       y no hay degradado que valga para todos. Esto oscurece lo justo bajo las
-       letras y es invisible sobre una zona ya oscura. */
-    text-shadow: 0 2px 28px rgba(21, 15, 12, 0.85);
-  }
-  /* El bermellón de la marca es muy oscuro para ponerlo sobre un fondo casi
-     negro: medido, la segunda mitad del claim se quedaba en 1,73:1. El
-     `--vermilion-2` es el mismo rojo de la casa un punto más vivo y sube a
-     rango legible sin traer un color nuevo. */
-  .quiebro {
-    color: var(--vermilion-2);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .botones {
@@ -367,9 +351,6 @@ const guias = showPhotoGuides();
     background: rgba(21, 15, 12, 0.5);
   }
 
-  /* El hueco del vídeo, solo en desarrollo y en las previews por rama. Lo
-     decide `showPhotoGuides()` y hay tests que fijan que en producción no
-     existe: no es cuestión de acordarse de quitarlo. */
   /* Un píxel al final de la sección, sin tamaño ni color: solo existe para que
      el observador tenga algo que mirar. */
   .centinela {
@@ -380,6 +361,14 @@ const guias = showPhotoGuides();
     height: 1px;
   }
 
+  /* El hueco del vídeo, solo en desarrollo y en las previews por rama. Lo
+     decide `showPhotoGuides()` y hay tests que fijan que en producción no
+     existe: no es cuestión de acordarse de quitarlo.
+
+     Y espera fuera como el rótulo y la hamburguesa: si no, el único cartel de
+     una pantalla que se ha vaciado a propósito sería el aviso de que falta un
+     vídeo, plantado justo encima de lo que hay que juzgar. El hueco se sigue
+     marcando; solo espera su turno. */
   .hueco {
     position: absolute;
     left: 50%;
@@ -397,5 +386,13 @@ const guias = showPhotoGuides();
     border-radius: var(--r-caja);
     padding: 7px 12px;
     backdrop-filter: blur(4px);
+    transition: opacity var(--dur-in) var(--ease);
+  }
+  :global(html[data-sobre-entrada]) .hueco {
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--dur-out) var(--ease),
+      visibility 0s linear var(--dur-out);
   }
 </style>

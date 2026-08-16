@@ -116,10 +116,28 @@ const telHref = `tel:${RESTAURANT.telephone.replace(/\s/g, "")}`;
     backdrop-filter: none;
     border-bottom-color: transparent;
   }
-  /* Y se va el botón de reservar, que abajo está a tamaño de pulgar. Repetirlo
-     aquí arriba, pequeño, era pedir dos veces lo mismo en la misma pantalla. */
-  :global(html[data-sobre-entrada]:not(.menu-open)) .nav-actions .btn {
-    display: none;
+  /* Y con ella se van las tres piezas: el rótulo, la hamburguesa y el botón de
+     reservar. En la entrada no hay NADA salvo los dos botones de abajo, y esas
+     tres cosas aparecen al deslizar.
+
+     `visibility` además de `opacity`, y no solo opacidad: un enlace a opacidad
+     cero sigue estando en el orden de tabulación, así que quien navegue con
+     teclado se encontraría el foco en piezas invisibles. Es el mismo par que ya
+     usa el panel de este archivo, con el retardo puesto en `visibility` para
+     que el desvanecido llegue a verse. */
+  .brand,
+  .nav-actions {
+    transition:
+      opacity var(--dur-in) var(--ease),
+      visibility 0s;
+  }
+  :global(html[data-sobre-entrada]:not(.menu-open)) .brand,
+  :global(html[data-sobre-entrada]:not(.menu-open)) .nav-actions {
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--dur-out) var(--ease),
+      visibility 0s linear var(--dur-out);
   }
   /* Con el menú abierto el documento deja de tener scroll, y una cabecera
      `sticky` sin scroll del que colgar cae a su posición en el flujo: si la

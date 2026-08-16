@@ -156,3 +156,34 @@ img {
     scroll-behavior: auto !important;
   }
 }
+
+/* El cartel de cookies espera fuera de la entrada.
+   ------------------------------------------------------------------------
+   La landing es el plato y dos botones, y un cartel legal plantado justo donde
+   van los botones se la come. Así que baja con el resto: entra deslizando desde
+   abajo con el mismo gesto que el rótulo y la hamburguesa, en cuanto se sale de
+   la entrada.
+
+   No hay problema legal en retrasarlo. La obligación es no instalar cookies no
+   esenciales antes del consentimiento, y aquí no se instala ninguna: la
+   medición no se carga hasta que se acepta —Base.astro, spec §10—. Mientras
+   nadie baje, no hay nada que anunciar porque no ha pasado nada.
+
+   Va en la app y no en @tombo/ui a propósito: el cartel es de las dos casas y
+   esto es una decisión de esta. Se apunta por id, que es lo que publica el
+   componente. */
+#tombo-consent {
+  transition:
+    opacity var(--dur-in) var(--ease),
+    transform var(--dur-in) var(--ease);
+}
+html[data-sobre-entrada] #tombo-consent {
+  opacity: 0;
+  /* Se aparta más que su propio alto para que no asome el borde superior por
+     debajo del pliegue, y deja de recibir toques mientras está fuera. */
+  transform: translateY(calc(100% + 24px));
+  pointer-events: none;
+  transition:
+    opacity var(--dur-out) var(--ease),
+    transform var(--dur-out) var(--ease);
+}
