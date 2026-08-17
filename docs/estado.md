@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-- **Corte:** 2026-08-16
+- **Corte:** 2026-08-17
 - **Rama de trabajo:** `tmp/entrada-cokima` (el rediseño de Cokima, en curso) · `preview`
   (desarrollo, todo lo demás integrado) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
@@ -33,8 +33,13 @@ y **Cokima es experiencia pícara**.
 
 **Lo construido:** la landing. `apps/cokima/src/components/Entrada.astro` — la pantalla entera es
 el plato, el nombre en el medio, dos botones píldora abajo, y **nada más**: el rótulo de la
-cabecera, la hamburguesa, el cartel de cookies y el aviso del vídeo aparecen al deslizar. Es una
-decisión explícita de Mario y no hay que erosionarla añadiendo «solo una cosita más».
+cabecera, la hamburguesa y el cartel de cookies aparecen al deslizar. Es una decisión explícita de
+Mario y no hay que erosionarla añadiendo «solo una cosita más».
+
+**Y desde el 2026-08-17 el fondo es el vídeo**, no el póster: llegó de Higgsfield en horizontal y
+claro, y entró recortado a vertical y con el grado horneado para que quede en segundo plano —que
+es como lo pidió Mario— en vez de pelearse con el rótulo. El póster sigue ahí y sigue haciendo
+falta: en iPhone con ahorro de energía es lo único que se ve. Detalle en `cokima-el-rediseno.md` §4.
 
 **LO SIGUIENTE, Y ESTÁ SIN DECIDIR: qué va debajo de la entrada.** Hoy debajo sigue la portada
 vieja —`Highlights`, manifiesto, casa, visita—, que es exactamente el esqueleto de Ochoa que se
@@ -43,10 +48,11 @@ conversación con él, no una tarea que ejecutar por cuenta propia.**
 
 **Lo que espera a Mario:**
 
-1. **El vídeo de la entrada**, que monta él en Higgsfield. Va a
-   `apps/cokima/public/video/entrada.mp4`; la etiqueta `<video>` no se pinta hasta que el archivo
-   exista, así que aparece solo. Se le dejaron cinco fotos en su iCloud Drive
-   (`cokima-fotos/para-el-video/`).
+1. ~~El vídeo de la entrada.~~ **Entregado y puesto el 2026-08-17.** Vino de Higgsfield en
+   horizontal (1920x1080, 27 s, 18,5 MB) y claro; se recortó a vertical `608x1080` y se le horneó
+   el grado de la casa para que case con el póster, que es casi negro. Pesa **1,05 MB en MP4 y
+   0,94 MB en WebM**. El porqué de cada parámetro está en `cokima-el-rediseno.md` §4. Queda
+   anotado, sin decidir, si el corte del bucle merece un fundido.
 2. **Identificar diez fotos de plato** con el restaurante. Sin eso no pueden ir en la carta. Ver
    `fotografia.md`.
 3. **Decidir si `tmp/entrada-cokima` se fusiona en `preview`**: o se fusiona o se descarta, y se

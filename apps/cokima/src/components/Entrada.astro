@@ -9,13 +9,18 @@
 // Sustituye al Hero heredado, que era la portada de Ochoa con otra foto —foto a
 // sangre, titular abajo a la izquierda y una tira de platos asomando debajo—.
 //
-// EL VÍDEO TODAVÍA NO EXISTE. Mario lo va a montar en Higgsfield con cuatro
-// fotos de platos. La etiqueta `<video>` NO se pinta hasta que el archivo esté
-// de verdad en `public/video/`: se comprueba aquí, al construir. La primera
-// versión lo pintaba siempre confiando en `preload="none"`, y dejaba cuatro
-// 404 en la consola de cada visita —el navegador pide las dos fuentes, y el
-// script las volvía a pedir al llamar a load()—. Con la comprobación, hoy se
-// ve el póster y el día que aparezca el archivo se ve el vídeo, sin tocar nada.
+// EL VÍDEO YA ESTÁ (2026-08-17). Lo montó Mario en Higgsfield: siete escenas de
+// unos cuatro segundos —la sala con sus dos neones y cinco platos—. Venía en
+// 1920x1080 y claro; aquí entra recortado a vertical y con el grado de la casa
+// horneado en el archivo. El porqué de cada parámetro está en
+// `docs/cokima-el-rediseno.md` §4.
+//
+// La etiqueta `<video>` NO se pinta hasta que el archivo está de verdad en
+// `public/video/`: se comprueba aquí, al construir. La primera versión lo
+// pintaba siempre confiando en `preload="none"`, y dejaba cuatro 404 en la
+// consola de cada visita —el navegador pide las dos fuentes, y el script las
+// volvía a pedir al llamar a load()—. La comprobación se queda: es lo que
+// sostiene que el póster mande solo mientras no haya cinta.
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { Image } from "astro:assets";
@@ -117,7 +122,7 @@ const guias = showPhotoGuides();
     </div>
   </div>
 
-  {guias && <p class="hueco">{t.hueco}</p>}
+  {guias && !hayVideo && <p class="hueco">{t.hueco}</p>}
 
   {/* Centinela: mientras este píxel del final de la entrada siga en pantalla,
       la cabecera flota sin fondo. En cuanto se va por arriba, vuelve a ser una

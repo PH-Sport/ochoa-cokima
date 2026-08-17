@@ -1,6 +1,6 @@
 # Cokima: el rediseño
 
-- **Abierto:** 2026-08-14 · **Última tanda:** 2026-08-16
+- **Abierto:** 2026-08-14 · **Última tanda:** 2026-08-17
 - **Rama:** `tmp/entrada-cokima` (temporal, pendiente del visto bueno de Mario)
 - **Estado:** la landing está construida. Lo que va debajo, sin decidir.
 
@@ -140,16 +140,47 @@ lo que se MIRA   → escala de tres pasos: --r-caja 10, --r-panel 14, --r-marco 
 Antes había un `6px` plano, igual para un botón que para una tarjeta: un radio único para piezas
 de todos los tamaños, que es justo lo que la escala de Ochoa evita. Era una deuda real.
 
-### El vídeo que todavía no existe
+### El vídeo, que ya está (2026-08-17)
 
-Mario lo monta en Higgsfield a partir de cuatro fotos de plato. Van en
-`apps/cokima/public/video/entrada.mp4` (y `.webm` si lo hay).
+Lo montó Mario en Higgsfield: **siete escenas de unos cuatro segundos** —la sala con el neón
+«Orgasm, at the first bite», la barra con el sol de COKIMA, y cinco platos—. Entregado en
+**1920x1080, 30 fps, 27 s y 18,5 MB**, sin pista de audio.
 
-**La etiqueta `<video>` no se pinta hasta que el archivo esté**, y se comprueba al construir con
-`existsSync`. La primera versión la pintaba siempre confiando en `preload="none"` y dejaba **cuatro
-404 en la consola de cada visita** —el navegador pide las dos fuentes y el script las volvía a
-pedir al llamar a `load()`—. Con la comprobación, hoy se ve el póster y el día que aparezca el
-archivo se ve el vídeo, sin tocar nada.
+Llegaba con dos problemas, y ninguno es culpa del montaje: **es horizontal** y **está iluminado
+como catálogo**, claro y plano. Puesto tal cual encima del póster —que es casi negro, con el neón
+al fondo y solo el plato encendido— parecían dos webs distintas peleándose en la misma pantalla.
+
+**Vertical.** Recorte central a `608x1080`, que es todo el alto del original. Y conviene entender
+qué hace y qué no: en un móvil de 393x852 el `object-fit: cover` enseña **el 26% central** del
+original, se recorte antes o no. **El recorte no cambia lo que se ve; cambia lo que se descarga.**
+Sirviendo el 16:9 entero, tres de cada cuatro píxeles viajaban para no verse nunca. Centrado y no
+desplazado porque no hay un encuadre bueno para las siete escenas: los platos quedan bien, y a los
+dos neones les corta el texto —que es precisamente la banda que tapa el rótulo—.
+
+**El grado, horneado en el archivo y no en CSS.** Un `filter` sobre un vídeo a pantalla completa
+se recompone en cada fotograma; el archivo se procesa una vez. La cadena está en el commit y son
+tres pasos: `eq` baja exposición y sube contraste, `curves` **baja las luces altas más en el azul
+que en el rojo** —que es lo que apaga la madera clara y la cerveza sin tocar la brasa—, y una
+viñeta suave cierra los bordes. Se calibró comparando fotogramas contra el póster, no a ojo: se
+descartaron una versión suave (seguía siendo de día) y una fuerte (aplastaba el plato).
+
+**Peso: de 18,5 MB a 1,05 MB en MP4 y 0,94 MB en WebM.** No compite con el LCP porque no se pide
+hasta que el script lo pide: `preload="none"` y `load()` después de `astro:page-load`.
+
+**La etiqueta `<video>` sigue sin pintarse si el archivo no está**, comprobado al construir con
+`existsSync`. Ya no hace falta para este vídeo, pero se queda: es lo que sostiene que el póster
+mande solo cuando no hay cinta —en iPhone con ahorro de energía, que es el caso real, `play()` se
+rechaza—. La primera versión pintaba la etiqueta siempre confiando en `preload="none"` y dejaba
+**cuatro 404 en la consola de cada visita**.
+
+**Y el cartel de «falta el vídeo» ahora depende de que falte de verdad.** Estaba atado solo a
+`showPhotoGuides()`, así que habría anunciado en la preview un hueco ya cubierto. Es la trampa de
+siempre con las rejillas: se ponen para marcar lo que falta y hay que acordarse de que dejen de
+hablar cuando deja de faltar.
+
+**Lo que queda por mirar:** el bucle corta en seco al volver al principio —de las croquetas a la
+sala—, y como el propio montaje ya cambia de escena cada cuatro segundos no desentona, pero no se
+ha decidido si merece un fundido.
 
 El póster no es un fotograma cualquiera: es una foto procesada como cualquier otra de la casa,
 porque **en iPhone con el ahorro de energía activado `play()` se rechaza aunque el vídeo esté
@@ -209,7 +240,8 @@ API (`list_deployments` → `state: READY`), no martilleando la URL.
    «enseguida vamos con lo que ocurre al scrollear».
 2. **Decidir si el rótulo del centro se queda al bajar.** En cuanto aparece el «Cokima» de la
    barra, están los dos a la vez.
-3. **El vídeo**, cuando Mario lo tenga.
+3. ~~El vídeo~~ **puesto el 2026-08-17** (§4). Queda una sola decisión suelta: si el corte del
+   bucle merece un fundido.
 4. **`Hero.astro` y `Embers.astro` quedan huérfanos** a propósito. No se borran hasta que el
    rediseño cierre.
 5. **El `hreflang` de las tres legales de Cokima** sigue roto: declaran que su versión inglesa es
