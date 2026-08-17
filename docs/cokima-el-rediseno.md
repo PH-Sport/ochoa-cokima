@@ -150,12 +150,37 @@ Llegaba con dos problemas, y ninguno es culpa del montaje: **es horizontal** y *
 como catálogo**, claro y plano. Puesto tal cual encima del póster —que es casi negro, con el neón
 al fondo y solo el plato encendido— parecían dos webs distintas peleándose en la misma pantalla.
 
-**Vertical.** Recorte central a `608x1080`, que es todo el alto del original. Y conviene entender
-qué hace y qué no: en un móvil de 393x852 el `object-fit: cover` enseña **el 26% central** del
-original, se recorte antes o no. **El recorte no cambia lo que se ve; cambia lo que se descarga.**
-Sirviendo el 16:9 entero, tres de cada cuatro píxeles viajaban para no verse nunca. Centrado y no
-desplazado porque no hay un encuadre bueno para las siete escenas: los platos quedan bien, y a los
-dos neones les corta el texto —que es precisamente la banda que tapa el rótulo—.
+**EL VÍDEO ES PROVISIONAL Y VA A CAMBIAR, así que la receta vive en el repo**, no en un mensaje de
+commit: `scripts/video-entrada.sh` convierte el original en los cuatro archivos que sirve la web.
+Cambiar de vídeo es un comando y una revisión a ojo —que el grado le siente bien al material
+nuevo—. Los nombres no cambian, así que el componente no se toca, y el hash de la URL lo pone Vite
+al construir, con lo que **ningún navegador se queda con la versión vieja en caché**. Esa fue la
+razón real para sacar los archivos de `public/`.
+
+**Dos cortes, porque uno solo no sirve para las dos pantallas.**
+
+| | qué es | por qué |
+|---|---|---|
+| `entrada.*` | 608x1080 | Móvil. Vertical, que es donde se diseñó la entrada. |
+| `entrada-ancho.*` | 1280x720 | Escritorio. El vertical ahí se ampliaba **3,13x** y se veía blando. |
+
+El vertical es un recorte central del `1920x1080`. Conviene entender qué hace y qué no: en un móvil
+de 393x852 el `object-fit: cover` enseña **el 26% central** del original, se recorte antes o no.
+**El recorte no cambia lo que se ve; cambia lo que se descarga.** Centrado y no desplazado porque
+no hay un encuadre bueno para las siete escenas: los platos quedan bien, y a los dos neones les
+corta el texto —que es precisamente la banda que tapa el rótulo—. El horizontal no recorta nada,
+solo baja de tamaño: el original ya es 16:9.
+
+**La elección se hace en JS, no con el atributo `media` del `<source>`**, que a diferencia de
+`<picture>` no se reevalúa. Se decide una vez, antes del `load()` —con `preload="none"` y sin
+`autoplay` todavía no se ha pedido un byte, así que reescribir las fuentes es gratis— y no se
+rehace al redimensionar: cambiar de archivo a media reproducción cortaría la imagen para ganar
+nitidez en una ventana que se está arrastrando. Medido después: en escritorio la ampliación baja de
+3,13x a **1,5x**, y cada pantalla pide solo su archivo.
+
+**Y si `entrada-ancho.*` no existe, no pasa nada**: el glob no lo encuentra, los `data-` salen
+vacíos y todo el mundo ve el vertical. Es el mismo contrato que el de «si no hay vídeo, manda el
+póster».
 
 **El grado, horneado en el archivo y no en CSS.** Un `filter` sobre un vídeo a pantalla completa
 se recompone en cada fotograma; el archivo se procesa una vez. La cadena está en el commit y son
@@ -164,8 +189,23 @@ que en el rojo** —que es lo que apaga la madera clara y la cerveza sin tocar l
 viñeta suave cierra los bordes. Se calibró comparando fotogramas contra el póster, no a ojo: se
 descartaron una versión suave (seguía siendo de día) y una fuerte (aplastaba el plato).
 
-**Peso: de 18,5 MB a 1,05 MB en MP4 y 0,94 MB en WebM.** No compite con el LCP porque no se pide
-hasta que el script lo pide: `preload="none"` y `load()` después de `astro:page-load`.
+**Peso: de 18,5 MB a 1,01 / 0,87 MB** (móvil, MP4 / WebM) y **1,51 / 1,40 MB** (escritorio). A 25
+fps y no 30: es un fondo de movimientos lentos, y a 25 no se nota la diferencia. No compite con el
+LCP porque no se pide hasta que el script lo pide: `preload="none"` y `load()` después de
+`astro:page-load`.
+
+**Y no se pide en cuatro casos**, que son los que separan un fondo decorativo de un peaje: si
+alguien pidió movimiento reducido, si lleva «Ahorro de datos» puesto, si el navegador rechaza
+reproducir —el ahorro de energía del iPhone— o si no hay archivos. En los cuatro manda el póster.
+`navigator.connection` no existe en Safari, y su ausencia no significa nada: solo se hace caso
+cuando dice explícitamente que sí.
+
+**La cinta se pausa cuando no se la ve**, con su propio `IntersectionObserver` y también al pasar
+la pestaña a segundo plano. Es la regla 6 de `movimiento.md`, que la cinta incumplía sin que nadie
+lo mirara: los botones y la chispa sí se paraban con `data-sobre-entrada`, y el vídeo seguía
+decodificando a pantalla completa con la página en el pie —medido: `currentTime` avanzando de 5,05
+a 7,06 s—. Lleva observador propio y no el atributo del `<html>` porque ese lo pone un centinela de
+1px al final de la sección, y aquí lo que importa es si el vídeo está en pantalla.
 
 **La etiqueta `<video>` sigue sin pintarse si el archivo no está**, y esa comprobación **hubo que
 rehacerla entera**: la que había no funcionaba al construir. Está contada en el §5, y es la trampa

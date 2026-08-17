@@ -38,15 +38,25 @@ import poster from "../assets/entrada-poster.jpg";
 // `import.meta.glob` se evalúa al compilar, así que da igual dónde acabe este
 // módulo empaquetado. Y conserva lo que se quería: si no hay ficheros el glob
 // devuelve un objeto vacío y no se pinta la etiqueta, sin 404 en la consola.
-const cintas = import.meta.glob<string>("../assets/video/entrada.{mp4,webm}", {
+//
+// DOS CORTES, y el de escritorio puede no existir sin que se rompa nada. El
+// vertical en una pantalla grande se amplía 3,13x —medido a 1920x1080: 1905px
+// de hueco sobre 608px nativos— y se ve blando; el horizontal en un móvil
+// desperdicia tres de cada cuatro píxeles, porque el `cover` solo enseña la
+// banda central. Los genera `scripts/video-entrada.sh`, que es también donde
+// vive la receta del grado: el vídeo es provisional y va a cambiar.
+const cintas = import.meta.glob<string>("../assets/video/entrada{,-ancho}.{mp4,webm}", {
   eager: true,
   query: "?url",
   import: "default",
 });
-const cinta = (ext: string) =>
-  Object.entries(cintas).find(([ruta]) => ruta.endsWith(`.${ext}`))?.[1];
-const mp4 = cinta("mp4");
-const webm = cinta("webm");
+const url = (nombre: string, ext: string) =>
+  Object.entries(cintas).find(([ruta]) => ruta.endsWith(`/${nombre}.${ext}`))?.[1];
+
+const mp4 = url("entrada", "mp4");
+const webm = url("entrada", "webm");
+const mp4Ancho = url("entrada-ancho", "mp4");
+const webmAncho = url("entrada-ancho", "webm");
 const hayVideo = Boolean(mp4 || webm);
 
 interface Props {
@@ -101,7 +111,19 @@ const guias = showPhotoGuides();
       dejarla invisible por CSS. El coste entero sin el beneficio, y encima
       `autoplay` invalida el `preload="none"` de al lado. */}
   {hayVideo && (
-    <video class="cinta" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1">
+    <video
+      class="cinta"
+      muted
+      loop
+      playsinline
+      preload="none"
+      aria-hidden="true"
+      tabindex="-1"
+      disablepictureinpicture
+      disableremoteplayback
+      data-ancho-webm={webmAncho}
+      data-ancho-mp4={mp4Ancho}
+    >
       {webm && <source src={webm} type="video/webm" />}
       {mp4 && <source src={mp4} type="video/mp4" />}
     </video>
@@ -202,10 +224,34 @@ const guias = showPhotoGuides();
    * Ese es también el motivo del `load()` explícito: sin `autoplay` y con
    * `preload="none"` el navegador no trae ni un byte por su cuenta, que es
    * justamente lo que se quiere mientras no se haya decidido. */
+  let sueltaCinta: (() => void) | undefined;
+
   const montaCinta = () => {
     const cinta = document.querySelector<HTMLVideoElement>(".cinta");
-    if (!cinta) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!cinta) return undefined;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+
+    /* Y con «Ahorro de datos» puesto tampoco se descarga. Es el mismo trato que
+       el movimiento reducido: alguien ha dicho por lo bajo que no quiere que le
+       gastemos, y un fondo decorativo es exactamente lo primero que sobra.
+       `connection` no existe en Safari, y su ausencia no significa nada: solo
+       se hace caso cuando dice explícitamente que sí. */
+    const conexion = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    if (conexion?.saveData === true) return undefined;
+
+    /* EL CORTE SE ELIGE ANTES DE PEDIR NADA. Se puede reescribir las fuentes
+       porque con `preload="none"` y sin `autoplay` todavía no se ha pedido ni un
+       byte; `load()` las vuelve a leer. Se mide una vez y no se reevalúa al
+       redimensionar: cambiar de archivo a media reproducción cortaría la imagen
+       para ganar nitidez en una ventana que se está arrastrando. */
+    if (window.matchMedia("(min-width: 900px)").matches) {
+      for (const fuente of cinta.querySelectorAll("source")) {
+        const ancha = fuente.type === "video/webm"
+          ? cinta.dataset.anchoWebm
+          : cinta.dataset.anchoMp4;
+        if (ancha) fuente.src = ancha;
+      }
+    }
 
     cinta.load();
     /* En iPhone con el ahorro de energía activado, `play()` se rechaza aunque
@@ -216,6 +262,35 @@ const guias = showPhotoGuides();
       () => cinta.classList.add("puesta"),
       () => {},
     );
+
+    /* NADA SE MUEVE CUANDO NO SE LE VE — regla 6 de movimiento.md. Los botones y
+       la chispa ya se paraban con `data-sobre-entrada`, pero la cinta no la
+       paraba nadie: medido, seguía decodificando a pantalla completa con la
+       página en el pie. Va con su propio observador y no colgado del atributo
+       del <html>, porque ese lo pone un centinela de 1px al final de la sección
+       y aquí lo que importa es si el vídeo está en pantalla.
+
+       `play()` devuelve una promesa que se rechaza si el elemento se pausa antes
+       de que arranque —al deslizar rápido pasa—, y ese rechazo no es un error:
+       es el resultado correcto. */
+    const ojo = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) cinta.play().catch(() => {});
+        else cinta.pause();
+      },
+      { threshold: 0 },
+    );
+    ojo.observe(cinta);
+
+    const enVisibilidad = () => {
+      if (document.visibilityState === "hidden") cinta.pause();
+    };
+    document.addEventListener("visibilitychange", enVisibilidad);
+
+    return () => {
+      ojo.disconnect();
+      document.removeEventListener("visibilitychange", enVisibilidad);
+    };
   };
 
   /* Mientras la entrada ocupa la pantalla, la cabecera flota encima sin fondo y
@@ -250,9 +325,10 @@ const guias = showPhotoGuides();
   document.addEventListener("astro:page-load", () => {
     sueltaAnterior?.();
     sueltaCabecera?.();
+    sueltaCinta?.();
     sueltaAnterior = montaEntrada();
     sueltaCabecera = montaCabecera();
-    montaCinta();
+    sueltaCinta = montaCinta();
   });
 </script>
 

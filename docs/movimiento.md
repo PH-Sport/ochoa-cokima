@@ -262,6 +262,15 @@ más lejos; Ochoa es una tasca y es seca.
     `paused` y si `currentTime` avanza**. Es la regla 8 aplicada al ancho de banda: comprobar que
     algo está oculto no es comprobar que está apagado.
 
+    **La regla 6 vale también para el vídeo, y se estaba incumpliendo.** Los botones y la chispa se
+    paran con `data-sobre-entrada`, pero a la cinta no la paraba nadie: medido, seguía a 30 fps a
+    pantalla completa con la página en el pie (`currentTime` de 5,05 a 7,06 s). Ahora lleva su
+    propio `IntersectionObserver` —y no el atributo del `<html>`, que lo pone un centinela de 1px
+    al final de la sección: para pausar lo que importa es si **el vídeo** está en pantalla, no si lo
+    está el final de su sección— más `visibilitychange` para la pestaña en segundo plano. Y
+    `play()` se llama con `.catch()`: al deslizar rápido, la promesa se rechaza porque el elemento
+    se pausa antes de arrancar, y eso no es un error sino el resultado correcto.
+
 ## Qué se mueve hoy
 
 | Dónde | Qué | Con qué |
