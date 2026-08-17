@@ -34,11 +34,24 @@ const t =
   (function () {
     var el = document.getElementById("tombo-consent");
     if (!el) return;
+    var raiz = document.documentElement;
     var m = document.cookie.match(/(?:^|; )tombo_consent=([^;]*)/);
     if (m) {
       if (m[1] === "granted") window.dispatchEvent(new Event("tombo:consent"));
       return;
     }
+
+    /* MIENTRAS EL CARTEL ESTÁ A LA VISTA, SE MARCA EL <html>. Es un atributo de
+       contrato, como los `data-intro-*`: aquí solo dice «hay una decisión
+       pendiente y este cartel la está pidiendo», y cada casa decide si eso le
+       cambia algo. Cokima aparta los botones de su entrada mientras dure, para
+       que el cartel no se plante encima de ellos; Ochoa no lo lee y no se entera.
+
+       SE MARCA LO PENDIENTE Y NO LO DECIDIDO, a propósito: así el atributo solo
+       existe si este script ha corrido y hay cartel de verdad. Sin JavaScript no
+       hay marca, y quien se cuelgue de ella se queda en su estado normal en vez
+       de esconder algo para siempre esperando un aviso que no va a llegar. */
+    raiz.setAttribute("data-consent-pendiente", "");
     // El cartel se apoya en el borde inferior, que es justo donde la portada
     // ancla su titular. Publica su alto para que quien lo necesite le reserve
     // sitio, y lo devuelve a cero al decidir: sin esto, el cartel tapa el
@@ -61,6 +74,13 @@ const t =
       document.cookie = "tombo_consent=" + value + "; Max-Age=" + 60 * 60 * 24 * 180 + "; Path=/; SameSite=Lax";
       el.hidden = true;
       setHeight(0);
+      /* LA MARCA SE QUITA CON LAS DOS RESPUESTAS, y esto no es un detalle: el
+         evento de abajo solo se emite al aceptar —porque solo entonces se puede
+         medir—, así que colgar de él lo que se destapa dejaría a quien rechaza
+         sin ver nunca lo que hay debajo. Eso convertiría el cartel en un muro
+         que solo se abre pagando, que es exactamente lo que no se puede hacer.
+         Rechazar tiene que liberar igual que aceptar. */
+      raiz.removeAttribute("data-consent-pendiente");
       if (value === "granted") window.dispatchEvent(new Event("tombo:consent"));
     });
   })();

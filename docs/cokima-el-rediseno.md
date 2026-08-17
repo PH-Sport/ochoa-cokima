@@ -115,15 +115,40 @@ menú hamburguesa, nombre... nada»*. Están fuera, y aparecen al deslizar:
 El nombre en el centro llegó después, y no contradice lo anterior: lo que Mario quitó fue el
 claim y el rótulo pequeño de la barra; lo que puso es la marca como pieza de composición.
 
-### El cartel de cookies
+### El cartel de cookies: ocupa el sitio de los botones y se lo devuelve
 
-Baja con el resto. **No hay pega legal**: la obligación es no instalar cookies no esenciales antes
-del consentimiento, y aquí no se instala ninguna hasta aceptar (`Base.astro`, spec §10). Mientras
-nadie baje no ha pasado nada que anunciar. Quien pulse «Reservar» sin bajar verá el cartel en la
-página de reservas.
+**Cambiado el 2026-08-17, idea de Mario.** Antes bajaba con el resto y esperaba fuera de la
+entrada, porque plantado sobre la landing se comía los dos botones. Ahora ese conflicto es la
+secuencia: **mientras hay decisión pendiente el cartel ocupa ese hueco, y al decidir se retira y
+los botones entran.** Primero decides, luego entras.
 
-La regla vive en `apps/cokima/src/styles/global.css`, **no en `@tombo/ui`**: el cartel es de las
-dos casas y esto es una decisión de esta.
+Funciona porque en móvil el cartel **ya** es una franja apoyada en el borde inferior, exactamente
+donde caen «Ver carta» y «Reservar». En vez de dos piezas peleándose por el mismo borde, se turnan.
+
+**RECHAZAR DESTAPA IGUAL QUE ACEPTAR, y de eso depende que esto sea legal.** Tapar la única acción
+disponible hasta que alguien *acepta* es un muro de cookies, que la AEPD no admite. Hacerlo hasta
+que *decide* —con las dos salidas igual de accesibles y del mismo tamaño, y con la página entera
+navegable sin decidir— no lo es. Y sigue sin instalarse ninguna cookie no esencial antes del
+consentimiento (`Base.astro`, spec §10), que es la obligación de fondo.
+
+Eso obligó a arreglar un agujero del componente compartido: **hasta ahora solo avisaba al
+aceptar**, porque el evento `tombo:consent` existe para arrancar la medición. Colgar de él lo que
+se destapa habría dejado a quien rechaza sin ver nunca los botones.
+
+**El mecanismo va en `@tombo/ui` y la decisión estética en la app.** El `ConsentBanner` publica
+`data-consent-pendiente` en el `<html>` mientras el cartel está a la vista y lo quita con las dos
+respuestas; es un atributo de contrato, como los `data-intro-*`. Cokima se cuelga de él por CSS;
+**Ochoa no lo lee y no se entera**, que es como lo quiso Mario.
+
+**Se marca lo pendiente y no lo decidido, a propósito:** así el atributo solo existe si el script
+corrió y hay cartel de verdad. Sin JavaScript no hay marca y los botones se ven, en vez de quedar
+escondidos para siempre esperando un aviso que no va a llegar. El fallo cae del lado bueno.
+
+Medido en el build, los cinco casos: primera visita (pie a `visibility: hidden` y fuera del orden
+de tabulación), tras **rechazar** (pie dentro, cookie `denied`), tras **aceptar** (igual), visita
+recurrente (botones directos, sin cartel) y sin decidir + scroll a 2329px (se navega con
+normalidad). El `visibility` no es adorno: a opacidad cero los botones seguían recibiendo el foco,
+y eso ya mordió al vaciar la landing.
 
 ### La curvatura: donde vive el contraste entre las dos casas
 
@@ -325,8 +350,18 @@ API (`list_deployments` → `state: READY`), no martilleando la URL.
    «enseguida vamos con lo que ocurre al scrollear».
 2. **Decidir si el rótulo del centro se queda al bajar.** En cuanto aparece el «Cokima» de la
    barra, están los dos a la vez.
-3. ~~El vídeo~~ **puesto el 2026-08-17** (§4). Queda una sola decisión suelta: si el corte del
-   bucle merece un fundido.
+3. ~~El vídeo~~ **puesto el 2026-08-17** (§4), pero **el que hay es provisional y Mario lo dijo
+   expresamente**: lo pasó para ver cómo quedaba. **El pulido al 100% se hace cuando llegue el
+   definitivo**, y hasta entonces no merece la pena gastar en ello. Lo que queda para ese día,
+   anotado para no volver a razonarlo:
+
+   - **AV1** en un tercer `<source>`. Ahorraría del orden de 300 KB sobre 1 MB, a cambio de
+     complicar la matriz de compatibilidad y de gastar batería en móviles que no lo decodifican por
+     hardware. Hoy no compensa; con el vídeo bueno y su peso real delante, se revisa.
+   - **El corte del bucle**, que vuelve al principio en seco. El montaje ya cambia de escena cada
+     cuatro segundos, así que no desentona, pero no está decidido si merece un fundido.
+   - **Repasar el encuadre y el grado** con `scripts/video-entrada.sh`: los dos están calibrados
+     para ESTE material, y el script explica cómo rehacerlos.
 4. **`Hero.astro` y `Embers.astro` quedan huérfanos** a propósito. No se borran hasta que el
    rediseño cierre.
 5. **El `hreflang` de las tres legales de Cokima** sigue roto: declaran que su versión inglesa es

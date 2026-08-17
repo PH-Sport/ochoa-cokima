@@ -499,11 +499,42 @@ const guias = showPhotoGuides();
     animation-play-state: paused;
   }
 
+  /* ── El turno del pie ───────────────────────────────────────────────────
+     Mientras el cartel de cookies pide una decisión, ocupa este hueco y el pie
+     espera fuera: los dos son la franja de abajo, y plantar el cartel encima de
+     los botones era lo que obligaba a apartarlo de la entrada. Al decidir
+     —aceptar o rechazar, da igual— el cartel se va y el pie entra a ocupar su
+     sitio.
+
+     `visibility` además de `opacity`, que es lo que lo saca del orden de
+     tabulación: a opacidad cero los botones seguían recibiendo el foco, y quien
+     navega con teclado se los encontraba invisibles. Ya pasó al vaciar la
+     landing.
+
+     Solo mientras se está sobre la entrada: si alguien baja sin decidir, el
+     cartel le acompaña por la web y estos botones ya no son los que estorban.
+
+     El desplazamiento es el de la casa —`--shift`, el mismo con el que entran el
+     rótulo y la hamburguesa— y no un número nuevo. */
   .pie {
     position: relative;
     width: 100%;
     display: grid;
     justify-items: center;
+    transition:
+      opacity var(--dur-in) var(--ease),
+      transform var(--dur-in) var(--ease);
+  }
+  :global(html[data-consent-pendiente][data-sobre-entrada]) .pie {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(var(--shift, 12px));
+    transition:
+      opacity var(--dur-out) var(--ease),
+      transform var(--dur-out) var(--ease),
+      visibility 0s linear var(--dur-out);
+  }
+  .pie {
     /* Pegados abajo, que es lo que pidió Mario, pero nunca por debajo de la
        barra de gestos del iPhone: con `viewport-fit=cover` la página llega al
        borde físico y sin el `env()` los botones acabarían debajo del pasamanos.
