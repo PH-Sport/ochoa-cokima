@@ -92,17 +92,16 @@ const guias = showPhotoGuides();
     class="cartel"
   />
 
+  {/* SIN `autoplay`, y es deliberado: quien arranca la cinta es el script, que
+      es el único que sabe si quien mira ha pedido que no se mueva nada. Con
+      `autoplay` puesto, el navegador la descargaba y la reproducía por su
+      cuenta sin pasar por esa comprobación —medido el 2026-08-17 con
+      `prefers-reduced-motion: reduce`: 0,94 MB pedidos, `paused: false` y el
+      tiempo avanzando de 2,46 a 3,98 s— y lo único que hacía el guard era
+      dejarla invisible por CSS. El coste entero sin el beneficio, y encima
+      `autoplay` invalida el `preload="none"` de al lado. */}
   {hayVideo && (
-    <video
-      class="cinta"
-      autoplay
-      muted
-      loop
-      playsinline
-      preload="none"
-      aria-hidden="true"
-      tabindex="-1"
-    >
+    <video class="cinta" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1">
       {webm && <source src={webm} type="video/webm" />}
       {mp4 && <source src={mp4} type="video/mp4" />}
     </video>
@@ -195,12 +194,14 @@ const guias = showPhotoGuides();
     };
   };
 
-  /* El vídeo no se pide hasta que se sabe que se puede reproducir: con
-   * `preload="none"` el navegador no descarga nada por su cuenta, así que sin
-   * esto no llegaría a sonar ni el primer fotograma. Y no se pide en absoluto
-   * si quien mira ha dicho que no quiere movimiento, o si el archivo todavía no
-   * existe —que es el caso hoy—: en los dos casos se queda el póster, que es
-   * una foto real y no un hueco. */
+  /* AQUÍ SE DECIDE SI LA CINTA EXISTE PARA ESTE VISITANTE, y por eso la etiqueta
+   * no lleva `autoplay`: entre `preload="none"` y esta función, quien pide
+   * movimiento reducido no descarga el archivo ni lo decodifica. Antes solo se
+   * le ocultaba, que es pagarlo todo y no recibir nada.
+   *
+   * Ese es también el motivo del `load()` explícito: sin `autoplay` y con
+   * `preload="none"` el navegador no trae ni un byte por su cuenta, que es
+   * justamente lo que se quiere mientras no se haya decidido. */
   const montaCinta = () => {
     const cinta = document.querySelector<HTMLVideoElement>(".cinta");
     if (!cinta) return;

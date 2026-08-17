@@ -246,6 +246,22 @@ más lejos; Ochoa es una tasca y es seca.
     a otra, sospechar del instrumento antes que del código**, y repetirla en una página recién
     cargada. Es la hermana de la regla 8.
 
+20. **`autoplay` no pasa por el interruptor de `prefers-reduced-motion`, y esconder no es apagar.**
+    La cinta de la entrada de Cokima llevaba `autoplay` en la etiqueta y un guard de movimiento
+    reducido en el script. Parecía correcto y no lo era: el guard solo impedía añadir la clase que
+    la hace visible, así que quien pedía no ver movimiento **se descargaba los 0,94 MB y el vídeo
+    se reproducía a 30 fps detrás de una capa a opacidad 0**. Medido el 2026-08-17: `paused: false`
+    y `currentTime` avanzando de 2,46 a 3,98 s. Pagarlo todo y no recibir nada, y encima `autoplay`
+    invalida el `preload="none"` que tenía al lado.
+
+    **Quien arranca un medio es el script, no el atributo**, porque el atributo no sabe lo que ha
+    pedido quien mira. Sin `autoplay` y con `preload="none"`, en movimiento reducido ahora no hay
+    ni una petición de red (`readyState: 0`) y manda el póster.
+
+    Y la comprobación que lo demuestra no es «¿se ve?», sino **`networkState`, `readyState`,
+    `paused` y si `currentTime` avanza**. Es la regla 8 aplicada al ancho de banda: comprobar que
+    algo está oculto no es comprobar que está apagado.
+
 ## Qué se mueve hoy
 
 | Dónde | Qué | Con qué |

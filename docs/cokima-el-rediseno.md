@@ -180,6 +180,20 @@ y dejaba **cuatro 404 en la consola de cada visita**.
 siempre con las rejillas: se ponen para marcar lo que falta y hay que acordarse de que dejen de
 hablar cuando deja de faltar.
 
+**Quien no quiere movimiento no se lo descarga siquiera.** Lo preguntó Mario —«¿mantenemos la
+imagen de antes para movimiento reducido y ahorro de energía?»— y al medirlo resultó que solo se
+cumplía a medias: la etiqueta llevaba `autoplay`, que arranca el navegador sin pasar por el guard
+del script, así que el vídeo se bajaba y se reproducía **invisible**. Se le quitó el `autoplay` y
+ahora arranca solo el script. Medido en el build: en movimiento reducido, cero peticiones de red,
+`readyState: 0`, `paused: true` y el póster mandando; en normal, todo como debe. Está como regla 20
+en `movimiento.md`.
+
+**En ahorro de energía, sin medir.** El póster manda igual, porque en iPhone con esa opción
+`play()` se rechaza y la clase que hace visible la cinta nunca se pone. Lo que **no** está
+comprobado es si la descarga llega a empezar antes del rechazo: eso solo se ve en el teléfono de
+Mario, y no se ha hecho. Si importa, la vía es no llamar a `load()` y dejar que sea `play()` quien
+pida los datos, para que el rechazo llegue antes que el primer byte.
+
 **Lo que queda por mirar:** el bucle corta en seco al volver al principio —de las croquetas a la
 sala—, y como el propio montaje ya cambia de escena cada cuatro segundos no desentona, pero no se
 ha decidido si merece un fundido.
