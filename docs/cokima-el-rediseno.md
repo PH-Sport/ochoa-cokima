@@ -167,11 +167,13 @@ descartaron una versión suave (seguía siendo de día) y una fuerte (aplastaba 
 **Peso: de 18,5 MB a 1,05 MB en MP4 y 0,94 MB en WebM.** No compite con el LCP porque no se pide
 hasta que el script lo pide: `preload="none"` y `load()` después de `astro:page-load`.
 
-**La etiqueta `<video>` sigue sin pintarse si el archivo no está**, comprobado al construir con
-`existsSync`. Ya no hace falta para este vídeo, pero se queda: es lo que sostiene que el póster
-mande solo cuando no hay cinta —en iPhone con ahorro de energía, que es el caso real, `play()` se
-rechaza—. La primera versión pintaba la etiqueta siempre confiando en `preload="none"` y dejaba
-**cuatro 404 en la consola de cada visita**.
+**La etiqueta `<video>` sigue sin pintarse si el archivo no está**, y esa comprobación **hubo que
+rehacerla entera**: la que había no funcionaba al construir. Está contada en el §5, y es la trampa
+más cara de esta tanda. Ahora los archivos viven en `src/assets/video/` y quien decide es
+`import.meta.glob`, que se evalúa al compilar. La condición se queda aunque hoy haya vídeo: es lo
+que sostiene que el póster mande solo cuando no hay cinta —en iPhone con ahorro de energía,
+`play()` se rechaza—. La primera versión pintaba la etiqueta siempre confiando en `preload="none"`
+y dejaba **cuatro 404 en la consola de cada visita**.
 
 **Y el cartel de «falta el vídeo» ahora depende de que falte de verdad.** Estaba atado solo a
 `showPhotoGuides()`, así que habría anunciado en la preview un hueco ya cubierto. Es la trampa de
@@ -202,6 +204,35 @@ Las dos piezas salen del mundo del local, que es de brasa y de neón. Están exp
 ## 5. Las trampas que costaron tiempo
 
 Todas aparecieron **midiendo en el navegador**, ninguna leyendo el código.
+
+**`import.meta.url` no apunta al fuente después de empaquetar, y `dev` no lo delata.** La que más
+ha costado, y no dio ni un error. La existencia del vídeo se comprobaba así:
+
+```js
+const publico = (n) => fileURLToPath(new URL(`../../public/video/${n}`, import.meta.url));
+existsSync(publico("entrada.mp4"));
+```
+
+En `dev` funciona, porque ahí `import.meta.url` es el fichero fuente. **Al construir, este
+componente acaba empaquetado en `dist/server/.prerender/chunks/`**, así que la ruta salía como
+`dist/server/public/video/entrada.mp4` —una carpeta que no existe jamás— y la comprobación
+devolvía `false` **siempre**. Medido con una sonda temporal en el build, que es lo único que lo
+enseñó.
+
+Consecuencia: el vídeo se subió, se desplegó, y en el iPhone de Mario seguía el póster. El HTML
+publicado no traía `<video>` y sí traía el cartel de «falta el vídeo», encima de un vídeo que
+estaba perfectamente servido en `/video/entrada.mp4`.
+
+**Y el error de método que lo permitió: se verificó en `dev` y se dio por bueno el `build`.** El
+`Complete!` del build se leyó como si fuera una verificación, y no lo es: dice que compiló, no que
+el HTML diga lo que debe. **Lo que se despliega es el build, así que es el HTML del build lo que
+hay que mirar** —`grep "<video" .vercel/output/static/index.html`—, igual que con la barra de iOS
+se aprendió a medir en el navegador y no a leer el código.
+
+Arreglado con `import.meta.glob(..., { eager: true, query: "?url" })` sobre `src/assets/video/`,
+que resuelve el bundler al compilar y por tanto no depende de dónde acabe el módulo. Probado en las
+**dos** direcciones —con los ficheros y sin ellos—, que es justo lo que nunca se había hecho: el
+mecanismo viejo solo se había visto dar `false` cuando `false` era la respuesta correcta.
 
 **La entrada no ocupaba la pantalla.** La cabecera es `sticky` y reserva sus 61px en el flujo
 aunque parezca flotar: la sección terminaba en y=904 con una ventana de 844, el centinela nunca

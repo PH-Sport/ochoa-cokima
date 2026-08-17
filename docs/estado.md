@@ -51,7 +51,9 @@ conversación con él, no una tarea que ejecutar por cuenta propia.**
 1. ~~El vídeo de la entrada.~~ **Entregado y puesto el 2026-08-17.** Vino de Higgsfield en
    horizontal (1920x1080, 27 s, 18,5 MB) y claro; se recortó a vertical `608x1080` y se le horneó
    el grado de la casa para que case con el póster, que es casi negro. Pesa **1,05 MB en MP4 y
-   0,94 MB en WebM**. El porqué de cada parámetro está en `cokima-el-rediseno.md` §4. Queda
+   0,94 MB en WebM**, y vive en `src/assets/video/`, no en `public/`. El porqué de cada parámetro
+   está en `cokima-el-rediseno.md` §4, y **la trampa que costó un despliegue en falso está en su
+   §5: `import.meta.url` no apunta al fuente después de empaquetar, y `dev` no lo delata.** Queda
    anotado, sin decidir, si el corte del bucle merece un fundido.
 2. **Identificar diez fotos de plato** con el restaurante. Sin eso no pueden ir en la carta. Ver
    `fotografia.md`.

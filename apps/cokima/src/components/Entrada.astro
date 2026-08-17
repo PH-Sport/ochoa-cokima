@@ -15,22 +15,39 @@
 // horneado en el archivo. El porqué de cada parámetro está en
 // `docs/cokima-el-rediseno.md` §4.
 //
-// La etiqueta `<video>` NO se pinta hasta que el archivo está de verdad en
-// `public/video/`: se comprueba aquí, al construir. La primera versión lo
-// pintaba siempre confiando en `preload="none"`, y dejaba cuatro 404 en la
-// consola de cada visita —el navegador pide las dos fuentes, y el script las
-// volvía a pedir al llamar a load()—. La comprobación se queda: es lo que
-// sostiene que el póster mande solo mientras no haya cinta.
-import { existsSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+// La etiqueta `<video>` NO se pinta si no hay archivo, y eso lo decide el
+// bundler al compilar (ver el glob de abajo). La primera versión la pintaba
+// siempre confiando en `preload="none"` y dejaba cuatro 404 en la consola de
+// cada visita —el navegador pide las dos fuentes, y el script las volvía a
+// pedir al llamar a load()—. La comprobación se queda: es lo que sostiene que
+// el póster mande solo mientras no haya cinta.
 import { Image } from "astro:assets";
 import { showPhotoGuides } from "@tombo/config/photo-guides";
 import poster from "../assets/entrada-poster.jpg";
 
-const publico = (n: string) => fileURLToPath(new URL(`../../public/video/${n}`, import.meta.url));
-const hayMp4 = existsSync(publico("entrada.mp4"));
-const hayWebm = existsSync(publico("entrada.webm"));
-const hayVideo = hayMp4 || hayWebm;
+// LA EXISTENCIA LA RESUELVE EL BUNDLER, NO EL SISTEMA DE FICHEROS. Antes esto
+// era un `existsSync` contra `../../public/video/` calculado con
+// `import.meta.url`, y NUNCA funcionó al construir: en el build este componente
+// acaba empaquetado en `dist/server/.prerender/chunks/`, así que la ruta salía
+// como `dist/server/public/video/` —una carpeta que no existe jamás— y la
+// comprobación daba `false` siempre. No se notó en diez días porque hasta que
+// hubo vídeo `false` era además la respuesta correcta, y en `dev` sí funciona:
+// ahí `import.meta.url` es el fichero fuente. Se verificó en `dev` y se dio por
+// bueno el build.
+//
+// `import.meta.glob` se evalúa al compilar, así que da igual dónde acabe este
+// módulo empaquetado. Y conserva lo que se quería: si no hay ficheros el glob
+// devuelve un objeto vacío y no se pinta la etiqueta, sin 404 en la consola.
+const cintas = import.meta.glob<string>("../assets/video/entrada.{mp4,webm}", {
+  eager: true,
+  query: "?url",
+  import: "default",
+});
+const cinta = (ext: string) =>
+  Object.entries(cintas).find(([ruta]) => ruta.endsWith(`.${ext}`))?.[1];
+const mp4 = cinta("mp4");
+const webm = cinta("webm");
+const hayVideo = Boolean(mp4 || webm);
 
 interface Props {
   locale: "es" | "en";
@@ -44,14 +61,14 @@ const t = es
       reservar: "Reservar",
       alt: "Un plato de Cokima servido en la mesa del restaurante",
       hueco:
-        "Falta el vídeo: cuatro platos en bucle y sin sonido, en public/video/entrada.mp4. En cuanto esté, se pone solo.",
+        "Falta el vídeo: en bucle y sin sonido, en src/assets/video/entrada.mp4. En cuanto esté, se pone solo.",
     }
   : {
       carta: "See the menu",
       reservar: "Book a table",
       alt: "A Cokima dish served at the restaurant",
       hueco:
-        "Video missing: four dishes on a loop, no sound, at public/video/entrada.mp4. It appears on its own once it is there.",
+        "Video missing: on a loop, no sound, at src/assets/video/entrada.mp4. It appears on its own once it is there.",
     };
 
 const hrefCarta = es ? "/carta" : "/en/menu";
@@ -86,8 +103,8 @@ const guias = showPhotoGuides();
       aria-hidden="true"
       tabindex="-1"
     >
-      {hayWebm && <source src="/video/entrada.webm" type="video/webm" />}
-      {hayMp4 && <source src="/video/entrada.mp4" type="video/mp4" />}
+      {webm && <source src={webm} type="video/webm" />}
+      {mp4 && <source src={mp4} type="video/mp4" />}
     </video>
   )}
 
