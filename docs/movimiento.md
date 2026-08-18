@@ -271,6 +271,27 @@ más lejos; Ochoa es una tasca y es seca.
     `play()` se llama con `.catch()`: al deslizar rápido, la promesa se rechaza porque el elemento
     se pausa antes de arrancar, y eso no es un error sino el resultado correcto.
 
+21. **Lo que decide un estado visible no puede esperar a `astro:page-load`.** La entrada de Cokima
+    colgaba de ese evento la marca que aparta la cabecera y el arranque de la cinta. El evento no
+    llega hasta que han bajado y corrido los módulos de Astro, y **medido en carga fría eso fueron
+    957 ms**: durante ese segundo la cabecera se veía puesta —rótulo y hamburguesa— y luego
+    desaparecía, y el vídeo ni se había empezado a pedir. Lo reportó Mario desde el iPhone, donde
+    por datos se nota mucho más que en local.
+
+    **No era un parpadeo de estilo sino de estado.** El CSS estaba bien; lo que llegaba tarde era
+    quién decide. Se arregla con un `<script is:inline>` justo detrás de la sección: corre durante
+    el parseo, con el marcado ya en el DOM y antes del primer pintado. El módulo se queda con lo
+    que sí puede esperar —observadores y medidas—, y no vuelve a arrancar lo ya arrancado.
+
+    Después: la petición del vídeo baja de **957 a ~137 ms**, y **en el primer fotograma pintado la
+    marca ya está puesta**. Esa es la comprobación que vale, y no «cuándo se pone»: con
+    `requestAnimationFrame` no se puede observar nada antes del primer frame, así que medir el
+    instante da una cota del instrumento —salían 358 ms— y no el dato. La pregunta correcta es
+    **«¿llegó a pintarse sin ella?»**, y se responde mirando el estado dentro del primer `rAF`.
+
+    Lo que NO se hizo, y conviene que siga sin hacerse: `preload="auto"` para adelantar más. Eso
+    deja al navegador bajando la cinta desde el principio, compitiendo con el póster, que es el LCP.
+
 ## Qué se mueve hoy
 
 | Dónde | Qué | Con qué |

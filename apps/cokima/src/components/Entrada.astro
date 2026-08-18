@@ -169,6 +169,58 @@ const guias = showPhotoGuides();
   <i class="centinela" aria-hidden="true"></i>
 </section>
 
+{/* ARRANQUE INMEDIATO, y va aquí abajo a propósito.
+    Todo lo de esta sección colgaba de `astro:page-load`, que no llega hasta que
+    han bajado y corrido los módulos de Astro. Medido en carga fría: **957 ms**
+    hasta que se pedía siquiera el vídeo, y el mismo instante para la marca que
+    aparta la cabecera. Durante ese segundo se veía el rótulo y la hamburguesa
+    puestos —y luego desaparecían— y la cinta ni había empezado a descargar. En
+    un móvil por datos eso son los segundos que se notan.
+
+    Esto es `is:inline` y está justo detrás de la sección, así que corre DURANTE
+    el parseo, con el <video> ya en el DOM y antes del primer pintado. No espera
+    a nada.
+
+    Deliberadamente NO se pone `preload="auto"` para adelantar más: eso deja que
+    el navegador lo baje por su cuenta desde el principio, compitiendo con el
+    póster, que es el LCP. Aquí se pide en cuanto se puede, pero se pide después. */}
+<script is:inline>
+  (function () {
+    var raiz = document.documentElement;
+    /* Primero la cabecera, que es lo barato y lo que se ve: sin esto hay un
+       parpadeo de estado, no de estilo —el CSS está bien, lo que llega tarde es
+       quién decide—. El observador del centinela lo mantiene a partir de ahora. */
+    raiz.setAttribute("data-sobre-entrada", "");
+
+    var cinta = document.querySelector(".cinta");
+    if (!cinta) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var conexion = navigator.connection;
+    if (conexion && conexion.saveData === true) return;
+
+    if (window.matchMedia("(min-width: 900px)").matches) {
+      var fuentes = cinta.querySelectorAll("source");
+      for (var i = 0; i < fuentes.length; i++) {
+        var ancha =
+          fuentes[i].type === "video/webm" ? cinta.dataset.anchoWebm : cinta.dataset.anchoMp4;
+        if (ancha) fuentes[i].src = ancha;
+      }
+    }
+
+    /* La marca es lo que evita que el módulo lo pida por segunda vez. Al navegar
+       con el router este script no se re-ejecuta y el <video> es otro, sin
+       marca: entonces sí arranca el módulo. */
+    cinta.dataset.arrancada = "1";
+    cinta.load();
+    cinta.play().then(
+      function () {
+        cinta.classList.add("puesta");
+      },
+      function () {},
+    );
+  })();
+</script>
+
 <script>
   /* La portada mide una vez y se queda quieta hasta que cambie el ancho.
    *
@@ -239,29 +291,34 @@ const guias = showPhotoGuides();
     const conexion = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
     if (conexion?.saveData === true) return undefined;
 
-    /* EL CORTE SE ELIGE ANTES DE PEDIR NADA. Se puede reescribir las fuentes
-       porque con `preload="none"` y sin `autoplay` todavía no se ha pedido ni un
-       byte; `load()` las vuelve a leer. Se mide una vez y no se reevalúa al
-       redimensionar: cambiar de archivo a media reproducción cortaría la imagen
-       para ganar nitidez en una ventana que se está arrastrando. */
-    if (window.matchMedia("(min-width: 900px)").matches) {
-      for (const fuente of cinta.querySelectorAll("source")) {
-        const ancha = fuente.type === "video/webm"
-          ? cinta.dataset.anchoWebm
-          : cinta.dataset.anchoMp4;
-        if (ancha) fuente.src = ancha;
-      }
-    }
+    /* EN LA PRIMERA CARGA YA LA ARRANCÓ EL `is:inline` DE ARRIBA, casi un segundo
+       antes que esto. Aquí solo se arranca lo que llega sin marca, que es el
+       caso de volver a la portada con el router de Astro: el <video> es otro,
+       recién insertado, y ese script inline no se re-ejecuta.
 
-    cinta.load();
-    /* En iPhone con el ahorro de energía activado, `play()` se rechaza aunque
-       el vídeo esté silenciado. No es un error que haya que registrar: es el
-       teléfono diciendo que no, y la respuesta correcta es quedarse en el
-       póster. */
-    cinta.play().then(
-      () => cinta.classList.add("puesta"),
-      () => {},
-    );
+       La elección de corte va DENTRO de esta condición: reescribir las fuentes
+       de una cinta que ya está en marcha no la cambiaría —haría falta otro
+       `load()`— pero dejaría el DOM diciendo una cosa y la reproducción otra. */
+    if (cinta.dataset.arrancada !== "1") {
+      if (window.matchMedia("(min-width: 900px)").matches) {
+        for (const fuente of cinta.querySelectorAll("source")) {
+          const ancha = fuente.type === "video/webm"
+            ? cinta.dataset.anchoWebm
+            : cinta.dataset.anchoMp4;
+          if (ancha) fuente.src = ancha;
+        }
+      }
+      cinta.dataset.arrancada = "1";
+      cinta.load();
+      /* En iPhone con el ahorro de energía activado, `play()` se rechaza aunque
+         el vídeo esté silenciado. No es un error que haya que registrar: es el
+         teléfono diciendo que no, y la respuesta correcta es quedarse en el
+         póster. */
+      cinta.play().then(
+        () => cinta.classList.add("puesta"),
+        () => {},
+      );
+    }
 
     /* NADA SE MUEVE CUANDO NO SE LE VE — regla 6 de movimiento.md. Los botones y
        la chispa ya se paraban con `data-sobre-entrada`, pero la cinta no la
