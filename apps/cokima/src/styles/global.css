@@ -24,6 +24,32 @@
   box-sizing: border-box;
 }
 html {
+  /* ESTA WEB ES OSCURA Y HAY QUE DECIRLO, no solo pintarla.
+     ---------------------------------------------------------------------
+     Sin esta línea el navegador da por hecho que la página es clara y pinta
+     con ese criterio todo lo que es SUYO y no nuestro: su barra de
+     direcciones, la franja de la barra de estado, el rebote del final del
+     scroll y los controles nativos. Mario lo vio el 2026-08-18 en el iPhone:
+     franja blanca arriba en Brave y barra inferior gris en Safari, sobre una
+     web negra.
+
+     Y no lo arreglaba `theme-color`, que ya estaba puesto con el `--ground`:
+     ese meta propone un color, pero mientras el documento se declare claro el
+     navegador se reserva el derecho a usar su propia interfaz clara. Primero
+     hay que decirle en qué esquema está.
+
+     Va en la raíz y no en el `body` porque es la caja que el navegador mira
+     para su propia interfaz. Junto con el `background` de abajo cubre las dos
+     mitades: el esquema y el color concreto. */
+  color-scheme: dark;
+
+  /* Y el fondo, también aquí. El del `body` se propaga al lienzo, así que en
+     condiciones normales bastaba; pero lo que se ve en el rebote de iOS y
+     debajo del notch es la caja raíz, y dejarla sin declarar es depender de esa
+     propagación. Con las dos declarado, no hay ningún estado en el que asome un
+     blanco que no hemos puesto nosotros. */
+  background: var(--ground);
+
   /* Sin `scroll-behavior: smooth`: no hay en toda la web un anclaje interno del
      que colgar, así que no animaba ninguna navegación. Lo que sí animaba eran
      los reajustes de scroll que se da el propio navegador, y en Chromium el
