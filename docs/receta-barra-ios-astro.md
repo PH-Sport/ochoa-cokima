@@ -1,5 +1,7 @@
 # La barra del navegador que vuelve a salir en el iPhone
 
+> **Estado: receta** · portable, no caduca con este proyecto · válida mientras Astro sirva `<ClientRouter />`
+
 **Qué arregla:** en Brave, Firefox o Chrome de iPhone, la barra de direcciones se recoge al
 deslizar hacia abajo y **vuelve a salir entera justo al levantar el dedo**, en vez de quedarse
 recogida como en cualquier otra web. En Safari no pasa.
@@ -206,4 +208,4 @@ Y tres errores de método que costaron cuatro vueltas:
 ---
 
 *Diagnosticado y verificado el 2026-08-01 sobre Astro 6.4.8. El caso completo, con las medidas, en
-`docs/barra-del-navegador-ios.md` del monorepo de Ochoa/Cokima.*
+`docs/archivo/barra-del-navegador-ios.md` del monorepo de Ochoa/Cokima.*

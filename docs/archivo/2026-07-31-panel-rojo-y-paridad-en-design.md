@@ -1,5 +1,7 @@
 # La plancha roja del menú, el relieve de las fichas y la paridad del inglés
 
+> **Estado: cerrado** · registro histórico, no se actualiza · índice en `README.md`
+
 - **Fecha:** 2026-07-31
 - **Marca:** Los Ochoa. **Cokima no se toca.**
 - **Acordado con Mario** en la sesión del 31, sobre la captura del panel abierto.

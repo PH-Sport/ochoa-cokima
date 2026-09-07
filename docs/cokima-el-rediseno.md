@@ -1,5 +1,7 @@
 # Cokima: el rediseño
 
+> **Estado: vivo** · el rediseño está en curso · revisado 2026-09-07
+
 - **Abierto:** 2026-08-14 · **Última tanda:** 2026-08-17
 - **Rama:** `tmp/entrada-cokima` (temporal, pendiente del visto bueno de Mario)
 - **Estado:** la landing está construida. Lo que va debajo, sin decidir.

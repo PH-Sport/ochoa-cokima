@@ -1,4 +1,7 @@
 # Divergencia de layout — Cokima y Tasquita Los Ochoa
+
+> **Estado: cerrado** · registro histórico, no se actualiza · índice en `README.md`
+
 ## Documento de diseño
 
 - **Fecha:** 2026-07-27

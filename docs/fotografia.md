@@ -1,5 +1,7 @@
 # Fotografía
 
+> **Estado: vivo** · revisado 2026-09-07 · sigue esperando material del restaurante
+
 ## Estado
 
 **Desde el 2026-08-14, Cokima tiene mejor material que Ochoa.** Aparecieron **diecinueve fotos

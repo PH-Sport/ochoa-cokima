@@ -1,5 +1,7 @@
 # Despliegue en Vercel
 
+> **Estado: vivo** · revisado 2026-09-07
+
 > **Estado (2026-07-31): los dos proyectos existen y despliegan.** Cada push a `preview` publica
 > en su alias fijo, que está en `estado.md` §6. Lo que sigue pendiente son los **dominios
 > propios**, las **variables de entorno de producción** y el *Ignored Build Step* (§Infraestructura
