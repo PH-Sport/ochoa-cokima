@@ -1,5 +1,7 @@
 # Movimiento
 
+> **Estado: vivo** · revisado 2026-09-07
+
 Pocas animaciones, concretas, y todas saliendo de los mismos cinco valores. **No hay un solo
 milisegundo suelto en los componentes**: si algo se mueve, su duración y su curva vienen de
 `tokens.css` de cada app. Añadir un `0.2s ease` a mano es la forma de romper esto.

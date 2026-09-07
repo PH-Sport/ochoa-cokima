@@ -1,5 +1,7 @@
 # La barra del navegador en iPhone — resuelto
 
+> **Estado: cerrado** · registro histórico, no se actualiza · índice en `README.md`
+
 **Estado: resuelto el 2026-08-01.** La causa era el **`ClientRouter` de Astro**, que escribe en el
 historial del navegador cada vez que el scroll se detiene. En los navegadores de iPhone que no son
 Safari, esa escritura obliga a sacar la barra de direcciones. El arreglo está en

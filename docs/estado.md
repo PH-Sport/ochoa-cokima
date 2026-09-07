@@ -1,5 +1,7 @@
 # Estado del proyecto
 
+> **Estado: vivo** · corte 2026-09-07 · **el punto de entrada del repo**
+
 - **Corte:** 2026-09-07
 - **Rama de trabajo:** `tmp/entrada-cokima` (el rediseño de Cokima, en curso) · `preview`
   (desarrollo, todo lo demás integrado) · `main` (producción, sin nada nuevo aún)
@@ -47,7 +49,7 @@ que escribe en el historial cada vez que el scroll se detiene; en los navegadore
 son Safari eso obliga a sacar la barra de direcciones. El arreglo es
 `packages/ui/src/QuietScrollHistory.astro`. Todo el caso —la causa, la prueba que lo demostró en el
 Brave de Mario, la lista de descartes y **los tres errores de método que costaron cuatro vueltas**—
-está en `barra-del-navegador-ios.md`. Vale la pena leer su §8 antes de perseguir cualquier fallo
+está en `archivo/barra-del-navegador-ios.md`. Vale la pena leer su §8 antes de perseguir cualquier fallo
 que solo se vea en un móvil.
 
 **Cokima ya tiene los dos arreglos de fondo que le faltaban** (portada congelada y `minmax(0, 1fr)`
@@ -200,7 +202,7 @@ hreflang, banner de consentimiento. Cartas reales transcritas ES+EN.
 carta "baraja" de Cokima con tabs y snap horizontal, carta "pizarra" de Ochoa con toggle
 ½/entera y buscador, barra inferior de Ochoa y barra de reserva de Cokima con estado de
 apertura real en hora de Madrid, View Transitions, y `MenuSection`/`DishRow` retirados de
-`packages/ui`. Registro detallado en `estado-divergencia-layout.md`.
+`packages/ui`. Registro detallado en `archivo/estado-divergencia-layout.md` (cerrado: su cabecera ya no es cierta).
 
 **Fase 3 — portadas, chrome y piel de Ochoa (2026-07-29).** Las dos homes abren con una
 foto a sangre y titular anclado abajo a la izquierda, sin párrafo ni botones; debajo, una
@@ -208,8 +210,8 @@ tira de platos con nombre y precio que **asoma por el borde inferior** de la pri
 pantalla. La reserva y la navegación se mudan a la cabecera (`[Reservar]` + hamburguesa
 con foco atrapado), y desaparecen `BottomBar` y `ReserveBar`. Ochoa se viste con su marca
 real: rojo bandera sobre blanco, sin serif ni grano ni verde oliva. Diseño en
-`superpowers/specs/2026-07-29-portadas-y-chrome-design.md`, plan en
-`superpowers/plans/2026-07-29-portadas-y-chrome.md`.
+`archivo/2026-07-29-portadas-y-chrome-design.md` (el plan ejecutado se borró; está en git).
+
 
 **Verificado el 2026-07-29 en `preview`,** midiendo a 390px en las cuatro homes:
 `pnpm test` → 43 tests en verde (32 content, 6 tracking, 5 config) y `pnpm build` →
@@ -300,8 +302,8 @@ componente.
 
 Mario abrió el menú en el móvil y señaló la costura: barra roja arriba, folio blanco debajo.
 El problema no era la persiana, era el material. Diseño en
-`superpowers/specs/2026-07-31-panel-rojo-y-paridad-en-design.md`, plan en
-`superpowers/plans/2026-07-31-panel-rojo-y-paridad-en.md`.
+`archivo/2026-07-31-panel-rojo-y-paridad-en-design.md` (el plan ejecutado se borró; está en git).
+
 
 - **El panel es la misma plancha roja que la barra**, cuyo filete se apaga mientras dura el
   menú. Se transparenta el color y no se quita el borde: `syncHeaderHeight()` mide la barra con
@@ -514,7 +516,7 @@ Mario la pidió «sencilla pero llamativa», con una restricción que mandaba so
 «no queremos generar fricción a todo el que entre haciéndole esperar una animación». Se eligió
 sobre un boceto con tres variantes reproducibles, y **la elección es provisional**: el diseño
 separa el andamiaje del gesto para que cambiarla cueste dos `@keyframes`. Todo el detalle, con
-las dos descartadas y sus motivos, en `superpowers/specs/2026-08-06-entrada-ochoa-design.md`.
+las dos descartadas y sus motivos, en `archivo/2026-08-06-entrada-ochoa-design.md`.
 
 **Qué hace.** Sobre una plancha roja, «LOS» y «OCHOA» llegan torcidas de lados opuestos y encajan;
 se les despega la sombra dura; y después la plancha se recoge hasta medir exactamente la barra,
@@ -887,6 +889,17 @@ Sin cambios respecto a la spec §12, más una entrada nueva:
 dos máquinas — que no cruza de ordenador y se borra al acabar la sesión. Un agente nuevo, en
 cualquier máquina, debería poder ponerse al día sin más que este repositorio.
 
+**Cada documento declara su estado en la primera línea.** Son tres y solo tres:
+
+- **`vivo`** — cuenta lo que hay ahora. Si deja de ser cierto, se corrige o se cierra. Nunca se
+  deja mintiendo.
+- **`receta`** — conocimiento portable. No caduca con el proyecto, solo si cambia la tecnología
+  que describe.
+- **`cerrado`** — caso terminado. Se guarda por el porqué, **no se actualiza nunca** y vive en
+  `archivo/`.
+
+### Vivos
+
 | Documento | Qué es |
 |---|---|
 | `trabajar-con-mario.md` | Con quién se trabaja y cómo se le reporta: corto porque dirige desde el móvil, progreso visible primero, y por qué una sensación suya es un dato |
@@ -894,12 +907,22 @@ cualquier máquina, debería poder ponerse al día sin más que este repositorio
 | `recursos.md` | Identificadores que cuesta recuperar: IDs de Vercel, slugs, cartas oficiales y dónde deja Mario el material |
 | `../.impeccable.md` | Contexto de diseño: para quién es cada web y cómo debe sentirse |
 | `movimiento.md` | Los cinco valores del movimiento, las reglas y qué se mueve |
-| `barra-del-navegador-ios.md` | **Caso abierto.** La barra de Brave en iPhone: lo arreglado, lo descartado y por dónde seguir |
 | `fotografia.md` | Qué fotos faltan, con qué nombre y dónde dejarlas |
 | `deploy.md` | Vercel: dos proyectos, modelo de ramas, env vars, dominios |
-| `estado-divergencia-layout.md` | Registro de la fase 2, tarea por tarea |
-| `superpowers/specs/2026-07-18-webs-grupo-tombo-design.md` | Diseño general |
-| `superpowers/specs/2026-07-27-divergencia-layout-design.md` | Diseño de la fase 2 |
-| `superpowers/plans/2026-07-27-divergencia-layout.md` | Plan de la fase 2 (ejecutado) |
-| `superpowers/specs/2026-07-29-portadas-y-chrome-design.md` | Diseño de la fase 3 |
-| `superpowers/plans/2026-07-29-portadas-y-chrome.md` | Plan de la fase 3 (ejecutado) |
+
+### Recetas
+
+| Documento | Qué es |
+|---|---|
+| `receta-barra-ios-astro.md` | Portable: la barra del navegador en iPhone en cualquier web con `<ClientRouter />` |
+
+### Cerrados
+
+Todo en **`archivo/`**, con su propio índice en `archivo/README.md`. Nada de ahí describe el
+presente: se lee para saber **por qué** algo se decidió así, nunca para saber cómo está la web hoy.
+Ahí están los cinco documentos de diseño de las fases 1 a 4, el caso completo de la barra de iOS
+(resuelto el 2026-08-01) y el registro de la fase 2.
+
+**Los cinco planes de implementación se borraron el 2026-09-07** —5.142 líneas de listas de tareas
+ya ejecutadas— porque el diff ya cuenta el *qué*. Siguen enteros en el historial de git; el
+`archivo/README.md` dice cómo sacarlos.

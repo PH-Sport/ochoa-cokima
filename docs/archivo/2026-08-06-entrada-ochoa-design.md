@@ -1,5 +1,7 @@
 # La entrada de Los Ochoa
 
+> **Estado: cerrado** · registro histórico, no se actualiza · índice en `README.md`
+
 - **Fecha:** 2026-08-06
 - **Marca:** Los Ochoa. **Cokima no se toca.**
 - **Acordado con Mario** en la sesión del 6, sobre un boceto con tres variantes reproducibles.

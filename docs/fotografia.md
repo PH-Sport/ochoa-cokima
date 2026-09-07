@@ -1,5 +1,7 @@
 # Fotografía
 
+> **Estado: vivo** · revisado 2026-09-07 · sigue esperando material del restaurante
+
 ## Estado
 
 **Ochoa ya tiene fotos reales del local; Cokima no.** El 2026-07-30 aparecieron **nueve fotos

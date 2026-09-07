@@ -1,5 +1,7 @@
 # Estado — divergencia de layout
 
+> **Estado: cerrado** · registro histórico, no se actualiza · índice en `README.md`
+
 - **Fecha de corte:** 2026-07-27
 - **Rama:** `feat/divergencia-layout` (18 commits sobre `main`, base `c981387`)
 - **Spec:** `docs/superpowers/specs/2026-07-27-divergencia-layout-design.md`

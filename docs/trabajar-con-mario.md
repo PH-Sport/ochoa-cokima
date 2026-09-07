@@ -1,5 +1,7 @@
 # Trabajar con Mario
 
+> **Estado: vivo** · revisado 2026-09-07
+
 **Con quién se trabaja y cómo se le reporta.** No es un perfil de cortesía: cada punto de aquí
 salió de una corrección suya, y varios costaron una tanda entera antes de aprenderse. El *qué*
 está construido vive en `estado.md`; esto es el *cómo*.

@@ -1,5 +1,7 @@
 # Portadas, chrome y piel de Ochoa — diseño
 
+> **Estado: cerrado** · registro histórico, no se actualiza · índice en `README.md`
+
 - **Fecha:** 2026-07-29
 - **Rama:** `preview`
 - **Estado:** aprobado por Mario, pendiente de plan de implementación

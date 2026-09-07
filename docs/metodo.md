@@ -1,5 +1,7 @@
 # Método: cómo se decide y cómo se verifica
 
+> **Estado: vivo** · revisado 2026-09-07
+
 **Las dos técnicas que este repo ya ha pagado caras.** Decidir lo visual enseñando variantes en
 vez de describirlas, y sostener toda afirmación sobre cómo se ve la web en una medición hecha en
 el navegador, no en la lectura del código.
@@ -149,8 +151,19 @@ Si hay una grabación de pantalla, mirarla pronto: se extraen fotogramas y se mo
 contactos con `ffmpeg -vf "fps=1,scale=200:-1,tile=8x3"`, que se lee con la herramienta de
 imágenes. Ahí se ve el dispositivo, la barra del sistema y el comportamiento real.
 
-El caso completo está en `barra-del-navegador-ios.md` — **su §8, los tres errores de método, vale
-más que el arreglo**. La receta portable, en `receta-barra-ios-astro.md`.
+El caso completo está en `archivo/barra-del-navegador-ios.md` (cerrado). La receta portable, en
+`receta-barra-ios-astro.md`.
+
+### 2.6 Si no hay explicación, se dice
+
+De aquel mismo caso salió un error que no es de medición sino de honestidad: se presentó
+`theme-color` como un arreglo «de percepción» cuando el problema era **de comportamiento**. No era
+un arreglo: era una forma de tapar que no había explicación.
+
+**Cuando no se sabe por qué algo funciona o deja de funcionar, se dice.** Un «no lo sé todavía» es
+información útil; un arreglo con una explicación inventada alrededor cuesta las vueltas siguientes,
+porque nadie vuelve a mirar ahí. Vale igual para lo que no se ha podido medir: se dice que no se ha
+medido, no se rellena con una impresión.
 
 ---
 
@@ -176,4 +189,4 @@ más que el arreglo**. La receta portable, en `receta-barra-ios-astro.md`.
 ---
 
 Ver también: `trabajar-con-mario.md` (a quién se le reporta y cómo), `movimiento.md` (las reglas
-numeradas, vinculantes), `barra-del-navegador-ios.md` §8 y `recursos.md`.
+numeradas, vinculantes), `archivo/barra-del-navegador-ios.md` §8 y `recursos.md`.

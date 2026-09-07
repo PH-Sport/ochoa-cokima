@@ -1,5 +1,7 @@
 # Recursos: identificadores, accesos y material
 
+> **Estado: vivo** · revisado 2026-09-07
+
 **Lo que cuesta recuperar y no se deduce del código.** URLs, slugs, IDs de proyecto y dónde vive
 el material que entrega Mario. Todo lo de aquí está verificado; cada bloque dice cuándo y cómo.
 

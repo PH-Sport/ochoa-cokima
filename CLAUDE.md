@@ -66,8 +66,9 @@ rompe el build a propósito, y así debe seguir.
   `tokens.css` de cada app. Las reglas numeradas de `docs/movimiento.md` son vinculantes: nada de
   bounce, solo `transform`/`opacity`/`clip-path`, entrar lento y responder rápido.
 - **Verificar en el navegador midiendo, no leyendo el código.** Píxeles y visibilidad real; la
-  caché de Vite miente. Ver `docs/barra-del-navegador-ios.md` §8, que vale más que su arreglo, y
-  `docs/metodo.md` §2 para lo que **no** se puede medir con la ventana sin foco.
+  caché de Vite miente. **`docs/metodo.md` §2** lleva las trampas de método y lo que **no** se
+  puede medir con la ventana sin foco; el caso que las produjo, en
+  `docs/archivo/barra-del-navegador-ios.md` (cerrado).
 - **Y verificar sobre el `build`, no sobre `dev`.** Lo que se despliega es el build, y hay cosas
   que solo se rompen ahí: `import.meta.url` apunta al fuente en `dev` y al chunk empaquetado al
   construir, así que cualquier lectura del sistema de ficheros con esa base funciona en local y
@@ -118,6 +119,33 @@ Antes de cerrar una tanda:
    problema real, la distinción que ordena, lo descartado, y lo que no hay que volver a discutir.
 7. **Nada inventado.** Ni contenido de las cartas, ni horarios, ni datos del local, ni resultados
    que no se hayan comprobado. Donde falta material se deja el hueco marcado y se dice que falta.
+8. **Podar es parte de cerrar, no un proyecto aparte.** Si una tanda cierra un caso, su documento
+   pasa a `cerrado` y se mueve a `docs/archivo/` **en el mismo commit**. Documentación que sobra no
+   es inocente: cuesta tiempo de lectura y, peor, compite con `docs/estado.md` por decir la verdad.
+
+## Los tres estados de un documento
+
+**Cada documento del repo declara su estado en la primera línea, y solo hay tres.** Sin esto la
+carpeta crece y nadie se atreve a borrar nada, porque «¿y si hace falta?».
+
+| Estado | Qué significa | Qué obliga |
+|---|---|---|
+| `vivo` | Cuenta lo que hay **ahora** | Se actualiza o se corrige. **Nunca se deja mintiendo.** Si deja de describir el presente, se cierra |
+| `receta` | Conocimiento portable, no atado a este proyecto | Solo caduca si cambia la tecnología que describe |
+| `cerrado` | Caso terminado | **No se toca nunca más.** Vive en `docs/archivo/` y se guarda solo por el porqué |
+
+**Lo que decide entre `vivo` y `cerrado` no es la antigüedad, es si describe el presente.** Un
+documento de julio que sigue contando cómo funciona algo hoy está vivo; uno de ayer sobre una rama
+que ya se fusionó está cerrado.
+
+**Un documento cerrado no se actualiza — y eso incluye sus enlaces rotos.** Reescribirle las rutas
+lo convierte en algo que ya no dice qué había cuando se escribió, que es justo su único valor.
+Si algo suyo sigue siendo verdad y hace falta, se **copia** a un documento vivo.
+
+**El precedente, para calibrar:** el 2026-09-07 se borraron cinco planes de implementación ya
+ejecutados —5.142 líneas, el 69% de la documentación del repo, uno de ellos de 1.944—. El motivo
+es el punto 2 de arriba: un plan ejecutado es el *qué*, y el diff ya lo cuenta. Git los conserva
+enteros. Los documentos de diseño se quedaron, porque son el *porqué*.
 
 Y lo logístico, que sin ello lo anterior no viaja: **subir la rama de trabajo**. Lo que no está en
 `origin` no existe para la otra máquina.
