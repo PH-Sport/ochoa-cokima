@@ -2,6 +2,11 @@
 
 Monorepo pnpm con las dos webs (Astro 6) y la fontanería compartida.
 
+> **El desarrollo no ocurre en esta rama.** `main` es producción. El trabajo vivo, la
+> documentación y las instrucciones para agentes están en `preview` y en la rama `tmp/*`
+> de turno. Si acabas de clonar, antes de nada: `git checkout preview`, y desde ahí
+> `CLAUDE.md` (arranque de sesión) y `docs/estado.md` (punto de entrada de todo lo demás).
+
 ```
 apps/
   cokima/     → web de Cokima (Kitchen Madness) · dominio propio · deploy propio
