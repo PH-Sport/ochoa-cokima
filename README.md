@@ -36,6 +36,9 @@ Por app: `pnpm --filter cokima dev` / `pnpm --filter ochoa dev`.
 ## Documentación
 
 - **Empezar por aquí: `docs/estado.md`** — estado actual, qué falta y cómo levantarlo.
+- Si eres un agente: `CLAUDE.md` manda, y después `docs/trabajar-con-mario.md` (cómo se reporta
+  aquí), `docs/metodo.md` (cómo se decide lo visual y cómo se verifica) y `docs/recursos.md`
+  (identificadores y material).
 - Spec de diseño: `docs/superpowers/specs/2026-07-18-webs-grupo-tombo-design.md`
 - Plan de implementación: `docs/superpowers/plans/2026-07-18-monorepo-implementation.md`
 - Despliegue en Vercel: `docs/deploy.md` (un repo → dos proyectos; pendiente de ejecutar)

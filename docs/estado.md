@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-- **Corte:** 2026-08-16
+- **Corte:** 2026-09-07
 - **Rama de trabajo:** `tmp/entrada-cokima` (el rediseño de Cokima, en curso) · `preview`
   (desarrollo, todo lo demás integrado) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
@@ -8,6 +8,13 @@
 ---
 
 ## 0. Por dónde seguir
+
+**Novedad del 2026-09-07: el repo ya no depende de la memoria local de ningún agente.** Lo que
+antes solo vivía ahí —con quién se trabaja, cómo se verifica y los identificadores que cuestan de
+recuperar— está en `trabajar-con-mario.md`, `metodo.md` y `recursos.md`. Esa memoria no cruzaba de
+ordenador, así que un agente sentándose en la otra máquina empezaba en blanco y repetía errores ya
+pagados. **Cuando algo nuevo de este tipo aparezca, su sitio es uno de esos tres, no una nota
+fuera del repositorio.**
 
 **Estás en `preview` y el trabajo vivo no está aquí.** Cokima se está rehaciendo entera desde el
 2026-08-16 y es lo único que importa ahora mismo:
@@ -842,8 +849,14 @@ el servicio de imágenes del adaptador (`/_vercel/image?...`), que en `dev` y en
 local devuelve el original. El peso real solo se puede medir en un despliegue.
 
 **Previews (alias fijos, no cambian con cada push):**
-- Cokima → `https://cokima-git-preview-rodzs-projects-1c289ef0.vercel.app`
-- Ochoa → `https://ochoa-git-preview-rodzs-projects-1c289ef0.vercel.app`
+- Cokima → `https://cokima-git-preview-rodz-dev.vercel.app`
+- Ochoa → `https://ochoa-git-preview-rodz-dev.vercel.app`
+
+**El slug del equipo cambió** el 2026-08-17 —era `rodzs-projects-1c289ef0`, ahora es `rodz-dev`—
+y con él **todos los alias**. Si un enlace de preview de un documento viejo da 404, es esto.
+**Cada rama tiene su alias, no solo `preview`**, con el patrón
+`<proyecto>-git-<rama-con-guiones>-rodz-dev.vercel.app`: enseñarle algo a Mario no obliga a
+fusionar en `preview`. IDs de proyecto y detalle en `recursos.md`.
 
 **Aviso de dev:** si en local ves algo que no cuadra con el código (una regla CSS que ya
 no existe, un elemento oculto sin motivo), suele ser caché obsoleta de Vite. Se arregla
@@ -869,8 +882,16 @@ Sin cambios respecto a la spec §12, más una entrada nueva:
 
 ## Documentos
 
+**Los tres primeros no cuentan qué se construyó, sino cómo se trabaja aquí.** Se escribieron el
+2026-09-07 volcando lo que hasta entonces solo vivía en la memoria local del agente en una de las
+dos máquinas — que no cruza de ordenador y se borra al acabar la sesión. Un agente nuevo, en
+cualquier máquina, debería poder ponerse al día sin más que este repositorio.
+
 | Documento | Qué es |
 |---|---|
+| `trabajar-con-mario.md` | Con quién se trabaja y cómo se le reporta: corto porque dirige desde el móvil, progreso visible primero, y por qué una sensación suya es un dato |
+| `metodo.md` | Cómo se decide lo visual (bocetos comparables) y cómo se verifica de verdad en el navegador. Las averías conocidas del entorno |
+| `recursos.md` | Identificadores que cuesta recuperar: IDs de Vercel, slugs, cartas oficiales y dónde deja Mario el material |
 | `../.impeccable.md` | Contexto de diseño: para quién es cada web y cómo debe sentirse |
 | `movimiento.md` | Los cinco valores del movimiento, las reglas y qué se mueve |
 | `barra-del-navegador-ios.md` | **Caso abierto.** La barra de Brave en iPhone: lo arreglado, lo descartado y por dónde seguir |

@@ -25,6 +25,10 @@ El orden importa: `fetch` mueve las referencias remotas, **no** tu árbol de tra
 **Y entonces sí, leer:** `CLAUDE.md` entero, `docs/estado.md` §0 y §1.1, y
 `docs/cokima-el-rediseno.md`.
 
+**Y antes de reportar nada o de dar algo por verificado:** `docs/trabajar-con-mario.md` y
+`docs/metodo.md`. Cuentan con quién se trabaja y cómo se comprueban las cosas aquí — lo que no se
+deduce leyendo el código. Los identificadores que cuesta recuperar, en `docs/recursos.md`.
+
 ## Y al cerrar
 
 `CLAUDE.md` § «Al cerrar: escribir para el que venga». **No es opcional:** la continuidad entre

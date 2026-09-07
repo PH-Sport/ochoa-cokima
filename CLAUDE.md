@@ -27,6 +27,11 @@ El orden importa: `fetch` mueve las referencias remotas, **no** tu árbol de tra
 `docs/cokima-el-rediseno.md`, que es el porqué del trabajo en curso. **`docs/estado.md` es el
 punto de entrada de todo lo demás.**
 
+**Y antes de reportarle nada a Mario o de dar algo por verificado, `docs/trabajar-con-mario.md` y
+`docs/metodo.md`.** Cuentan con quién se trabaja y cómo se comprueban las cosas aquí, que es lo
+que ningún agente puede deducir del código. Los identificadores que cuesta recuperar —IDs de
+Vercel, slugs, dónde deja Mario el material— están en `docs/recursos.md`.
+
 ## Qué es esto
 
 Monorepo con las dos webs del Grupo Tombo: **Cokima** y **Los Ochoa**. Astro 6 estático con
@@ -61,7 +66,14 @@ rompe el build a propósito, y así debe seguir.
   `tokens.css` de cada app. Las reglas numeradas de `docs/movimiento.md` son vinculantes: nada de
   bounce, solo `transform`/`opacity`/`clip-path`, entrar lento y responder rápido.
 - **Verificar en el navegador midiendo, no leyendo el código.** Píxeles y visibilidad real; la
-  caché de Vite miente. Ver `docs/barra-del-navegador-ios.md` §8, que vale más que su arreglo.
+  caché de Vite miente. Ver `docs/barra-del-navegador-ios.md` §8, que vale más que su arreglo, y
+  `docs/metodo.md` §2 para lo que **no** se puede medir con la ventana sin foco.
+- **Y verificar sobre el `build`, no sobre `dev`.** Lo que se despliega es el build, y hay cosas
+  que solo se rompen ahí: `import.meta.url` apunta al fuente en `dev` y al chunk empaquetado al
+  construir, así que cualquier lectura del sistema de ficheros con esa base funciona en local y
+  falla en producción **sin dar un error**. Costó un despliegue en falso el 2026-08-17
+  (`docs/cokima-el-rediseno.md` §5). El `Complete!` del build no es una verificación: dice que
+  compiló, no que el HTML diga lo que debe. Mirar `.vercel/output/static/index.html`.
 - **Los `pnpm dev` lanzados en segundo plano desde el agente se mueren solos**, en las dos
   máquinas. Lanzarlos desde una terminal propia.
 - **No sondear las previews de Vercel en bucle:** activa el checkpoint anti-bot y a partir de ahí
