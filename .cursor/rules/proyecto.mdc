@@ -29,6 +29,10 @@ pnpm install
 
 Después: `CLAUDE.md`, `docs/estado.md` §0 y §1.1, y `docs/cokima-el-rediseno.md`.
 
+Y antes de reportar nada o de dar algo por verificado: `docs/trabajar-con-mario.md` (con quién se
+trabaja y cómo se le reporta) y `docs/metodo.md` (cómo se decide lo visual y cómo se mide de
+verdad). Los identificadores que cuesta recuperar, en `docs/recursos.md`.
+
 ## No pulsar «Sync Changes» a ciegas
 
 El botón no distingue entre subir tu trabajo y contaminar la rama de integración. Antes de
