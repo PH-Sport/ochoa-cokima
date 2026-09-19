@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-09-07 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-09-19 · **el punto de entrada del repo**
 
-- **Corte:** 2026-09-07
+- **Corte:** 2026-09-19
 - **Rama de trabajo:** `tmp/entrada-cokima` (el rediseño de Cokima, en curso) · `preview`
   (desarrollo, todo lo demás integrado) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
@@ -35,6 +35,28 @@ buena y manda sobre esta**, que solo cuenta lo que está integrado.
 costó un susto el 2026-08-16. El procedimiento para cambiar de máquina es la §1.1 y **no es
 opcional**: `git fetch --all --prune` antes de nada, y nunca pushear una rama local sin mirar
 primero a dónde apunta.
+
+**Ochoa, cerrado el 2026-09-19: la portada ya no se queda grande al recargar.** Mario vio que
+«a veces, al recargar, la imagen del Hero aparecía más grande y ocupaba más espacio». Era real y
+medía **94px**: la portada congela su alto una sola vez, y si la recarga cae con la barra del
+navegador retraída congela el viewport grande y no se corrige nunca, porque solo se volvía a
+medir al cambiar el ancho. La regla nueva —**con el mismo ancho, el congelado baja pero no
+sube**— está en `movimiento.md` regla 16 y en `@tombo/ui/alto-congelado.ts`, con 6 tests.
+Medido sobre el build a 390px: desvío 0 en el caso de Mario (antes +94), crecer se ignora, 12
+recargas seguidas a 654px clavados, y la variable se retira y vuelve al navegar con el router.
+**Queda sin medir en un iPhone real**: la mecánica está probada cambiando el alto del viewport,
+no con la barra de Safari. **Y Cokima arrastra el mismo defecto** en su `Hero.astro` (huérfano)
+y en `Entrada.astro` (§3): mismo patrón, misma guarda por ancho. Se arregla importando el mismo
+módulo cuando se toque esa rama.
+
+**Y el 2026-09-07 llegó la carta de alérgenos — y es de Los Ochoa, no de Cokima.** Una foto de
+la hoja impresa del restaurante: 39 platos × los 14 alérgenos de declaración obligatoria; 37 de
+los 39 casan con `menu-es.json`; «Oreja de cerdo» y «Dúo de brioche» no están en la carta, y
+trae una tercera grafía, «Ideazabal». El original está en
+`docs/alergenos-ochoa-original-2026-09-07.jpeg`, **sin commitear, pendiente de decidir dónde
+vive**. **No es lo que espera el filtro apagado**: `ALLERGEN_DATA_CONFIRMED` es de Cokima, y
+Ochoa hoy no tiene ni un plato con alérgenos. Cómo se transcribe y dónde entra es conversación
+con Mario; es dato de salud y no se mete a ojo desde una foto en escorzo.
 
 **La entrada de Los Ochoa (§3.octies) ya está aquí dentro.** Se construyó el 2026-08-06 en
 `tmp/entrada-ochoa` porque Mario pidió expresamente no pushearla a `preview`, y luego que se
@@ -246,6 +268,11 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
       manteniendo sin traducir lo que no tiene equivalente (gilda, pintxo, txistorra, cachopín,
       torreznos, soldaditos de Pavía, revolconas). Es un documento comercial y lo tradujo el
       agente con criterio propio.
+- [ ] **Cokima: la portada se queda grande al recargar**, igual que le pasaba a Ochoa hasta el
+      2026-09-19 (§0). `apps/cokima/src/components/Hero.astro` y `Entrada.astro` llevan el mismo
+      patrón —congelar una vez, remedir solo al cambiar el ancho—. El arreglo es el mismo módulo
+      que ya usa Ochoa, `@tombo/ui/alto-congelado.ts`, con su referencia fuera del flujo. Va en
+      `tmp/entrada-cokima`, que es donde vive `Entrada.astro`.
 - [ ] **Comprobar en un iPhone real** que el hundido de los botones se ve. La lógica ya no
       depende de `:active` (ver §3.quater), pero Playwright usa Chromium: la verificación en
       Safari de iOS no se ha podido hacer desde aquí.
@@ -838,7 +865,7 @@ sirven media ración, no tapa. Es la nomenclatura que va en la carta.
 pnpm install
 pnpm --filter cokima dev    # http://localhost:4321
 pnpm --filter ochoa dev     # segundo puerto libre
-pnpm test                   # 45 tests
+pnpm test                   # 63 tests
 SITE_URL=https://example.com pnpm build
 ```
 

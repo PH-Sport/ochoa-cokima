@@ -144,9 +144,15 @@ más lejos; Ochoa es una tasca y es seca.
     pantalla, la portada parecía inocente—. Medido con un trace, diez cambios de alto disparaban
     55 tareas de rasterizado desde cualquier posición de scroll, contra 0 en la carta; con el
     alto congelado, 0 también, y el pintado baja de 11,5 ms a 3,3. El `calc(100svh …)` se queda
-    en el CSS como respaldo y como valor del primer pintado, y el script lo congela en píxeles
-    **volviendo a medir solo cuando cambia el ancho**, que es el único cambio de viewport que
-    afecta al cálculo: una rotación recoloca, un vaivén de barras no toca nada.
+    en el CSS como respaldo y como valor del primer pintado, y el script lo congela en píxeles.
+    **Y el congelado puede bajar, pero no subir.** El 2026-09-07 se vio que congelar una sola vez
+    tenía trampa: si la página se carga con la barra del navegador retraída —recargar estando ya
+    bajado—, la primera medida es la del viewport grande y la portada se queda **94px más alta**
+    para toda la sesión, porque solo se volvía a medir al cambiar el ancho. Con el mismo ancho,
+    un alto menor es el viewport pequeño llegando tarde y se acepta; uno mayor es el vaivén de
+    barras y se ignora. Una rotación cambia el ancho y empieza de cero. La lógica está en
+    `@tombo/ui/alto-congelado.ts`, con test, y se mide sobre una **referencia** fuera del flujo
+    con el mismo `calc()`: así se lee el valor sin congelar sin quitar y volver a poner la variable.
 17. **El desbordamiento lateral se mide recorriendo la página, no en el primer pantallazo.**
     `.wall` le sacaba 138px de scroll lateral a la portada y se dio por limpia dos veces seguidas
     porque se midió a `scrollY 0`, y esa retícula vive a mitad de página. La causa era

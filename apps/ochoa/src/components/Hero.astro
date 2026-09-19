@@ -36,61 +36,31 @@ const es = locale === "es";
     <h1 class="cartel">{es ? "La tasca que te mereces" : "The tavern you deserve"}</h1>
     <OpenState hours={RESTAURANT.openingHours} locale={locale} />
   </div>
+  {/* La referencia del alto: lleva el mismo `calc()` que la portada pero sin
+      congelar, fuera del flujo e invisible. El script observa ESTE elemento y
+      no la portada, y así lee lo que da el cálculo sin quitar y volver a poner
+      la variable. El porqué entero está en `@tombo/ui/alto-congelado.ts`. */}
+  <div class="alto-ref" aria-hidden="true"></div>
 </header>
 
 <script>
-  /* La portada mide una vez y se queda quieta hasta que cambie el ancho.
-   *
-   * `svh` está definido como estable frente al colapso de la barra del
-   * navegador, pero basta con que un navegador toque el alto del viewport por
-   * cualquier motivo para que esta portada le cambie el tamaño, empuje todo lo
-   * que tiene debajo y **invalide la capa entera del documento**: medido con un
-   * trace, diez cambios de alto disparaban 55 tareas de rasterizado desde
-   * cualquier posición de scroll —también con la portada fuera de pantalla,
-   * que es lo que despistaba— mientras que la carta hacía 0. Congelando el
-   * alto, la portada baja a esas mismas 0.
-   *
-   * Solo se vuelve a medir cuando cambia el ANCHO, que es el único cambio de
-   * viewport que de verdad afecta a este cálculo: el alto entra por `svh` y el
-   * resto son `vw` y la cabecera. Así una rotación recoloca y un vaivén de
-   * barras no toca nada.
+  /* La portada congela su alto en píxeles y no lo dimensiona desde el viewport
+   * (regla 16 de `docs/movimiento.md`). Cómo se congela, y la trampa del
+   * 2026-09-07 —recargar con la barra del navegador retraída dejaba la portada
+   * 94px más alta para toda la sesión—, en `@tombo/ui/alto-congelado.ts`.
    *
    * Si el script no llega a correr, el `calc()` del CSS sigue mandando y la
    * portada mide exactamente lo mismo: esto no añade una medida, congela la que
    * ya había.
    */
+  import { congelaAlto } from "@tombo/ui/alto-congelado.ts";
+
   let sueltaAnterior: (() => void) | undefined;
-
-  const montaPortada = () => {
-    const hero = document.querySelector<HTMLElement>(".hero");
-    if (!hero) return undefined;
-
-    const raiz = document.documentElement;
-    const abort = new AbortController();
-    let anchoMedido = -1;
-
-    const mide = () => {
-      if (window.innerWidth === anchoMedido) return;
-      anchoMedido = window.innerWidth;
-      /* Se retira el valor congelado para que el `calc()` vuelva a mandar, se
-         lee lo que da y se congela otra vez. Fuerza un reflujo, y por eso pasa
-         solo cuando cambia el ancho y no en cada gesto. */
-      raiz.style.removeProperty("--alto-portada");
-      raiz.style.setProperty("--alto-portada", `${Math.round(hero.getBoundingClientRect().height)}px`);
-    };
-
-    mide();
-    window.addEventListener("resize", mide, { passive: true, signal: abort.signal });
-
-    return () => {
-      abort.abort();
-      raiz.style.removeProperty("--alto-portada");
-    };
-  };
 
   document.addEventListener("astro:page-load", () => {
     sueltaAnterior?.();
-    sueltaAnterior = montaPortada();
+    const referencia = document.querySelector<HTMLElement>(".hero .alto-ref");
+    sueltaAnterior = referencia ? congelaAlto({ referencia, variable: "--alto-portada" }) : undefined;
   });
 </script>
 
@@ -102,14 +72,26 @@ const es = locale === "es";
        plato. Además de la cabecera se resta una franja de asomo: sin ella la
        portada llena la pantalla al píxel y la tira de platos queda invisible
        hasta que alguien decide bajar. Que asome es el punto entero. */
-    /* El cálculo se queda como respaldo y como valor del primer pintado; en
-       cuanto el script mide, manda `--alto-portada`, que es ese mismo número
+    /* El cálculo se escribe una vez, aquí, y lo leen dos: la portada como
+       respaldo y valor del primer pintado, y `.alto-ref` como referencia viva.
+       En cuanto el script mide, manda `--alto-portada`, que es ese mismo número
        congelado en píxeles. El motivo está en el script. */
-    height: var(--alto-portada, calc(100svh - var(--t-header-h, 62px) - clamp(128px, 18vw, 156px)));
+    --alto-calculado: calc(100svh - var(--t-header-h, 62px) - clamp(128px, 18vw, 156px));
+    height: var(--alto-portada, var(--alto-calculado));
     min-height: 420px;
     display: flex;
     align-items: flex-end;
     overflow: hidden;
+  }
+  /* Fuera del flujo y sin caja visible: no empuja nada ni se ve, solo mide. */
+  .alto-ref {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: var(--alto-calculado);
+    visibility: hidden;
+    pointer-events: none;
   }
   .shot {
     position: absolute;
