@@ -1,6 +1,7 @@
 ---
 // apps/ochoa/src/components/MenuBoard.astro
-import { formatEuro, type MenuEntry } from "@tombo/content";
+import { formatEuro, allergenNumber, usedAllergens, dishAllergens, type MenuEntry } from "@tombo/content";
+import { ALLERGEN_LABELS } from "../site.ts";
 
 interface Props {
   dishes: MenuEntry[];
@@ -15,6 +16,9 @@ const t = es
       price: "Precio",
       dish: "Plato",
       noHalf: "No se sirve en media ración",
+      allergens: "Alérgenos",
+      toConfirm: "Pendiente de confirmar con el restaurante.",
+      allergensNote: "Según la información facilitada por el restaurante. Ante cualquier duda, pregunta al personal.",
       sections: {
         pinchos: "Pinchos y tapas",
         "con-pan": "Con pan",
@@ -28,6 +32,9 @@ const t = es
       price: "Price",
       dish: "Dish",
       noHalf: "Not served as a half portion",
+      allergens: "Allergens",
+      toConfirm: "To be confirmed with the restaurant.",
+      allergensNote: "According to the information provided by the restaurant. If in doubt, ask the staff.",
       sections: {
         pinchos: "Pintxos & tapas",
         "con-pan": "In bread",
@@ -55,6 +62,20 @@ const sections = SECTION_ORDER.map((key) => {
     hasHalf: items.some((d) => typeof d.price === "object" && d.price.half !== null),
   };
 }).filter((s) => s.items.length > 0);
+
+/* La chuleta al pie lista solo los alérgenos que usa esta carta, en orden de
+   número. La marca «*» solo aparece si algún plato la lleva. */
+const labels = ALLERGEN_LABELS[locale];
+const chuleta = usedAllergens(dishes);
+const hayMarca = dishes.some((d) => d.allergensToConfirm.length > 0);
+
+/** Los números de un plato, con la marca en los que el restaurante señaló. */
+const numeros = (dish: MenuEntry) =>
+  dishAllergens(dish).map((a) => ({
+    n: allergenNumber(a),
+    marca: dish.allergensToConfirm.includes(a),
+    label: labels[a] ?? a,
+  }));
 
 /** Las dos cifras de una fila, tal y como van impresas en la carta de la casa. */
 const cells = (price: MenuEntry["price"]) => {
@@ -92,6 +113,16 @@ const cells = (price: MenuEntry["price"]) => {
                 <th scope="row" class="dish">
                   <span class="name">{dish.name}</span>
                   {dish.description && <span class="desc">{dish.description}</span>}
+                  {dish.allergens.length > 0 && (
+                    <span class="al">
+                      {/* Los números se leen con la chuleta; quien no la ve
+                          oye el nombre entero. */}
+                      <span class="visually-hidden">{t.allergens}: {numeros(dish).map((x) => x.label).join(", ")}.</span>
+                      {numeros(dish).map((x) => (
+                        <span aria-hidden="true">{x.n}{x.marca && "*"}</span>
+                      ))}
+                    </span>
+                  )}
                 </th>
                 {sec.hasHalf && (
                   <td class="price">
@@ -113,6 +144,26 @@ const cells = (price: MenuEntry["price"]) => {
       </table>
     </section>
   ))}
+  {chuleta.length > 0 && (
+    <footer class="chuleta">
+      <h2 class="chuleta-title">{t.allergens}</h2>
+      <dl>
+        {chuleta.map((a) => (
+          <>
+            <dt>{allergenNumber(a)}</dt>
+            <dd>{labels[a] ?? a}</dd>
+          </>
+        ))}
+        {hayMarca && (
+          <>
+            <dt aria-hidden="true">*</dt>
+            <dd>{t.toConfirm}</dd>
+          </>
+        )}
+      </dl>
+      <p class="chuleta-note">{t.allergensNote}</p>
+    </footer>
+  )}
 </div>
 
 <style>
@@ -131,13 +182,15 @@ const cells = (price: MenuEntry["price"]) => {
     margin: 0 0 0.6rem;
   }
 
-  /* La carta no se estira a todo el ancho de la pantalla. A 1280px el nombre
-     del plato quedaba a setecientos píxeles de su precio y el ojo no recorre
-     esa distancia: es exactamente el hueco que antes tapaba la guía de puntos.
-     Acotada, las dos cifras vuelven a caer al lado de su plato. El margen que
-     queda a la derecha no sobra: es donde entrarán las fotos. */
+  /* Hasta el 2026-09-19 la carta se paraba en 44rem: a 1280px el nombre del
+     plato quedaba a setecientos píxeles de su precio y el ojo no recorre esa
+     distancia —es el hueco que antes tapaba la guía de puntos—, y el margen
+     derecho se reservaba para las fotos. Mario pidió probarla al 90% de la
+     pantalla («vamos a ver qué tal queda»), así que el tope se levanta y la
+     página de la carta abre su contenedor. Si el precio vuelve a quedar
+     lejos, esta variable es lo que hay que volver a poner en 44rem. */
   .board {
-    --carta-w: 44rem;
+    --carta-w: none;
     /* Aire contra el titular de la página. Desde que la primera sección también
        lleva rótulo, «CARTA» y «PINCHOS Y TAPAS» quedaban a un renglón de
        distancia y se leían como un titular de dos líneas. */
@@ -195,6 +248,57 @@ const cells = (price: MenuEntry["price"]) => {
     font-size: 1.02rem;
     font-weight: 550;
     line-height: 1.3;
+  }
+  /* Los alérgenos van en números, como en la carta de bar de toda la vida, y
+     la chuleta al pie los traduce. Mario los prefirió a las palabras y a los
+     iconos el 2026-09-19 («al menos de momento»). Van en la voz de aviso de
+     la casa y en el gris más apagado: se ven si se buscan y no compiten con
+     el precio. */
+  .al {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45em;
+    margin-top: 0.3rem;
+    font-size: var(--fs-micro);
+    color: var(--ink-faint);
+    line-height: 1.4;
+  }
+  .chuleta {
+    max-width: var(--carta-w);
+    margin-top: 1.6rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line);
+    font-size: var(--fs-micro);
+    color: var(--ink-dim);
+    line-height: 1.5;
+  }
+  .chuleta-title {
+    font-family: var(--sans);
+    font-size: var(--fs-micro);
+    font-weight: 700;
+    font-stretch: var(--wd-rotulo);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-dim);
+    margin: 0;
+  }
+  .chuleta dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 10px;
+    row-gap: 3px;
+    margin: 0.5rem 0 0;
+  }
+  .chuleta dt {
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .chuleta dd {
+    margin: 0;
+  }
+  .chuleta-note {
+    margin: 0.8rem 0 0;
+    color: var(--ink-faint);
   }
   .desc {
     display: block;

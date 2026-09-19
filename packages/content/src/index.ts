@@ -1,28 +1,16 @@
 import { z } from "zod";
 
-/** Los 14 alérgenos de declaración obligatoria en la UE (Reglamento 1169/2011). */
-export const allergenEnum = z.enum([
-  "gluten",
-  "crustaceos",
-  "huevo",
-  "pescado",
-  "cacahuetes",
-  "soja",
-  "lacteos",
-  "frutos-cascara",
-  "apio",
-  "mostaza",
-  "sesamo",
-  "sulfitos",
-  "altramuces",
-  "moluscos",
-]);
-export type Allergen = z.infer<typeof allergenEnum>;
+import { allergenEnum } from "./allergens.ts";
+export { allergenEnum, allergenNumber, usedAllergens, dishAllergens, type Allergen } from "./allergens.ts";
 
 export const dishSchema = z.object({
   name: z.string().min(1),
   description: z.string().optional(),
   allergens: z.array(allergenEnum).default([]),
+  /* Alérgenos que el restaurante señaló en su hoja sin decir por qué (en Los
+     Ochoa, el gluten de cinco platos en amarillo). Van también en `allergens`;
+     esto solo dice cuáles llevan la marca en la carta. */
+  allergensToConfirm: z.array(allergenEnum).default([]),
   featured: z.boolean().default(false),
   image: z.string().optional(),
   price: z.union([

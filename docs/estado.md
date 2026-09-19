@@ -49,14 +49,30 @@ no con la barra de Safari. **Y Cokima arrastra el mismo defecto** en su `Hero.as
 y en `Entrada.astro` (§3): mismo patrón, misma guarda por ancho. Se arregla importando el mismo
 módulo cuando se toque esa rama.
 
-**Y el 2026-09-07 llegó la carta de alérgenos — y es de Los Ochoa, no de Cokima.** Una foto de
-la hoja impresa del restaurante: 39 platos × los 14 alérgenos de declaración obligatoria; 37 de
-los 39 casan con `menu-es.json`; «Oreja de cerdo» y «Dúo de brioche» no están en la carta, y
-trae una tercera grafía, «Ideazabal». El original está en
-`docs/alergenos-ochoa-original-2026-09-07.jpeg`, **sin commitear, pendiente de decidir dónde
-vive**. **No es lo que espera el filtro apagado**: `ALLERGEN_DATA_CONFIRMED` es de Cokima, y
-Ochoa hoy no tiene ni un plato con alérgenos. Cómo se transcribe y dónde entra es conversación
-con Mario; es dato de salud y no se mete a ojo desde una foto en escorzo.
+**Ochoa, 2026-09-19: los alérgenos ya están en la carta, en números.** La hoja del restaurante
+llegó el 07 (foto de la impresa: 39 platos × los 14 alérgenos de declaración obligatoria; el
+original es `docs/alergenos-ochoa-original-2026-09-07.jpeg`). Se enderezó, se amplió y se
+transcribió **literalmente**: 37 platos casan con `menu-es.json` y llevan `allergens`; «Oreja de
+cerdo» y «Dúo de brioche» no están en la carta y se ignoran. Mario eligió cómo se ven entre
+cuatro bocetos con la tipografía real —«la chuleta»: números bajo el plato y leyenda al pie, como
+la carta de bar de toda la vida; se descartaron las palabras (que era lo propuesto), los iconos
+compartidos de Cokima y los sellos con versales—. Los números son los del Anexo II del Reglamento
+1169/2011, derivados del enum (`@tombo/content/allergens.ts`, 6 tests); la leyenda solo lista lo
+que la carta usa (10 de 14). Quien no ve los números oye el nombre entero. **Y la hoja trae cinco
+platos con el gluten marcado en amarillo sin decir por qué** (huevos rotos, alitas, brava de
+feria, entrecot, torrezno): van como `allergensToConfirm` en el JSON —campo nuevo del esquema,
+vacío por defecto—, en la carta salen «1\*» y la leyenda dice «pendiente de confirmar con el
+restaurante». Nada inventado sobre qué significa el amarillo. **Sin datos siguen 12 platos**
+(§4). Verificado sobre el build: 89 números en el HTML (cuadra con la hoja), los cinco «1\*», la
+chuleta en los dos idiomas; a 390px el brioche —nueve números, el peor— cabe en una línea sin tocar
+el precio.
+
+**Y la carta se prueba al 90% de la pantalla en escritorio**, a petición de Mario («vamos a ver
+qué tal queda»). Hasta hoy se paraba en 44rem por una razón medida en julio —a 1280px el nombre
+quedaba a 700px de su precio— y reservaba el margen derecho para las fotos. Ahora ocupa el 90%
+exacto a cualquier ancho (en el móvil es lo mismo que había, 5% por lado); **el precio queda a
+1.455px del nombre a 1.710 de ancho, y la cabecera sigue a 1.140**. Si no convence, el tope es
+`--carta-w` en `MenuBoard.astro` y `.carta .wrap` en las dos páginas de carta.
 
 **La entrada de Los Ochoa (§3.octies) ya está aquí dentro.** Se construyó el 2026-08-06 en
 `tmp/entrada-ochoa` porque Mario pidió expresamente no pushearla a `preview`, y luego que se
@@ -273,6 +289,12 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
       patrón —congelar una vez, remedir solo al cambiar el ancho—. El arreglo es el mismo módulo
       que ya usa Ochoa, `@tombo/ui/alto-congelado.ts`, con su referencia fuera del flujo. Va en
       `tmp/entrada-cokima`, que es donde vive `Entrada.astro`.
+- [ ] **Alérgenos de Ochoa: los 12 platos sin fila en la hoja.** Bicicleta, Marinera, Marinero,
+      Bomba, brioche de sobrasada, tapa de alitas, los cuatro montados, bikini de minutejos y
+      pulpo no muestran nada. Mario lo dejó «en el aire» el 2026-09-19 para revisarlo cuanto
+      antes; la duda concreta es si los montados heredan del bocata del mismo relleno o hay que
+      pedir la fila al restaurante. **Y qué significa el gluten en amarillo** de los cinco platos
+      marcados (§0): hasta saberlo salen con «\*».
 - [ ] **Comprobar en un iPhone real** que el hundido de los botones se ve. La lógica ya no
       depende de `:active` (ver §3.quater), pero Playwright usa Chromium: la verificación en
       Safari de iOS no se ha podido hacer desde aquí.
@@ -837,6 +859,10 @@ desmenuzar a fondo.
       naranja `--ember`, que da 7,9:1 pero cambia el acento de marca en la primera
       pantalla.
 - [ ] **Cuándo llevar `preview` a `main`** (`git switch main && git merge preview`).
+- [ ] **Si la carta de Ochoa se queda al 90% en escritorio** o vuelve a los 44rem (§0,
+      2026-09-19). Es una prueba: hay que verla y decidir.
+- [ ] **Los 12 platos de Ochoa sin alérgenos y el gluten en amarillo** (§3). Es dato de salud:
+      no se rellena por deducción.
 
 **Cerradas el 2026-07-29:** el verde oliva del estado de apertura (retirado con la piel
 nueva de Ochoa), las dos ramas muertas —que ya no existen— y **el push de `preview`**, que
@@ -865,7 +891,7 @@ sirven media ración, no tapa. Es la nomenclatura que va en la carta.
 pnpm install
 pnpm --filter cokima dev    # http://localhost:4321
 pnpm --filter ochoa dev     # segundo puerto libre
-pnpm test                   # 63 tests
+pnpm test                   # 69 tests
 SITE_URL=https://example.com pnpm build
 ```
 

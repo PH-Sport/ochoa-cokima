@@ -14,3 +14,40 @@ export const RESTAURANT: RestaurantInfo = {
 };
 
 export const COVER_SLUG = import.meta.env.PUBLIC_COVERMANAGER_SLUG ?? "tasquita-los-ochoa";
+
+/** Los nombres de los 14 alérgenos, para la chuleta de la carta. Las claves son
+ *  las del enum de `@tombo/content`; la palabra la pone cada casa. */
+export const ALLERGEN_LABELS: Record<"es" | "en", Record<string, string>> = {
+  es: {
+    gluten: "Gluten",
+    crustaceos: "Crustáceos",
+    huevo: "Huevo",
+    pescado: "Pescado",
+    cacahuetes: "Cacahuetes",
+    soja: "Soja",
+    lacteos: "Lácteos",
+    "frutos-cascara": "Frutos de cáscara",
+    apio: "Apio",
+    mostaza: "Mostaza",
+    sesamo: "Sésamo",
+    sulfitos: "Sulfitos",
+    altramuces: "Altramuces",
+    moluscos: "Moluscos",
+  },
+  en: {
+    gluten: "Gluten",
+    crustaceos: "Crustaceans",
+    huevo: "Egg",
+    pescado: "Fish",
+    cacahuetes: "Peanuts",
+    soja: "Soy",
+    lacteos: "Dairy",
+    "frutos-cascara": "Tree nuts",
+    apio: "Celery",
+    mostaza: "Mustard",
+    sesamo: "Sesame",
+    sulfitos: "Sulphites",
+    altramuces: "Lupin",
+    moluscos: "Molluscs",
+  },
+};
