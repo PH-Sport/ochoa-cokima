@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-09-19 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-09-20 · **el punto de entrada del repo**
 
-- **Corte:** 2026-09-19
+- **Corte:** 2026-09-20
 - **Rama de trabajo:** `tmp/entrada-cokima` (el rediseño de Cokima, en curso) · `preview`
   (desarrollo, todo lo demás integrado) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
@@ -66,6 +66,45 @@ restaurante». Nada inventado sobre qué significa el amarillo. **Sin datos sigu
 (§4). Verificado sobre el build: 89 números en el HTML (cuadra con la hoja), los cinco «1\*», la
 chuleta en los dos idiomas; a 390px el brioche —nueve números, el peor— cabe en una línea sin tocar
 el precio.
+
+**Ochoa, 2026-09-20: el mapa de «Dónde estamos» es un dibujo de la manzana, y la clave de
+Google Maps ya no hace falta.** Mario lo cerró con estas palabras: «no nos metemos en tanto lío
+de claves de Google y demás». El recuadro sigue siendo lo que era —un enlace que abre la app de
+mapas del móvil, sin mapa interactivo, sin JavaScript ajeno ni cookies— pero en vez del hueco
+lleva la manzana dibujada. **Las huellas y alturas de los edificios, las calles con sus carriles
+y los jardines son los reales de OpenStreetMap** (el local está ahí como nodo, «Tasquita los
+Ochoa»; su edificio es el portal del 117, un solar de 442 m²). Lo genera `scripts/mapa-manzana.py`
+desde la descarga guardada al lado (`--descargar` la renueva) y sale a
+`apps/ochoa/src/assets/mapa-manzana.svg`, que `Mapa.astro` incrusta en línea: **el SVG lleva
+clases, no colores**, y los pone el CSS del componente con los tokens. Mario eligió el encuadre
+entre cuatro bocetos («la plaza»: el 117, la Castellana en diagonal, el metro de Cuzco y el
+Ministerio de Defensa) y fue decidiendo sobre capturas: fuera el punto rojo del pin (el bloque
+rojo ya canta solo; queda la chapa «Castellana, 117» con su pie), fuera los árboles y los pasos
+de cebra («no aportan gran cosa», «no hace falta tanto detalle»), calzadas en blanco sobre la
+manzana en papel como en la primera versión, y los nombres de calle colocados sobre la parte
+visible de cada tramo (dentro del marco, lejos del Paseo, sin edificio delante). La piel que ha
+quedado es la de una maqueta: sin contornos de tinta, volumen por una sola luz, sombras difusas,
+un halo rojo bajo el local, nombres en caja baja. Hay **capa móvil**: por debajo de 640px se apagan
+las calles menores y la chapa, la Castellana, San Germán y los hitos crecen 1,6× sobre su sitio
+(`transform-box: fill-box`; el giro de cada rótulo va en un grupo padre porque un `transform` de
+CSS sustituye al del atributo). Pesa 13 KB comprimido. Va en las dos homes de Ochoa; **Cokima
+sigue con su `.mapbox` viejo**.
+
+**Y ESTE MAPA SE VA A REHACER.** Mario lo comparó con la vista 3D de Apple Maps y no le
+convence: «parece un render técnico», «se parece poco a la vista de Apple», «pálido y gris». El
+diagnóstico está hecho y es la proyección: lo nuestro es isométrico (paralelo, todo del mismo
+tamaño, mucho tejado) y lo de Apple es perspectiva con cámara baja (calles que convergen, fachadas
+protagonistas). **Lo va a rehacer en una sesión nueva, con un prompt detallado y una captura de
+Apple más cercana como referencia**, manteniendo los datos, el reparto SVG-clases/CSS-tokens, la
+capa móvil, el bloque rojo sin pin, y sin carriles ni cebras. Este commit es el punto de partida
+para que ese rehacer sea un diff limpio. Durante el camino hubo un bucle de cinco jueces con
+contexto limpio (notas 5, 6, 6, 6, 7): sirvió para lo estructural —el suelo sin jerarquía, la
+sección de bulevar del Paseo— y dejó dos lecciones que van a `metodo.md`: un cambio que hay que
+medir para saber que existe no cuenta (dos jueces no vieron sombras al 7-11%), y cada juez nuevo
+mueve el listón, así que la nota no es una escala. Avisos para quien mida: el build regenera
+`.vercel/output/static` y un servidor local lanzado antes se queda apuntando a la carpeta borrada;
+`/_vercel/image` no existe en local, y para capturas con fotos hace falta un servidor que lo
+redirija al original; Overpass devuelve 406 a curl con GET sin User-Agent y 504 a ratos.
 
 **Y toda la web de Ochoa ocupa el 90% de la pantalla en escritorio**, a petición de Mario:
 primero lo probó en la carta («vamos a ver qué tal queda») y, vista, lo extendió a la web entera.
@@ -132,9 +171,8 @@ Lo que queda pendiente de los otros dos, y es lo primero al retomar:
 
 **Lo que espera respuesta de Mario, y sin lo cual no se puede avanzar:**
 
-1. **La clave de Google Maps.** `Mapa.astro` está montado y dibuja el callejero con la paleta
-   de la casa en cuanto exista `PUBLIC_GOOGLE_MAPS_KEY`; mientras tanto enseña el hueco
-   marcado. El «cómo llegar» ya funciona porque no depende de ninguna API.
+1. ~~La clave de Google Maps.~~ **Cerrado el 2026-09-20:** el mapa es un dibujo de la manzana
+   hecho con datos de OpenStreetMap y no necesita clave (§0).
 2. **Validar la carta en inglés con el restaurante.** Traducida entera el 31, pero es un
    documento comercial y la tradujo el agente con criterio propio, no con su visto bueno.
 3. **Si «fríos» y «calientes» deben volver a separarse** dentro de «Pinchos y tapas». Alberto
@@ -280,12 +318,10 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
 
 **Menores:**
 
-- [ ] **La clave de Google Maps** (`PUBLIC_GOOGLE_MAPS_KEY`). `Mapa.astro` ya está montado en la
-      home ES de Ochoa: con clave dibuja el callejero real coloreado con la paleta de la casa —una
-      imagen estática, cero JavaScript y cero cookies de terceros, que hoy esta web no tiene
-      ninguna— y sin ella enseña el hueco marcado. El «cómo llegar» funciona en los dos casos
-      porque no depende de ninguna API. **Cokima y la home EN de Ochoa siguen con el `.mapbox`
-      viejo** y su cartel *«Mapa · pendiente de integrar»*.
+- [x] ~~La clave de Google Maps.~~ **Cerrado el 2026-09-20:** `Mapa.astro` lleva el dibujo de
+      la manzana (§0) en las dos homes de Ochoa y no necesita clave ni API. **Cokima sigue con el
+      `.mapbox` viejo** y su cartel *«Mapa · pendiente de integrar»*; si se quiere el mismo dibujo
+      allí, el script acepta otro centro y otro encuadre.
 - [ ] **Validar la carta en inglés con el restaurante.** Traducida entera el 2026-07-31,
       manteniendo sin traducir lo que no tiene equivalente (gilda, pintxo, txistorra, cachopín,
       torreznos, soldaditos de Pavía, revolconas). Es un documento comercial y lo tradujo el
@@ -295,6 +331,8 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
       patrón —congelar una vez, remedir solo al cambiar el ancho—. El arreglo es el mismo módulo
       que ya usa Ochoa, `@tombo/ui/alto-congelado.ts`, con su referencia fuera del flujo. Va en
       `tmp/entrada-cokima`, que es donde vive `Entrada.astro`.
+- [ ] **Rehacer el mapa de «Dónde estamos» en perspectiva** (§0, 2026-09-20): sesión nueva con
+      Fable, prompt y captura de Apple como referencia. Mismos datos y mismo contrato SVG/CSS.
 - [ ] **Alérgenos de Ochoa: los 12 platos sin fila en la hoja.** Bicicleta, Marinera, Marinero,
       Bomba, brioche de sobrasada, tapa de alitas, los cuatro montados, bikini de minutejos y
       pulpo no muestran nada. Mario lo dejó «en el aire» el 2026-09-19 para revisarlo cuanto

@@ -44,6 +44,16 @@ todas las reglas, y **aun así ser inadecuada**. Una cortina es sobria por natur
 es una tasca. Cuando Mario pida «más juguetón» o «que grite tapa y caña», no es un ajuste de
 parámetros: es cambiar el gesto entero.
 
+**Dos lecciones del 2026-09-20, del mapa de Ochoa, sobre pedirle nota a un juez automático:**
+
+- **Un cambio que hay que medir para saber que existe no cuenta.** Se pusieron sombras al 7-11 % y
+  líneas de contacto de 0,5 px; en la medición estaban, y dos jueces seguidos dijeron «no hay
+  sombra» teniéndola delante. Lo visual se juzga a ojo: si no se ve de un vistazo, no está.
+- **Cada juez con contexto limpio mueve el listón.** Cinco rondas dieron 5, 6, 6, 6, 7 con criterios
+  que se contradecían entre rondas (uno pidió las manzanas más oscuras que la calle; otro, la calle
+  más oscura que el papel). La nota no es una escala que subir: sirve para lo estructural que repiten
+  todos, y a partir de ahí quien decide es Mario mirándolo en el móvil.
+
 **Y el fallo que ninguna medición podía cazar:** en la segunda vuelta detectó de un vistazo que el
 rótulo decía «Los Ochoa» y la barra «LOS OCHOA». El aterrizaje era **exacto en píxeles**, pero
 sobre otra palabra. Medir prueba la geometría, no el sentido.
