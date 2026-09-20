@@ -257,7 +257,7 @@ const priceLabel = (price: MenuEntry["price"]) => {
        que sin él la sombra se cortaba en seco por debajo y su esquina de abajo
        a la derecha aparecía en pico. Los cuatro píxeles que mide la sombra,
        más un poco de holgura. */
-    padding: 0 clamp(20px, 5vw, 48px) 10px;
+    padding: 0 5vw 10px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
@@ -267,7 +267,7 @@ const priceLabel = (price: MenuEntry["price"]) => {
        veinte píxeles para cuadrar la ficha y se comía el margen. El
        `scroll-padding` le dice dónde está de verdad el borde, y la tira arranca
        a plomo con el titular y con el resto de la hoja. */
-    scroll-padding-inline: clamp(20px, 5vw, 48px);
+    scroll-padding-inline: 5vw;
   }
   .strip::-webkit-scrollbar {
     display: none;

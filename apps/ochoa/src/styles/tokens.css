@@ -17,7 +17,12 @@
   --rojo: #c6222b;
   --rojo-2: #a81b23;
   --line: rgba(26, 26, 26, 0.16);
-  --maxw: 1140px;
+  /* Sin tope desde el 2026-09-19: Mario pidió que la web ocupe el 90% de la
+     pantalla a cualquier ancho —primero la carta, luego entera—. El 90% lo
+     hace el margen de `5vw` por lado de `.wrap` (y de `.strip`, que lo copia);
+     hasta entonces era `clamp(20px, 5vw, 48px)` y el contenido se paraba en
+     1140px. Si vuelve el tope, es aquí y en esos dos rellenos. */
+  --maxw: none;
 
   /* Sin serif: la itálica de Georgia era la que fabricaba el aire nostálgico.
      La condensada del rótulo manda, y el resto es sans.

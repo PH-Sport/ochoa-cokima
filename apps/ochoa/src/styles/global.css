@@ -90,7 +90,7 @@ img {
 .wrap {
   max-width: var(--maxw);
   margin: 0 auto;
-  padding: 0 clamp(20px, 5vw, 48px);
+  padding: 0 5vw;
   position: relative;
   z-index: 1;
 }

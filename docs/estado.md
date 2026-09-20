@@ -67,12 +67,18 @@ restaurante». Nada inventado sobre qué significa el amarillo. **Sin datos sigu
 chuleta en los dos idiomas; a 390px el brioche —nueve números, el peor— cabe en una línea sin tocar
 el precio.
 
-**Y la carta se prueba al 90% de la pantalla en escritorio**, a petición de Mario («vamos a ver
-qué tal queda»). Hasta hoy se paraba en 44rem por una razón medida en julio —a 1280px el nombre
-quedaba a 700px de su precio— y reservaba el margen derecho para las fotos. Ahora ocupa el 90%
-exacto a cualquier ancho (en el móvil es lo mismo que había, 5% por lado); **el precio queda a
-1.455px del nombre a 1.710 de ancho, y la cabecera sigue a 1.140**. Si no convence, el tope es
-`--carta-w` en `MenuBoard.astro` y `.carta .wrap` en las dos páginas de carta.
+**Y toda la web de Ochoa ocupa el 90% de la pantalla en escritorio**, a petición de Mario:
+primero lo probó en la carta («vamos a ver qué tal queda») y, vista, lo extendió a la web entera.
+Hasta hoy el contenedor global se paraba en 1140px, y la carta además en 44rem por una razón
+medida en julio —a 1280px el nombre quedaba a 700px de su precio— reservando el margen derecho
+para las fotos. Ahora el 90% lo hace el margen de `5vw` por lado (`--maxw: none` en `tokens.css`,
+`.wrap` en `global.css` y `.strip` en `Highlights.astro`, que copia esa geometría); en el móvil
+es lo mismo que había. Medido a 1710: cabecera, portada, tira, «lo que hay» y pie arrancan en
+el mismo píxel; **el precio de la carta queda a 1.455px del nombre**; la foto de «Lo que hay»
+pasa a 1.526px de ancho y las del muro de 511 a 752, con un `sizes` que ya se quedaba corto
+antes (declara 560px) — en escritorio pueden verse blandas; son provisionales y no se ha tocado.
+Si el 90% no se queda, el tope vuelve en `--maxw` y en esos dos rellenos; `--carta-w` en
+`MenuBoard.astro` es el tope propio de la carta.
 
 **La entrada de Los Ochoa (§3.octies) ya está aquí dentro.** Se construyó el 2026-08-06 en
 `tmp/entrada-ochoa` porque Mario pidió expresamente no pushearla a `preview`, y luego que se
@@ -859,8 +865,9 @@ desmenuzar a fondo.
       naranja `--ember`, que da 7,9:1 pero cambia el acento de marca en la primera
       pantalla.
 - [ ] **Cuándo llevar `preview` a `main`** (`git switch main && git merge preview`).
-- [ ] **Si la carta de Ochoa se queda al 90% en escritorio** o vuelve a los 44rem (§0,
-      2026-09-19). Es una prueba: hay que verla y decidir.
+- [ ] **Si Ochoa se queda al 90% en escritorio** o vuelve a los 1140px / 44rem (§0,
+      2026-09-19). Es una prueba: hay que verla y decidir. Y si se queda, el `sizes` de las
+      fotos de la home declara huecos más pequeños de lo que ya son.
 - [ ] **Los 12 platos de Ochoa sin alérgenos y el gluten en amarillo** (§3). Es dato de salud:
       no se rellena por deducción.
 
