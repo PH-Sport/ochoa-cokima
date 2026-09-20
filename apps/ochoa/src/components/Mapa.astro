@@ -1,11 +1,13 @@
 ---
 // apps/ochoa/src/components/Mapa.astro
 //
-// El mapa del local es un dibujo, no un mapa: la manzana en isométrico, al
-// estilo de la vista 3D de Apple Maps pero propio y con la piel de la casa.
-// Las huellas y las alturas de los edificios son las reales —salen de
-// OpenStreetMap— y el dibujo lo genera `scripts/mapa-manzana.py`; aquí solo se
-// incrusta y se pinta con los tokens.
+// El mapa del local es un dibujo, no un mapa: la manzana en perspectiva, con
+// cámara baja e inclinada como la vista 3D de Apple Maps, pero propio y con la
+// piel de la casa. Las huellas y las alturas de los edificios son las reales
+// —salen de OpenStreetMap— y el dibujo lo genera `scripts/mapa-manzana.py`;
+// aquí solo se incrusta y se pinta con los tokens. Fue isométrico un día
+// (2026-09-20) y a Mario le pareció «un render técnico»: la perspectiva es lo
+// que lo convierte en ciudad.
 //
 // No es un mapa embebido a propósito. El interactivo trae novecientos
 // kilobytes de JavaScript y cookies de terceros —esta web no tiene ni un
@@ -30,8 +32,8 @@ const consulta = encodeURIComponent(direccion);
 const comoLlegar = `https://www.google.com/maps/search/?api=1&query=${consulta}`;
 
 const t = es
-  ? { como: "Cómo llegar", alt: `Mapa de ${direccion}: la manzana entre la Castellana, San Germán y Pedro Teixeira, junto al metro de Cuzco` }
-  : { como: "Get directions", alt: `Map of ${direccion}: the block between the Castellana, San Germán and Pedro Teixeira, next to Cuzco metro` };
+  ? { como: "Cómo llegar", alt: `Mapa de ${direccion}: la manzana del 117 sobre la Castellana, en la esquina con San Germán, entre la plaza y el metro de Cuzco y el Ministerio de Defensa` }
+  : { como: "Get directions", alt: `Map of ${direccion}: the block at 117 on the Castellana, at the corner with San Germán, between Cuzco square and metro and the Ministry of Defence` };
 ---
 
 <a class="mapa" href={comoLlegar} target="_blank" rel="noopener">
@@ -94,44 +96,57 @@ const t = es
 </style>
 
 <style is:global>
-  /* La piel del dibujo, hecha de nuevo el 2026-09-20 a petición de Mario: la primera parecía
-     «un render técnico, pálido y gris». Esta busca de frente la sensación de maqueta de la vista
-     3D de Apple: ningún contorno de tinta, volúmenes modelados solo por la luz, sombras difusas,
-     y un suelo más oscuro para que calzadas y edificios tengan presencia. Sigue en la paleta de
-     la casa: todos los grises son papel y tinta mezclados. Las clases las pone
-     `scripts/mapa-manzana.py`. */
-  .dibujo .suelo { fill: #dcd5d0; }
-  .dibujo .jardin { fill: #d3cbc5; }
-  .dibujo .canto { fill: none; stroke: #d0c8c2; stroke-linecap: round; stroke-linejoin: round; }
-  .dibujo .cara { fill: none; stroke: #f6f3f1; stroke-linecap: round; stroke-linejoin: round; }
-  /* Sombra arrojada y contacto con el suelo, los dos difusos: es lo que hace maqueta. */
-  .dibujo .sombra { fill: var(--ink); opacity: 0.24; }
-  .dibujo .contacto { fill: none; stroke: var(--ink); stroke-width: 3; stroke-opacity: 0.28; stroke-linecap: round; }
-  .dibujo .halo { fill: var(--rojo); opacity: 0.45; }
-  /* Una sola luz, de arriba a la derecha: la cara sur clara, la oeste en sombra, el techo el más
-     claro. Sin contornos: el volumen lo dan los tres valores. */
-  .dibujo .muro-o { fill: #b9ada5; }
-  .dibujo .muro-s { fill: #d9d1cb; }
-  .dibujo .techo { fill: #efeae6; }
-  .dibujo .caseta { fill: #cbc1ba; }
-  .dibujo .caseta-techo { fill: #e4deda; }
-  .dibujo .local-muro { fill: var(--rojo-2); }
+  /* La piel del dibujo. La primera parecía «un render técnico, pálido y gris»; esta busca de
+     frente la sensación de maqueta de la vista 3D de Apple: ningún contorno de tinta, volúmenes
+     modelados solo por la luz —techo el más claro, caras en cuatro escalones—, sombra arrojada y
+     de contacto difusas, y un suelo más oscuro para que calzadas y bloques tengan presencia.
+     Sigue en la paleta de la casa, literalmente: todos los grises son papel y tinta mezclados
+     con color-mix sobre los tokens. Las clases las pone `scripts/mapa-manzana.py`. */
+  .dibujo .suelo { fill: color-mix(in srgb, var(--paper-3) 86%, var(--ink)); }
+  .dibujo .jardin { fill: color-mix(in srgb, var(--paper-3) 79%, var(--ink)); }
+  .dibujo .calzada { fill: var(--paper-2); }
+  .dibujo .sombra { fill: var(--ink); opacity: 0.28; }
+  .dibujo .contacto { fill: var(--ink); opacity: 0.38; }
+  .dibujo .halo { fill: var(--rojo); opacity: 0.4; }
+  .dibujo .m1 { fill: color-mix(in srgb, var(--paper-3) 78%, var(--ink)); }
+  .dibujo .m2 { fill: color-mix(in srgb, var(--paper-3) 70%, var(--ink)); }
+  .dibujo .m3 { fill: color-mix(in srgb, var(--paper-3) 61%, var(--ink)); }
+  .dibujo .m4 { fill: color-mix(in srgb, var(--paper-3) 53%, var(--ink)); }
+  .dibujo .techo { fill: color-mix(in srgb, var(--paper-3) 92%, var(--ink)); }
+  .dibujo .caseta { fill: color-mix(in srgb, var(--paper-3) 64%, var(--ink)); }
+  .dibujo .caseta-techo { fill: color-mix(in srgb, var(--paper-3) 88%, var(--ink)); }
+  .dibujo .local-luz { fill: color-mix(in srgb, var(--rojo) 78%, var(--rojo-2)); }
+  .dibujo .local-sombra { fill: var(--rojo-2); }
   .dibujo .local-techo { fill: var(--rojo); }
-  /* Los nombres, en caja baja y con halo del color del suelo, como en un mapa. */
+  /* Un filete del mismo color que el relleno, para que no asome el suelo por las juntas entre
+     caras: no es un contorno, es el antialias tapado. */
+  .dibujo .m1, .dibujo .m2, .dibujo .m3, .dibujo .m4, .dibujo .techo, .dibujo .caseta, .dibujo .caseta-techo,
+  .dibujo .local-luz, .dibujo .local-sombra, .dibujo .local-techo { stroke-width: 0.6; stroke-linejoin: round; }
+  .dibujo .m1 { stroke: color-mix(in srgb, var(--paper-3) 78%, var(--ink)); }
+  .dibujo .m2 { stroke: color-mix(in srgb, var(--paper-3) 70%, var(--ink)); }
+  .dibujo .m3 { stroke: color-mix(in srgb, var(--paper-3) 61%, var(--ink)); }
+  .dibujo .m4 { stroke: color-mix(in srgb, var(--paper-3) 53%, var(--ink)); }
+  .dibujo .techo { stroke: color-mix(in srgb, var(--paper-3) 92%, var(--ink)); }
+  .dibujo .caseta { stroke: color-mix(in srgb, var(--paper-3) 64%, var(--ink)); }
+  .dibujo .caseta-techo { stroke: color-mix(in srgb, var(--paper-3) 88%, var(--ink)); }
+  .dibujo .local-luz { stroke: color-mix(in srgb, var(--rojo) 78%, var(--rojo-2)); }
+  .dibujo .local-sombra { stroke: var(--rojo-2); }
+  .dibujo .local-techo { stroke: var(--rojo); }
+  /* Los nombres, en caja baja y con halo del color de la calzada, pintados en el suelo. */
   .dibujo text { font-family: var(--sans); }
   .dibujo .rotulo, .dibujo .rotulo-menor, .dibujo .rotulo-cerca, .dibujo .rotulo-lugar {
     font-weight: 650;
     letter-spacing: 0.01em;
     paint-order: stroke;
-    stroke: #dcd5d0;
+    stroke: var(--paper-2);
     stroke-width: 3.5px;
     stroke-linejoin: round;
   }
-  .dibujo .rotulo { font-size: 12px; fill: var(--ink-dim); stroke: #f6f3f1; }
-  .dibujo .rotulo-menor, .dibujo .rotulo-cerca { font-size: 9.5px; fill: var(--ink-dim); stroke: #f6f3f1; }
-  .dibujo .rotulo-lugar { font-size: 9.5px; font-weight: 700; fill: var(--ink); }
+  .dibujo .rotulo { font-size: 12px; fill: var(--ink-dim); }
+  .dibujo .rotulo-menor, .dibujo .rotulo-cerca { font-size: 9.5px; fill: var(--ink-dim); }
+  .dibujo .rotulo-lugar { font-size: 9.5px; font-weight: 700; fill: var(--ink); stroke: color-mix(in srgb, var(--paper-3) 86%, var(--ink)); }
   .dibujo .metro { fill: var(--ink); }
-  .dibujo .metro-txt { font-size: 11px; font-weight: 800; fill: var(--paper); }
+  .dibujo .metro-txt { font-size: 10px; font-weight: 800; fill: var(--paper); }
   .dibujo .chapa { fill: var(--ink); }
   .dibujo .chapa-pie { stroke: var(--ink); stroke-width: 1.6; }
   .dibujo .chapa-punto { fill: var(--ink); }
@@ -139,8 +154,9 @@ const t = es
   .dibujo .credito { font-size: 8px; fill: var(--ink-dim); }
 
   /* En el móvil el dibujo mide 350px: se apagan las calles menores y lo que orienta crece sobre
-     su sitio. `transform-box: fill-box` escala cada texto alrededor de sí mismo; el giro de cada
-     rótulo va en un grupo padre porque un `transform` de CSS sustituye al del atributo. */
+     su sitio. `transform-box: fill-box` escala cada texto alrededor de sí mismo; el giro y la
+     inclinación de cada rótulo van en un grupo padre porque un `transform` de CSS sustituye al
+     del atributo. */
   @media (max-width: 640px) {
     .dibujo .rotulo-menor { display: none; }
     .dibujo .rotulo, .dibujo .rotulo-cerca, .dibujo .rotulo-lugar, .dibujo .metro-g, .dibujo .chincheta, .dibujo .credito {

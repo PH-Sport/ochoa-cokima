@@ -71,40 +71,62 @@ el precio.
 Google Maps ya no hace falta.** Mario lo cerró con estas palabras: «no nos metemos en tanto lío
 de claves de Google y demás». El recuadro sigue siendo lo que era —un enlace que abre la app de
 mapas del móvil, sin mapa interactivo, sin JavaScript ajeno ni cookies— pero en vez del hueco
-lleva la manzana dibujada. **Las huellas y alturas de los edificios, las calles con sus carriles
-y los jardines son los reales de OpenStreetMap** (el local está ahí como nodo, «Tasquita los
-Ochoa»; su edificio es el portal del 117, un solar de 442 m²). Lo genera `scripts/mapa-manzana.py`
-desde la descarga guardada al lado (`--descargar` la renueva) y sale a
-`apps/ochoa/src/assets/mapa-manzana.svg`, que `Mapa.astro` incrusta en línea: **el SVG lleva
-clases, no colores**, y los pone el CSS del componente con los tokens. Mario eligió el encuadre
-entre cuatro bocetos («la plaza»: el 117, la Castellana en diagonal, el metro de Cuzco y el
-Ministerio de Defensa) y fue decidiendo sobre capturas: fuera el punto rojo del pin (el bloque
-rojo ya canta solo; queda la chapa «Castellana, 117» con su pie), fuera los árboles y los pasos
-de cebra («no aportan gran cosa», «no hace falta tanto detalle»), calzadas en blanco sobre la
-manzana en papel como en la primera versión, y los nombres de calle colocados sobre la parte
-visible de cada tramo (dentro del marco, lejos del Paseo, sin edificio delante). La piel que ha
-quedado es la de una maqueta: sin contornos de tinta, volumen por una sola luz, sombras difusas,
-un halo rojo bajo el local, nombres en caja baja. Hay **capa móvil**: por debajo de 640px se apagan
-las calles menores y la chapa, la Castellana, San Germán y los hitos crecen 1,6× sobre su sitio
-(`transform-box: fill-box`; el giro de cada rótulo va en un grupo padre porque un `transform` de
-CSS sustituye al del atributo). Pesa 13 KB comprimido. Va en las dos homes de Ochoa; **Cokima
-sigue con su `.mapbox` viejo**.
+lleva la manzana dibujada. **Las huellas y alturas de los edificios, las calles y los jardines son
+los reales de OpenStreetMap** (el local está ahí como nodo, «Tasquita los Ochoa»; su edificio es el
+portal del 117, un solar de 442 m²). Lo genera `scripts/mapa-manzana.py` desde la descarga guardada
+al lado (`--descargar` la renueva) y sale a `apps/ochoa/src/assets/mapa-manzana.svg`, que
+`Mapa.astro` incrusta en línea: **el SVG lleva clases, no colores**, y los pone el CSS del
+componente con los tokens. Decidido por Mario sobre bocetos y capturas: el encuadre «la plaza» (el
+117, la Castellana en diagonal, el metro de Cuzco y el Ministerio de Defensa); fuera el punto rojo
+del pin (el bloque rojo canta solo; queda la chapa «Castellana, 117»); fuera árboles, pasos de
+cebra y líneas de carril («no aportan gran cosa», «no hace falta tanto detalle»); calzadas claras
+sobre la manzana en papel; nombres de calle sobre la parte visible de cada tramo. Hay **capa
+móvil**: por debajo de 640px se apagan las calles menores y la chapa, la Castellana, San Germán y
+los hitos crecen 1,6× sobre su sitio (`transform-box: fill-box`; el giro de cada rótulo va en un
+grupo padre porque un `transform` de CSS sustituye al del atributo). Va en las dos homes de Ochoa;
+**Cokima sigue con su `.mapbox` viejo**.
 
-**Y ESTE MAPA SE VA A REHACER.** Mario lo comparó con la vista 3D de Apple Maps y no le
-convence: «parece un render técnico», «se parece poco a la vista de Apple», «pálido y gris». El
-diagnóstico está hecho y es la proyección: lo nuestro es isométrico (paralelo, todo del mismo
-tamaño, mucho tejado) y lo de Apple es perspectiva con cámara baja (calles que convergen, fachadas
-protagonistas). **Lo va a rehacer en una sesión nueva, con un prompt detallado y una captura de
-Apple más cercana como referencia**, manteniendo los datos, el reparto SVG-clases/CSS-tokens, la
-capa móvil, el bloque rojo sin pin, y sin carriles ni cebras. Este commit es el punto de partida
-para que ese rehacer sea un diff limpio. Durante el camino hubo un bucle de cinco jueces con
-contexto limpio (notas 5, 6, 6, 6, 7): sirvió para lo estructural —el suelo sin jerarquía, la
-sección de bulevar del Paseo— y dejó dos lecciones que van a `metodo.md`: un cambio que hay que
-medir para saber que existe no cuenta (dos jueces no vieron sombras al 7-11%), y cada juez nuevo
-mueve el listón, así que la nota no es una escala. Avisos para quien mida: el build regenera
-`.vercel/output/static` y un servidor local lanzado antes se queda apuntando a la carpeta borrada;
-`/_vercel/image` no existe en local, y para capturas con fotos hace falta un servidor que lo
-redirija al original; Overpass devuelve 406 a curl con GET sin User-Agent y 504 a ratos.
+**Y el mismo día se rehízo en perspectiva, con la cámara que eligió Mario entre cuatro bocetos:
+«El barrio entero».** La primera versión era isométrica y, comparada con la vista
+3D de Apple, a Mario le pareció «un render técnico», «pálido y gris». La causa era la proyección,
+y la segunda versión es una cámara de verdad (pinhole: posición, inclinación y focal): las calles
+convergen, lo cercano es más grande y se ven las fachadas más que los tejados. Lo que eso obligó a
+cambiar y no es obvio: las calles son bandas en el suelo y no trazos (un trazo mide lo mismo cerca
+que lejos); qué cara se ve la decide la posición de la cámara y no una dirección fija; el pintado
+va por la profundidad de la base de cada pieza en el suelo; las sombras arrojadas y de contacto se
+calculan en metros y se proyectan después; y los nombres de calle van pegados al suelo con la
+matriz afín local de la proyección (en un grupo padre, por la capa móvil). Los datos se volvieron a
+bajar con más radio (560 m: 291 edificios, 258 tramos) porque con cámara baja el fondo del marco
+llega a 400 m del local y las esquinas de arriba quedaban vacías. La piel: cuatro escalones de gris
+en las caras según una sola luz del suroeste, techo el más claro, todos los grises con `color-mix`
+de papel y tinta; el local en `--rojo` con la cara en sombra en `--rojo-2`. Pesa 31 KB comprimido
+(tope ~40): la geometría va en enteros y coordenadas relativas, la sombra solo barre las aristas
+que dan a la luz, y lo que no llega a un píxel no se escribe. **Lección de esta tanda:** en
+perspectiva el marco es estrecho por abajo y ancho por arriba (183 m al local en la esquina de
+abajo, 400 m en las de arriba), así que «cuánto barrio entra» ya no es un radio: es la cámara. Con
+la puesta, Pedro Teixeira y Panamá quedan fuera del marco (están al sur y al este, del lado de la
+cámara, que es el lado estrecho) y por eso no se rotulan.
+
+**La cámara la eligió Mario en el móvil, entre cuatro bocetos comparables con la tipografía real
+nombrados por su gesto:** «A pie de calle» (40°), «Desde el balcón» (52° y 620 m, la que se
+recomendaba), «El barrio entero» (50° y 700 m del punto de mira, como su captura de Apple) y «Desde
+el helicóptero» (62°), más la isométrica para comparar. Se quedó con **«El barrio entero»**
+sabiendo que lo que pierde respecto al balcón es tamaño en el móvil, el local incluido; «si quiero
+modificar algo, te lo comentaré». Cambiar de cámara es cambiar `PITCH`, `DIST` y `MIRA` en el
+script (o pasarlos por línea de comandos, `--pitch 40 --dist 600 --salida …`, que es como se
+sacaron los bocetos) y regenerar. **Preguntó por el crédito «© OpenStreetMap» de la esquina** —creía
+que el dibujo era reconstrucción propia— y quedó explicado y aceptado: el dibujo es nuestro, pero la
+geometría (huellas, alturas, calles, jardines, metro) es de OpenStreetMap, y su licencia ODbL exige
+la atribución visible también en las obras derivadas. Es el precio de que las manzanas sean las
+reales en vez de inventadas; calcar Apple o Google no vale porque sus licencias no lo permiten.
+**Se puede hacer más discreto o cambiarlo de esquina, no quitarlo.** Verificado sobre el build: el
+dibujo nuevo está en el HTML de las dos homes con sus ocho textos (Castellana, San Germán, Doctor
+Fleming, Defensa, Plaza de Cuzco, M, la chapa y el crédito) y el CSS construido conserva los
+`color-mix`; capturas a 1052 y 351 px revisadas a ojo, no por un juez. Avisos para quien mida: el build
+regenera `.vercel/output/static` y un servidor local lanzado antes se queda apuntando a la carpeta
+borrada; `/_vercel/image` no existe en local, y para capturas con fotos hace falta un servidor que
+redirija `?url=X` a `/X` (con la barra inicial, o la redirección cae en `/_vercel/_astro/…`);
+Overpass devuelve 406 a curl con GET sin User-Agent y 504 a ratos.
 
 **Y toda la web de Ochoa ocupa el 90% de la pantalla en escritorio**, a petición de Mario:
 primero lo probó en la carta («vamos a ver qué tal queda») y, vista, lo extendió a la web entera.
