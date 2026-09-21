@@ -26,7 +26,11 @@ const { locale } = Astro.props;
 const es = locale === "es";
 
 const direccion = `${RESTAURANT.streetAddress}, ${RESTAURANT.postalCode} ${RESTAURANT.addressLocality}`;
-const consulta = encodeURIComponent(direccion);
+// Se busca el negocio, no la dirección: la Tasquita ya existe como ficha en Google Maps, y así
+// quien toca el mapa aterriza en ella (fotos, reseñas, horario) en vez de en un punto de la
+// calle. Lo pidió Mario el 2026-09-21. La dirección va detrás del nombre para que no lo confunda
+// con otro local que se llame parecido en otra ciudad.
+const consulta = encodeURIComponent(`${RESTAURANT.name}, ${direccion}`);
 
 // Universal: lo resuelve cada sistema con su app de mapas por defecto.
 const comoLlegar = `https://www.google.com/maps/search/?api=1&query=${consulta}`;
