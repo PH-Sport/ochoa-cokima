@@ -145,8 +145,13 @@ const t = es
   .dibujo .rotulo { font-size: 12px; fill: var(--ink-dim); }
   .dibujo .rotulo-menor, .dibujo .rotulo-cerca { font-size: 9.5px; fill: var(--ink-dim); }
   .dibujo .rotulo-lugar { font-size: 9.5px; font-weight: 700; fill: var(--ink); stroke: color-mix(in srgb, var(--paper-3) 86%, var(--ink)); }
-  .dibujo .metro { fill: var(--ink); }
-  .dibujo .metro-txt { font-size: 10px; font-weight: 800; fill: var(--paper); }
+  /* El rombo de Metro de Madrid, el indicador de la parada de Cuzco: es el único azul de la web,
+     y es a propósito. Un logotipo en sus colores es un logotipo, no una decisión de paleta; en
+     tinta se reconocía por la forma pero dejaba de ser el de Metro (Mario lo eligió entre los
+     dos y la chapa con la M, 2026-09-21). El rojo es el de la casa, que casi coincide con el suyo. */
+  .dibujo .metro-rombo { fill: var(--rojo); }
+  .dibujo .metro-hueco { fill: var(--paper); }
+  .dibujo .metro-barra { fill: #005eb8; }
   .dibujo .chapa { fill: var(--ink); }
   .dibujo .chapa-pie { stroke: var(--ink); stroke-width: 1.6; }
   .dibujo .chapa-punto { fill: var(--ink); }
@@ -154,22 +159,27 @@ const t = es
   .dibujo .credito { font-size: 8px; fill: var(--ink-dim); }
 
   /* En el móvil el dibujo mide 350px: se apagan las calles menores y lo que orienta crece sobre
-     su sitio. `transform-box: fill-box` escala cada texto alrededor de sí mismo; el giro y la
-     inclinación de cada rótulo van en un grupo padre porque un `transform` de CSS sustituye al
-     del atributo. */
+     su sitio. Los textos crecen por tamaño de letra, NO por `transform`: Safari en iPhone no
+     respeta `transform-box: fill-box` en los `<text>` del SVG y los escalaba alrededor del marco
+     entero, así que cada nombre salía empujado hacia una esquina —Mario lo vio el 2026-09-21 y se
+     midió en WebKit: Plaza de Cuzco en el borde derecho, Defensa y el crédito fuera del marco por
+     abajo, la Castellana cortada—. Un tamaño de letra mayor crece alrededor del ancla del texto
+     en todos los motores. La chapa y el rombo son grupos, y en los grupos el escalado sí funciona
+     (por eso siguen con `transform`). El giro y la inclinación de cada rótulo van en un grupo
+     padre porque un `transform` de CSS sustituye al del atributo. */
   @media (max-width: 640px) {
     .dibujo .rotulo-menor { display: none; }
-    .dibujo .rotulo, .dibujo .rotulo-cerca, .dibujo .rotulo-lugar, .dibujo .metro-g, .dibujo .chincheta, .dibujo .credito {
+    .dibujo .rotulo { font-size: 19px; }
+    .dibujo .rotulo-cerca { font-size: 15px; }
+    .dibujo .rotulo-lugar { font-size: 13px; }
+    .dibujo .rotulo, .dibujo .rotulo-cerca, .dibujo .rotulo-lugar { stroke-width: 5px; }
+    .dibujo .credito { font-size: 15px; }
+    .dibujo .metro-g, .dibujo .chincheta {
       transform-box: fill-box;
-      transform-origin: 50% 50%;
+      transform-origin: 50% 100%;
       transform: scale(1.6);
     }
-    .dibujo .rotulo-lugar { transform: scale(1.35); }
-    .dibujo .chincheta { transform-origin: 50% 100%; }
-    /* Lo que está pegado al borde crece hacia dentro, no hacia fuera del marco. */
+    /* El rombo está pegado al borde: crece hacia dentro, no hacia fuera del marco. */
     .dibujo .metro-g { transform-origin: 100% 100%; }
-    .dibujo .rotulo-borde { transform-origin: 100% 50%; }
-    .dibujo .rotulo-izq { transform-origin: 0 50%; }
-    .dibujo .credito { transform-origin: 0 100%; transform: scale(1.9); }
   }
 </style>

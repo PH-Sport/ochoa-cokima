@@ -128,6 +128,26 @@ borrada; `/_vercel/image` no existe en local, y para capturas con fotos hace fal
 redirija `?url=X` a `/X` (con la barra inicial, o la redirección cae en `/_vercel/_astro/…`);
 Overpass devuelve 406 a curl con GET sin User-Agent y 504 a ratos.
 
+**2026-09-21: el indicador del metro es el rombo de Metro de Madrid, y los nombres ya no se
+descolocan en el iPhone.** Mario propuso cambiar la chapa negra con la M por el rombo con la barra
+azul. Se le enseñaron tres bocetos —el rombo en sus colores, el rombo en paleta (barra en tinta) y
+la chapa— y eligió el de sus colores, más pequeño que en el boceto («es un pequeño logo a modo de
+indicador, nada más»): 20 px de ancho en escritorio y 18 en el móvil, sin la palabra «Metro»
+porque a ese tamaño no se lee. **Es el único azul de la web y es a propósito:** un logotipo en sus
+colores es un logotipo, no una decisión de paleta; en tinta se reconocía por la forma pero dejaba
+de ser el de Metro. Es marca registrada de Metro de Madrid; señalar la parada con él es un uso
+informativo, el mismo que hacen Apple y Google, y Mario lo asumió sabiéndolo. **El fallo de los
+nombres:** Mario vio en su iPhone nombres cortados y desplazados (primero en la isométrica vieja,
+que era lo que tenía desplegado). Medido en el WebKit de Playwright a 390 px sobre la
+perspectiva: Safari no respeta `transform-box: fill-box` en los `<text>` del SVG y los escalaba
+alrededor del marco entero —Plaza de Cuzco en el borde derecho, Defensa y el crédito fuera del
+marco por abajo, la Castellana cortada—, mientras la chapa y el rombo, que son grupos, no se
+movían. Ahora los textos crecen por tamaño de letra (19, 15 y 13 px) y solo los grupos siguen con
+`transform`; las clases de anclaje al borde (`rotulo-izq`, `rotulo-borde`) se fueron con el truco.
+Medido después en el mismo WebKit: los siete textos dentro del marco y Plaza de Cuzco sobre la
+rotonda. **Chromium lo hacía bien desde el principio, y por eso no se vio en las capturas del
+Mac:** la receta para medir en el motor de Safari sin iPhone está en `metodo.md` §2.5.
+
 **Y toda la web de Ochoa ocupa el 90% de la pantalla en escritorio**, a petición de Mario:
 primero lo probó en la carta («vamos a ver qué tal queda») y, vista, lo extendió a la web entera.
 Hasta hoy el contenedor global se paraba en 1140px, y la carta además en 44rem por una razón

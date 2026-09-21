@@ -556,14 +556,16 @@ def etiqueta_suelo(texto, x, y, ux, uy, clase, fs):
     aplaste = math.hypot(c, d)
     if aplaste < 0.62:
         c, d = c * 0.62 / aplaste, d * 0.62 / aplaste
-    lado = " rotulo-izq" if s0[0] < W * 0.28 else (" rotulo-borde" if s0[0] > W * 0.72 else "")
+    # En el móvil el CSS agranda la letra, no el elemento: el texto crece alrededor de su ancla
+    # (`text-anchor: middle`) y no hace falta decirle hacia qué lado. Hubo clases de anclaje al
+    # borde (`rotulo-izq`, `rotulo-borde`) para un escalado con `transform-box` que Safari en
+    # iPhone no respetaba; se fueron con él.
     svg.append(f'<g transform="matrix({fmt(a)} {fmt(b_)} {fmt(c)} {fmt(d)} {fmt(s0[0])} {fmt(s0[1])})">'
-               f'<text class="{clase}{lado}" x="0" y="{fmt(fs * 0.36)}" text-anchor="middle">{texto}</text></g>')
+               f'<text class="{clase}" x="0" y="{fmt(fs * 0.36)}" text-anchor="middle">{texto}</text></g>')
 
 def etiqueta(texto, x, y, clase):
     """Un rótulo de lugar: de frente, como un letrero, no pegado al suelo."""
-    lado = " rotulo-izq" if x < W * 0.28 else (" rotulo-borde" if x > W * 0.72 else "")
-    svg.append(f'<g><text class="{clase}{lado}" x="{fmt(x)}" y="{fmt(y)}" text-anchor="middle">{texto}</text></g>')
+    svg.append(f'<g><text class="{clase}" x="{fmt(x)}" y="{fmt(y)}" text-anchor="middle">{texto}</text></g>')
 
 # El Paseo, más grande, en el trecho al sur del local: es el lado del marco que está más cerca
 # de la cámara, donde la calle es ancha y un nombre de 150 px cabe, y el norte ya lleva la plaza
@@ -595,9 +597,18 @@ for e in els:
     t = e.get("tags", {})
     if e["type"] == "node" and t.get("railway") == "station":
         sx, sy = proy(*punto(e))
-        svg.append(f'<g class="metro-g"><path class="chapa-pie" d="M{fmt(sx)} {fmt(sy)} L{fmt(sx)} {fmt(sy - 14)}"/><circle class="chapa-punto" cx="{fmt(sx)}" cy="{fmt(sy)}" r="2.2"/>')
-        svg.append(f'<rect class="metro" x="{fmt(sx - 8)}" y="{fmt(sy - 30)}" width="16" height="16" rx="3"/>')
-        svg.append(f'<text class="metro-txt" x="{fmt(sx)}" y="{fmt(sy - 18)}" text-anchor="middle">M</text></g>')
+        # El rombo de Metro de Madrid como indicador de la parada, elegido por Mario el 2026-09-21
+        # entre el rombo en sus colores, el rombo en paleta y la chapa negra con la M que había:
+        # borde rojo, hueco en papel y la barra azul que lo cruza. Sin la palabra «Metro», que a
+        # este tamaño no se lee ni en el móvil. Los colores van en el CSS del componente, como todo.
+        # Pidió que fuera pequeño: es un indicador, no un logotipo. En el móvil crece con el grupo.
+        w, h, b = 9, 7, 2.4     # semianchura y semialtura del rombo, media altura de la barra
+        k = 0.58                # el hueco, a escala del rombo: lo que queda de borde rojo
+        cx_, cy_ = sx, sy - 20
+        svg.append(f'<g class="metro-g"><path class="chapa-pie" d="M{fmt(sx)} {fmt(sy)} L{fmt(sx)} {fmt(sy - 12)}"/><circle class="chapa-punto" cx="{fmt(sx)}" cy="{fmt(sy)}" r="2.2"/>')
+        svg.append(f'<g transform="translate({fmt(cx_)} {fmt(cy_)})"><path class="metro-rombo" d="M0 {fmt(-h)}L{fmt(w)} 0 0 {fmt(h)} {fmt(-w)} 0z"/>'
+                   f'<path class="metro-hueco" d="M0 {fmt(-h * k)}L{fmt(w * k)} 0 0 {fmt(h * k)} {fmt(-w * k)} 0z"/>'
+                   f'<rect class="metro-barra" x="{fmt(-w - 1.2)}" y="{fmt(-b)}" width="{fmt(2 * w + 2.4)}" height="{fmt(2 * b)}"/></g></g>')
         break
 
 # ─── La chapa, encima del 117. Sin punto ni burbuja: el bloque rojo ya canta solo. ──────────

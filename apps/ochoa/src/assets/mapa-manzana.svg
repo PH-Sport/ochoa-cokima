@@ -929,13 +929,12 @@
 <path class="techo" d="M615 394l-57 89 19 15 56-92z"/>
 <path class="techo" d="M212 413l-59 56 33 36 59-60z"/>
 <g transform="matrix(0.7 -0.7 0.7 0.6 251.9 307)"><text class="rotulo" x="0" y="4.3" text-anchor="middle">Paseo de la Castellana</text></g>
-<g transform="matrix(0.8 0.7 -1 0.7 113 220.2)"><text class="rotulo-cerca rotulo-izq" x="0" y="3.4" text-anchor="middle">San Germán</text></g>
-<g transform="matrix(0.6 -0.8 1.1 0.7 525.5 269.9)"><text class="rotulo-menor rotulo-borde" x="0" y="3.4" text-anchor="middle">Doctor Fleming</text></g>
-<g><text class="rotulo-lugar rotulo-izq" x="109.7" y="306" text-anchor="middle">Ministerio de Defensa</text></g>
+<g transform="matrix(0.8 0.7 -1 0.7 113 220.2)"><text class="rotulo-cerca" x="0" y="3.4" text-anchor="middle">San Germán</text></g>
+<g transform="matrix(0.6 -0.8 1.1 0.7 525.5 269.9)"><text class="rotulo-menor" x="0" y="3.4" text-anchor="middle">Doctor Fleming</text></g>
+<g><text class="rotulo-lugar" x="109.7" y="306" text-anchor="middle">Ministerio de Defensa</text></g>
 <g><text class="rotulo-lugar" x="439.7" y="147.3" text-anchor="middle">Plaza de Cuzco</text></g>
-<g class="metro-g"><path class="chapa-pie" d="M458.7 123.4 L458.7 109.4"/><circle class="chapa-punto" cx="458.7" cy="123.4" r="2.2"/>
-<rect class="metro" x="450.7" y="93.4" width="16" height="16" rx="3"/>
-<text class="metro-txt" x="458.7" y="105.4" text-anchor="middle">M</text></g>
+<g class="metro-g"><path class="chapa-pie" d="M458.7 123.4 L458.7 111.4"/><circle class="chapa-punto" cx="458.7" cy="123.4" r="2.2"/>
+<g transform="translate(458.7 103.4)"><path class="metro-rombo" d="M0 -7L9 0 0 7 -9 0z"/><path class="metro-hueco" d="M0 -4.1L5.2 0 0 4.1 -5.2 0z"/><rect class="metro-barra" x="-10.2" y="-2.4" width="20.4" height="4.8"/></g></g>
 <g class="chincheta">
 <path class="chapa-pie" d="M267.3 209 L267.3 185"/>
 <circle class="chapa-punto" cx="267.3" cy="209" r="2.6"/>
