@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-09-20 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-09-21 · **el punto de entrada del repo**
 
-- **Corte:** 2026-09-20
+- **Corte:** 2026-09-21
 - **Rama de trabajo:** `tmp/entrada-cokima` (el rediseño de Cokima, en curso) · `preview`
   (desarrollo, todo lo demás integrado) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
@@ -146,7 +146,14 @@ movían. Ahora los textos crecen por tamaño de letra (19, 15 y 13 px) y solo lo
 `transform`; las clases de anclaje al borde (`rotulo-izq`, `rotulo-borde`) se fueron con el truco.
 Medido después en el mismo WebKit: los siete textos dentro del marco y Plaza de Cuzco sobre la
 rotonda. **Chromium lo hacía bien desde el principio, y por eso no se vio en las capturas del
-Mac:** la receta para medir en el motor de Safari sin iPhone está en `metodo.md` §2.5.
+Mac:** la receta para medir en el motor de Safari sin iPhone está en `metodo.md` §2.5. **Y el
+enlace «Cómo llegar» busca ahora el negocio, no la dirección:** «Tasquita Los Ochoa» con la
+dirección detrás, para que Maps abra la ficha de la Tasquita (fotos, reseñas, horario) en vez de
+un punto en la acera, y no la confunda con otro local de nombre parecido; si algún día la
+búsqueda no cayera en la ficha, lo infalible es el «Place ID» de Google. **Cerrado el 2026-09-21
+con la prueba que faltaba:** Mario lo comprobó en su iPhone sobre la preview (6ff0df8) y
+«funciona de la manera esperada»: nombres en su sitio, rombo con el tamaño justo y el enlace
+abriendo la ficha. El mapa de Ochoa no tiene nada pendiente.
 
 **Y toda la web de Ochoa ocupa el 90% de la pantalla en escritorio**, a petición de Mario:
 primero lo probó en la carta («vamos a ver qué tal queda») y, vista, lo extendió a la web entera.
