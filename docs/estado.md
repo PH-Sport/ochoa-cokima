@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-09-21 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-09-24 · **el punto de entrada del repo**
 
-- **Corte:** 2026-09-21
+- **Corte:** 2026-09-24
 - **Rama de trabajo:** `tmp/entrada-cokima` (el rediseño de Cokima, en curso) · `preview`
   (desarrollo, todo lo demás integrado) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
@@ -165,7 +165,9 @@ es lo mismo que había. Medido a 1710: cabecera, portada, tira, «lo que hay» y
 el mismo píxel; **el precio de la carta queda a 1.455px del nombre**; la foto de «Lo que hay»
 pasa a 1.526px de ancho y las del muro de 511 a 752, con un `sizes` que ya se quedaba corto
 antes (declara 560px) — en escritorio pueden verse blandas; son provisionales y no se ha tocado.
-Si el 90% no se queda, el tope vuelve en `--maxw` y en esos dos rellenos; `--carta-w` en
+**Mario lo dio por bueno** —«bien respecto a lo del 90%»— y por eso se extendió a toda la web,
+así que esto ya no es una prueba. Si algún día se revierte, el tope vuelve en `--maxw` y en esos
+dos rellenos; `--carta-w` en
 `MenuBoard.astro` es el tope propio de la carta.
 
 **La entrada de Los Ochoa (§3.octies) ya está aquí dentro.** Se construyó el 2026-08-06 en
@@ -222,13 +224,21 @@ Lo que queda pendiente de los otros dos, y es lo primero al retomar:
 
 1. ~~La clave de Google Maps.~~ **Cerrado el 2026-09-20:** el mapa es un dibujo de la manzana
    hecho con datos de OpenStreetMap y no necesita clave (§0).
-2. **Validar la carta en inglés con el restaurante.** Traducida entera el 31, pero es un
+2. **Los alérgenos de doce platos de Ochoa, y qué significa el gluten en amarillo.** La hoja
+   del restaurante no trae fila para Bicicleta, Marinera, Marinero, Bomba, el brioche de
+   sobrasada, la tapa de alitas, los cuatro montados, el bikini de minutejos ni el pulpo: hoy
+   no muestran nada. La duda concreta es si los montados heredan del bocata del mismo relleno
+   o hay que pedirle la fila al restaurante. Y cinco platos llevan el gluten marcado en
+   amarillo sin decir por qué; hasta saberlo salen con «\*» y «pendiente de confirmar». **Mario
+   lo dejó «en el aire» el 2026-09-19 para revisarlo cuanto antes.** Es dato de salud: no se
+   rellena por deducción (§0, §3).
+3. **Validar la carta en inglés con el restaurante.** Traducida entera el 31, pero es un
    documento comercial y la tradujo el agente con criterio propio, no con su visto bueno.
-3. **Si «fríos» y «calientes» deben volver a separarse** dentro de «Pinchos y tapas». Alberto
+4. **Si «fríos» y «calientes» deben volver a separarse** dentro de «Pinchos y tapas». Alberto
    pidió tres secciones y eso funde los dos rótulos; el orden los conserva pero el rótulo no.
-4. **Unificar «Idiazabal» / «Idiazábal»**, que el PDF del restaurante escribe de las dos formas
+5. **Unificar «Idiazabal» / «Idiazábal»**, que el PDF del restaurante escribe de las dos formas
    según el plato. Está respetado tal cual viene.
-5. **Si las legales de Cokima deben arreglarse igual que las de Ochoa.** Sus tres páginas
+6. **Si las legales de Cokima deben arreglarse igual que las de Ochoa.** Sus tres páginas
    declaran que su versión inglesa es la home inglesa, que es el mismo `hreflang` roto que se
    corrigió el 31 en Ochoa (§3.quinquies). No se tocó porque Cokima quedaba fuera del alcance
    de esa tanda; el arreglo es pasar `altSeoPath={null}`, y su `Base.astro` necesita la prop.
@@ -380,14 +390,18 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
       patrón —congelar una vez, remedir solo al cambiar el ancho—. El arreglo es el mismo módulo
       que ya usa Ochoa, `@tombo/ui/alto-congelado.ts`, con su referencia fuera del flujo. Va en
       `tmp/entrada-cokima`, que es donde vive `Entrada.astro`.
-- [ ] **Rehacer el mapa de «Dónde estamos» en perspectiva** (§0, 2026-09-20): sesión nueva con
-      Fable, prompt y captura de Apple como referencia. Mismos datos y mismo contrato SVG/CSS.
+- [x] ~~Rehacer el mapa de «Dónde estamos» en perspectiva.~~ **Hecho el 2026-09-20 y cerrado el
+      21** con la prueba de Mario en su iPhone (§0). No queda nada del mapa.
 - [ ] **Alérgenos de Ochoa: los 12 platos sin fila en la hoja.** Bicicleta, Marinera, Marinero,
       Bomba, brioche de sobrasada, tapa de alitas, los cuatro montados, bikini de minutejos y
       pulpo no muestran nada. Mario lo dejó «en el aire» el 2026-09-19 para revisarlo cuanto
       antes; la duda concreta es si los montados heredan del bocata del mismo relleno o hay que
       pedir la fila al restaurante. **Y qué significa el gluten en amarillo** de los cinco platos
       marcados (§0): hasta saberlo salen con «\*».
+- [ ] **El `sizes` de las fotos de la home de Ochoa se quedó corto** al pasar la web al 90%
+      (§0, 2026-09-19): la foto de «Lo que hay» ocupa 1.526px y declara 560, y las del muro 752.
+      En escritorio pueden verse blandas. No se tocó porque las fotos son provisionales y entran
+      otras con la tanda de fotografía; cuando entren, hay que revisar el `sizes` con ellas.
 - [ ] **Comprobar en un iPhone real** que el hundido de los botones se ve. La lógica ya no
       depende de `:active` (ver §3.quater), pero Playwright usa Chromium: la verificación en
       Safari de iOS no se ha podido hacer desde aquí.
@@ -952,9 +966,9 @@ desmenuzar a fondo.
       naranja `--ember`, que da 7,9:1 pero cambia el acento de marca en la primera
       pantalla.
 - [ ] **Cuándo llevar `preview` a `main`** (`git switch main && git merge preview`).
-- [ ] **Si Ochoa se queda al 90% en escritorio** o vuelve a los 1140px / 44rem (§0,
-      2026-09-19). Es una prueba: hay que verla y decidir. Y si se queda, el `sizes` de las
-      fotos de la home declara huecos más pequeños de lo que ya son.
+- [x] ~~Si Ochoa se queda al 90% en escritorio.~~ **Decidido el 2026-09-19:** Mario lo vio en
+      la carta, dijo «bien respecto a lo del 90%» y pidió extenderlo a toda la web (§0). El tope
+      de 1140px no vuelve.
 - [ ] **Los 12 platos de Ochoa sin alérgenos y el gluten en amarillo** (§3). Es dato de salud:
       no se rellena por deducción.
 
