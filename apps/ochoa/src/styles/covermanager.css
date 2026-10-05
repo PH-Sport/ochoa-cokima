@@ -22,7 +22,13 @@
      script del layout no entra en el iframe, así que en Safari de iPhone el
      botón puede no acusar el dedo. Es la misma pieza; solo le falta esa ayuda. */
 
+/* Bootstrap 3 fija `html { font-size: 10px }`, y los tokens de la casa van en
+   `rem`: sin esto, cada `rem` del motor medía 10px y no 16, y las etiquetas
+   salían a 8,75px (medido el 2026-10-05). Bootstrap no usa `rem` en ninguna
+   de sus piezas, así que devolver la raíz al tamaño del navegador solo toca lo
+   nuestro. */
 html {
+  font-size: 100%;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -182,6 +188,7 @@ input.reservarButton:active,
    el ancho de su columna cuadra con ellos en el móvil y en el escritorio. */
 .ui-datepicker.ui-widget-content {
   width: 100%;
+  container-type: inline-size;
   font-family: var(--sans);
   background: var(--paper);
   border: 2px solid var(--ink);
@@ -201,12 +208,21 @@ input.reservarButton:active,
 .ui-datepicker .ui-datepicker-title {
   font-family: var(--display);
   font-weight: 400;
-  font-size: 1.5rem;
+  /* Crece con el calendario y se encoge con él: a 20px, «SEPTIEMBRE 2026» —el
+     mes más largo— necesita un calendario de ~235px para no tocar las
+     flechas, y en media columna a 1280 mide 237 (se quedaba a 3px). `cqi` es
+     el ancho del calendario, que es el contenedor. */
+  font-size: clamp(1rem, 7cqi, 1.25rem);
   line-height: 1.1;
   text-transform: uppercase;
   letter-spacing: 0.015em;
   color: var(--rojo);
   text-shadow: 0.045em 0.05em 0 var(--ink);
+  /* jQuery UI le deja 2.3em por lado a las flechas, y en `em` del propio
+     título eso se comía 92px: con el calendario en media columna «OCTUBRE
+     2026» ya pisaba la flecha. Las flechas miden ~29px, así que basta con un
+     hueco fijo algo mayor. */
+  margin: 0 30px;
 }
 
 /* Las flechas de serie son dos círculos del sprite de jQuery UI. Se cambian
@@ -304,12 +320,37 @@ a.ui-state-active {
 }
 /* En una columna, los campos van dentro de dos columnas de Bootstrap anidadas y
    el calendario dentro de una sola: sin esto sobresale 15px por cada lado
-   respecto a los campos (medido a 347px, 2026-10-05). 768px es el corte `sm`
-   de Bootstrap 3, que es donde el motor pasa a dos columnas. */
-@media (max-width: 767px) {
+   respecto a los campos (medido a 347px, 2026-10-05). */
+@media (max-width: 539px) {
   #date_box {
     padding-left: 30px;
     padding-right: 30px;
+  }
+}
+/* El motor pasa a dos columnas —calendario a la izquierda, campos a la
+   derecha— en el corte `sm` de Bootstrap 3, 768px. Pero en la página de
+   reservas el iframe mide 563px a 1280 y 638 a 1440: en escritorio se quedaba
+   en una columna y el calendario se estiraba con los días a 80px unos de
+   otros. Desde 540px de iframe —el que tiene a 1280, un portátil corriente—
+   se adelantan las dos columnas, y a medias: con los 5/12 de Bootstrap el
+   calendario se quedaba en 236px a 1440 y los días se apretaban, mientras los
+   campos sobraban de ancho. Con `#id` gana a las `col-sm-*` también por encima
+   de 768. En media columna, «Personas» y «Hora» lado a lado se quedaban en
+   ~110px cada uno, así que van uno debajo del otro. */
+@media (min-width: 540px) {
+  #date_box,
+  #date_box + div {
+    float: left;
+    width: 50%;
+  }
+  #personas_box,
+  #hour_box {
+    width: 100%;
+  }
+  /* Los campos llevan dos rellenos de 15px hasta el borde derecho y el
+     calendario solo uno hasta el izquierdo: se iguala a 30. */
+  #date_box {
+    padding-left: 30px;
   }
 }
 /* Los días del mes anterior y del siguiente, el motor los esconde a propósito

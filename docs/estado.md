@@ -41,7 +41,15 @@ iPhone sobre la preview (bf9515e) y destapó un fallo viejo de las dos casas: el
 550px y se desplazaba por dentro —«dos desplazamientos verticales, dependiendo de dónde pongas el
 dedo»—, porque CoverManager movió su iframeResizer y la ruta que pedíamos da 404 (`recursos.md` §2).
 Con la ruta nueva, medido a 390px en la preview: el iframe crece de 550 a 752px y se ve entero.
-Arregla también Cokima, con el visto bueno de Mario. El motor de CoverManager vive en un iframe de su dominio y salía con su aspecto de
+Arregla también Cokima, con el visto bueno de Mario. **Y el mismo día, el escritorio:** Bootstrap 3
+fija `html { font-size: 10px }` dentro del iframe, así que cada `rem` de los tokens medía 10px y las
+etiquetas salían a 8,75px (también en el móvil); la piel devuelve la raíz al 100%. Y como el iframe
+mide 563px a 1280 y 638 a 1440, el motor no llegaba a su corte de dos columnas (768) y el calendario
+se estiraba con los días a 80px: desde 540px de iframe la piel pone calendario y campos a medias, con
+«Personas» y «Hora» apilados, y el mes se encoge con el calendario (`cqi`). Medido sobre la preview
+con la hoja nueva servida por Playwright, de 360 a 1920px: márgenes de 30px a los dos lados, sin
+desbordar, y «SEPTIEMBRE 2026» —el mes más largo— a 17px como mínimo de las flechas; a 1440 el iframe
+baja de 741 a 578px. El motor de CoverManager vive en un iframe de su dominio y salía con su aspecto de
 serie. Se le pasa `?template=<URL>` y el motor enlaza esa hoja dentro del iframe (cómo se averiguó y
 qué más acepta, en `recursos.md` §2). La hoja es `/covermanager.css`, que sirve
 `apps/ochoa/src/pages/covermanager.css.ts` juntando las dos `@font-face`, `tokens.css` y la piel de
