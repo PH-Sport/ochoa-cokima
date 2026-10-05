@@ -49,7 +49,23 @@ se estiraba con los días a 80px: desde 540px de iframe la piel pone calendario 
 «Personas» y «Hora» apilados, y el mes se encoge con el calendario (`cqi`). Medido sobre la preview
 con la hoja nueva servida por Playwright, de 360 a 1920px: márgenes de 30px a los dos lados, sin
 desbordar, y «SEPTIEMBRE 2026» —el mes más largo— a 17px como mínimo de las flechas; a 1440 el iframe
-baja de 741 a 578px. El motor de CoverManager vive en un iframe de su dominio y salía con su aspecto de
+baja de 741 a 578px.
+
+**Y la página de reservas de Ochoa se recompuso para escritorio el 2026-10-06** («Codo con codo a
+escala», elegida por Mario entre cuatro composiciones en un artifact con capturas reales de 1280 a
+2560 —hoy, «Codo con codo», «De arriba abajo» y esta—). Con el 90% de ancho las dos columnas se
+separaban en un monitor grande, y el pie subía a media pantalla porque la página es más corta que
+ella. Ahora, desde 821px, título y recuadro van juntos en un bloque centrado; desde 1440 el bloque
+crece (el título hasta 92px a 2560, en una línea) y se centra en el alto, con el pie al fondo
+(`body` en columna solo en esta página). **El recuadro también crece por dentro:** el contenido del
+motor mide ~580px de alto por ancho que se le dé, así que la piel lo amplía con `zoom` (×1,1 desde
+780px de iframe, ×1,2 desde 880, ×1,3 desde 980), y **eso obligó a cambiar cómo mide el alto
+`BookingEmbed`, que es de las dos casas**: `heightCalculationMethod: 'lowestElement'`, porque el
+método por defecto lee el alto sin ampliar y cortaba el contenido (582 frente a 751px). «De arriba
+abajo» se descartó porque en un portátil el recuadro llega justo al borde de la pantalla. Mario
+señaló lo que sobraba en pantallas grandes con «se pierde muchísimo espacio vertical». Medido sobre
+el build, servido a Playwright: de 390 a 2560px sin desbordar; el iframe mide 640px a 1920 y 757 a
+2560, con el contenido entero dentro. El motor de CoverManager vive en un iframe de su dominio y salía con su aspecto de
 serie. Se le pasa `?template=<URL>` y el motor enlaza esa hoja dentro del iframe (cómo se averiguó y
 qué más acepta, en `recursos.md` §2). La hoja es `/covermanager.css`, que sirve
 `apps/ochoa/src/pages/covermanager.css.ts` juntando las dos `@font-face`, `tokens.css` y la piel de

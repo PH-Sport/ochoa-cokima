@@ -32,19 +32,30 @@ const coverTemplate = new URL("/covermanager.css", Astro.site).href;
 </Base>
 
 <style>
+  /* «Codo con codo a escala», elegida por Mario el 2026-10-06 entre cuatro
+     composiciones comparadas en capturas de 1280 a 2560 (docs/estado.md §0).
+     Antes, las dos columnas se repartían todo el ancho —el 90% de la pantalla
+     desde el 2026-09-19— y en un monitor grande el recuadro quedaba lejísimos
+     del título; y como la página es más corta que la pantalla, el pie subía a
+     media altura. */
+
+  /* El pie al fondo: el cuerpo pasa a columna y la sección se come el sobrante.
+     Va aquí y no en global.css porque solo esta página es tan corta; el router
+     retira este estilo al salir de ella. */
+  :global(body) {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
   .reservar {
+    flex: 1 0 auto;
     padding: clamp(48px, 8vw, 92px) 0 0;
   }
   .grid {
     display: grid;
-    grid-template-columns: 1fr 1.1fr;
+    grid-template-columns: 1fr;
     gap: clamp(28px, 5vw, 56px);
     align-items: start;
-  }
-  @media (max-width: 820px) {
-    .grid {
-      grid-template-columns: 1fr;
-    }
   }
   h1 {
     font-size: clamp(2.2rem, 6vw, 3.6rem);
@@ -58,5 +69,41 @@ const coverTemplate = new URL("/covermanager.css", Astro.site).href;
   .txt a {
     color: var(--ink);
     text-decoration: underline;
+    /* El teléfono se partía en «912 87 68» y «20». */
+    white-space: nowrap;
+  }
+
+  @media (min-width: 821px) {
+    /* El bloque se centra en el alto que queda entre la barra y el pie. */
+    .reservar {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-bottom: clamp(0px, 4vw, 96px);
+    }
+    /* Título y recuadro juntos, como un bloque centrado: la columna del texto
+       mide lo que su texto y la del recuadro tiene tope. Hasta 1440 el
+       recuadro se queda en 44rem; por encima crece con la pantalla, y la piel
+       del motor lo amplía por dentro (covermanager.css, `zoom`). */
+    .grid {
+      grid-template-columns: minmax(0, max-content) minmax(0, clamp(44rem, 42vw, 66rem));
+      justify-content: center;
+      column-gap: clamp(40px, 5vw, 112px);
+    }
+    /* Desde 1440 el título crece con el ancho: 69px a 1920, 92 a 2560, y en
+       una sola línea. Por debajo manda el clamp de siempre. */
+    h1 {
+      font-size: max(clamp(2.2rem, 6vw, 3.6rem), 3.6vw);
+    }
+    .txt {
+      font-size: clamp(var(--fs-body), 1vw, 1.3rem);
+    }
+  }
+  /* Cuando el recuadro ya es alto, el título se centra a su lado en vez de
+     quedarse colgado arriba. */
+  @media (min-width: 1600px) {
+    .grid {
+      align-items: center;
+    }
   }
 </style>

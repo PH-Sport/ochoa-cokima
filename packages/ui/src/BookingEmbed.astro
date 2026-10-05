@@ -22,7 +22,11 @@ const src = `https://www.covermanager.com/reservation/module_restaurant/${slug}/
       el motor dentro del iframe, desde /js/iframeResizer/ (v3.6.1). Hasta el
       2026-10-05 esto apuntaba a /js/iframeResizer.min.js, que CoverManager ya
       no sirve (404): el iframe se quedaba en sus 550px y se desplazaba por
-      dentro, con dos scrolls verticales según dónde se pusiera el dedo. */}
+      dentro, con dos scrolls verticales según dónde se pusiera el dedo.
+      El alto se mide por el elemento más bajo (`lowestElement`) y no por el
+      `offsetHeight` del body, que es el método por defecto: si la piel de una
+      casa amplía el motor con `zoom`, el body da el alto sin ampliar y el
+      iframe cortaba el contenido. */}
   <script is:inline src="https://www.covermanager.com/js/iframeResizer/iframeResizer.min.js"></script>
   <iframe
     id={slug}
@@ -32,7 +36,7 @@ const src = `https://www.covermanager.com/reservation/module_restaurant/${slug}/
     height="550"
     width="100%"
     loading="lazy"
-    onload="typeof iFrameResize === 'function' && iFrameResize();"
+    onload="typeof iFrameResize === 'function' && iFrameResize({ heightCalculationMethod: 'lowestElement' });"
   ></iframe>
 </div>
 
