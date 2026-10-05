@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-09-24 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-10-05 · **el punto de entrada del repo**
 
-- **Corte:** 2026-09-24
+- **Corte:** 2026-10-05
 - **Rama de trabajo:** `tmp/entrada-cokima` (el rediseño de Cokima, en curso) · `preview`
   (desarrollo, todo lo demás integrado) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
@@ -35,6 +35,25 @@ buena y manda sobre esta**, que solo cuenta lo que está integrado.
 costó un susto el 2026-08-16. El procedimiento para cambiar de máquina es la §1.1 y **no es
 opcional**: `git fetch --all --prune` antes de nada, y nunca pushear una rama local sin mirar
 primero a dónde apunta.
+
+**Ochoa, 2026-10-05: el recuadro de reservas lleva la piel de la casa, a falta de verlo
+desplegado.** El motor de CoverManager vive en un iframe de su dominio y salía con su aspecto de
+serie. Se le pasa `?template=<URL>` y el motor enlaza esa hoja dentro del iframe (cómo se averiguó y
+qué más acepta, en `recursos.md` §2). La hoja es `/covermanager.css`, que sirve
+`apps/ochoa/src/pages/covermanager.css.ts` juntando las dos `@font-face`, `tokens.css` y la piel de
+`src/styles/covermanager.css`: ni un color ni una duración sueltos. `BookingEmbed` gana la prop
+`template` (sin marca: la URL la pone cada casa), y la usan las dos páginas de reservas de Ochoa;
+**Cokima no**. Lo que se ve: Archivo en todo, el mes en Anton rojo con sombra, el día elegido como
+chapa roja, campos con borde de tinta y a 16px (por debajo, Safari de iPhone amplía al tocarlos),
+«Reservar» como el `.btn` de la casa y «Lista de espera» como su fantasma; la firma de CoverManager
+se queda. **Medido** inyectando la hoja construida en la página real del motor: a 347px el
+calendario y los campos arrancan y acaban en el mismo píxel (30–317) sin desbordar, la chapa del día
+mide 41px y no se estira, y a 777px el motor pasa a dos columnas y cuadra. Las fuentes cruzan de
+dominio porque Vercel sirve los estáticos con `access-control-allow-origin: *` (comprobado en el
+alias de preview). **Sin comprobar:** la piel cargada por el propio motor desde un despliegue (en
+local no puede: el motor es https), el paso de datos personales —solo se ve empezando una reserva
+real, y puede bloquear mesa unos minutos— y el hundido del botón en el iPhone, porque dentro del
+iframe no llega el `data-tacto` del layout.
 
 **Ochoa, cerrado el 2026-09-19: la portada ya no se queda grande al recargar.** Mario vio que
 «a veces, al recargar, la imagen del Hero aparecía más grande y ocupaba más espacio». Era real y
@@ -1034,8 +1053,10 @@ Sin cambios respecto a la spec §12, más una entrada nueva:
 
 - **Nueva:** confirmación oficial de los datos de alérgenos de Cokima (requisito para
   activar el filtro).
-- Accesos: **CoverManager backoffice** (el más urgente), Meta Business (píxel por marca +
-  token CAPI), GTM/GA4.
+- Accesos: Meta Business (píxel por marca + token CAPI) y GTM/GA4 — **sin ellos la medición de
+  reservas no se puede cerrar**. El panel de CoverManager ya lo tiene Mario (2026-10-05), pero lo
+  que necesita la medición (meter GTM en el motor, probar una reserva de punta a punta) cuelga de
+  esos dos.
 - Dominios propios por marca.
 - Logos en vectorial (los favicons actuales son provisionales y geométricos, no logotipos).
 - Fotografía real actualizada.

@@ -1,6 +1,6 @@
 # Recursos: identificadores, accesos y material
 
-> **Estado: vivo** · revisado 2026-09-07
+> **Estado: vivo** · revisado 2026-10-05
 
 **Lo que cuesta recuperar y no se deduce del código.** URLs, slugs, IDs de proyecto y dónde vive
 el material que entrega Mario. Todo lo de aquí está verificado; cada bloque dice cuándo y cómo.
@@ -61,6 +61,30 @@ El reparto de proyectos, el `ignoreCommand` por app y la resolución de `SITE_UR
 - Cokima: `restaurante-cokima`
 - Los Ochoa: `tasquita-los-ochoa`
 - Iframe: `https://www.covermanager.com/reservation/module_restaurant/{slug}/{spanish|english}`
+
+**Lo que acepta el iframe en la URL, medido contra el motor el 2026-10-05.** Sale del plugin
+oficial de WordPress (`plugins.svn.wordpress.org/covermanager/trunk/covermanager.php`, de 2017,
+escrito por el autor de CoverManager), que es la única documentación técnica que hay:
+
+- **`?template=`** — CoverManager solo anuncia `trans-white` y `trans-black` (dos hojas suyas en
+  `/css/modulo/`). **Con una URL absoluta, el motor la enlaza como hoja de estilo, la última del
+  `<head>`**, por detrás de Bootstrap 3, jQuery UI 1.10 y sus estilos en línea. Acepta la URL
+  codificada (`https%3A%2F%2F…`). Es la vía de la piel de Ochoa (`estado.md` §0). **No está
+  documentado para URLs**: si lo retiran, el motor vuelve a su aspecto de serie y sigue reservando.
+  Tiene que ser `https`: el motor no carga una hoja de `http://localhost`, así que en local la piel
+  no se ve.
+- **`?source=`** — el plugin reenvía el `source` de la URL de la página. Parece etiquetar el origen
+  de la reserva dentro de CoverManager (en el panel se ven reservas marcadas «CH: Google»). **Sin
+  probar.**
+- **El pago no es del motor:** lo pinta Stripe en su propio iframe (`#payment-elements`), y
+  ninguna hoja nuestra lo alcanza.
+- **El motor trae el reCAPTCHA de Google montado y apagado** (`useRecaptcha = 0` en la página de
+  Ochoa). Es el freno contra reservas falsas de bots; no se sabe si se enciende desde el panel o
+  pidiéndolo a soporte. **Aparcado por Mario el 2026-10-05.** Bloquear que otras webs incrusten el
+  iframe no protegería nada: un bot va directo a la página pública del motor.
+- **El panel** (backoffice) lo tiene Mario desde el 2026-10-05; el inicio de sesión pide un código
+  de verificación. Su menú de Configuración solo enseña «Planos de sala» y «Reservas» (turnos y
+  aforo): **no se ha encontrado ninguna opción de aspecto del motor**, ni hace falta para la piel.
 
 **Medición heredada de la web WordPress vieja:**
 
@@ -130,9 +154,8 @@ que el grado le siente bien al material nuevo.
 
 ## 6. Lo que falta y bloquea
 
-Los accesos del cliente son lo que bloquea sin ser código: **backoffice de CoverManager** (el más
-urgente), Meta Business, GTM/GA4, dominios, datos fiscales, logos vectoriales y la clave de Google
-Maps. La lista viva, con su estado, está en `estado.md` §7 — **si discrepa de aquí, manda
+Los accesos del cliente son lo que bloquea sin ser código: Meta Business, GTM/GA4, dominios, datos
+fiscales y logos vectoriales (el panel de CoverManager ya está, desde el 2026-10-05; §2). La lista viva, con su estado, está en `estado.md` §7 — **si discrepa de aquí, manda
 `estado.md`**.
 
 ---

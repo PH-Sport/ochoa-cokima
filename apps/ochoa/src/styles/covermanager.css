@@ -1,0 +1,349 @@
+/* La piel de Ochoa para el motor de reservas de CoverManager.
+
+   El motor vive en un iframe de covermanager.com y no ve nada de esta web: ni
+   los tokens, ni las fuentes, ni global.css. Lo que sí hace es aceptar
+   `?template=<URL de una hoja de estilo>` y enlazarla la última, después de sus
+   estilos y de los de Bootstrap 3 y jQuery UI 1.10 en los que está hecho. Esta
+   hoja es esa plantilla. No se sirve tal cual: `pages/covermanager.css.ts` le
+   antepone `tokens.css` y las dos `@font-face`, así que todo valor de aquí sale
+   de los mismos tokens que el resto de la casa.
+
+   Cosas que no son obvias y que salen de medir el motor (2026-10-05):
+
+   - El parámetro `template` no está documentado para URLs: CoverManager solo
+     anuncia `trans-white` y `trans-black`. Si un día lo retiran, el motor
+     vuelve a su aspecto de serie y las reservas siguen funcionando.
+   - Los selectores van tan concretos como los del motor, y con `!important`
+     solo donde el motor ya lo usa (el día elegido del calendario).
+   - El pago no se toca: lo pinta Stripe en su propio iframe.
+   - Los campos van a 16px. Por debajo, Safari de iPhone amplía la página al
+     tocarlos, y el motor de serie los tiene a 14.
+   - El hundido del botón va en `:active`. Aquí no hay `data-tacto`, porque el
+     script del layout no entra en el iframe, así que en Safari de iPhone el
+     botón puede no acusar el dedo. Es la misma pieza; solo le falta esa ayuda. */
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Transparente para que se vea la superficie del marco que lo rodea en la
+   página de reservas (`--t-surface` en BookingEmbed). Funciona porque las dos
+   páginas declaran `color-scheme: light`; si no coinciden, el navegador pinta
+   el iframe opaco. */
+body {
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--fs-body);
+  font-stretch: var(--wd-text);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+a,
+a:hover,
+a:focus {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* Las etiquetas de los campos hablan como las etiquetas de sección de la casa
+   (`.eyebrow`), pero en tinta: el rojo se reserva para lo que se pulsa. */
+label {
+  font-weight: 700;
+  font-stretch: var(--wd-rotulo);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: var(--fs-label);
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+/* La frase de la lista de espera es una etiqueta para el motor, pero se lee
+   como una frase: en versales sería un grito de tres líneas. */
+#waiting_button_list label {
+  font-weight: 500;
+  font-stretch: var(--wd-text);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: var(--fs-body);
+  color: var(--ink-dim);
+}
+
+/* --- Campos ------------------------------------------------------------- */
+
+.form-control,
+button.btn.dropdown-toggle.btn-default {
+  height: 48px;
+  font-family: var(--sans);
+  font-size: 16px;
+  color: var(--ink);
+  background-color: var(--paper);
+  border: 1.5px solid var(--ink);
+  border-radius: var(--r-btn);
+  box-shadow: none;
+}
+.form-control:focus,
+button.btn.dropdown-toggle.btn-default:focus {
+  border-color: var(--ink);
+  box-shadow: none;
+  outline: 2px solid var(--rojo);
+  outline-offset: 2px;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--rojo);
+}
+
+/* --- Botones ------------------------------------------------------------ */
+
+/* Todos los botones del motor son `input.form-control`, sin clase que diga cuál
+   es el principal; se nombran por su id o por la clase que los marca. El
+   principal es el `.btn` de la casa: rojo, con la sombra dura en tinta y el
+   hundido contra ella al pulsar. */
+input.reservarButton,
+#finish_reserv_system,
+#button_search_email {
+  height: 48px;
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: 0.005em;
+  color: #ffffff;
+  background: var(--rojo);
+  border: 0;
+  border-radius: var(--r-btn);
+  box-shadow: 3px 3px 0 var(--ink);
+  cursor: pointer;
+  transition:
+    transform var(--dur-out) var(--ease),
+    box-shadow var(--dur-out) var(--ease),
+    background var(--dur-out) var(--ease);
+}
+input.reservarButton:hover,
+#finish_reserv_system:hover,
+#button_search_email:hover {
+  color: #ffffff;
+  background: var(--rojo-2);
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+input.reservarButton:active,
+#finish_reserv_system:active,
+#button_search_email:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+/* Los secundarios son el fantasma de la casa (`.btn.ghost`): el mismo botón,
+   en hueco. */
+#waiting_button_list input,
+#goback_search input,
+#button_search input,
+#edit_data_system,
+#normal_client,
+#prescriptor_client {
+  height: 48px;
+  font-weight: 650;
+  color: var(--ink);
+  background: transparent;
+  border: 1.5px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  cursor: pointer;
+  transition:
+    transform var(--dur-out) var(--ease),
+    box-shadow var(--dur-out) var(--ease);
+}
+#waiting_button_list input:hover,
+#goback_search input:hover,
+#button_search input:hover,
+#edit_data_system:hover,
+#normal_client:hover,
+#prescriptor_client:hover {
+  color: var(--rojo);
+  border-color: var(--rojo);
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--rojo);
+}
+#waiting_button_list input:active,
+#goback_search input:active,
+#button_search input:active,
+#edit_data_system:active,
+#normal_client:active,
+#prescriptor_client:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--rojo);
+}
+
+/* --- Calendario (jQuery UI) -------------------------------------------- */
+
+/* De serie mide 17em y se queda más estrecho que los campos de debajo; a todo
+   el ancho de su columna cuadra con ellos en el móvil y en el escritorio. */
+.ui-datepicker.ui-widget-content {
+  width: 100%;
+  font-family: var(--sans);
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: var(--r-marco);
+  padding: 6px 8px 8px;
+}
+
+/* El mes es el único titular del motor, y lleva la voz del rótulo: Anton en
+   rojo con la sombra dura, como los `.cartel` de la web. */
+.ui-datepicker .ui-datepicker-header {
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid var(--ink);
+  border-radius: 0;
+  padding: 8px 0 10px;
+}
+.ui-datepicker .ui-datepicker-title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  color: var(--rojo);
+  text-shadow: 0.045em 0.05em 0 var(--ink);
+}
+
+/* Las flechas de serie son dos círculos del sprite de jQuery UI. Se cambian
+   por un galón dibujado con dos bordes, en tinta. */
+.ui-datepicker .ui-datepicker-prev,
+.ui-datepicker .ui-datepicker-next {
+  top: 50%;
+  margin-top: -0.9em;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.ui-datepicker .ui-datepicker-prev-hover,
+.ui-datepicker .ui-datepicker-next-hover {
+  top: 50%;
+  border: 0;
+  background: transparent;
+}
+.ui-datepicker .ui-datepicker-prev-hover {
+  left: 2px;
+}
+.ui-datepicker .ui-datepicker-next-hover {
+  right: 2px;
+}
+.ui-datepicker .ui-datepicker-prev .ui-icon,
+.ui-datepicker .ui-datepicker-next .ui-icon {
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  margin-left: -5px;
+  background: none;
+  border: solid var(--ink);
+  border-width: 0 0 2.5px 2.5px;
+}
+.ui-datepicker .ui-datepicker-prev .ui-icon {
+  transform: translateX(2px) rotate(45deg);
+}
+.ui-datepicker .ui-datepicker-next .ui-icon {
+  transform: translateX(-2px) rotate(-135deg);
+}
+
+.ui-datepicker th {
+  font-weight: 700;
+  font-stretch: var(--wd-rotulo);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: var(--fs-label);
+  color: var(--ink-dim);
+  padding: 10px 0 4px;
+}
+
+.ui-datepicker td {
+  padding: 2px;
+}
+.ui-widget-content .ui-state-default,
+.ui-datepicker td .ui-state-default {
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: var(--r-chapa);
+  padding: 0.45em 0;
+  /* Con el calendario a todo el ancho, la celda llega a 80px en escritorio y
+     la chapa del día elegido se estiraba en una barra. Se queda en chapa. */
+  max-width: 2.75em;
+  margin: 0 auto;
+}
+.ui-widget-content a.ui-state-default:hover {
+  background: transparent;
+  border-color: var(--ink);
+}
+/* Hoy, si se puede reservar: un recuadro fino en tinta, sin relleno. */
+.ui-widget-content .ui-state-highlight {
+  border: 1.5px solid var(--ink-faint);
+}
+/* El día elegido: la chapa roja de la casa. El `!important` es el del motor,
+   que lo usa para su gris. */
+.ui-widget-content .ui-state-active,
+.ui-widget-content a.ui-state-active,
+a.ui-state-active {
+  color: #ffffff;
+  background-color: var(--rojo) !important;
+  border-color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+/* Los días que no se pueden reservar se quedan a la vista pero apagados: la
+   opacidad de serie de jQuery UI basta y se respeta. */
+.ui-datepicker .ui-state-disabled .ui-state-default {
+  font-weight: 400;
+  color: var(--ink-faint);
+}
+/* En una columna, los campos van dentro de dos columnas de Bootstrap anidadas y
+   el calendario dentro de una sola: sin esto sobresale 15px por cada lado
+   respecto a los campos (medido a 347px, 2026-10-05). 768px es el corte `sm`
+   de Bootstrap 3, que es donde el motor pasa a dos columnas. */
+@media (max-width: 767px) {
+  #date_box {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+/* Los días del mes anterior y del siguiente, el motor los esconde a propósito
+   y la regla de arriba los devolvía. */
+.ui-datepicker .ui-datepicker-other-month .ui-state-default {
+  color: transparent;
+}
+
+/* --- Avisos y textos ---------------------------------------------------- */
+
+/* La cuenta atrás de «dispones de X minutos para finalizar la reserva». */
+.alert-info {
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+  border-radius: var(--r-caja);
+}
+
+.legal_notice,
+.legal_notice p,
+.legal_notice td,
+.legal_notice th {
+  font-size: var(--fs-micro);
+  color: var(--ink-dim);
+}
+
+/* La firma de CoverManager se queda: es su motor. Solo baja a la voz de nota
+   al pie de la casa. */
+#logoCoverAdd {
+  font-family: var(--sans);
+  font-size: var(--fs-micro);
+  color: var(--ink-faint);
+}
+#logoCoverAdd a {
+  color: var(--ink-dim);
+  text-decoration: none;
+}

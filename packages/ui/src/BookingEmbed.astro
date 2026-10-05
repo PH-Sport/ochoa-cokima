@@ -3,11 +3,18 @@ interface Props {
   slug: string;
   locale: "es" | "en";
   title: string;
+  /** URL absoluta de una hoja de estilo para el motor. CoverManager la acepta
+   *  en `?template=` y la enlaza la última dentro del iframe; es como cada casa
+   *  le pone su piel sin que este componente sepa de marcas. No está
+   *  documentado para URLs (solo `trans-white`/`trans-black`): si lo retiran,
+   *  el motor vuelve a su aspecto de serie y sigue reservando. */
+  template?: string;
 }
 
-const { slug, locale, title } = Astro.props;
+const { slug, locale, title, template } = Astro.props;
 const lang = locale === "es" ? "spanish" : "english";
-const src = `https://www.covermanager.com/reservation/module_restaurant/${slug}/${lang}`;
+const query = template ? `?${new URLSearchParams({ template })}` : "";
+const src = `https://www.covermanager.com/reservation/module_restaurant/${slug}/${lang}${query}`;
 ---
 
 <div class="booking-embed">

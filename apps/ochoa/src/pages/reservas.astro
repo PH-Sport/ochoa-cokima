@@ -2,6 +2,10 @@
 import Base from "../layouts/Base.astro";
 import BookingEmbed from "@tombo/ui/BookingEmbed.astro";
 import { COVER_SLUG } from "../site.ts";
+
+// La piel de la casa para el motor de CoverManager (ver pages/covermanager.css.ts).
+// En local no se aplica: el motor es https y no carga una hoja de http://localhost.
+const coverTemplate = new URL("/covermanager.css", Astro.site).href;
 ---
 
 <Base
@@ -21,7 +25,7 @@ import { COVER_SLUG } from "../site.ts";
             Si no encuentras hueco, llámanos al <a href="tel:+34912876820">912 87 68 20</a>.
           </p>
         </div>
-        <BookingEmbed slug={COVER_SLUG} locale="es" title="Reservas Tasquita Los Ochoa" />
+        <BookingEmbed slug={COVER_SLUG} locale="es" title="Reservas Tasquita Los Ochoa" template={coverTemplate} />
       </div>
     </div>
   </section>
