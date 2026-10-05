@@ -36,8 +36,12 @@ costó un susto el 2026-08-16. El procedimiento para cambiar de máquina es la �
 opcional**: `git fetch --all --prune` antes de nada, y nunca pushear una rama local sin mirar
 primero a dónde apunta.
 
-**Ochoa, 2026-10-05: el recuadro de reservas lleva la piel de la casa, a falta de verlo
-desplegado.** El motor de CoverManager vive en un iframe de su dominio y salía con su aspecto de
+**Ochoa, 2026-10-05: el recuadro de reservas lleva la piel de la casa.** Mario la vio en su
+iPhone sobre la preview (bf9515e) y destapó un fallo viejo de las dos casas: el iframe se quedaba en
+550px y se desplazaba por dentro —«dos desplazamientos verticales, dependiendo de dónde pongas el
+dedo»—, porque CoverManager movió su iframeResizer y la ruta que pedíamos da 404 (`recursos.md` §2).
+Con la ruta nueva, medido a 390px en la preview: el iframe crece de 550 a 752px y se ve entero.
+Arregla también Cokima, con el visto bueno de Mario. El motor de CoverManager vive en un iframe de su dominio y salía con su aspecto de
 serie. Se le pasa `?template=<URL>` y el motor enlaza esa hoja dentro del iframe (cómo se averiguó y
 qué más acepta, en `recursos.md` §2). La hoja es `/covermanager.css`, que sirve
 `apps/ochoa/src/pages/covermanager.css.ts` juntando las dos `@font-face`, `tokens.css` y la piel de
@@ -50,8 +54,8 @@ se queda. **Medido** inyectando la hoja construida en la página real del motor:
 calendario y los campos arrancan y acaban en el mismo píxel (30–317) sin desbordar, la chapa del día
 mide 41px y no se estira, y a 777px el motor pasa a dos columnas y cuadra. Las fuentes cruzan de
 dominio porque Vercel sirve los estáticos con `access-control-allow-origin: *` (comprobado en el
-alias de preview). **Sin comprobar:** la piel cargada por el propio motor desde un despliegue (en
-local no puede: el motor es https), el paso de datos personales —solo se ve empezando una reserva
+alias de preview). **Comprobado sobre la preview:** el motor carga la hoja él solo desde el despliegue. En local no
+puede, porque el motor es https. **Sin comprobar:** el paso de datos personales —solo se ve empezando una reserva
 real, y puede bloquear mesa unos minutos— y el hundido del botón en el iPhone, porque dentro del
 iframe no llega el `data-tacto` del layout.
 

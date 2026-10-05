@@ -76,6 +76,10 @@ escrito por el autor de CoverManager), que es la única documentación técnica 
 - **`?source=`** — el plugin reenvía el `source` de la URL de la página. Parece etiquetar el origen
   de la reserva dentro de CoverManager (en el panel se ven reservas marcadas «CH: Google»). **Sin
   probar.**
+- **El alto del iframe lo ajusta iframeResizer v3.6.1**, en dos mitades: la de nuestra página está
+  en `/js/iframeResizer/iframeResizer.min.js` y la de dentro la carga el motor. **La ruta vieja,
+  `/js/iframeResizer.min.js`, da 404** y dejaba el iframe en 550px con scroll propio; se cambió en
+  `BookingEmbed` el 2026-10-05, para las dos casas.
 - **El pago no es del motor:** lo pinta Stripe en su propio iframe (`#payment-elements`), y
   ninguna hoja nuestra lo alcanza.
 - **El motor trae el reCAPTCHA de Google montado y apagado** (`useRecaptcha = 0` en la página de

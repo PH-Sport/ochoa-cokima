@@ -18,7 +18,12 @@ const src = `https://www.covermanager.com/reservation/module_restaurant/${slug}/
 ---
 
 <div class="booking-embed">
-  <script is:inline src="https://www.covermanager.com/js/iframeResizer.min.js"></script>
+  {/* La mitad del iframeResizer que va en esta página. La otra mitad la carga
+      el motor dentro del iframe, desde /js/iframeResizer/ (v3.6.1). Hasta el
+      2026-10-05 esto apuntaba a /js/iframeResizer.min.js, que CoverManager ya
+      no sirve (404): el iframe se quedaba en sus 550px y se desplazaba por
+      dentro, con dos scrolls verticales según dónde se pusiera el dedo. */}
+  <script is:inline src="https://www.covermanager.com/js/iframeResizer/iframeResizer.min.js"></script>
   <iframe
     id={slug}
     title={title}
