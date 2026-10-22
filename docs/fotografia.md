@@ -1,16 +1,23 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-09-07 · sigue esperando material del restaurante
+> **Estado: vivo** · revisado 2026-10-22 · sigue esperando material del restaurante
 
 ## Estado
 
 **Ochoa ya tiene fotos reales del local; Cokima no.** El 2026-07-30 aparecieron **nueve fotos
 en la web vieja del grupo** que nadie había mirado:
 `grupotombo.com/wp-content/uploads/2021/09/LosOchoa-1..9.jpg`, a 1000×1000. Con ellas se
-resolvieron la portada de Ochoa y las cuatro de «la casa». **Quedan cuatro sin usar y son
-buenas** —croquetas en huevera, huevos rotos, brioche de rabo de toro, un bocadillo en las
-manos con el banco rojo detrás—: sirven directamente para cuatro de los seis platos destacados
-que siguen sin imagen. Ver la tabla de más abajo para el nombre que tiene que llevar cada una.
+resolvieron la portada de Ochoa y las cuatro de «la casa». **Las croquetas (`LosOchoa-2`) se
+pusieron el 2026-10-22**: el velo de papada que dice la carta se ve en la foto, así que no había
+duda. **Quedan tres sin usar, y ninguna se puede poner sin que Mario confirme el plato** —un
+huevo frito sobre una base, un brioche con carne deshilachada, un bocadillo en las manos con el
+banco rojo detrás—. El porqué de cada duda está en la tabla de más abajo.
+
+**Ojo al mezclar fichas con y sin foto en la tira de destacados.** En producción una ficha sin
+foto se pinta solo con el nombre y el precio, pero se estira al alto de la que sí la tiene: con
+la de las croquetas puesta, las otras cinco miden lo mismo (293px a 390 de ancho, medido sobre el
+build de producción) y quedan con el texto arriba y un hueco blanco debajo. En `dev` y en las
+previews no se ve, porque ahí las rejillas guía ocupan ese hueco.
 
 La selección de Instagram acordada el 2026-07-29 sigue sin poder descargarse: la extensión de
 navegador bloquea la extracción de las URLs del CDN de Instagram porque llevan parámetros de
@@ -61,10 +68,10 @@ copiar de ahí.
 | Cokima | Katsu sando de solomillo de ternera | `katsu-sando-de-solomillo-de-ternera.jpg` |
 | Cokima | Arroz meloso de carabinero a la brasa | `arroz-meloso-de-carabinero-a-la-brasa.jpg` |
 | Ochoa | Oreja de cerdo crujiente con salsa brava | `oreja-de-cerdo-crujiente-con-salsa-brava.jpg` |
-| Ochoa | Huevos rotos con puntilla | `huevos-rotos-con-puntilla.jpg` — **candidata: `LosOchoa-6`** |
+| Ochoa | Huevos rotos con puntilla y grasa de jamón | `huevos-rotos-con-puntilla-y-grasa-de-jamon.jpg` — **candidata dudosa: `LosOchoa-6`**. Mirada el 2026-10-22: es un huevo frito con puntilla y jamón en polvo, pero no se ven patatas y la base parece ensaladilla con atún, que es el otro destacado («con atún, polvo de jamón y yema curada»). Que Mario diga cuál de los dos es |
 | Ochoa | Cachopín de ternera | `cachopin-de-ternera.jpg` |
-| Ochoa | Croissant de rabo de toro | `croissant-de-rabo-de-toro.jpg` — **candidata: `LosOchoa-7`**, si el brioche es este plato |
-| Ochoa | Ración de croquetas de jamón Joselito | `racion-de-croquetas-de-jamon-joselito.jpg` — **candidata: `LosOchoa-2`** |
+| Ochoa | Croissant de rabo de toro | `croissant-de-rabo-de-toro.jpg` — **candidata: `LosOchoa-7`**, si el brioche es este plato. En la foto son dados de brioche tostado, no un croissant |
+| Ochoa | Ración de croquetas de jamón Joselito | ✅ `LosOchoa-2`, puesta el 2026-10-22 |
 | Ochoa | Ensaladilla rusa casera | `ensaladilla-rusa-casera.jpg` |
 
 **Las candidatas hay que confirmarlas antes de asignarlas.** Una foto solo se pone en un plato

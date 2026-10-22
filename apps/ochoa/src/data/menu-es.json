@@ -27,7 +27,7 @@
   { "id": "pan-12", "section": "con-pan", "order": 12, "name": "Bikini de minutejos con salsa brava", "price": 10 },
 
   { "id": "rac-01", "section": "raciones", "order": 1, "name": "Pincho moruno con patatas", "price": 4.75, "allergens": ["sulfitos"] },
-  { "id": "rac-02", "section": "raciones", "order": 2, "name": "Ración de croquetas de jamón Joselito", "description": "Con velo de papada ibérica.", "price": 14, "featured": true, "allergens": ["gluten", "lacteos"] },
+  { "id": "rac-02", "section": "raciones", "order": 2, "name": "Ración de croquetas de jamón Joselito", "description": "Con velo de papada ibérica.", "price": 14, "featured": true, "image": "racion-de-croquetas-de-jamon-joselito", "allergens": ["gluten", "lacteos"] },
   { "id": "rac-03", "section": "raciones", "order": 3, "name": "Gyozas de txistorra a la sidra", "description": "Con su propia salsa y BBQ rústica.", "price": 13, "allergens": ["gluten", "sulfitos"] },
   { "id": "rac-04", "section": "raciones", "order": 4, "name": "Flamenquín de jamón serrano, queso y trufa", "price": 12, "allergens": ["gluten", "huevo", "lacteos"] },
   { "id": "rac-05", "section": "raciones", "order": 5, "name": "Alcachofas confitadas", "description": "Con crema de Idiazabal y Manchego.", "price": 15, "allergens": ["gluten", "lacteos"] },

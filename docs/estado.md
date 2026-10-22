@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-10-05 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-10-22 · **el punto de entrada del repo**
 
-- **Corte:** 2026-10-05
+- **Corte:** 2026-10-22
 - **Rama de trabajo:** `tmp/entrada-cokima` (el rediseño de Cokima, en curso) · `preview`
   (desarrollo, todo lo demás integrado) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
@@ -35,6 +35,18 @@ buena y manda sobre esta**, que solo cuenta lo que está integrado.
 costó un susto el 2026-08-16. El procedimiento para cambiar de máquina es la §1.1 y **no es
 opcional**: `git fetch --all --prune` antes de nada, y nunca pushear una rama local sin mirar
 primero a dónde apunta.
+
+**Ochoa, 2026-10-22: se prepara para salir a producción, con prisa del cliente.** Mario pidió
+sacarla cuanto antes. Lo hecho: la foto de las croquetas (`LosOchoa-2`) ya está en su destacado;
+las otras tres fotos que quedan esperan a que Mario confirme el plato (`fotografia.md`). **Lo que
+impide publicar no es código**, y está medido sobre el proyecto de Vercel ese mismo día: el
+proyecto `ochoa` no tiene dominio propio (solo `ochoa-two.vercel.app`) ni **ninguna** variable de
+entorno, así que un despliegue de `main` fallaría a propósito por falta de `SITE_URL`. Faltan, de
+Mario: el dominio y quién controla sus DNS; la razón social, el CIF y el domicilio social para el
+aviso legal y la privacidad (hoy dicen «[pendiente]» en producción); y un correo para que la gente
+ejerza sus derechos de privacidad. **Y un riesgo que se detectó al mirar:** el equipo de Vercel
+está en el plan Hobby, que según las condiciones de Vercel es solo para uso no comercial; la web
+de un restaurante es comercial. Decidir con Mario antes de apuntar el dominio.
 
 **Ochoa, 2026-10-05: el recuadro de reservas lleva la piel de la casa.** Mario la vio en su
 iPhone sobre la preview (bf9515e) y destapó un fallo viejo de las dos casas: el iframe se quedaba en
@@ -262,10 +274,11 @@ Lo que queda pendiente de los otros dos, y es lo primero al retomar:
    lleva `noindex` y no entra en el sitemap; **el interruptor es `EN_OBRAS` en
    `apps/ochoa/src/conocenos.ts`, y ponerlo en `false` es el único paso** —de ahí salen a la vez
    el indexado, el sitemap y el JSON-LD.
-2. **Las cuatro fotos de Ochoa sin usar** siguen igual: `apps/ochoa/src/assets/dishes/` está
-   vacío y sus seis destacados salen sin imagen. `LosOchoa-6` y `LosOchoa-2` son asignables ya;
-   `LosOchoa-7` necesita que Mario confirme si el brioche es el croissant de rabo de toro o el
-   dúo; `LosOchoa-9` es la candidata del nuevo hueco del equipo.
+2. **Las tres fotos de Ochoa sin usar.** Las croquetas (`LosOchoa-2`) se pusieron el
+   2026-10-22. `LosOchoa-6` **no** era asignable sin más: mirada de cerca, puede ser los huevos
+   rotos o la ensaladilla. `LosOchoa-7` necesita que Mario confirme si el brioche es el croissant
+   de rabo de toro o el dúo, y `LosOchoa-9` es la candidata del hueco del equipo. Detalle en
+   `fotografia.md`.
 
 **Lo que espera respuesta de Mario, y sin lo cual no se puede avanzar:**
 
@@ -300,8 +313,8 @@ Lo que queda pendiente de los otros dos, y es lo primero al retomar:
 2. **Páginas nuevas (punto 6 de la fase 4).** «Conócenos» ya está construida en los dos idiomas
    (§3.septies) y solo espera texto. Si hacen falta más páginas, hay que decidir con Mario cuáles
    y con qué material; no es trabajo de código hasta que eso esté.
-3. **Las cuatro fotos de Ochoa sin usar.** Ver `fotografia.md`: dos son asignables ya, una
-   necesita que Mario confirme qué plato es y otra no identifica ningún plato.
+3. **Las tres fotos de Ochoa sin usar.** Ver `fotografia.md`: las tres esperan a que Mario
+   confirme qué plato es cada una.
 
 *(La home en inglés de Ochoa, que estaba aquí, se igualó con la española el 31 — §3.quinquies.)*
 
@@ -1031,7 +1044,11 @@ sirven media ración, no tapa. Es la nomenclatura que va en la carta.
 ## 5. Infraestructura pendiente
 
 - [ ] Variables de entorno y dominios por proyecto en Vercel. `SITE_URL` bloquea los
-      despliegues de producción a propósito mientras no haya dominio.
+      despliegues de producción a propósito mientras no haya dominio. **Comprobado el
+      2026-10-22 en `ochoa`: cero variables y ningún dominio propio.**
+- [ ] **El plan de Vercel.** El equipo está en Hobby, que Vercel reserva a uso no comercial.
+      Pasar a Pro (o el plan que se decida) antes de servir la web de un restaurante con
+      dominio propio. Lo decide y lo paga Mario.
 - [ ] *Ignored Build Step* en ambos proyectos: hoy cada push reconstruye las dos webs.
       Comando en `deploy.md`.
 - [ ] Redirects 301 desde `grupotombo.com/cokima-kitchenmadness/` y

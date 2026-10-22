@@ -27,7 +27,7 @@
   { "id": "pan-12", "section": "con-pan", "order": 12, "name": "Minutejos toastie with brava sauce", "price": 10 },
 
   { "id": "rac-01", "section": "raciones", "order": 1, "name": "Moorish skewer with potatoes", "price": 4.75, "allergens": ["sulfitos"] },
-  { "id": "rac-02", "section": "raciones", "order": 2, "name": "Joselito ham croquettes", "description": "With a veil of Iberian pork jowl.", "price": 14, "featured": true, "allergens": ["gluten", "lacteos"] },
+  { "id": "rac-02", "section": "raciones", "order": 2, "name": "Joselito ham croquettes", "description": "With a veil of Iberian pork jowl.", "price": 14, "featured": true, "image": "racion-de-croquetas-de-jamon-joselito", "allergens": ["gluten", "lacteos"] },
   { "id": "rac-03", "section": "raciones", "order": 3, "name": "Txistorra gyoza in cider", "description": "With its own sauce and rustic BBQ.", "price": 13, "allergens": ["gluten", "sulfitos"] },
   { "id": "rac-04", "section": "raciones", "order": 4, "name": "Serrano ham, cheese and truffle flamenquín", "price": 12, "allergens": ["gluten", "huevo", "lacteos"] },
   { "id": "rac-05", "section": "raciones", "order": 5, "name": "Confit artichokes", "description": "With Idiazabal and Manchego cream.", "price": 15, "allergens": ["gluten", "lacteos"] },
