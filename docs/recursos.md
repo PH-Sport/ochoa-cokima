@@ -36,8 +36,6 @@ https://<proyecto>-git-<rama-con-guiones>-rodz-dev.vercel.app
 
 - `https://cokima-git-preview-rodz-dev.vercel.app`
 - `https://ochoa-git-preview-rodz-dev.vercel.app`
-- `https://cokima-git-tmp-entrada-cokima-rodz-dev.vercel.app` — la del rediseño, fusionado en
-  `preview` el 2026-10-26; se apaga cuando se borre la rama.
 
 **Desde el 2026-10-26 se trabaja solo en `preview`** (`estado.md` §1), así que lo que se le
 enseña a Mario está en los dos alias de `preview`. Cada rama tendría su alias fijo si volviera a
@@ -152,7 +150,7 @@ Mario avisó de que ese vídeo es **provisional**, así que cambiarlo es ejecuta
 que el grado le siente bien al material nuevo.
 
 El script y ese documento vivían solo en `tmp/entrada-cokima` y **están en `preview` desde el
-2026-10-26**, así que borrar esa rama ya no se los lleva.
+2026-10-26**, y la rama se borró ese mismo día.
 
 ---
 

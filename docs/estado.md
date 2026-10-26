@@ -71,7 +71,7 @@ conversación con él, no una tarea que ejecutar por cuenta propia.**
 2. **Identificar diez fotos de plato** con el restaurante. Sin eso no pueden ir en la carta. Ver
    `fotografia.md`.
 3. ~~Decidir si `tmp/entrada-cokima` se fusiona en `preview`.~~ **Fusionada el 2026-10-26**: Mario
-   pidió trabajar solo en `preview`. Queda borrar la rama, que espera su visto bueno. Lo que sigue
+   pidió trabajar solo en `preview`, y la rama se borró ese mismo día con su visto bueno. Lo que sigue
    es el contexto de entonces: o se fusiona o se descarta, y se
    borra en los dos casos. Es el mismo trato que tuvo `tmp/entrada-ochoa`, **que ya se cerró el
    2026-08-16**: llevaba diez días parada con la tanda terminada y en verde dentro, y entró en
@@ -369,7 +369,6 @@ panel de Vercel, no en el repo. El 31 se dedujo mal justo por ahí.
 |---|---|---|
 | `main` | Producción | falla a propósito sin `SITE_URL` |
 | `preview` | **Desarrollo y única rama de trabajo** | alias fijo por rama (ver §6) |
-| `tmp/entrada-cokima` | **Fusionada en `preview` el 2026-10-26.** Pendiente de borrar | `cokima-git-tmp-entrada-cokima-rodz-dev.vercel.app` (se apaga al borrarla) |
 
 **Desde el 2026-10-26 se trabaja solo en `preview`**, a petición de Mario: «para unificar todo».
 Nada de ramas de tema ni `tmp/*` salvo que él lo pida. El motivo, medido: la rama del rediseño
@@ -379,7 +378,8 @@ Detalle en `deploy.md` §Modelo de ramas.
 
 **`tmp/entrada-cokima` entró en `preview` el 2026-10-26** con un avance directo: ya llevaba dentro
 todo `preview`. Con ella entró la entrada nueva de Cokima, que convive con la portada vieja debajo,
-a medias y a propósito (§0). Queda borrarla, en local y en `origin`, cuando Mario lo autorice.
+a medias y a propósito (§0). **Se borró ese mismo día, en local y en `origin`**, con el visto
+bueno de Mario, después de comprobar que no tenía ni un commit que no estuviera en `preview`.
 `tmp/entrada-ochoa` se cerró el 2026-08-16 y se borró: su tanda está dentro de `preview`
 (§3.octies). Llegó a haber dos ramas temporales a la vez, en dos ordenadores, y eso fue justo lo
 que se lió.
