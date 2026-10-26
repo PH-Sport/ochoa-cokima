@@ -1,10 +1,11 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-10-26 · la fototeca de Instagram ya funciona; esperan decisión de Mario
+> **Estado: vivo** · revisado 2026-10-26 · la portada y la casa de Cokima ya tienen foto; los destacados siguen sin ella
 
 ## Estado
 
-**Ochoa ya tiene fotos reales del local; Cokima no.** El 2026-07-30 aparecieron **nueve fotos
+**Las dos casas tienen ya fotos reales del local**: Ochoa desde el 2026-07-30 y Cokima desde el
+2026-10-26, con fotos de su Instagram (§La fototeca). En Ochoa, el 2026-07-30 aparecieron **nueve fotos
 en la web vieja del grupo** que nadie había mirado:
 `grupotombo.com/wp-content/uploads/2021/09/LosOchoa-1..9.jpg`, a 1000×1000. Con ellas se
 resolvieron la portada de Ochoa y las cuatro de «la casa». **Las croquetas (`LosOchoa-2`) se
@@ -20,8 +21,9 @@ build de producción) y quedan con el texto arriba y un hueco blanco debajo. En 
 previews no se ve, porque ahí las rejillas guía ocupan ese hueco.
 
 **Instagram ya se puede descargar, desde el 2026-10-26** (§La fototeca). Las 31 fotos de las 12
-últimas publicaciones de cada cuenta están bajadas y revisadas. **Cubren tres huecos de la casa de
-Cokima, pero ningún destacado que falte**; las candidatas esperan a Mario.
+últimas publicaciones de cada cuenta están bajadas y revisadas. **Cubren la portada y las cuatro
+de la casa de Cokima, pero ningún destacado que falte.** Mario delegó el reparto ese mismo día
+(«distribúyelas según consideres») y quedaron puestas.
 
 Lo que sí está hecho: las imágenes existentes pasan por `<Image>` de Astro desde
 `src/assets/`, así que **sustituir una foto es dejar el archivo con el mismo nombre**. No
@@ -36,7 +38,7 @@ mayor resolución disponible.
 
 | Destino | Qué buscamos |
 |---|---|
-| `apps/cokima/src/assets/hero.jpg` | **Lo único urgente que queda.** Registro oscuro con luz dura: en su Instagram encajan la parrilla con llama, el atún crudo sobre fondo negro o las gambas rojas. **Candidata del 2026-10-26: `DepAPTwNTvJ-1`**, la sartén en llamas en el fogón (cuadrada, 1440). Espera a Mario. |
+| `apps/cokima/src/assets/hero.jpg` | ✅ **`DepAPTwNTvJ-1`, puesta el 2026-10-26**: la sartén en llamas en el fogón (cuadrada, 1440), con su copia a 1200 en `public/images/` para las redes. Sustituye a la burrata de 2021. Es la misma foto que el pase de «la casa»: en el rediseño (`tmp/entrada-cokima`) la portada es el vídeo y esta solo se ve al compartir el enlace, así que la repetición solo existe en la home vieja de `preview`. **Limitación conocida, no resuelta:** a 390px el tramo rojo del titular cae sobre el fuego y se lee mal. Con la burrata pasaba lo mismo o peor (titular blanco sobre la burrata blanca); se probaron otras dos fotos oscuras y tampoco lo resolvían. Es el velo de esta portada, no la foto, y esta portada desaparece con el rediseño. |
 | `apps/ochoa/src/assets/hero.jpg` | **Ya cubierta** con la fachada (`LosOchoa-5`): toldo, cartel colgante y terraza. |
 
 **Ojo con la portada de Ochoa.** Es cuadrada y se sirve a sangre, así que en móvil se recorta a
@@ -85,8 +87,10 @@ donde haga falta calor humano.
 ### Fotos de la casa — el local, no el plato
 
 Las webs enseñaban solo comida y faltaba la casa: la barra, la sala, la gente. La sección «La
-casa» de cada home es eso. **En Ochoa ya está resuelta con cuatro fotos reales y se publica; en
-Cokima siguen siendo rejillas.** Las cuatro van apaisadas 4:3 en dos columnas desfasadas.
+casa» de cada home es eso. **En las dos casas está resuelta con cuatro fotos reales y se publica.**
+En Cokima van apaisadas 4:3 en dos columnas desfasadas, en castellano y en inglés (la versión
+inglesa no tenía la sección; se le puso el 2026-10-26 con el texto traducido). Las fotos y sus
+descripciones viven en `apps/cokima/src/data/casa.ts`, compartido por los dos idiomas.
 
 | App | Archivo | Estado |
 |---|---|---|
@@ -95,10 +99,10 @@ Cokima siguen siendo rejillas.** Las cuatro van apaisadas 4:3 en dos columnas de
 | Ochoa | `src/assets/casa/vermu.jpg` | ✅ `LosOchoa-4`: vermú con banderilla sobre mármol. |
 | Ochoa | `src/assets/casa/comedor.jpg` | ✅ `LosOchoa-3`: banco corrido rojo y mesas de mármol. |
 | Ochoa | `src/assets/casa/equipo.jpg` | Hueco nuevo, en «Conócenos». **`LosOchoa-9` es la candidata**: el bocadillo en las manos con el banco rojo detrás, la única foto con gente que tenemos. Va 4:3 junto al texto del equipo. |
-| Cokima | `src/assets/casa/pase.jpg` | El pase de cocina en servicio, con la llama. Candidata: `DepAPTwNTvJ-1` si no va a la portada. |
-| Cokima | `src/assets/casa/sala.jpg` | La sala de noche, luz baja y mesas llenas. Sin candidata en Instagram. |
-| Cokima | `src/assets/casa/producto.jpg` | Producto en crudo sobre fondo negro, luz dura. Candidata con reservas: `Deh1PKrtAKZ-1`, maracuyá en macro, pero amarillo y luminoso. |
-| Cokima | `src/assets/casa/equipo.jpg` | El equipo en la cocina, caras de verdad. Candidata: `Dd6QjErCvhW-2`, un cocinero emplatando con la cara a medias; es vertical y el hueco 4:3. |
+| Cokima | `src/assets/casa/pase.jpg` | ✅ `DepAPTwNTvJ-1`: la sartén en llamas, la misma de la portada. |
+| Cokima | `src/assets/casa/sala.jpg` | ✅ `Dd0yh8eKSfB-1`: vino sirviéndose en una mesa puesta. **Es una sustituta:** no hay foto de la sala en las publicaciones recientes, y la mesa es la sala vista de cerca. Si aparece una de la sala de noche, se cambia. |
+| Cokima | `src/assets/casa/producto.jpg` | ✅ `Deh1PKrtAKZ-1`: maracuyá abierto en macro. No es el «fondo negro, luz dura» del encargo, pero sí lo que dice el texto de la sección: «el producto crudo antes de que le pase nada». |
+| Cokima | `src/assets/casa/equipo.jpg` | ✅ `Dd6QjErCvhW-2`: un cocinero salseando un plato. Vertical en un hueco 4:3: lleva `object-position: 50% 20%` en `casa.ts` para que el recorte no le corte la cara. |
 
 ## La fototeca: las fotos recientes de Instagram
 
@@ -155,12 +159,17 @@ tres publicaciones por semana, el almacén crece solo.
 **Lo que dio la primera recogida** (detalle de cada foto en el catálogo del Mac y, para mirarlas,
 en el artifact privado de Mario https://claude.ai/artifact/Y9xkL8LhfVpZtRgHsnjjAe):
 
-- **31 fotos:** 3 candidatas a un hueco (portada, equipo y producto de Cokima), 9 útiles sin hueco,
-  8 dudosas y 11 descartadas. Las descartadas son piezas gráficas o fotos con texto encima.
+- **31 fotos:** 4 puestas en Cokima (portada y las cuatro de la casa; la de la llama hace doble
+  papel), 8 útiles sin hueco, 8 dudosas y 11 descartadas. Las descartadas son piezas gráficas o
+  fotos con texto encima.
 - **Ningún destacado que falte sale en estas fotos.** Sí hay platos de carta con foto clara y
   nombrados en el texto: pulpo a la plancha, bikini de lacón, brioche de sobrasada y tarta de
-  queso de Ochoa, y el soft shell crab de Cokima. **Cambiar qué platos van destacados es decisión
-  de Mario**, no del agente.
+  queso de Ochoa, y el soft shell crab de Cokima. **No se han hecho destacados para que salgan con
+  foto, ni siquiera con el reparto delegado:** las fotos de plato solo se ven en la tira de
+  destacados, y esa tira se titula «Lo que más sale». Marcar un plato porque tiene foto sería
+  afirmar algo sobre sus ventas que nadie ha dicho. Lo decide Mario con el restaurante.
+- **Ochoa no recibió ninguna foto en este reparto:** sus publicaciones recientes son platos sin
+  destacar o piezas con texto, y su casa ya tenía fotos reales del local.
 - **Dos señales de que la carta transcrita puede estar desfasada:** Cokima publica una pannacotta
   andina que no está en `menu-es.json`, y una «nueva versión de oreja» con alioli y chips de
   boniato, cuando la carta dice milhojas de patata y salsa brava. Hay que preguntarlo al
@@ -169,9 +178,9 @@ en el artifact privado de Mario https://claude.ai/artifact/Y9xkL8LhfVpZtRgHsnjjA
 ## Las rejillas guía
 
 Cada hueco de foto se dibuja en pantalla con su proporción, la regla de tercios y el nombre
-del archivo que hay que dejar. **Dieciséis en total**: once de plato, las cuatro de la casa de
-Cokima y la del equipo de Ochoa, que nació con «Conócenos». Las otras cuatro de la casa de
-Ochoa ya son fotos reales.
+del archivo que hay que dejar. **Quedan once** (2026-10-26): diez de plato, los destacados sin
+foto, y la del equipo de Ochoa, que nació con «Conócenos». Las de la casa de las dos webs ya son
+fotos reales.
 
 **Desde el 2026-08-04 hay también rejillas de texto** (`CopyGuide.astro`), que marcan el
 párrafo que falta y dicen qué hay que contar en él. Son cuatro, todas en «Conócenos», y pasan

@@ -41,10 +41,15 @@ las cuentas, un fragmento lee las fotos desde el perfil público en el navegador
 descarga a una fototeca fuera de git, con un catálogo que dice qué se usa y por qué
 (`fotografia.md` §La fototeca). **El catálogo tampoco va al repo**, porque el repo es público: vive
 solo en el Mac. Sin sesión solo se ven las 12 últimas publicaciones de cada cuenta.
-**La primera recogida (31 fotos) no cubre ningún destacado que falte**; sí da candidatas para la
-portada de Cokima y dos fotos de su casa, que **esperan a que Mario las confirme** en su artifact
-de revisión. Decisiones suyas pendientes: confirmar esas candidatas, si cambia qué platos van
-destacados hacia los que sí tienen foto clara, y si inicia sesión para ir más atrás.
+**La primera recogida (31 fotos) no cubre ningún destacado que falte.** Con el reparto delegado
+por Mario ese mismo día, **Cokima estrena portada (la sartén en llamas) y su sección «La casa»
+pasa de rejillas a cuatro fotos reales**, que ahora se publica y también sale en la versión inglesa,
+que no la tenía. Ochoa no cambia. Medido sobre el build: las cuatro a 4:3 exacto (169×127 a 390px,
+531×398 a 1280), sin scroll lateral en los dos idiomas. **Queda un defecto conocido:** en el
+móvil, el tramo rojo del titular de la portada cae sobre el fuego y se lee mal, como ya pasaba con
+la burrata (`fotografia.md`, fila de la portada). Esa portada solo vive en `preview`: en el
+rediseño la sustituye el vídeo. Pendiente de Mario: si algún plato con foto clara pasa a
+destacado, y si inicia sesión en Instagram para ir más atrás.
 
 **Ochoa, 2026-10-22: se prepara para salir a producción, con prisa del cliente.** Mario pidió
 sacarla cuanto antes. Lo hecho: la foto de las croquetas (`LosOchoa-2`) ya está en su destacado;
@@ -441,8 +446,8 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
 
 - [ ] **Fotografía real.** La extracción desde Instagram ya funciona (2026-10-26, §0), pero
       solo alcanza las 12 últimas publicaciones por cuenta y **ninguna cubre los diez
-      destacados que siguen sin imagen**. Hay candidatas para la portada y la casa de Cokima
-      esperando a Mario. Todo está construido para recibir las fotos sin tocar layout.
+      destacados que siguen sin imagen**. La portada y la casa de Cokima ya tienen foto desde
+      el 2026-10-26. Todo está construido para recibir las fotos sin tocar layout.
       Detalle y claves de archivo exactas en `fotografia.md`.
 
 **Menores:**
