@@ -36,11 +36,12 @@ https://<proyecto>-git-<rama-con-guiones>-rodz-dev.vercel.app
 
 - `https://cokima-git-preview-rodz-dev.vercel.app`
 - `https://ochoa-git-preview-rodz-dev.vercel.app`
-- `https://cokima-git-tmp-entrada-cokima-rodz-dev.vercel.app`
+- `https://cokima-git-tmp-entrada-cokima-rodz-dev.vercel.app` — la del rediseño, fusionado en
+  `preview` el 2026-10-26; se apaga cuando se borre la rama.
 
-**Consecuencia práctica: enseñarle algo a Mario no obliga a fusionar en `preview`.** Basta con
-pushear la rama temporal y darle su alias. Es lo que evita meter trabajo a medias en la rama de
-integración solo para que lo vea.
+**Desde el 2026-10-26 se trabaja solo en `preview`** (`estado.md` §1), así que lo que se le
+enseña a Mario está en los dos alias de `preview`. Cada rama tendría su alias fijo si volviera a
+haber otra, pero hoy no la hay a propósito.
 
 **Notas de operación:**
 
@@ -150,9 +151,8 @@ en `scripts/video-entrada.sh`, con el porqué de cada parámetro en `cokima-el-r
 Mario avisó de que ese vídeo es **provisional**, así que cambiarlo es ejecutar el comando y revisar
 que el grado le siente bien al material nuevo.
 
-> **Ojo:** el script y ese documento **solo existen hoy en la rama `tmp/entrada-cokima`**. Si esa
-> rama se descarta se van con ella, y con ellas 377 líneas de *por qué se descartó cada cosa*. Es
-> una decisión pendiente de Mario, anotada aquí para que no se pierda por olvido.
+El script y ese documento vivían solo en `tmp/entrada-cokima` y **están en `preview` desde el
+2026-10-26**, así que borrar esa rama ya no se los lleva.
 
 ---
 

@@ -3,11 +3,11 @@
 > **Estado: vivo** · corte 2026-10-26 · **el punto de entrada del repo**
 
 - **Corte:** 2026-10-26
-- **Rama de trabajo:** `tmp/entrada-cokima` (el rediseño de Cokima, en curso) · `preview`
-  (desarrollo, todo lo demás integrado) · `main` (producción, sin nada nuevo aún)
+- **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
+  nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
-- **Esta es la versión buena del documento.** La que hay en `preview` solo cuenta lo integrado y
-  remite aquí.
+- **Hay una sola versión de este documento**, la de `preview`. Hasta el 2026-10-26 hubo dos —la de
+  `tmp/entrada-cokima`, que era la buena, y la de `preview`—; se juntaron ese día (§1).
 
 ---
 
@@ -25,8 +25,9 @@ diga, en vez de deducirlo de este documento.** Lo de abajo cuenta dónde quedó 
 toca hoy: que el trabajo a medias sea el de Cokima no significa que la sesión vaya de Cokima.
 Queda derogado el orden del 2026-08-04 —«primero Ochoa y Cokima después»—, que ya no rige.
 
-**COKIMA SE ESTÁ REHACIENDO ENTERA, y es lo que tiene trabajo abierto.** El trabajo vive
-en la rama `tmp/entrada-cokima`, no en `preview`.
+**COKIMA SE ESTÁ REHACIENDO ENTERA, y es lo que tiene trabajo abierto.** El trabajo vivía en la
+rama `tmp/entrada-cokima` y **desde el 2026-10-26 está en `preview`**, que es la única rama de
+trabajo por decisión de Mario.
 
 **Y esto se desarrolla desde dos ordenadores** —un Mac prestado y el HP de Mario—, que el
 2026-08-16 estuvo a punto de costar caro: el HP llevaba diez días sin `fetch`, con una rama local
@@ -69,12 +70,14 @@ conversación con él, no una tarea que ejecutar por cuenta propia.**
    fundido.
 2. **Identificar diez fotos de plato** con el restaurante. Sin eso no pueden ir en la carta. Ver
    `fotografia.md`.
-3. **Decidir si `tmp/entrada-cokima` se fusiona en `preview`**: o se fusiona o se descarta, y se
+3. ~~Decidir si `tmp/entrada-cokima` se fusiona en `preview`.~~ **Fusionada el 2026-10-26**: Mario
+   pidió trabajar solo en `preview`. Queda borrar la rama, que espera su visto bueno. Lo que sigue
+   es el contexto de entonces: o se fusiona o se descarta, y se
    borra en los dos casos. Es el mismo trato que tuvo `tmp/entrada-ochoa`, **que ya se cerró el
    2026-08-16**: llevaba diez días parada con la tanda terminada y en verde dentro, y entró en
    `preview` con `--no-ff` para que se pueda sacar de un tirón (§3.octies). **Esta no está en ese
    punto**: la entrada nueva convive con la portada vieja debajo, y eso está a medias a propósito.
-4. La clave de Google Maps, validar la carta en inglés, si «fríos» y «calientes» se separan, y
+4. ~~La clave de Google Maps~~ (cerrado el 2026-09-20), validar la carta en inglés, si «fríos» y «calientes» se separan, y
    unificar «Idiazabal» / «Idiazábal». Detalle en §4.
 
 **Deuda de Cokima que sigue ahí y queda fuera de este hilo:** sus tres páginas legales arrastran
@@ -86,9 +89,10 @@ que el rediseño cierre.
 
 ---
 
-### Lo hecho en `preview` desde el 2026-09-07 (llegó a esta rama el 2026-10-26)
+### Lo hecho en `preview` desde el 2026-09-07 (se juntó con el rediseño el 2026-10-26)
 
-Esta rama se separó de `preview` el 2026-09-07 y no se volvieron a juntar hasta el 2026-10-26.
+La rama del rediseño se separó de `preview` el 2026-09-07 y no se volvieron a juntar hasta el
+2026-10-26.
 Lo de abajo es el §0 de `preview` de esas semanas, tal cual: casi todo es Ochoa, más la fototeca
 de Instagram, que toca a las dos casas.
 
@@ -101,11 +105,13 @@ solo en el Mac. Sin sesión solo se ven las 12 últimas publicaciones de cada cu
 por Mario ese mismo día, **Cokima estrena portada (la sartén en llamas) y su sección «La casa»
 pasa de rejillas a cuatro fotos reales**, que ahora se publica y también sale en la versión inglesa,
 que no la tenía. Ochoa no cambia. Medido sobre el build: las cuatro a 4:3 exacto (169×127 a 390px,
-531×398 a 1280), sin scroll lateral en los dos idiomas. **Queda un defecto conocido:** en el
-móvil, el tramo rojo del titular de la portada cae sobre el fuego y se lee mal, como ya pasaba con
-la burrata (`fotografia.md`, fila de la portada). Esa portada solo vive en `preview`: en el
-rediseño la sustituye el vídeo. Pendiente de Mario: si algún plato con foto clara pasa a
-destacado, y si inicia sesión en Instagram para ir más atrás.
+531×398 a 1280), sin scroll lateral en los dos idiomas. **La portada con foto ya no se ve:** desde
+que el rediseño entró en `preview` (§1), la cabecera de Cokima es el vídeo, y la llama queda solo
+como imagen al compartir el enlace. Con ella deja de verse el defecto que tenía —el tramo rojo del
+titular sobre el fuego— (`fotografia.md`, fila de la portada). **Las seis fotos del local que
+aportó Mario en agosto están ya en la fototeca** (`fototeca/icloud/`), y una de ellas encaja mejor
+como sala que la mesa puesta que se usó. Pendiente de Mario: si se cambia la sala, si algún plato
+con foto clara pasa a destacado y si inicia sesión en Instagram para ir más atrás.
 
 **Ochoa, 2026-10-22: se prepara para salir a producción, con prisa del cliente.** Mario pidió
 sacarla cuanto antes. Lo hecho: la foto de las croquetas (`LosOchoa-2`) ya está en su destacado;
@@ -362,20 +368,21 @@ panel de Vercel, no en el repo. El 31 se dedujo mal justo por ahí.
 | Rama | Papel | Alias de Vercel |
 |---|---|---|
 | `main` | Producción | falla a propósito sin `SITE_URL` |
-| `preview` | **Desarrollo — todo se integra aquí** | alias fijo por rama (ver §6) |
-| `tmp/entrada-cokima` | **Abierta.** El rediseño de Cokima | `cokima-git-tmp-entrada-cokima-rodz-dev.vercel.app` |
+| `preview` | **Desarrollo y única rama de trabajo** | alias fijo por rama (ver §6) |
+| `tmp/entrada-cokima` | **Fusionada en `preview` el 2026-10-26.** Pendiente de borrar | `cokima-git-tmp-entrada-cokima-rodz-dev.vercel.app` (se apaga al borrarla) |
 
-Ramas de tema opcionales y efímeras: nacen de `preview` y vuelven a `preview`.
+**Desde el 2026-10-26 se trabaja solo en `preview`**, a petición de Mario: «para unificar todo».
+Nada de ramas de tema ni `tmp/*` salvo que él lo pida. El motivo, medido: la rama del rediseño
+estuvo siete semanas sin juntarse con `preview`, cada una escribió su `estado.md` por su lado, y la
+fusión trajo 23 commits y dos documentos en conflicto.
 Detalle en `deploy.md` §Modelo de ramas.
 
-**`tmp/entrada-cokima` es temporal y espera decisión de Mario**, igual que hizo
-`tmp/entrada-ochoa` en su momento: cuando decida, o se fusiona en `preview` o se descarta, y se
-borra en los dos casos. Mientras tanto **no se integra**, porque la entrada nueva convive con la
-portada vieja debajo y eso está a medias a propósito.
-
-**Es la única rama temporal viva.** `tmp/entrada-ochoa` se cerró el 2026-08-16 y se borró: su
-tanda está dentro de `preview` (§3.octies) y su alias de Vercel murió con ella. Llegó a haber dos
-a la vez, en dos ordenadores distintos, y eso fue justo lo que se lió. **Una cada vez.**
+**`tmp/entrada-cokima` entró en `preview` el 2026-10-26** con un avance directo: ya llevaba dentro
+todo `preview`. Con ella entró la entrada nueva de Cokima, que convive con la portada vieja debajo,
+a medias y a propósito (§0). Queda borrarla, en local y en `origin`, cuando Mario lo autorice.
+`tmp/entrada-ochoa` se cerró el 2026-08-16 y se borró: su tanda está dentro de `preview`
+(§3.octies). Llegó a haber dos ramas temporales a la vez, en dos ordenadores, y eso fue justo lo
+que se lió.
 
 ### 1.1 Cambiar de ordenador
 
@@ -487,7 +494,7 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
       2026-09-19 (§0). `apps/cokima/src/components/Hero.astro` y `Entrada.astro` llevan el mismo
       patrón —congelar una vez, remedir solo al cambiar el ancho—. El arreglo es el mismo módulo
       que ya usa Ochoa, `@tombo/ui/alto-congelado.ts`, con su referencia fuera del flujo. Va en
-      `tmp/entrada-cokima`, que es donde vive `Entrada.astro`.
+      `preview`, donde vive `Entrada.astro` desde el 2026-10-26.
 - [x] ~~Rehacer el mapa de «Dónde estamos» en perspectiva.~~ **Hecho el 2026-09-20 y cerrado el
       21** con la prueba de Mario en su iPhone (§0). No queda nada del mapa.
 - [ ] **Alérgenos de Ochoa: los 12 platos sin fila en la hoja.** Bicicleta, Marinera, Marinero,
@@ -764,7 +771,7 @@ Si aun así siguiera, el siguiente sospechoso es de diseño: nuestra `.nav` es `
 con la barra del navegador por el mismo borde superior. La referencia que él cita —vercel.com—
 oculta su propia cabecera al bajar y la devuelve al subir, en vez de dejarla clavada.
 
-## 3.nonies La entrada de Cokima (2026-08-14 al 16) — en `tmp/entrada-cokima`
+## 3.nonies La entrada de Cokima (2026-08-14 al 16) — en `preview` desde el 2026-10-26
 
 > Se numeró `3.octies` mientras esta rama estuvo aislada, y ese número ya lo tenía la entrada de
 > Los Ochoa en `preview`. Al juntarlas el 2026-08-16 pasó a `nonies`, que es la que le toca por

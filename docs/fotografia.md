@@ -12,8 +12,9 @@ local** el 16. Veinticinco en total, cuando la web usaba una.
   `cokima-5-1`, `cokima-6`, `cokima-7`, `cokima-8`. Todas `.jpg` a 1000×1000.
 - `wp-content/uploads/2022/10/` → `1`, `2`, `3`, `1-copia`, `2-copia`, `3-copia`, `1-copia-2`,
   `2-copia-2`, `1-copia-3`, `1-PORTADA`, `2-PORTADA`. **A 4000×4000**, mejor que nada de Ochoa.
-- Las seis de Mario, en su iCloud Drive (`cokima-fotos/`), **apaisadas** a ~3500×2500 y en
-  Display P3 — **hay que convertirlas a sRGB al procesarlas** o el ocre de las sillas se va
+- Las seis de Mario, en su iCloud Drive (carpeta «Fotos Cokima»; **copiadas el 2026-10-26 a
+  `fototeca/icloud/cokima/`**), **apaisadas** a ~3500×2500. Cinco en Display P3 y una (`Cokima 2`)
+  en sRGB, medido ese día — **hay que convertir las P3 a sRGB al procesarlas** o el ocre de las sillas se va
   hacia el verde. Con `sharp` es `.withIccProfile('srgb')`.
 
 **Lo que enseñan, y que no sabíamos:** el local tiene **dos murales**, no uno —el sol sobre
@@ -30,10 +31,12 @@ Para fondos y ambiente sí se usan, porque ahí no afirman nada.
 
 **Desde el 2026-10-26 la portada y «La casa» de Cokima llevan fotos recientes de su
 Instagram** (§La fototeca), no de este material. **Las seis del local de Mario no se tuvieron en
-cuenta en ese reparto**, porque se hizo desde `preview`, donde este apartado no existía; para la
-sala, uno de sus murales encaja mejor que la mesa puesta que se usó.
+cuenta en ese reparto**, porque se hizo desde `preview` antes de juntarla con la rama del rediseño,
+que era la única que sabía de ellas. **Para la sala, `Cokima 5` —la sala entera, con el neón, el
+mural de *Madness* y las sillas ocre— encaja mejor que la mesa puesta que se usó**; está marcada
+como candidata en el catálogo y espera a Mario.
 
-En `cokima-fotos/para-el-video/` de su iCloud hay cinco elegidas para el vídeo de la entrada,
+En `para-el-video/` (en su iCloud y en `fototeca/icloud/cokima/`) hay cinco elegidas para el vídeo de la entrada,
 **todas sin manos a la vista**: los generadores de vídeo deforman dedos y en un plano cerrado de
 comida eso canta.
 
@@ -72,7 +75,7 @@ mayor resolución disponible.
 
 | Destino | Qué buscamos |
 |---|---|
-| `apps/cokima/src/assets/hero.jpg` | ✅ **`DepAPTwNTvJ-1`, puesta el 2026-10-26**: la sartén en llamas en el fogón (cuadrada, 1440), con su copia a 1200 en `public/images/` para las redes. Sustituye a la burrata de 2021. Es la misma foto que el pase de «la casa»: en el rediseño (`tmp/entrada-cokima`) la portada es el vídeo y esta solo se ve al compartir el enlace, así que la repetición solo existe en la home vieja de `preview`. **Limitación conocida, no resuelta:** a 390px el tramo rojo del titular cae sobre el fuego y se lee mal. Con la burrata pasaba lo mismo o peor (titular blanco sobre la burrata blanca); se probaron otras dos fotos oscuras y tampoco lo resolvían. Es el velo de esta portada, no la foto, y esta portada desaparece con el rediseño. |
+| `apps/cokima/src/assets/hero.jpg` | ✅ **`DepAPTwNTvJ-1`, puesta el 2026-10-26**: la sartén en llamas en el fogón (cuadrada, 1440), con su copia a 1200 en `public/images/` para las redes. Sustituye a la burrata de 2021. Es la misma foto que el pase de «la casa», pero **en pantalla no se repite: la portada con foto (`Hero.astro`) quedó huérfana al entrar el rediseño en `preview` el 2026-10-26**, y la cabecera es el vídeo. Esta foto solo se ve al compartir el enlace. Mientras la portada vieja estuvo puesta, a 390px el tramo rojo del titular caía sobre el fuego y se leía mal; con la burrata pasaba lo mismo o peor (titular blanco sobre la burrata blanca), y otras dos fotos oscuras tampoco lo resolvían. Era el velo de esa portada, no la foto. **Si `Hero.astro` vuelve a usarse, revisar eso antes.** |
 | `apps/ochoa/src/assets/hero.jpg` | **Ya cubierta** con la fachada (`LosOchoa-5`): toldo, cartel colgante y terraza. |
 
 **Ojo con la portada de Ochoa.** Es cuadrada y se sirve a sangre, así que en móvil se recorta a
@@ -144,7 +147,9 @@ descripciones viven en `apps/cokima/src/data/casa.ts`, compartido por los dos id
 encontraron 68 fotos aprovechables en la biblioteca de medios de `grupotombo.com` (algunas en
 original de 4000 px), y se descartaron como fuente principal por eso mismo: son de 2021 y 2022, y
 una web nueva no se hace con contenido de hace cuatro años. Siguen ahí si hicieran falta
-(`/wp-json/wp/v2/media`); **la tanda de 2022 mezcla Los Ochoa con La Torcida, otro local del grupo**.
+(`/wp-json/wp/v2/media`); **la tanda de 2022 mezcla las tres casas: Cokima, Los Ochoa y La Torcida**, otro local del grupo.
+(El 2026-10-26 se escribió aquí que solo mezclaba Ochoa y La Torcida; la rama del rediseño ya había
+identificado sus fotos de Cokima en agosto, §Estado.)
 
 **Lo que se descartó para Instagram, con su motivo:**
 

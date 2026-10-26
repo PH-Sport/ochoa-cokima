@@ -1,9 +1,10 @@
 # Cokima: el rediseño
 
-> **Estado: vivo** · el rediseño está en curso · revisado 2026-09-07
+> **Estado: vivo** · el rediseño está en curso · revisado 2026-10-26
 
 - **Abierto:** 2026-08-14 · **Última tanda:** 2026-08-17
-- **Rama:** `tmp/entrada-cokima` (temporal, pendiente del visto bueno de Mario)
+- **Rama:** `preview` desde el 2026-10-26, cuando Mario pidió trabajar solo en ella. Antes vivió en
+  `tmp/entrada-cokima`
 - **Estado:** la landing está construida. Lo que va debajo, sin decidir.
 
 Este documento explica **por qué** Cokima se está rehaciendo y por qué se ha descartado casi todo

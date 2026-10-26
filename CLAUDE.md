@@ -15,8 +15,7 @@ la vez. Los árboles se separan enseguida, y el 2026-08-16 costó un susto: una 
 ```bash
 git fetch --all --prune
 git branch -vv                              # a dónde apunta DE VERDAD cada rama local
-git checkout preview && git pull --ff-only  # si se niega, hay divergencia real: parar y avisar
-git checkout tmp/entrada-cokima             # la rama de trabajo viva
+git checkout preview && git pull --ff-only  # la única rama de trabajo; si se niega, parar y avisar
 pnpm install
 ```
 
@@ -85,9 +84,12 @@ rompe el build a propósito, y así debe seguir.
 
 ## Ramas
 
-`main` es producción y **hoy no sube nada ahí**. `preview` es desarrollo: todo se integra en esa.
-Las `tmp/*` son temporales y esperan decisión de Mario: o se fusionan o se descartan, y se borran
-en los dos casos. **Una viva cada vez** — llegó a haber dos, en dos ordenadores, y eso fue el lío.
+`main` es producción y **hoy no sube nada ahí**. **`preview` es la única rama de trabajo desde el
+2026-10-26**: Mario pidió unificarlo todo en ella, y el rediseño de Cokima, que vivía en
+`tmp/entrada-cokima`, entró ese día. Nada de ramas `tmp/*` ni por tarea salvo que Mario lo pida;
+para enseñarle algo basta el alias de `preview`. Llegó a haber dos ramas vivas, en dos
+ordenadores, y eso fue el lío; la otra rama del rediseño estuvo siete semanas sin juntarse con
+`preview` y la fusión trajo 23 commits y dos documentos en conflicto.
 
 ## Al cerrar: escribir para el que venga
 

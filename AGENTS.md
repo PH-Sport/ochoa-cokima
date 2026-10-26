@@ -14,8 +14,7 @@ la vez. Los árboles se separan enseguida.
 ```bash
 git fetch --all --prune
 git branch -vv                              # a dónde apunta DE VERDAD cada rama local
-git checkout preview && git pull --ff-only  # si se niega, hay divergencia real: parar y avisar
-git checkout tmp/entrada-cokima             # la rama de trabajo viva
+git checkout preview && git pull --ff-only  # la única rama de trabajo; si se niega, parar y avisar
 pnpm install
 ```
 

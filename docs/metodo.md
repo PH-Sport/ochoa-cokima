@@ -135,7 +135,7 @@ condicionales—, `dev` no prueba nada. Verificar sobre la salida real
 (`grep "<video" .vercel/output/static/index.html`) y, si ya está desplegado, sobre el HTML
 publicado antes de decirle a Mario que lo mire. **`Complete!` dice que compiló, no que el HTML diga
 lo que debe.** La regla está también en `CLAUDE.md`; el caso completo, en `cokima-el-rediseno.md` §5
-— **que hoy solo existe en la rama `tmp/entrada-cokima`**, no en `preview`.
+— en `preview` desde el 2026-10-26.
 
 ### 2.5 Si el fallo es de un motor concreto, medir en Chromium no vale de nada
 
