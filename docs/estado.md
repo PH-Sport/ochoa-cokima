@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-10-22 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-10-26 · **el punto de entrada del repo**
 
-- **Corte:** 2026-10-22
+- **Corte:** 2026-10-26
 - **Rama de trabajo:** `tmp/entrada-cokima` (el rediseño de Cokima, en curso) · `preview`
   (desarrollo, todo lo demás integrado) · `main` (producción, sin nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
@@ -35,6 +35,16 @@ buena y manda sobre esta**, que solo cuenta lo que está integrado.
 costó un susto el 2026-08-16. El procedimiento para cambiar de máquina es la §1.1 y **no es
 opcional**: `git fetch --all --prune` antes de nada, y nunca pushear una rama local sin mirar
 primero a dónde apunta.
+
+**Las dos casas, 2026-10-26: las fotos recientes de Instagram ya se pueden bajar.** Sin acceso a
+las cuentas, un fragmento lee las fotos desde el perfil público en el navegador y un script las
+descarga a una fototeca fuera de git, con un catálogo que dice qué se usa y por qué
+(`fotografia.md` §La fototeca). **El catálogo tampoco va al repo**, porque el repo es público: vive
+solo en el Mac. Sin sesión solo se ven las 12 últimas publicaciones de cada cuenta.
+**La primera recogida (31 fotos) no cubre ningún destacado que falte**; sí da candidatas para la
+portada de Cokima y dos fotos de su casa, que **esperan a que Mario las confirme** en su artifact
+de revisión. Decisiones suyas pendientes: confirmar esas candidatas, si cambia qué platos van
+destacados hacia los que sí tienen foto clara, y si inicia sesión para ir más atrás.
 
 **Ochoa, 2026-10-22: se prepara para salir a producción, con prisa del cliente.** Mario pidió
 sacarla cuanto antes. Lo hecho: la foto de las croquetas (`LosOchoa-2`) ya está en su destacado;
@@ -429,11 +439,11 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
 
 **Lo que bloquea de verdad:**
 
-- [ ] **Fotografía real.** Ni una foto nueva ha entrado: la extracción desde Instagram
-      está bloqueada por la firma de las URLs de su CDN. Las webs siguen con las fotos
-      antiguas y **los once platos destacados salen sin imagen**. Todo lo demás está
-      construido para recibirlas sin tocar layout. Detalle y claves de archivo exactas en
-      `fotografia.md`.
+- [ ] **Fotografía real.** La extracción desde Instagram ya funciona (2026-10-26, §0), pero
+      solo alcanza las 12 últimas publicaciones por cuenta y **ninguna cubre los diez
+      destacados que siguen sin imagen**. Hay candidatas para la portada y la casa de Cokima
+      esperando a Mario. Todo está construido para recibir las fotos sin tocar layout.
+      Detalle y claves de archivo exactas en `fotografia.md`.
 
 **Menores:**
 

@@ -1,6 +1,6 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-10-22 · sigue esperando material del restaurante
+> **Estado: vivo** · revisado 2026-10-26 · la fototeca de Instagram ya funciona; esperan decisión de Mario
 
 ## Estado
 
@@ -19,9 +19,9 @@ la de las croquetas puesta, las otras cinco miden lo mismo (293px a 390 de ancho
 build de producción) y quedan con el texto arriba y un hueco blanco debajo. En `dev` y en las
 previews no se ve, porque ahí las rejillas guía ocupan ese hueco.
 
-La selección de Instagram acordada el 2026-07-29 sigue sin poder descargarse: la extensión de
-navegador bloquea la extracción de las URLs del CDN de Instagram porque llevan parámetros de
-firma en la cadena de consulta. No es un problema del código ni de permisos de la cuenta.
+**Instagram ya se puede descargar, desde el 2026-10-26** (§La fototeca). Las 31 fotos de las 12
+últimas publicaciones de cada cuenta están bajadas y revisadas. **Cubren tres huecos de la casa de
+Cokima, pero ningún destacado que falte**; las candidatas esperan a Mario.
 
 Lo que sí está hecho: las imágenes existentes pasan por `<Image>` de Astro desde
 `src/assets/`, así que **sustituir una foto es dejar el archivo con el mismo nombre**. No
@@ -36,7 +36,7 @@ mayor resolución disponible.
 
 | Destino | Qué buscamos |
 |---|---|
-| `apps/cokima/src/assets/hero.jpg` | **Lo único urgente que queda.** Registro oscuro con luz dura: en su Instagram encajan la parrilla con llama, el atún crudo sobre fondo negro o las gambas rojas. |
+| `apps/cokima/src/assets/hero.jpg` | **Lo único urgente que queda.** Registro oscuro con luz dura: en su Instagram encajan la parrilla con llama, el atún crudo sobre fondo negro o las gambas rojas. **Candidata del 2026-10-26: `DepAPTwNTvJ-1`**, la sartén en llamas en el fogón (cuadrada, 1440). Espera a Mario. |
 | `apps/ochoa/src/assets/hero.jpg` | **Ya cubierta** con la fachada (`LosOchoa-5`): toldo, cartel colgante y terraza. |
 
 **Ojo con la portada de Ochoa.** Es cuadrada y se sirve a sangre, así que en móvil se recorta a
@@ -67,7 +67,7 @@ copiar de ahí.
 | Cokima | Tacos del gobernador de gambón | `tacos-del-gobernador-de-gambon.jpg` |
 | Cokima | Katsu sando de solomillo de ternera | `katsu-sando-de-solomillo-de-ternera.jpg` |
 | Cokima | Arroz meloso de carabinero a la brasa | `arroz-meloso-de-carabinero-a-la-brasa.jpg` |
-| Ochoa | Oreja de cerdo crujiente con salsa brava | `oreja-de-cerdo-crujiente-con-salsa-brava.jpg` |
+| Ochoa | Bravas de feria con alioli | `bravas-de-feria-con-alioli.jpg` — sustituye a la oreja de cerdo, que ya no está en `menu-es.json` (visto el 2026-10-26). La única foto de Instagram (`DdAJ_f1IHuJ`) lleva un meme encima que tapa media foto |
 | Ochoa | Huevos rotos con puntilla y grasa de jamón | `huevos-rotos-con-puntilla-y-grasa-de-jamon.jpg` — **candidata dudosa: `LosOchoa-6`**. Mirada el 2026-10-22: es un huevo frito con puntilla y jamón en polvo, pero no se ven patatas y la base parece ensaladilla con atún, que es el otro destacado («con atún, polvo de jamón y yema curada»). Que Mario diga cuál de los dos es |
 | Ochoa | Cachopín de ternera | `cachopin-de-ternera.jpg` |
 | Ochoa | Croissant de rabo de toro | `croissant-de-rabo-de-toro.jpg` — **candidata: `LosOchoa-7`**, si el brioche es este plato. En la foto son dados de brioche tostado, no un croissant |
@@ -95,10 +95,76 @@ Cokima siguen siendo rejillas.** Las cuatro van apaisadas 4:3 en dos columnas de
 | Ochoa | `src/assets/casa/vermu.jpg` | ✅ `LosOchoa-4`: vermú con banderilla sobre mármol. |
 | Ochoa | `src/assets/casa/comedor.jpg` | ✅ `LosOchoa-3`: banco corrido rojo y mesas de mármol. |
 | Ochoa | `src/assets/casa/equipo.jpg` | Hueco nuevo, en «Conócenos». **`LosOchoa-9` es la candidata**: el bocadillo en las manos con el banco rojo detrás, la única foto con gente que tenemos. Va 4:3 junto al texto del equipo. |
-| Cokima | `src/assets/casa/pase.jpg` | El pase de cocina en servicio, con la llama. |
-| Cokima | `src/assets/casa/sala.jpg` | La sala de noche, luz baja y mesas llenas. |
-| Cokima | `src/assets/casa/producto.jpg` | Producto en crudo sobre fondo negro, luz dura. |
-| Cokima | `src/assets/casa/equipo.jpg` | El equipo en la cocina, caras de verdad. |
+| Cokima | `src/assets/casa/pase.jpg` | El pase de cocina en servicio, con la llama. Candidata: `DepAPTwNTvJ-1` si no va a la portada. |
+| Cokima | `src/assets/casa/sala.jpg` | La sala de noche, luz baja y mesas llenas. Sin candidata en Instagram. |
+| Cokima | `src/assets/casa/producto.jpg` | Producto en crudo sobre fondo negro, luz dura. Candidata con reservas: `Deh1PKrtAKZ-1`, maracuyá en macro, pero amarillo y luminoso. |
+| Cokima | `src/assets/casa/equipo.jpg` | El equipo en la cocina, caras de verdad. Candidata: `Dd6QjErCvhW-2`, un cocinero emplatando con la cara a medias; es vertical y el hueco 4:3. |
+
+## La fototeca: las fotos recientes de Instagram
+
+**Mario quiere las fotos que el equipo sube ahora, no las de la web vieja.** El 2026-10-26 se
+encontraron 68 fotos aprovechables en la biblioteca de medios de `grupotombo.com` (algunas en
+original de 4000 px), y se descartaron como fuente principal por eso mismo: son de 2021 y 2022, y
+una web nueva no se hace con contenido de hace cuatro años. Siguen ahí si hicieran falta
+(`/wp-json/wp/v2/media`); **la tanda de 2022 mezcla Los Ochoa con La Torcida, otro local del grupo**.
+
+**Lo que se descartó para Instagram, con su motivo:**
+
+- **Exportación oficial de la cuenta y API de Meta:** las dos exigen acceso a las cuentas, y el
+  2026-10-26 no lo había (depende de otros departamentos). Si llega, la exportación es la vía
+  limpia y completa.
+- **Leer el perfil con una petición directa a la API interna de Instagram:** el filtro de
+  seguridad del agente la bloqueó por saltarse las protecciones de Instagram. No se insiste.
+- **Descargadores masivos (Instaloader, gallery-dl):** van contra las condiciones de Instagram y
+  exponen a bloqueo la cuenta con la que se inicia sesión.
+
+**Lo que funciona:** abrir el perfil público en un navegador normal y leer las fotos que la página
+ya enseña, como se haría a mano con el inspector. Dos piezas:
+
+1. `scripts/fototeca-recoger.js` se ejecuta en la página de Instagram. En el perfil lista las
+   publicaciones; en cada publicación devuelve sus fotos en alta (pasa el carrusel entero), el
+   texto y la fecha. Lo ejecuta el agente en el navegador integrado, o cualquiera en la consola
+   del navegador.
+2. `python3 scripts/fototeca.py recogida.json` descarga las fotos a
+   `fototeca/instagram/<cuenta>/<código>-<n>.jpg` y las apunta en `fototeca/catalogo.json`, que
+   guarda la decisión sobre cada foto: tipo, plato, hueco, estado y nota. Volver a ejecutarlo no
+   pisa lo escrito a mano.
+
+**Toda la carpeta `fototeca/` queda fuera de git, catálogo incluido.** Las fotos se vuelven a bajar
+abriendo la publicación. El catálogo se quedó fuera por decisión de Mario el 2026-10-26: el repo es
+público y el catálogo lleva notas internas sobre el contenido del cliente. **La consecuencia es que
+el catálogo vive solo en la máquina donde se hizo la recogida, hoy el Mac.** En la otra no existe:
+hay que repetir la recogida o llevar la carpeta a mano. Lo que sí viaja es esta sección, con el
+resumen de lo decidido.
+
+**Medido el 2026-10-26:**
+
+- Sin iniciar sesión, el perfil solo enseña **las 12 publicaciones más recientes**: unas siete
+  semanas en las dos cuentas. Las publicaciones sueltas sí se abren todas.
+- Las fotos llegan a **1440 px de ancho** (1440×1919, 1440×1800 o 1440×1440).
+- Las URLs van firmadas y **solo funcionan enteras**: recortarles parámetros da `403`. Además
+  caducan en unos días, así que se descarga justo después de recoger.
+- Los vídeos se saltan, también los que van dentro de un carrusel.
+- Una espera fija de 1,5 s dejó una publicación sin foto; el fragmento espera ahora a que aparezca
+  la foto grande, hasta 8 s.
+
+**Para ir más atrás, Mario inicia sesión con su cuenta en el navegador integrado** (el agente no
+mete contraseñas). Sin sesión, la alternativa es repetir la recogida cada pocas semanas: con dos o
+tres publicaciones por semana, el almacén crece solo.
+
+**Lo que dio la primera recogida** (detalle de cada foto en el catálogo del Mac y, para mirarlas,
+en el artifact privado de Mario https://claude.ai/artifact/Y9xkL8LhfVpZtRgHsnjjAe):
+
+- **31 fotos:** 3 candidatas a un hueco (portada, equipo y producto de Cokima), 9 útiles sin hueco,
+  8 dudosas y 11 descartadas. Las descartadas son piezas gráficas o fotos con texto encima.
+- **Ningún destacado que falte sale en estas fotos.** Sí hay platos de carta con foto clara y
+  nombrados en el texto: pulpo a la plancha, bikini de lacón, brioche de sobrasada y tarta de
+  queso de Ochoa, y el soft shell crab de Cokima. **Cambiar qué platos van destacados es decisión
+  de Mario**, no del agente.
+- **Dos señales de que la carta transcrita puede estar desfasada:** Cokima publica una pannacotta
+  andina que no está en `menu-es.json`, y una «nueva versión de oreja» con alioli y chips de
+  boniato, cuando la carta dice milhojas de patata y salsa brava. Hay que preguntarlo al
+  restaurante antes de tocar nada.
 
 ## Las rejillas guía
 
@@ -124,8 +190,8 @@ cachopín con la foto de otra cosa es información falsa en una carta con precio
 
 - **Derechos.** Las cuentas son del grupo, pero la calidad indica fotógrafo profesional.
   Conviene confirmar que la cesión cubre la web y no solo redes sociales.
-- **Originales en alta.** Lo de Instagram sale recomprimido y a 1080 px como máximo:
-  suficiente para móvil, justo para escritorio a pantalla completa.
+- **Originales en alta.** Lo de Instagram sale recomprimido y a 1440 px de ancho (medido el
+  2026-10-26): suficiente para móvil, justo para escritorio a pantalla completa.
 
 ## Nota técnica
 
