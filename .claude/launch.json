@@ -18,6 +18,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "4331", "--directory", "apps/cokima/.vercel/output/static"],
       "port": 4331
+    },
+    {
+      "name": "ochoa-build",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4332", "--directory", "apps/ochoa/.vercel/output/static"],
+      "port": 4332
     }
   ]
 }

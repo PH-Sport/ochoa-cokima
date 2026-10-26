@@ -1,6 +1,6 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-10-26 · la portada y la casa de Cokima ya tienen foto; los destacados siguen sin ella
+> **Estado: vivo** · revisado 2026-10-26 · Ochoa tiene foto en sus seis destacados; Cokima, portada y casa
 
 ## Estado
 
@@ -46,21 +46,21 @@ comida eso canta.
 en la web vieja del grupo** que nadie había mirado:
 `grupotombo.com/wp-content/uploads/2021/09/LosOchoa-1..9.jpg`, a 1000×1000. Con ellas se
 resolvieron la portada de Ochoa y las cuatro de «la casa». **Las croquetas (`LosOchoa-2`) se
-pusieron el 2026-10-22**: el velo de papada que dice la carta se ve en la foto, así que no había
-duda. **Quedan tres sin usar, y ninguna se puede poner sin que Mario confirme el plato** —un
-huevo frito sobre una base, un brioche con carne deshilachada, un bocadillo en las manos con el
-banco rojo detrás—. El porqué de cada duda está en la tabla de más abajo.
+pusieron el 2026-10-22** y el 2026-10-26 se cambiaron por una de Instagram de 2025, a 1440 px
+(§La fototeca). Las otras tres de 2021 que esperaban a Mario —un huevo frito sobre una base, un
+brioche con carne deshilachada, un bocadillo en las manos— ya no hacen falta para los destacados.
 
 **Ojo al mezclar fichas con y sin foto en la tira de destacados.** En producción una ficha sin
 foto se pinta solo con el nombre y el precio, pero se estira al alto de la que sí la tiene: con
-la de las croquetas puesta, las otras cinco miden lo mismo (293px a 390 de ancho, medido sobre el
-build de producción) y quedan con el texto arriba y un hueco blanco debajo. En `dev` y en las
+una sola foto puesta, las demás miden lo mismo (293px a 390 de ancho, medido sobre el build de
+producción) y quedan con el texto arriba y un hueco blanco debajo. **Desde el 2026-10-26 pasa solo
+en Cokima**, que sigue sin ninguna: Ochoa tiene foto en las seis. En `dev` y en las
 previews no se ve, porque ahí las rejillas guía ocupan ese hueco.
 
 **Instagram ya se puede descargar, desde el 2026-10-26** (§La fototeca). Las 31 fotos de las 12
-últimas publicaciones de cada cuenta están bajadas y revisadas. **Cubren la portada y las cuatro
-de la casa de Cokima, pero ningún destacado que falte.** Mario delegó el reparto ese mismo día
-(«distribúyelas según consideres») y quedaron puestas.
+últimas publicaciones de cada cuenta están bajadas y revisadas: **cubren la portada y las cuatro
+de la casa de Cokima**. Y con la sesión de Mario se bajaron después **172 fotos de Ochoa desde
+2024**, que dan foto a **sus seis destacados**.
 
 Lo que sí está hecho: las imágenes existentes pasan por `<Image>` de Astro desde
 `src/assets/`, así que **sustituir una foto es dejar el archivo con el mismo nombre**. No
@@ -106,20 +106,16 @@ copiar de ahí.
 | Cokima | Tacos del gobernador de gambón | `tacos-del-gobernador-de-gambon.jpg` |
 | Cokima | Katsu sando de solomillo de ternera | `katsu-sando-de-solomillo-de-ternera.jpg` |
 | Cokima | Arroz meloso de carabinero a la brasa | `arroz-meloso-de-carabinero-a-la-brasa.jpg` |
-| Ochoa | Bravas de feria con alioli | `bravas-de-feria-con-alioli.jpg` — sustituye a la oreja de cerdo, que ya no está en `menu-es.json` (visto el 2026-10-26). La única foto de Instagram (`DdAJ_f1IHuJ`) lleva un meme encima que tapa media foto |
-| Ochoa | Huevos rotos con puntilla y grasa de jamón | `huevos-rotos-con-puntilla-y-grasa-de-jamon.jpg` — **candidata dudosa: `LosOchoa-6`**. Mirada el 2026-10-22: es un huevo frito con puntilla y jamón en polvo, pero no se ven patatas y la base parece ensaladilla con atún, que es el otro destacado («con atún, polvo de jamón y yema curada»). Que Mario diga cuál de los dos es |
-| Ochoa | Cachopín de ternera | `cachopin-de-ternera.jpg` |
-| Ochoa | Croissant de rabo de toro | `croissant-de-rabo-de-toro.jpg` — **candidata: `LosOchoa-7`**, si el brioche es este plato. En la foto son dados de brioche tostado, no un croissant |
-| Ochoa | Ración de croquetas de jamón Joselito | ✅ `LosOchoa-2`, puesta el 2026-10-22 |
-| Ochoa | Ensaladilla rusa casera | `ensaladilla-rusa-casera.jpg` |
+| Ochoa | Bravas de feria con alioli | ✅ `DCR57pgNXtP-1` (nov. 2024): la bandeja con sus dos salsas. Sustituyó a la oreja de cerdo, que ya no está en la carta. La de la salsa cayendo (`DPWEvvIiM0c`) perdía las patatas al recortarla a 4:3 |
+| Ochoa | Huevos rotos con puntilla y grasa de jamón | ✅ `C_dBFM7N2jr-1` (sep. 2024), sobre la cortina roja; el texto los nombra. Ya no hace falta `LosOchoa-6` |
+| Ochoa | Cachopín de ternera | ✅ `C7CXyVLNCBt-1` (may. 2024): el queso fundiéndose, el original más grande (3155 px, reducido a 1440) |
+| Ochoa | Croissant de rabo de toro | ✅ `C_lHe3MtsXM-1` (sep. 2024), la única que hay; el texto lo nombra. Ya no hace falta `LosOchoa-7` |
+| Ochoa | Ración de croquetas de jamón Joselito | ✅ `DLua8GqoiNn-1` (jul. 2025): la huevera, a 1440. Sustituye a `LosOchoa-2`, de 2021 y a 1000 |
+| Ochoa | Ensaladilla rusa casera | ✅ `DMSamLoo0l1-1` (jul. 2025): se ven el atún, el polvo de jamón y la yema |
 
-**Las candidatas hay que confirmarlas antes de asignarlas.** Una foto solo se pone en un plato
-cuando hay certeza de que es ese plato: `LosOchoa-6` parece huevos rotos con puntilla y
-`LosOchoa-2` croquetas empanadas con jamón por encima, pero `LosOchoa-7` es un brioche con carne
-deshilachada que podría ser el croissant de rabo de toro o el dúo de brioche, y **no es lo
-mismo**. Queda también `LosOchoa-9`, un bocadillo en las manos con el banco rojo detrás: no
-sirve para identificar un plato, pero es la única foto con gente y vale para cualquier sitio
-donde haga falta calor humano.
+**Una foto solo se asigna a un plato cuando hay certeza de que es ese plato.** Las seis de Ochoa
+la tienen porque el texto de la publicación nombra el plato. Además, se ve lo que dice la carta.
+`LosOchoa-9` (un bocadillo en las manos con el banco rojo) sigue sin uso: no identifica plato.
 
 ### Fotos de la casa — el local, no el plato
 
@@ -135,7 +131,7 @@ descripciones viven en `apps/cokima/src/data/casa.ts`, compartido por los dos id
 | Ochoa | `src/assets/casa/rotulo.jpg` | ✅ `LosOchoa-1`: el rótulo pintado en el cristal. |
 | Ochoa | `src/assets/casa/vermu.jpg` | ✅ `LosOchoa-4`: vermú con banderilla sobre mármol. |
 | Ochoa | `src/assets/casa/comedor.jpg` | ✅ `LosOchoa-3`: banco corrido rojo y mesas de mármol. |
-| Ochoa | `src/assets/casa/equipo.jpg` | Hueco nuevo, en «Conócenos». **`LosOchoa-9` es la candidata**: el bocadillo en las manos con el banco rojo detrás, la única foto con gente que tenemos. Va 4:3 junto al texto del equipo. |
+| Ochoa | `src/assets/casa/equipo.jpg` | Hueco en «Conócenos», 4:3 junto al texto del equipo. **Candidatos de Instagram (2026-10-26):** el cocinero sonriendo con el cuchillo sobre la cortina roja (`DQB1FAiCKup-1`) y Guille poniéndose el delantal (`DO6RuaSCJJP`). Mejores que `LosOchoa-9`, el bocadillo de 2021. Sin poner: espera a que Mario elija |
 | Cokima | `src/assets/casa/pase.jpg` | ✅ `DepAPTwNTvJ-1`: la sartén en llamas, la misma de la portada. |
 | Cokima | `src/assets/casa/sala.jpg` | ✅ `Dd0yh8eKSfB-1`: vino sirviéndose en una mesa puesta. **Es una sustituta:** no hay foto de la sala en las publicaciones recientes, y la mesa es la sala vista de cerca. Si aparece una de la sala de noche, se cambia. |
 | Cokima | `src/assets/casa/producto.jpg` | ✅ `Deh1PKrtAKZ-1`: maracuyá abierto en macro. No es el «fondo negro, luz dura» del encargo, pero sí lo que dice el texto de la sección: «el producto crudo antes de que le pase nada». |
@@ -183,7 +179,8 @@ resumen de lo decidido.
 **Medido el 2026-10-26:**
 
 - Sin iniciar sesión, el perfil solo enseña **las 12 publicaciones más recientes**: unas siete
-  semanas en las dos cuentas. Las publicaciones sueltas sí se abren todas.
+  semanas en las dos cuentas. Las publicaciones sueltas sí se abren todas. Con sesión, el perfil
+  entero (Ochoa: 411 publicaciones, 313 con foto).
 - Las fotos llegan a **1440 px de ancho** (1440×1919, 1440×1800 o 1440×1440).
 - Las URLs van firmadas y **solo funcionan enteras**: recortarles parámetros da `403`. Además
   caducan en unos días, así que se descarga justo después de recoger.
@@ -191,9 +188,35 @@ resumen de lo decidido.
 - Una espera fija de 1,5 s dejó una publicación sin foto; el fragmento espera ahora a que aparezca
   la foto grande, hasta 8 s.
 
-**Para ir más atrás, Mario inicia sesión con su cuenta en el navegador integrado** (el agente no
-mete contraseñas). Sin sesión, la alternativa es repetir la recogida cada pocas semanas: con dos o
-tres publicaciones por semana, el almacén crece solo.
+**Con sesión iniciada (Ochoa, 2026-10-26).** Mario tiene la sesión en Brave, y el agente lo
+maneja con la extensión del navegador. Desde ahí no se pueden sacar los datos: Brave bloquea en
+silencio las descargas que lanza una página, incluso tras un clic simulado. La extensión no deja
+pasar las direcciones firmadas, que fue lo que bloqueó en julio. Y la página de Instagram no puede
+pedir nada a `localhost` (CSP). **La salida es navegar:** `fototeca-recoger.js` (con
+`ENVIAR = true`) va a `127.0.0.1:8765` con los datos en la dirección, y
+`scripts/fototeca-receptor.py` los apunta en `recogida.jsonl`. El receptor devuelve la pestaña
+al instante a la siguiente publicación, así que cada publicación es una sola acción. **Si la
+pestaña se queda en la página del receptor, la extensión bloquea todo** («no puede verificar el
+sitio») hasta que alguien la cierra a mano: pasó una vez y por eso existe la redirección.
+
+Trampas de esa recogida, todas medidas:
+
+- Con sesión, cada publicación añade «Más publicaciones» con fotos igual de grandes; la primera
+  prueba bajó seis fotos de una publicación que tenía una. Se distinguen porque van dentro de un
+  enlace a otra publicación.
+- En la ventana emergente del perfil las fotos no pasan de 1080; en la página propia, 1440. Por
+  eso se abre cada publicación.
+- La fecha sale del código de la publicación: es su id en base 64, y los bits altos son
+  milisegundos desde la época de Instagram. Comprobado contra dos fechas conocidas.
+- Alguna foto antigua se queda en 942 px, por debajo del mínimo de 1000 que se usaba; el mínimo es
+  ahora 900. Tres llegaron en WebP con extensión `.jpg` y se convirtieron.
+- Un texto llevaba U+2028, que `splitlines()` toma por salto de línea: el `.jsonl` se lee
+  partiendo solo por `\n`.
+
+**Nombres que dicen qué es.** `python3 scripts/fototeca.py --nombrar` renombra cada foto revisada
+a `<tipo>_<etiqueta>__<código>-<n>.jpg` (`plato_cachopin-de-ternera__C7CXyVLNCBt-1.jpg`), con el
+tipo y la etiqueta del catálogo. Las fotos de una casa quedan agrupadas por tipo, y el código sigue
+ahí para volver a la publicación.
 
 **Lo que dio la primera recogida** (detalle de cada foto en el catálogo del Mac y, para mirarlas,
 en el artifact privado de Mario https://claude.ai/artifact/Y9xkL8LhfVpZtRgHsnjjAe):
@@ -207,8 +230,20 @@ en el artifact privado de Mario https://claude.ai/artifact/Y9xkL8LhfVpZtRgHsnjjA
   foto, ni siquiera con el reparto delegado:** las fotos de plato solo se ven en la tira de
   destacados, y esa tira se titula «Lo que más sale». Marcar un plato porque tiene foto sería
   afirmar algo sobre sus ventas que nadie ha dicho. Lo decide Mario con el restaurante.
-- **Ochoa no recibió ninguna foto en este reparto:** sus publicaciones recientes son platos sin
-  destacar o piezas con texto, y su casa ya tenía fotos reales del local.
+- **Ochoa no recibió ninguna foto en ese primer reparto.** Lo cambió la recogida con sesión.
+
+**Lo que dio la recogida con sesión de Ochoa** (120 publicaciones con foto desde 2024; las 193
+anteriores, de 2021 a 2023, se dejaron fuera a propósito, porque Mario no quiere contenido de hace
+años):
+
+- **172 fotos:** 114 de platos, 12 del local, 12 de gente (equipo y clientes), 15 de bebida y
+  ambiente, y 19 piezas gráficas descartadas.
+- **Los seis destacados tienen foto con el plato nombrado en el texto**, y están puestos (tabla
+  de arriba).
+- **Del local y de gente hay material de verdad:** el camarero en la barra con los rótulos
+  pintados, la sala con «La tasca que te mereces» y clientes, el comedor con «Conservas», el
+  cocinero, Guille poniéndose el delantal, clientes viendo el fútbol. Es la base para una portada
+  de varias fotos (collage o carrusel), que Mario propuso el 2026-10-26 y está sin diseñar.
 - **Dos señales de que la carta transcrita puede estar desfasada:** Cokima publica una pannacotta
   andina que no está en `menu-es.json`, y una «nueva versión de oreja» con alioli y chips de
   boniato, cuando la carta dice milhojas de patata y salsa brava. Hay que preguntarlo al
@@ -217,9 +252,9 @@ en el artifact privado de Mario https://claude.ai/artifact/Y9xkL8LhfVpZtRgHsnjjA
 ## Las rejillas guía
 
 Cada hueco de foto se dibuja en pantalla con su proporción, la regla de tercios y el nombre
-del archivo que hay que dejar. **Quedan once** (2026-10-26): diez de plato, los destacados sin
-foto, y la del equipo de Ochoa, que nació con «Conócenos». Las de la casa de las dos webs ya son
-fotos reales.
+del archivo que hay que dejar. **Quedan seis** (2026-10-26): los cinco destacados de Cokima y la
+del equipo de Ochoa, que nació con «Conócenos». Los destacados de Ochoa y la casa de las dos webs
+ya son fotos reales.
 
 **Desde el 2026-08-04 hay también rejillas de texto** (`CopyGuide.astro`), que marcan el
 párrafo que falta y dicen qué hay que contar en él. Son cuatro, todas en «Conócenos», y pasan

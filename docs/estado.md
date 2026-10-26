@@ -96,6 +96,19 @@ La rama del rediseño se separó de `preview` el 2026-09-07 y no se volvieron a 
 Lo de abajo es el §0 de `preview` de esas semanas, tal cual: casi todo es Ochoa, más la fototeca
 de Instagram, que toca a las dos casas.
 
+**Ochoa, 2026-10-26: sus seis destacados ya tienen foto, y hay 172 fotos suyas catalogadas.**
+Con la sesión de Mario en Brave se recorrió el perfil entero (411 publicaciones) y se bajaron las
+fotos de las 120 publicaciones con foto desde 2024. Lo de antes se dejó fuera a propósito: Mario
+no quiere contenido de hace años. Cada foto tiene un nombre que dice qué es
+(`plato_cachopin-de-ternera__…`), y el texto de la publicación nombra el plato en casi todas. Los
+seis destacados de «Lo que más sale» llevan foto, y la de las croquetas sustituye a la de 2021. La
+ficha pide ahora la foto hasta 960 px: a 390 de ancho, con 640, se estiraba 1,2 veces. **Medido
+sobre el build:** seis fotos en la tira en los dos idiomas, las seis fichas a 293 px de alto,
+foto de 261×190 a 390 y sin scroll lateral. Por qué se hizo con un receptor local y qué trampas
+salieron, en `fotografia.md` §La fototeca. **Pendiente de Mario:** la portada de varias fotos
+(collage o carrusel) que propuso, con las fotos del local y de gente que han salido, y quién va
+en el hueco del equipo.
+
 **Las dos casas, 2026-10-26: las fotos recientes de Instagram ya se pueden bajar.** Sin acceso a
 las cuentas, un fragmento lee las fotos desde el perfil público en el navegador y un script las
 descarga a una fototeca fuera de git, con un catálogo que dice qué se usa y por qué
@@ -316,11 +329,8 @@ de fusión, sin tocar nada más.
 
 **Pendientes que vienen de `preview` y esta rama no tenía:**
 
-- **Las tres fotos de Ochoa sin usar.** Las croquetas (`LosOchoa-2`) se pusieron el
-  2026-10-22. `LosOchoa-6` **no** era asignable sin más: mirada de cerca, puede ser los huevos
-  rotos o la ensaladilla. `LosOchoa-7` necesita que Mario confirme si el brioche es el croissant
-  de rabo de toro o el dúo, y `LosOchoa-9` es la candidata del hueco del equipo. Detalle en
-  `fotografia.md`.
+- ~~Las tres fotos de Ochoa sin usar.~~ **Ya no hacen falta (2026-10-26):** los seis destacados
+  tienen foto de Instagram con el plato nombrado en el texto (`fotografia.md`).
 - **Los alérgenos de doce platos de Ochoa, y qué significa el gluten en amarillo.** La hoja
   del restaurante no trae fila para Bicicleta, Marinera, Marinero, Bomba, el brioche de
   sobrasada, la tapa de alitas, los cuatro montados, el bikini de minutejos ni el pulpo: hoy
@@ -474,11 +484,11 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
 
 **Lo que bloquea de verdad:**
 
-- [ ] **Fotografía real.** La extracción desde Instagram ya funciona (2026-10-26, §0), pero
-      solo alcanza las 12 últimas publicaciones por cuenta y **ninguna cubre los diez
-      destacados que siguen sin imagen**. La portada y la casa de Cokima ya tienen foto desde
-      el 2026-10-26. Todo está construido para recibir las fotos sin tocar layout.
-      Detalle y claves de archivo exactas en `fotografia.md`.
+- [ ] **Fotografía real.** Desde el 2026-10-26, **Ochoa tiene foto en sus seis destacados**
+      y Cokima en su portada y su casa (§0). Faltan los **cinco destacados de Cokima** (con
+      la sesión de Mario se puede recorrer su perfil entero, como se hizo con Ochoa), el
+      equipo de Ochoa en «Conócenos» y, si Mario la quiere, la portada de varias fotos de
+      Ochoa. Detalle y claves de archivo exactas en `fotografia.md`.
 
 **Menores:**
 
