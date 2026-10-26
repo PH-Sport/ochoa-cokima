@@ -44,6 +44,16 @@ todas las reglas, y **aun así ser inadecuada**. Una cortina es sobria por natur
 es una tasca. Cuando Mario pida «más juguetón» o «que grite tapa y caña», no es un ajuste de
 parámetros: es cambiar el gesto entero.
 
+**Dos lecciones del 2026-09-20, del mapa de Ochoa, sobre pedirle nota a un juez automático:**
+
+- **Un cambio que hay que medir para saber que existe no cuenta.** Se pusieron sombras al 7-11 % y
+  líneas de contacto de 0,5 px; en la medición estaban, y dos jueces seguidos dijeron «no hay
+  sombra» teniéndola delante. Lo visual se juzga a ojo: si no se ve de un vistazo, no está.
+- **Cada juez con contexto limpio mueve el listón.** Cinco rondas dieron 5, 6, 6, 6, 7 con criterios
+  que se contradecían entre rondas (uno pidió las manzanas más oscuras que la calle; otro, la calle
+  más oscura que el papel). La nota no es una escala que subir: sirve para lo estructural que repiten
+  todos, y a partir de ahí quien decide es Mario mirándolo en el móvil.
+
 **Y el fallo que ninguna medición podía cazar:** en la segunda vuelta detectó de un vistazo que el
 rótulo decía «Los Ochoa» y la barra «LOS OCHOA». El aterrizaje era **exacto en píxeles**, pero
 sobre otra palabra. Medir prueba la geometría, no el sentido.
@@ -153,6 +163,19 @@ imágenes. Ahí se ve el dispositivo, la barra del sistema y el comportamiento r
 
 El caso completo está en `archivo/barra-del-navegador-ios.md` (cerrado). La receta portable, en
 `receta-barra-ios-astro.md`.
+
+**Y para lo que es de motor pero no de dispositivo, hay un WebKit en el Mac sin pedirle nada a
+Mario.** El 2026-09-21 los nombres del mapa de Ochoa salían descolocados en su iPhone y perfectos
+en todas las capturas de Chromium: Safari no respeta `transform-box: fill-box` en los `<text>` del
+SVG. Se confirmó y se verificó el arreglo en el WebKit que Playwright deja en
+`~/Library/Caches/ms-playwright/` (`webkit-2336` en esa fecha), lanzado desde un script Node de
+veinte líneas con el `playwright-core` de la misma versión que hay en las cachés locales (`npx`,
+runtimes de otros agentes: buscar `playwright-core/browsers.json` y casar la revisión de `webkit`;
+si no casa, pide descargar otro). El script abre el build servido en local, esconde el cartel de
+cookies, espera a que pase el telón de entrada (1,4 s; si no, la captura sale roja), mide el
+`getBoundingClientRect()` de cada `<text>` respecto al marco y captura el elemento. Es geometría y
+estado, que es lo que sí se puede medir sin foco (§2.1). No sustituye al iPhone real —barra del
+navegador, gestos, DPR—, pero para «esto lo pinta distinto Safari» sobra.
 
 ### 2.6 Si no hay explicación, se dice
 

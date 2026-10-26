@@ -4,6 +4,9 @@ dist/
 .vercel/
 # Volcados de las sesiones de navegador usadas para medir en desarrollo
 .playwright-mcp/
+# La fototeca no va a git: las fotos se vuelven a bajar de Instagram, y el catálogo lleva notas
+# internas que no deben quedar a la vista en un repo público (decisión de Mario, 2026-10-26)
+fototeca/
 .env
 .env.*
 !.env.example

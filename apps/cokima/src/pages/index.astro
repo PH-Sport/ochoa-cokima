@@ -1,26 +1,13 @@
 ---
 import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 import { pickFeatured } from "@tombo/content";
-import { showPhotoGuides } from "@tombo/config/photo-guides";
-import PhotoGuide from "@tombo/ui/PhotoGuide.astro";
 import Base from "../layouts/Base.astro";
 import Entrada from "../components/Entrada.astro";
 import Highlights from "../components/Highlights.astro";
+import { casa } from "../data/casa.ts";
 
 const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data));
-
-// La casa: la sección que hoy no existe porque no hay fotos del local, solo del
-// plato. El texto ya es el definitivo —el que se publicará con las imágenes—; lo
-// único provisional son los cuatro huecos, y eso ya lo dice cada rejilla en su
-// etiqueta. Las cuatro comparten proporción a propósito: en cuadrícula regular
-// se ven como una serie, y de paso es más fácil de encargar.
-const guides = showPhotoGuides();
-const casa = [
-  { file: "apps/cokima/src/assets/casa/pase.jpg", note: "El pase de cocina en servicio, con la llama." },
-  { file: "apps/cokima/src/assets/casa/sala.jpg", note: "La sala de noche, luz baja y mesas llenas." },
-  { file: "apps/cokima/src/assets/casa/producto.jpg", note: "Producto en crudo sobre fondo negro, luz dura." },
-  { file: "apps/cokima/src/assets/casa/equipo.jpg", note: "El equipo en la cocina, caras de verdad." },
-];
 ---
 
 <Base
@@ -39,25 +26,32 @@ const casa = [
     </div>
   </section>
 
-  {guides && (
-    <section class="casa">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="eyebrow">La casa</p>
-          <h2>Donde se mezcla y se mancha</h2>
-        </div>
-        <p class="casa-txt">
-          El pase en plena faena, la sala a media luz y el producto crudo antes de que le pase
-          nada. Cokima por dentro, con la mecha encendida.
-        </p>
-        <div class="wall">
-          {casa.map((c) => (
-            <PhotoGuide file={c.file} ratio="4 / 3" note={c.note} />
-          ))}
-        </div>
+  <section class="casa">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">La casa</p>
+        <h2>Donde se mezcla y se mancha</h2>
       </div>
-    </section>
-  )}
+      <p class="casa-txt">
+        El pase en plena faena, la sala a media luz y el producto crudo antes de que le pase
+        nada. Cokima por dentro, con la mecha encendida.
+      </p>
+      <div class="wall">
+        {casa.map((c) => (
+          <Image
+            src={c.src}
+            alt={c.alt.es}
+            widths={[320, 640, 900]}
+            sizes="(max-width: 860px) 46vw, 33vw"
+            quality={72}
+            loading="lazy"
+            class="casa-shot"
+            style={c.position ? `object-position: ${c.position}` : undefined}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
 
   <section class="visita" id="visita">
     <div class="wrap">
@@ -118,11 +112,8 @@ const casa = [
        `minmax(auto, 1fr)`, y el mínimo automático de una imagen es su tamaño
        intrínseco, así que el track se niega a bajar de ahí por mucho
        `width: 100%` que lleve la foto. En Ochoa eso sacaba 138px de scroll
-       lateral a toda la portada. Medido aquí a 375px, esta retícula hoy NO
-       desborda —da 154px por columna— porque lo que lleva dentro son los huecos
-       marcados, no fotos: el problema aparecerá el día que entren las de verdad,
-       que es justo cuando nadie va a estar mirando esto. El cero le da permiso
-       al track para encoger y no cuesta nada. */
+       lateral a toda la portada. Con las fotos de verdad dentro (2026-10-26),
+       el cero es lo que mantiene la retícula en su sitio. */
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(12px, 2vw, 22px);
     margin-top: 1.6rem;
@@ -131,6 +122,16 @@ const casa = [
   }
   .wall > :global(*:nth-child(2n)) {
     margin-top: var(--desfase);
+  }
+  /* Mismo radio que el recuadro del mapa: en Cokima las piezas no llevan marco
+     ni sombra, que son recursos de la otra casa. */
+  .casa-shot {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 8px;
   }
 
   .visita {
