@@ -322,14 +322,22 @@ más lejos; Ochoa es una tasca y es seca.
     que volvía del fondo saltaba de capa en el primer fotograma: aparecía fundiéndose *encima* de
     la de delante, las dos a medio transparentar —Mario lo vio en su iPhone el 2026-10-27—. El
     `z-index` no se transiciona, cambia de golpe. Lo que cambia de capa necesita una animación que
-    diga en qué momento cruza (`del-fondo` cruza al 52%, como `al-fondo` al 48%). **Y el resto
-    del mazo tiene que esperar a ese cruce.** Con la vuelta ya animada, Mario seguía viendo que
-    «se hunde de golpe y luego comienza la animación»: medido, la de delante perdía la sombra en
-    el primer fotograma y en 150 ms ya estaba encogida al fondo —la quíntica—, cuando la que volvía
-    seguía al 18% de opacidad. Ahora todo lo demás se recoloca con retardo `--cruce` (el 52% de
-    `--dur-baraja`), tapado por la que pasa encima, y la sombra cambia de dueña en ese mismo
-    instante con `box-shadow 0s linear var(--cruce)`. Medido: la de delante, quieta y con sombra
-    hasta los 505 ms; a los 515, sin sombra y retirándose bajo la otra.
+    diga en qué momento cruza. **Y el resto del mazo tiene que esperar a estar tapado.** Con la
+    vuelta ya animada, Mario seguía viendo que «se hunde de golpe y luego comienza la animación»:
+    medido, la de delante perdía la sombra en el primer fotograma y en 150 ms ya estaba encogida
+    al fondo —la quíntica—, cuando la que volvía seguía al 18% de opacidad. Ahora lo demás se
+    recoloca con retardo, ya tapado, y la sombra cambia de dueña en ese mismo instante con
+    `box-shadow 0s linear` y el mismo retardo.
+
+    **Los dos sentidos tienen que enseñar el plato a la vez.** La vuelta hacía el viaje entero de
+    la ida al revés —salir del fondo por detrás del mazo y cruzar a mitad de camino— y el plato no
+    se veía hasta los 400 ms ni entero hasta los 900, cuando hacia el otro lado está al 80% a los
+    300. Mario: «debería verse el plato más rápidamente». Ir por detrás no aportaba nada: la carta
+    del fondo está escondida, así que puede aparecer fuera de la pantalla sin que se note. Ahora
+    entra por la izquierda por encima, en `--dur-baraja` × 0,5 (la mitad visible de la ida).
+    Medido sobre el build a 390 px, porcentaje del plato nuevo a la vista: 40 / 80 / 100% a los
+    200 / 300 / 400 ms **en los dos sentidos**; la de delante, quieta hasta quedar tapada (1% a
+    la vista a los 500 ms) y retirándose debajo después.
 
 ## Qué se mueve hoy
 
@@ -342,7 +350,7 @@ más lejos; Ochoa es una tasca y es seca.
 | Botones, fichas de contacto y mapa | Se hunden al tocar y recuperan al soltar | `data-tacto`, `--dur-sube` |
 | Cinta rotulada (Ochoa) | Recorre en bucle | `translateX`, `--dur-cinta` |
 | Portada (Ochoa) | El telón: cada foto entra de derecha a izquierda sobre la anterior | `clip-path`, `--dur-pase`, `--dur-recogida`, `--ease-telon` |
-| Mazo de platos (Ochoa, solo móvil) | La de delante sale por la izquierda torciéndose y vuelve al fondo; deslizando a la derecha, el mismo viaje al revés; el turno se rellena | `transform` + `opacity`, `--dur-turno`, `--desfase-turno`, `--dur-baraja`, `--ease-telon`; `scaleX` |
+| Mazo de platos (Ochoa, solo móvil) | La de delante sale por la izquierda torciéndose y vuelve al fondo; deslizando a la derecha, la anterior entra por la izquierda por encima, en la mitad del tiempo; el turno se rellena | `transform` + `opacity`, `--dur-turno`, `--desfase-turno`, `--dur-baraja`, `--ease-telon`; `scaleX` |
 | Portada | El titular se aparta del cartel de cookies | `translateY`, `--dur-out` |
 | Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |
 | Entrada (Cokima) | Una chispa baja por un riel, avisando de que hay más | `stroke-dashoffset`, 3,2s |

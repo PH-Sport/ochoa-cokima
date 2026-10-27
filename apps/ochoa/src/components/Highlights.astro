@@ -165,9 +165,8 @@ const priceLabel = (price: MenuEntry["price"]) => {
     /* Hacia atrás no basta con recolocar: la carta que vuelve estaba escondida
        en el fondo, y con solo la transición se ponía encima desde el primer
        fotograma y aparecía fundiéndose sobre la de delante — las dos a medio
-       transparentar a la vez. Mario lo vio en su iPhone el 2026-10-27. Hace el
-       camino de `al-fondo` al revés: sale del fondo por la izquierda y entra
-       por encima. */
+       transparentar a la vez. Mario lo vio en su iPhone el 2026-10-27. Entra
+       por la izquierda, por encima y a la vista (`del-fondo`). */
     const anterior = () => {
       suelta();
       void mazo.offsetWidth;
@@ -516,54 +515,46 @@ const priceLabel = (price: MenuEntry["price"]) => {
   .highlights[data-mazo] .card[data-sale] {
     animation: al-fondo var(--dur-baraja) var(--ease-telon) both;
   }
-  /* El mismo viaje al revés, para deslizar hacia la derecha: parte de donde
-     esperan las escondidas —el puesto 2, invisible—, asoma por la izquierda
-     todavía por detrás, y a mitad de viaje pasa por encima y llega al frente.
-     La curva del telón es simétrica, así que la vuelta se siente igual que la
-     ida. */
+  /* Para volver al plato anterior, la carta entra por la izquierda por
+     encima del mazo, ya a la vista, y se asienta al frente: es la mitad
+     visible de `al-fondo`, al revés, y dura lo que esa mitad.
+
+     Hasta el 2026-10-27 hacía el viaje entero al revés —salía del fondo por
+     detrás del mazo y cruzaba a mitad de camino—, y el plato no se veía nada
+     hasta los 400 ms ni entero hasta los 900, cuando hacia el otro lado se ve
+     al 80% a los 300. Mario: «debería verse el plato más rápidamente». Lo de
+     ir por detrás no aportaba nada: la carta del fondo está escondida, así
+     que puede aparecer fuera de la pantalla sin que se note el salto. */
   @keyframes del-fondo {
     0% {
-      transform: translate(calc(var(--paso) * -2), 0) rotate(0deg) scale(0.9);
-      opacity: 0;
-      z-index: 0;
-    }
-    48% {
-      z-index: 0;
-    }
-    52% {
-      transform: translate(-112%, -4px) rotate(calc(var(--tuerce) * -1.5)) scale(1);
-      opacity: 1;
-      z-index: 20;
+      transform: translate(-112%, -4px) rotate(calc(var(--tuerce) * -1.5));
     }
     100% {
-      transform: translate(0, 0) rotate(0deg) scale(1);
-      opacity: 1;
-      z-index: 20;
+      transform: translate(0, 0) rotate(0deg);
     }
   }
+  .highlights[data-mazo] .strip {
+    --dur-vuelta: calc(var(--dur-baraja) * 0.5);
+  }
   .highlights[data-mazo] .card[data-vuelve] {
-    animation: del-fondo var(--dur-baraja) var(--ease-telon) both;
+    z-index: 20;
+    opacity: 1;
+    animation: del-fondo var(--dur-vuelta) var(--ease-telon) both;
   }
-  /* Mientras la que vuelve viaja por detrás, el resto del mazo espera quieto y
-     se recoloca en el instante en que ella cruza por encima, tapado. Sin esta
-     espera, la de delante perdía la sombra en el primer fotograma y se encogía
-     al fondo en 150 ms —la quíntica—, cuando la que volvía aún era invisible:
-     Mario lo vio como «se hunde de golpe y luego comienza la animación»
-     (2026-10-27). Es el espejo de la ida, donde la siguiente avanza debajo de
-     la que se va. La sombra cambia de dueña en ese mismo instante, de golpe:
-     `0s` con retardo es un cambio diferido, no una animación de la sombra.
-     `--cruce` es el 52% de `del-fondo`; si cambia ese fotograma, cambia esto. */
-  .highlights[data-mazo] .strip[data-atras] {
-    --cruce: calc(var(--dur-baraja) * 0.52);
-  }
+  /* Mientras entra, el resto del mazo espera quieto y se recoloca cuando ya
+     está tapado por ella. Sin esa espera, la de delante perdía la sombra en el
+     primer fotograma y se encogía al fondo en 150 ms —la quíntica—, y Mario lo
+     vio como «se hunde de golpe». La sombra cambia de dueña en ese mismo
+     instante: `0s` con retardo es un cambio diferido, no una animación de la
+     sombra. */
   .highlights[data-mazo] .strip[data-atras] .card:not([data-vuelve]) {
     transition:
-      transform var(--dur-in) var(--ease) var(--cruce),
-      opacity var(--dur-in) var(--ease) var(--cruce),
-      box-shadow 0s linear var(--cruce);
+      transform var(--dur-in) var(--ease) var(--dur-vuelta),
+      opacity var(--dur-in) var(--ease) var(--dur-vuelta),
+      box-shadow 0s linear var(--dur-vuelta);
   }
   .highlights[data-mazo] .strip[data-atras] .card[data-vuelve] {
-    transition: box-shadow 0s linear var(--cruce);
+    transition: box-shadow 0s linear var(--dur-vuelta);
   }
 
   @media (min-width: 861px) {
