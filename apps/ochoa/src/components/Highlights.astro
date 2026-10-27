@@ -147,18 +147,32 @@ const priceLabel = (price: MenuEntry["price"]) => {
       marcas.forEach((m, i) => m.toggleAttribute("data-activo", i === frente));
     };
 
+    const suelta = () =>
+      cartas.forEach((c) => {
+        c.removeAttribute("data-sale");
+        c.removeAttribute("data-vuelve");
+      });
     const siguiente = () => {
       const sale = cartas[frente];
-      cartas.forEach((c) => c.removeAttribute("data-sale"));
+      suelta();
       frente = (frente + 1) % n;
       coloca();
       void sale.offsetWidth;
       sale.setAttribute("data-sale", "");
     };
+    /* Hacia atrás no basta con recolocar: la carta que vuelve estaba escondida
+       en el fondo, y con solo la transición se ponía encima desde el primer
+       fotograma y aparecía fundiéndose sobre la de delante — las dos a medio
+       transparentar a la vez. Mario lo vio en su iPhone el 2026-10-27. Hace el
+       camino de `al-fondo` al revés: sale del fondo por la izquierda y entra
+       por encima. */
     const anterior = () => {
-      cartas.forEach((c) => c.removeAttribute("data-sale"));
+      suelta();
       frente = (frente - 1 + n) % n;
       coloca();
+      const vuelve = cartas[frente];
+      void vuelve.offsetWidth;
+      vuelve.setAttribute("data-vuelve", "");
     };
 
     const pausa = () => {
@@ -246,6 +260,7 @@ const priceLabel = (price: MenuEntry["price"]) => {
       seccion.removeAttribute("data-mazo");
       cartas.forEach((c) => {
         c.removeAttribute("data-sale");
+        c.removeAttribute("data-vuelve");
         c.removeAttribute("data-delante");
         c.removeAttribute("data-escondida");
       });
@@ -495,6 +510,34 @@ const priceLabel = (price: MenuEntry["price"]) => {
   }
   .highlights[data-mazo] .card[data-sale] {
     animation: al-fondo var(--dur-baraja) var(--ease-telon) both;
+  }
+  /* El mismo viaje al revés, para deslizar hacia la derecha: parte de donde
+     esperan las escondidas —el puesto 2, invisible—, asoma por la izquierda
+     todavía por detrás, y a mitad de viaje pasa por encima y llega al frente.
+     La curva del telón es simétrica, así que la vuelta se siente igual que la
+     ida. */
+  @keyframes del-fondo {
+    0% {
+      transform: translate(calc(var(--paso) * -2), 0) rotate(0deg) scale(0.9);
+      opacity: 0;
+      z-index: 0;
+    }
+    48% {
+      z-index: 0;
+    }
+    52% {
+      transform: translate(-112%, -4px) rotate(calc(var(--tuerce) * -1.5)) scale(1);
+      opacity: 1;
+      z-index: 20;
+    }
+    100% {
+      transform: translate(0, 0) rotate(0deg) scale(1);
+      opacity: 1;
+      z-index: 20;
+    }
+  }
+  .highlights[data-mazo] .card[data-vuelve] {
+    animation: del-fondo var(--dur-baraja) var(--ease-telon) both;
   }
 
   @media (min-width: 861px) {

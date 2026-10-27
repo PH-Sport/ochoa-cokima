@@ -318,6 +318,12 @@ más lejos; Ochoa es una tasca y es seca.
     0,75 / 0,75 / 1,25 / 0,25 / 0,25 s, las mismas que en el boceto; y bajando a los 7,45 s, el
     mazo cambió a los 11,28, en su hueco y no al azar.
 
+    **Y en un mazo, recolocar no es animar.** Hacia atrás el mazo solo se recolocaba, y la carta
+    que volvía del fondo saltaba de capa en el primer fotograma: aparecía fundiéndose *encima* de
+    la de delante, las dos a medio transparentar —Mario lo vio en su iPhone el 2026-10-27—. El
+    `z-index` no se transiciona, cambia de golpe. Lo que cambia de capa necesita una animación que
+    diga en qué momento cruza (`del-fondo` cruza al 52%, como `al-fondo` al 48%).
+
 ## Qué se mueve hoy
 
 | Dónde | Qué | Con qué |
@@ -329,7 +335,7 @@ más lejos; Ochoa es una tasca y es seca.
 | Botones, fichas de contacto y mapa | Se hunden al tocar y recuperan al soltar | `data-tacto`, `--dur-sube` |
 | Cinta rotulada (Ochoa) | Recorre en bucle | `translateX`, `--dur-cinta` |
 | Portada (Ochoa) | El telón: cada foto entra de derecha a izquierda sobre la anterior | `clip-path`, `--dur-pase`, `--dur-recogida`, `--ease-telon` |
-| Mazo de platos (Ochoa, solo móvil) | La de delante sale por la izquierda torciéndose y vuelve al fondo; el turno se rellena | `transform` + `opacity`, `--dur-turno`, `--desfase-turno`, `--dur-baraja`, `--ease-telon`; `scaleX` |
+| Mazo de platos (Ochoa, solo móvil) | La de delante sale por la izquierda torciéndose y vuelve al fondo; deslizando a la derecha, el mismo viaje al revés; el turno se rellena | `transform` + `opacity`, `--dur-turno`, `--desfase-turno`, `--dur-baraja`, `--ease-telon`; `scaleX` |
 | Portada | El titular se aparta del cartel de cookies | `translateY`, `--dur-out` |
 | Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |
 | Entrada (Cokima) | Una chispa baja por un riel, avisando de que hay más | `stroke-dashoffset`, 3,2s |
