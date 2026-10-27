@@ -322,7 +322,14 @@ más lejos; Ochoa es una tasca y es seca.
     que volvía del fondo saltaba de capa en el primer fotograma: aparecía fundiéndose *encima* de
     la de delante, las dos a medio transparentar —Mario lo vio en su iPhone el 2026-10-27—. El
     `z-index` no se transiciona, cambia de golpe. Lo que cambia de capa necesita una animación que
-    diga en qué momento cruza (`del-fondo` cruza al 52%, como `al-fondo` al 48%).
+    diga en qué momento cruza (`del-fondo` cruza al 52%, como `al-fondo` al 48%). **Y el resto
+    del mazo tiene que esperar a ese cruce.** Con la vuelta ya animada, Mario seguía viendo que
+    «se hunde de golpe y luego comienza la animación»: medido, la de delante perdía la sombra en
+    el primer fotograma y en 150 ms ya estaba encogida al fondo —la quíntica—, cuando la que volvía
+    seguía al 18% de opacidad. Ahora todo lo demás se recoloca con retardo `--cruce` (el 52% de
+    `--dur-baraja`), tapado por la que pasa encima, y la sombra cambia de dueña en ese mismo
+    instante con `box-shadow 0s linear var(--cruce)`. Medido: la de delante, quieta y con sombra
+    hasta los 505 ms; a los 515, sin sombra y retirándose bajo la otra.
 
 ## Qué se mueve hoy
 

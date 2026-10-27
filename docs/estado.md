@@ -18,8 +18,10 @@ móvil.** Mario lo eligió en dos bocetos. La portada deja la fachada y pasa a s
 con gente (`apps/ochoa/src/data/portada.ts`) que entran de derecha a izquierda cada 3,5 s. Los
 destacados, en el móvil, se apilan con las dos siguientes asomando por la izquierda, y la de
 delante se va al fondo cada 5,5 s; en el ordenador siguen siendo la fila quieta. Deslizar a la
-derecha trae la del fondo con el mismo viaje al revés: hasta el arreglo del mismo día aparecía
-fundiéndose encima de la de delante, y Mario lo vio en su iPhone (`movimiento.md`, regla 25). Los dos se paran
+derecha trae la del fondo con el mismo viaje al revés, y el resto del mazo espera quieto a que
+cruce por encima: hasta los dos arreglos del mismo día aparecía fundiéndose encima de la de
+delante, y después la de delante se hundía antes de verse nada. Mario lo vio en su iPhone las dos
+veces (`movimiento.md`, regla 25). Los dos se paran
 para siempre al primer toque, y no van al mismo compás: comparten un reloj para no cambiar nunca
 a la vez (`movimiento.md`, regla 25). **Medido sobre el build:** mazo simétrico a 390 px (19,5 px
 de margen a cada lado, tiras de 16 px, las seis cartas a 293 px), sin scroll lateral a cinco

@@ -147,11 +147,13 @@ const priceLabel = (price: MenuEntry["price"]) => {
       marcas.forEach((m, i) => m.toggleAttribute("data-activo", i === frente));
     };
 
-    const suelta = () =>
+    const suelta = () => {
+      mazo.removeAttribute("data-atras");
       cartas.forEach((c) => {
         c.removeAttribute("data-sale");
         c.removeAttribute("data-vuelve");
       });
+    };
     const siguiente = () => {
       const sale = cartas[frente];
       suelta();
@@ -168,6 +170,8 @@ const priceLabel = (price: MenuEntry["price"]) => {
        por encima. */
     const anterior = () => {
       suelta();
+      void mazo.offsetWidth;
+      mazo.setAttribute("data-atras", "");
       frente = (frente - 1 + n) % n;
       coloca();
       const vuelve = cartas[frente];
@@ -258,6 +262,7 @@ const priceLabel = (price: MenuEntry["price"]) => {
       ojo.disconnect();
       abort.abort();
       seccion.removeAttribute("data-mazo");
+      mazo.removeAttribute("data-atras");
       cartas.forEach((c) => {
         c.removeAttribute("data-sale");
         c.removeAttribute("data-vuelve");
@@ -538,6 +543,27 @@ const priceLabel = (price: MenuEntry["price"]) => {
   }
   .highlights[data-mazo] .card[data-vuelve] {
     animation: del-fondo var(--dur-baraja) var(--ease-telon) both;
+  }
+  /* Mientras la que vuelve viaja por detrás, el resto del mazo espera quieto y
+     se recoloca en el instante en que ella cruza por encima, tapado. Sin esta
+     espera, la de delante perdía la sombra en el primer fotograma y se encogía
+     al fondo en 150 ms —la quíntica—, cuando la que volvía aún era invisible:
+     Mario lo vio como «se hunde de golpe y luego comienza la animación»
+     (2026-10-27). Es el espejo de la ida, donde la siguiente avanza debajo de
+     la que se va. La sombra cambia de dueña en ese mismo instante, de golpe:
+     `0s` con retardo es un cambio diferido, no una animación de la sombra.
+     `--cruce` es el 52% de `del-fondo`; si cambia ese fotograma, cambia esto. */
+  .highlights[data-mazo] .strip[data-atras] {
+    --cruce: calc(var(--dur-baraja) * 0.52);
+  }
+  .highlights[data-mazo] .strip[data-atras] .card:not([data-vuelve]) {
+    transition:
+      transform var(--dur-in) var(--ease) var(--cruce),
+      opacity var(--dur-in) var(--ease) var(--cruce),
+      box-shadow 0s linear var(--cruce);
+  }
+  .highlights[data-mazo] .strip[data-atras] .card[data-vuelve] {
+    transition: box-shadow 0s linear var(--cruce);
   }
 
   @media (min-width: 861px) {
