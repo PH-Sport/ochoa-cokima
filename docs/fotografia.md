@@ -1,6 +1,6 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-10-26 · Ochoa tiene foto en sus seis destacados; Cokima, portada y casa
+> **Estado: vivo** · revisado 2026-10-27 · Ochoa tiene foto en sus seis destacados y portada de seis fotos; Cokima, portada y casa
 
 ## Estado
 
@@ -76,12 +76,16 @@ mayor resolución disponible.
 | Destino | Qué buscamos |
 |---|---|
 | `apps/cokima/src/assets/hero.jpg` | ✅ **`DepAPTwNTvJ-1`, puesta el 2026-10-26**: la sartén en llamas en el fogón (cuadrada, 1440), con su copia a 1200 en `public/images/` para las redes. Sustituye a la burrata de 2021. Es la misma foto que el pase de «la casa», pero **en pantalla no se repite: la portada con foto (`Hero.astro`) quedó huérfana al entrar el rediseño en `preview` el 2026-10-26**, y la cabecera es el vídeo. Esta foto solo se ve al compartir el enlace. Mientras la portada vieja estuvo puesta, a 390px el tramo rojo del titular caía sobre el fuego y se leía mal; con la burrata pasaba lo mismo o peor (titular blanco sobre la burrata blanca), y otras dos fotos oscuras tampoco lo resolvían. Era el velo de esa portada, no la foto. **Si `Hero.astro` vuelve a usarse, revisar eso antes.** |
-| `apps/ochoa/src/assets/hero.jpg` | **Ya cubierta** con la fachada (`LosOchoa-5`): toldo, cartel colgante y terraza. |
+| `apps/ochoa/src/assets/portada/*.jpg` | ✅ **Desde el 2026-10-27, seis fotos de la casa con gente que se relevan con un telón** (la serie y sus textos alternativos, en `src/data/portada.ts`): la sala con el rótulo, el camarero con dos clientas (`DQe2dPqiJwV-1`), el cocinero (`DQB1FAiCKup-1`), el camarero bajo los rótulos (`DV_ZtJHCPRQ-1`), el camarero sirviendo (`DPeYU5ziIo6-1`) y el cartel colgante (`DPyg6SPCGH5-1`); la sala es `DHdb1_hCOls-1`. Mario la pidió el 2026-10-26 —«no nos hace falta una foto del local en la portada»— y eligió el telón entre cinco bocetos. La fachada (`hero.jpg`, `LosOchoa-5`) ya no se ve en la portada; **sigue siendo la imagen al compartir el enlace** (§Nota técnica). El archivo de `src/assets/hero.jpg` se queda sin uso, y no se ha borrado. |
 
-**Ojo con la portada de Ochoa.** Es cuadrada y se sirve a sangre, así que en móvil se recorta a
-lo alto: lleva `object-position: 62% 42%` para que el recorte se quede con el cartel y la puerta
-y no con la acera. Si se sustituye por otra foto **hay que revisar ese encuadre**, porque está
-elegido para esta imagen y no para cualquiera.
+**Ojo con el encuadre de la portada de Ochoa, que cambia de lado según la pantalla.** Las seis son
+cuadradas o verticales y se sirven a sangre. En el móvil la portada es vertical y se recortan por
+los lados: medidas a 390 px, las seis guardan caras y rótulos centradas. En el ordenador es al
+revés —1440×682 a 1440 px— y se recortan por arriba y por abajo: centradas, al camarero con las
+clientas y al cocinero se les iba la cara, y llevan `position` en `portada.ts` (`50% 20%` y
+`50% 12%`). La del camarero sirviendo se deja centrada a propósito: subiéndola entraba él pero se
+iba la clienta, que es la que mira a cámara. **Al cambiar o añadir una foto, mirar las dos
+pantallas.** A 1440 px y pantalla retina la foto se estira 2× (calculado, no medido: la foto es de 1440 y la pantalla pide 2880).
 
 ### Fotos de plato
 
@@ -242,8 +246,8 @@ años):
   de arriba).
 - **Del local y de gente hay material de verdad:** el camarero en la barra con los rótulos
   pintados, la sala con «La tasca que te mereces» y clientes, el comedor con «Conservas», el
-  cocinero, Guille poniéndose el delantal, clientes viendo el fútbol. Es la base para una portada
-  de varias fotos (collage o carrusel), que Mario propuso el 2026-10-26 y está sin diseñar.
+  cocinero, Guille poniéndose el delantal, clientes viendo el fútbol. Seis de ellas son, desde el
+  2026-10-27, la portada de Ochoa (tabla de portadas).
 - **Dos señales de que la carta transcrita puede estar desfasada:** Cokima publica una pannacotta
   andina que no está en `menu-es.json`, y una «nueva versión de oreja» con alioli y chips de
   boniato, cuando la carta dice milhojas de patata y salsa brava. Hay que preguntarlo al
@@ -282,6 +286,9 @@ Las fotos de portada viven duplicadas a propósito: en `src/assets/` las procesa
 `public/images/` se sirven tal cual como `og:image` de las redes sociales, que necesita una URL
 estable. Al sustituir una portada hay que cambiar **las dos copias**.
 
-En Ochoa el `og:image` apunta a `/images/hero.jpg` —la fachada— para que la vista previa en
-redes sea la misma imagen que ve quien entra. `/images/mesa.jpg` es el cenital de la mesa, que
+En Ochoa el `og:image` apunta a `/images/hero.jpg` —la fachada—. Se eligió para que la vista
+previa en redes fuera la misma imagen que ve quien entra, y **desde el 2026-10-27 ya no lo es**: la
+portada abre con la sala. Se dejó así a propósito, sin decidir: la fachada dice qué sitio es mejor
+que cualquiera de las seis en una miniatura. Si Mario prefiere la sala, es copiarla a
+`public/images/` y cambiar la ruta en `Base.astro`. `/images/mesa.jpg` es el cenital de la mesa, que
 sirve la sección «la tasca».

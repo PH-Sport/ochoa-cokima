@@ -3,13 +3,15 @@
 import { Image } from "astro:assets";
 import OpenState from "@tombo/ui/OpenState.astro";
 import { RESTAURANT } from "../site.ts";
-// La portada es la fachada: el toldo rojo, el cartel colgante y la terraza en la
-// Castellana. Antes fue el cenital de la mesa —que recortado a pantalla vertical
-// se quedaba en un fragmento de plato sin contexto— y después el rótulo del
-// cristal, que era demasiado plano de cerca y no cabía entero en móvil. Esta
-// dice qué sitio es antes de leer una palabra, y aguanta el recorte porque el
-// nombre aparece dos veces, arriba y a la derecha.
-import hero from "../assets/hero.jpg";
+// La portada son seis fotos de la casa con gente, que se relevan con un telón:
+// la nueva entra de derecha a izquierda sobre la anterior. Antes fue una sola
+// foto —el cenital de la mesa, que recortado a pantalla vertical se quedaba en un
+// fragmento de plato; el rótulo del cristal, demasiado plano de cerca; y la
+// fachada—. Mario la cambió el 2026-10-26: no hace falta la foto del local, sino
+// enseñar la casa viva. Eligió el telón entre cinco bocetos (collage, rejilla,
+// escaparate, ronda con fundido y telón) porque tiene carácter de tasca. La serie
+// y el porqué de cada foto, en `../data/portada.ts`.
+import { portada } from "../data/portada.ts";
 
 interface Props {
   locale: "es" | "en";
@@ -19,22 +21,41 @@ const es = locale === "es";
 ---
 
 <header class="hero" id="top">
-  <Image
-    src={hero}
-    alt={es
-      ? "Fachada de Tasquita Los Ochoa: toldo rojo, cartel colgante con el nombre y la terraza en la calle"
-      : "Tasquita Los Ochoa storefront: red awning, hanging sign and the street terrace"}
-    widths={[390, 640, 960, 1200]}
-    sizes="100vw"
-    quality={72}
-    loading="eager"
-    fetchpriority="high"
-    class="shot"
-  />
+  {/* La primera foto es la única con prioridad: es la que se pinta al entrar y
+      la que mide la carga. Las demás entran en la ronda a los 3,5 s como pronto
+      y se piden con prioridad baja para no competir con ella. Sin JavaScript se
+      queda la primera, quieta, que es una portada completa. */}
+  {/* El último ancho es 1600 y no 1440, que es lo que miden las fotos: Vercel
+      solo sirve los anchos de `imagesConfig` y descarta el resto en silencio
+      —con 1440 el srcset se quedaba en 1200—, y pedir 1600 de una foto de 1440
+      devuelve la foto entera, sin agrandarla. */}
+  <div class="pase" data-pase>
+    {portada.map((foto, i) => (
+      <Image
+        src={foto.src}
+        alt={foto.alt[locale]}
+        widths={[390, 640, 960, 1200, 1600]}
+        sizes="100vw"
+        quality={72}
+        loading={i === 0 ? "eager" : "lazy"}
+        fetchpriority={i === 0 ? "high" : "low"}
+        class:list={["shot", { on: i === 0 }]}
+        style={foto.position ? `object-position: ${foto.position}` : undefined}
+      />
+    ))}
+  </div>
   <div class="veil"></div>
   <div class="wrap copy">
     <h1 class="cartel">{es ? "La tasca que te mereces" : "The tavern you deserve"}</h1>
-    <OpenState hours={RESTAURANT.openingHours} locale={locale} />
+    <div class="pie">
+      <OpenState hours={RESTAURANT.openingHours} locale={locale} />
+      {/* Por qué foto va la ronda. Es un indicador, no un mando, como los turnos
+          de «Lo que más sale»: los puntos medían 10 px, muy por debajo de un dedo,
+          y la portada no se recorre — se mira. */}
+      <div class="pager" aria-hidden="true" data-pager>
+        {portada.map((_, i) => <span class:list={{ on: i === 0 }}></span>)}
+      </div>
+    </div>
   </div>
   {/* La referencia del alto: lleva el mismo `calc()` que la portada pero sin
       congelar, fuera del flujo e invisible. El script observa ESTE elemento y
@@ -54,13 +75,93 @@ const es = locale === "es";
    * ya había.
    */
   import { congelaAlto } from "@tombo/ui/alto-congelado.ts";
+  import { hastaElProximo, leeDuracion } from "../compas.ts";
 
   let sueltaAnterior: (() => void) | undefined;
+  let sueltaTelon: (() => void) | null = null;
 
-  document.addEventListener("astro:page-load", () => {
+  /* El telón. La ronda avanza sola cada `--dur-pase` y, como todo lo que se
+   * mueve solo (regla 6 de `docs/movimiento.md`), se para para siempre al primer
+   * toque, no corre fuera de pantalla ni con la pestaña en segundo plano, y no
+   * arranca si se pide menos movimiento. Cuándo toca cada cambio no lo cuenta
+   * ella: lo pregunta a `compas.ts`, que la mantiene a destiempo del mazo de
+   * «Lo que más sale». */
+  function montaTelon(origen: number) {
+    const hero = document.querySelector<HTMLElement>(".hero");
+    const fotos = [...document.querySelectorAll<HTMLElement>(".hero [data-pase] > img")];
+    const puntos = [...document.querySelectorAll<HTMLElement>(".hero [data-pager] > span")];
+    if (!hero || fotos.length < 2) return null;
+
+    const abort = new AbortController();
+    const { signal } = abort;
+    let actual = 0;
+    let reloj: ReturnType<typeof setTimeout> | null = null;
+    let parado = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /* La que llega se pone encima y se descubre; la que se va se queda debajo,
+       entera, hasta que la tapa. Las demás, recogidas. */
+    const pasa = () => {
+      /* Si la siguiente no ha llegado todavía —en una conexión lenta—, el telón
+         descubriría un hueco. Se espera al próximo turno en vez de enseñarlo. */
+      const viene = fotos[(actual + 1) % fotos.length] as HTMLImageElement;
+      if (!viene.complete || viene.naturalWidth === 0) return;
+      const anterior = actual;
+      actual = (actual + 1) % fotos.length;
+      fotos.forEach((f) => f.classList.remove("on", "fondo"));
+      fotos[anterior].classList.add("fondo");
+      void fotos[actual].offsetWidth;
+      fotos[actual].classList.add("on");
+      puntos.forEach((p, i) => p.classList.toggle("on", i === actual));
+    };
+
+    const pausa = () => {
+      if (reloj) clearTimeout(reloj);
+      reloj = null;
+    };
+    const arranca = () => {
+      if (parado || reloj) return;
+      const periodo = leeDuracion("--dur-pase");
+      reloj = setTimeout(() => {
+        reloj = null;
+        pasa();
+        arranca();
+      }, hastaElProximo(origen, periodo, periodo));
+    };
+    const para = () => {
+      parado = true;
+      pausa();
+    };
+
+    for (const ev of ["pointerdown", "touchstart"]) {
+      hero.addEventListener(ev, para, { passive: true, once: true, signal });
+    }
+    let enVista = false;
+    const decide = () => (enVista && !document.hidden ? arranca() : pausa());
+    const ojo = new IntersectionObserver(
+      ([e]) => {
+        /* La proporción y no `isIntersecting`: esa es cierta en cuanto asoma un
+           borde, y la primera llamada llega siempre, cruce o no el umbral. */
+        enVista = e.intersectionRatio >= 0.5;
+        decide();
+      },
+      { threshold: 0.5 },
+    );
+    ojo.observe(hero);
+    document.addEventListener("visibilitychange", decide, { signal });
+
+    return () => {
+      pausa();
+      ojo.disconnect();
+      abort.abort();
+    };
+  }
+
+  document.addEventListener("astro:page-load", (e) => {
     sueltaAnterior?.();
     const referencia = document.querySelector<HTMLElement>(".hero .alto-ref");
     sueltaAnterior = referencia ? congelaAlto({ referencia, variable: "--alto-portada" }) : undefined;
+    sueltaTelon?.();
+    sueltaTelon = montaTelon(e.timeStamp);
   });
 </script>
 
@@ -93,12 +194,35 @@ const es = locale === "es";
     visibility: hidden;
     pointer-events: none;
   }
+  /* Su propio contexto de apilamiento: los `z-index` de las fotos ordenan la
+     ronda entre ellas y no pueden subir por encima del velo ni del titular. */
+  .pase {
+    position: absolute;
+    inset: 0;
+    isolation: isolate;
+    background: var(--ink);
+  }
+  /* Recogidas a la derecha mientras esperan su turno. Las capas van por
+     `z-index` y no por el orden del HTML: al dar la vuelta, la primera foto
+     entraba por debajo de la última y el telón no se veía. */
   .shot {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    clip-path: inset(0 0 0 100%);
+  }
+  /* Cruza la pantalla entera, así que va con la curva del telón del menú y la
+     duración de la recogida, que miden lo mismo (regla 9). */
+  .shot.on {
+    z-index: 2;
+    clip-path: inset(0);
+    transition: clip-path var(--dur-recogida) var(--ease-telon);
+  }
+  .shot.fondo {
+    z-index: 1;
+    clip-path: inset(0);
   }
 
   /* La portada es una sola pieza a sangre en todos los anchos, y el titular se
@@ -107,13 +231,6 @@ const es = locale === "es";
      rótulo del cristal; se retiró con esa foto: la banda roja competía con la
      imagen y la sombra del titular tenía que cambiar de color para verse, que era
      perder justo lo que mejor funcionaba. */
-  @media (max-width: 860px) {
-    /* Encuadre para el recorte vertical: la foto se lleva el peso al cartel
-       colgante y a la puerta, no a la acera. */
-    .shot {
-      object-position: 62% 42%;
-    }
-  }
   /* Degradado solo bajo el texto, no una capa uniforme sobre toda la foto:
      apagar la imagen entera es justo lo que hacen las cinco webs que nos
      pusieron de referencia, y es lo que las vuelve intercambiables. */
@@ -162,5 +279,31 @@ const es = locale === "es";
        papel y la sombra dura la pone el rojo de la marca. */
     color: var(--paper);
     text-shadow: 0.04em 0.045em 0 var(--rojo);
+  }
+  /* El estado de apertura a la izquierda y la ronda a la derecha, en la misma
+     línea: así los puntos no tapan foto que no tape ya el texto. */
+  .pie {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .pager {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  /* El punto de la foto en curso se estira a barra, como los turnos de «Lo que
+     más sale». */
+  .pager span {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+    transition: width var(--dur-in) var(--ease);
+  }
+  .pager span.on {
+    width: 26px;
+    background: var(--paper);
   }
 </style>

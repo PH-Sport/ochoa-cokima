@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-10-26 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-10-27 · **el punto de entrada del repo**
 
-- **Corte:** 2026-10-26
+- **Corte:** 2026-10-27
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
   nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
@@ -12,6 +12,22 @@
 ---
 
 ## 0. Por dónde seguir
+
+**Ochoa, 2026-10-27: la portada es un telón de seis fotos y «Lo que más sale» es un mazo en el
+móvil.** Mario lo eligió en dos bocetos. La portada deja la fachada y pasa a seis fotos de la casa
+con gente (`apps/ochoa/src/data/portada.ts`) que entran de derecha a izquierda cada 3,5 s. Los
+destacados, en el móvil, se apilan con las dos siguientes asomando por la izquierda, y la de
+delante se va al fondo cada 5,5 s; en el ordenador siguen siendo la fila quieta. Los dos se paran
+para siempre al primer toque, y no van al mismo compás: comparten un reloj para no cambiar nunca
+a la vez (`movimiento.md`, regla 25). **Medido sobre el build:** mazo simétrico a 390 px (19,5 px
+de margen a cada lado, tiras de 16 px, las seis cartas a 293 px), sin scroll lateral a cinco
+alturas, y separaciones entre cambios de 0,25 s o más. Encuadre de las fotos en `fotografia.md`.
+**Sin medir:** en un iPhone de verdad, con «reducir movimiento» activado (por código no arranca
+ninguno de los dos), y la carga en una conexión lenta (si la foto siguiente no ha llegado, el
+telón se salta ese turno). **Para Mario:** la vista previa en redes sigue siendo la fachada
+(`fotografia.md` §Nota técnica), y el hueco del equipo sigue sin foto. Y un efecto de rebote: la
+hipótesis de §3.sexies sobre la barra de iOS —el scroll animado de la tira— ya no aplica en el
+móvil, porque el mazo no hace scroll.
 
 **Novedad del 2026-09-07: el repo ya no depende de la memoria local de ningún agente.** Lo que
 antes solo vivía ahí —con quién se trabaja, cómo se verifica y los identificadores que cuestan de
@@ -105,9 +121,8 @@ seis destacados de «Lo que más sale» llevan foto, y la de las croquetas susti
 ficha pide ahora la foto hasta 960 px: a 390 de ancho, con 640, se estiraba 1,2 veces. **Medido
 sobre el build:** seis fotos en la tira en los dos idiomas, las seis fichas a 293 px de alto,
 foto de 261×190 a 390 y sin scroll lateral. Por qué se hizo con un receptor local y qué trampas
-salieron, en `fotografia.md` §La fototeca. **Pendiente de Mario:** la portada de varias fotos
-(collage o carrusel) que propuso, con las fotos del local y de gente que han salido, y quién va
-en el hueco del equipo.
+salieron, en `fotografia.md` §La fototeca. **Pendiente de Mario:** quién va en el hueco del
+equipo. La portada de varias fotos que propuso está puesta desde el 2026-10-27 (arriba).
 
 **Las dos casas, 2026-10-26: las fotos recientes de Instagram ya se pueden bajar.** Sin acceso a
 las cuentas, un fragmento lee las fotos desde el perfil público en el navegador y un script las
@@ -545,7 +560,8 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
 **Hay nueve fotos del local en la web vieja del grupo** (`/wp-content/uploads/2021/09/LosOchoa-1..9.jpg`,
 1000×1000) que nadie había mirado. De ahí sale todo lo de abajo.
 
-**La portada es la fachada** (`hero.jpg`): el toldo rojo, el cartel colgante, la barra vista
+**Desde el 2026-10-27 ya no: la portada es el telón de seis fotos (§0).** Lo que sigue es cómo
+quedó en julio. **La portada es la fachada** (`hero.jpg`): el toldo rojo, el cartel colgante, la barra vista
 desde la calle y «LA TASCA QUE TE MERECES» en el cristal. Dice qué sitio es antes de leer una
 palabra. Es una sola pieza a sangre en todos los anchos, con el titular apoyado en la foto y su
 sombra roja, que es lo que mejor funcionaba de la portada original.

@@ -1,6 +1,6 @@
 # Movimiento
 
-> **Estado: vivo** · revisado 2026-09-07
+> **Estado: vivo** · revisado 2026-10-27
 
 Pocas animaciones, concretas, y todas saliendo de los mismos cinco valores. **No hay un solo
 milisegundo suelto en los componentes**: si algo se mueve, su duración y su curva vienen de
@@ -18,14 +18,17 @@ Viven en `apps/<app>/src/styles/tokens.css`.
 | `--shift` | `14px` | `18px` | Cuánto se desplaza lo que entra. |
 | `--stagger` | `30ms` | `65ms` | El escalón entre hermanos en cascada. |
 
-**Siete más, solo en Ochoa,** para movimientos que no son ni entrar ni responder a un dedo. Cada
+**Once más, solo en Ochoa,** para movimientos que no son ni entrar ni responder a un dedo. Cada
 uno existe porque no cabía en los cinco de arriba, no porque hiciera falta un número nuevo:
 
 | Token | Ochoa | Para qué |
 |---|---|---|
 | `--ease-telon` | `cubic-bezier(0.45, 0.02, 0.55, 1)` | La curva de lo que **recorre la pantalla entera**. Ver la regla 9. |
 | `--dur-cinta` | `34s` | La cinta rotulada **recorre**. Lineal, no con la curva: un rótulo que acelera se lee como un fallo. |
-| `--dur-turno` | `3,5s` | Lo que la tira de platos **espera** antes de pasar al siguiente. |
+| `--dur-pase` | `3,5s` | Lo que una foto de la portada **espera** antes de que el telón traiga la siguiente. |
+| `--dur-turno` | `5,5s` | Lo que un plato **espera** al frente del mazo antes de irse al fondo. Fue 3,5 s; se alargó el 2026-10-27 para no ir al compás de la portada (regla 25). |
+| `--desfase-turno` | `0,25s` | No es una duración, es la **fase**: cuánto más tarda el primer cambio del mazo. Es lo que impide que coincida con la portada (regla 25). |
+| `--dur-baraja` | `980ms` | Lo que tarda la carta de delante en **salir torciéndose y volver al fondo** del mazo. Dos viajes, así que 1,4 veces `--dur-recogida`, con `--ease-telon`. |
 | `--dur-sube` | `240ms` | Lo que un botón tarda en **recuperar su sitio** tras soltarlo. |
 | `--dur-firma` | `280ms` | Lo que la sombra dura tarda en **despegarse** del rótulo en la entrada. No es entrar: el rótulo ya está ahí, lo que aparece es su relieve. |
 | `--espera-firma` | `700ms` | El **retardo** de la recogida de la entrada, contado desde el arranque —no una duración—. Deja 420ms de rótulo quieto y entero después de la firma. |
@@ -65,8 +68,8 @@ más lejos; Ochoa es una tasca y es seca.
    *cómo* se mueve algo que va a estar ahí de todas formas; no vale cuando la pieza **solo
    existe para moverse**. Esas no se atenúan: no se pintan, y eso hay que decidirlo antes del
    primer pintado, en el script. Ver `intro.ts`.
-6. **Nada que se mueva solo sigue moviéndose después de que alguien lo toque.** La tira de
-   platos avanza sola hasta el primer gesto y ahí se apaga para siempre: quien desliza ha dicho
+6. **Nada que se mueva solo sigue moviéndose después de que alguien lo toque.** El mazo de
+   platos avanza solo hasta el primer gesto y ahí se apaga para siempre: quien desliza ha dicho
    que prefiere conducir. Y no corre mientras no se la ve, ni con la pestaña en segundo plano.
    **Esto vale para todo lo que se mueva solo, y la cinta rotulada se lo había saltado:** vivía
    en la franja 1144-1185 de una portada de casi 4000, o sea animándose en el 70% del recorrido
@@ -133,7 +136,8 @@ más lejos; Ochoa es una tasca y es seca.
     eran vestigios:** medido en las dieciséis rutas de las dos webs a 360px, el ancho
     desplazable sin el recorte es igual al visible, y no existe en el monorepo ni un `href="#"`
     ni un `scrollIntoView` que el `smooth` pudiera animar —el único scroll suave, el de la tira
-    de platos, pide su `behavior` en la propia llamada—. Lo que se salga se recorta en la pieza
+    de platos, pedía su `behavior` en la propia llamada; desde el 2026-10-27 la tira es un mazo en
+    el móvil y ya no hace scroll—. Lo que se salga se recorta en la pieza
     que se sale, nunca en el documento. Y la altura de la portada cuelga de `svh`, que por
     definición no se mueve cuando la barra colapsa: `dvh` ahí habría hecho bailar la página
     entera en cada gesto.
@@ -300,6 +304,20 @@ más lejos; Ochoa es una tasca y es seca.
     Lo que NO se hizo, y conviene que siga sin hacerse: `preload="auto"` para adelantar más. Eso
     deja al navegador bajando la cinta desde el principio, compitiendo con el póster, que es el LCP.
 
+25. **Dos movimientos que se ven a la vez no comparten compás, y el desfase solo existe con un
+    reloj común.** En el móvil, la portada (el telón) y «Lo que más sale» (el mazo) están en la
+    misma pantalla. Con los dos cada 3,5 s y arrancando juntos cambiaban a la vez y la página latía
+    —Mario lo vio en el boceto el 2026-10-27—. Se separaron: la portada cada `--dur-pase`, el mazo
+    cada `--dur-turno` (5,5 s) y su primer cambio `--desfase-turno` más tarde. Con 3,5 y 5,5 los
+    cambios caen en múltiplos de medio segundo, y ese cuarto los deja siempre a 0,25 s o más; sin
+    él, uno de cada siete coincidía exacto. **La trampa es que el desfase no sobrevive a dos relojes
+    sueltos:** el mazo arranca cuando se ve la mitad, que es al bajar, y los dos se paran fuera de
+    pantalla. Cada vez que uno vuelve, su fase saldría al azar. Por eso ninguno cuenta su espera:
+    los dos preguntan a `apps/ochoa/src/compas.ts` cuándo les toca, contado desde el `timeStamp`
+    del mismo `astro:page-load`. **Medido sobre el build a 390 px, 40 s:** separaciones de 1,25 /
+    0,75 / 0,75 / 1,25 / 0,25 / 0,25 s, las mismas que en el boceto; y bajando a los 7,45 s, el
+    mazo cambió a los 11,28, en su hueco y no al azar.
+
 ## Qué se mueve hoy
 
 | Dónde | Qué | Con qué |
@@ -310,7 +328,8 @@ más lejos; Ochoa es una tasca y es seca.
 | Enlaces del menú | Color al pasar por encima (y la brasa, en Cokima) | `color`/`box-shadow`, `--dur-out` |
 | Botones, fichas de contacto y mapa | Se hunden al tocar y recuperan al soltar | `data-tacto`, `--dur-sube` |
 | Cinta rotulada (Ochoa) | Recorre en bucle | `translateX`, `--dur-cinta` |
-| Tira de platos (Ochoa) | El turno se rellena y pasa al siguiente | `scaleX`, `--dur-turno` |
+| Portada (Ochoa) | El telón: cada foto entra de derecha a izquierda sobre la anterior | `clip-path`, `--dur-pase`, `--dur-recogida`, `--ease-telon` |
+| Mazo de platos (Ochoa, solo móvil) | La de delante sale por la izquierda torciéndose y vuelve al fondo; el turno se rellena | `transform` + `opacity`, `--dur-turno`, `--desfase-turno`, `--dur-baraja`, `--ease-telon`; `scaleX` |
 | Portada | El titular se aparta del cartel de cookies | `translateY`, `--dur-out` |
 | Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |
 | Entrada (Cokima) | Una chispa baja por un riel, avisando de que hay más | `stroke-dashoffset`, 3,2s |

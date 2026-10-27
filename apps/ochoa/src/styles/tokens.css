@@ -115,13 +115,30 @@
      rótulo que recorre a velocidad variable se lee como un fallo. Es la sexta
      pieza del sistema de movimiento, no un milisegundo suelto. */
   --dur-cinta: 34s;
-  /* Lo que dura un plato en la tira antes de pasar al siguiente. Es el otro
-     movimiento que no responde a un dedo: espera. Tres segundos y medio es lo
-     que se tarda en leer un nombre de plato y sus dos precios sin agobio —por
-     debajo se convierte en una diapositiva y por encima parece que se ha
-     colgado—. Cuando alguien toca la tira, esta cuenta se apaga para siempre:
-     quien desliza ha dicho que prefiere conducir. */
-  --dur-turno: 3.5s;
+  /* Lo que dura una foto de la portada antes de que el telón traiga la
+     siguiente. Es un movimiento que no responde a un dedo: espera. Tres segundos
+     y medio era el turno de la tira de platos, y para una foto que se mira de un
+     vistazo sigue siendo el justo. */
+  --dur-pase: 3.5s;
+  /* Lo que dura un plato al frente del mazo de «Lo que más sale» antes de irse
+     al fondo. Fue 3,5 s mientras la tira era lo único que se movía solo; con el
+     telón encima los dos cambiaban a la vez y la página latía (regla 18), así
+     que el 2026-10-27 el mazo tomó su propio ritmo, más lento que la portada:
+     además de mirarse, una carta se lee —nombre y dos precios—. Cuando alguien
+     toca el mazo, esta cuenta se apaga para siempre: quien desliza ha dicho que
+     prefiere conducir. */
+  --dur-turno: 5.5s;
+  /* Cuánto más tarda el primer cambio del mazo que un turno entero. No es una
+     duración: es la fase. Con 3,5 y 5,5 s los cambios de los dos caen en
+     múltiplos de medio segundo, y este cuarto es lo que les impide coincidir.
+     Solo funciona contado desde el reloj común de `compas.ts`. */
+  --desfase-turno: 0.25s;
+  /* Lo que tarda la carta de delante en salir por la izquierda, torcerse y
+     volver al fondo del mazo. Cruza casi el ancho de la pantalla, así que va con
+     `--ease-telon` (regla 9), y es más larga que `--dur-recogida` —1,4 veces—
+     porque hace dos viajes: salir y volver por detrás. Es la del boceto que
+     aprobó Mario. */
+  --dur-baraja: 980ms;
   /* La entrada a la web. Tres valores que no cabían en los cinco de base porque
      no miden ni entrar ni responder a un dedo.
 
