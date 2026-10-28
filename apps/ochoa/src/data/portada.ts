@@ -8,7 +8,9 @@
 // local con gente —camareros, clientas, el cocinero— y no de platos: los platos
 // ya los enseña «Lo que más sale», justo debajo. Salen de la fototeca
 // (docs/fotografia.md §La fototeca), a los 1440 px con los que las sirve
-// Instagram. El orden es el de la ronda: la sala con el rótulo de la casa abre.
+// Instagram. El orden es el de la ronda. En `preview` abre la sala con el rótulo
+// de la casa; en la rama de prueba `feat/inicio-paralaje` abre el cocinero sobre
+// la cortina roja, que es como la pidió Mario el 2026-10-28.
 import sala from "../assets/portada/sala.jpg";
 import barraClientas from "../assets/portada/barra-clientas.jpg";
 import cocinero from "../assets/portada/cocinero.jpg";
@@ -28,6 +30,14 @@ export const portada: {
   position?: string;
 }[] = [
   {
+    src: cocinero,
+    position: "50% 12%",
+    alt: {
+      es: "El cocinero con un cuchillo sobre la cortina roja",
+      en: "The cook holding a knife against the red curtain",
+    },
+  },
+  {
     src: sala,
     alt: {
       es: "La sala con el rótulo «La tasca que te mereces» y clientes",
@@ -40,14 +50,6 @@ export const portada: {
     alt: {
       es: "Camarero sonriendo a dos clientas en la barra",
       en: "A waiter smiling at two customers at the bar",
-    },
-  },
-  {
-    src: cocinero,
-    position: "50% 12%",
-    alt: {
-      es: "El cocinero con un cuchillo sobre la cortina roja",
-      en: "The cook holding a knife against the red curtain",
     },
   },
   {

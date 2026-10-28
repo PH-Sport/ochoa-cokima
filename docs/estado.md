@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-10-27 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-10-28 · **el punto de entrada del repo**
 
-- **Corte:** 2026-10-27
+- **Corte:** 2026-10-28
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
   nada nuevo aún)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
@@ -12,6 +12,27 @@
 ---
 
 ## 0. Por dónde seguir
+
+**Ochoa, 2026-10-28: una rama de prueba, `feat/inicio-paralaje`, para que Mario vea en la web el
+Inicio con paralaje.** La pidió él, sobre la regla de trabajar solo en `preview`: no se fusiona
+sin su visto bueno, y si la descarta se borra. Sale de un boceto que eligió entre varios, y trae
+tres cosas. **La portada** pasa a ocupar toda la pantalla bajo la cabecera, con un velo parejo
+ligero y las fotos fundiéndose una sobre otra en vez del telón. Abre el cocinero sobre la
+cortina roja. **El paralaje**: la portada va más lenta que la página. **Siete platos
+recortados**, sin fondo, asoman por las esquinas de las fotos de La tasca, La casa y el mapa y
+van algo más rápidos que su foto. Las piezas: `Hero.astro`, `paralaje.ts`, `Recorte.astro` y
+`--dur-fundido`. Los recortes y lo que se descartó por el camino, en `fotografia.md` §Los platos
+recortados.
+
+- **Contradice dos decisiones anteriores, a petición de Mario.** El fundido fue uno de los cinco
+  bocetos que perdieron frente al telón el 2026-10-26. La portada a pantalla completa apaga el
+  asomo de la primera ficha de «Lo que más sale», que estaba medido a propósito.
+- **Medido sobre el build a 375 px:** la portada mide 750 px, la pantalla menos la cabecera. Sin
+  scroll lateral a seis alturas, ni a 1280 px. Por cada 100 px de scroll, una foto de sección
+  sube 100, su plato 112 y la portada 70. Ningún plato pisa un texto, con la foto centrada ni a
+  300 px por encima o por debajo.
+- **Sin medir:** en un iPhone de verdad y con «reducir movimiento».
+- **Para Mario:** decidir si entra en `preview`.
 
 **Ochoa, 2026-10-27: la portada es un telón de seis fotos y «Lo que más sale» es un mazo en el
 móvil.** Mario lo eligió en dos bocetos. La portada deja la fachada y pasa a seis fotos de la casa

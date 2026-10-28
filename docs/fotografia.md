@@ -253,6 +253,43 @@ años):
   boniato, cuando la carta dice milhojas de patata y salsa brava. Hay que preguntarlo al
   restaurante antes de tocar nada.
 
+### Los platos recortados (rama de prueba `feat/inicio-paralaje`)
+
+**Siete platos sin fondo, en `apps/ochoa/src/assets/recortes/`.** Los usa el Inicio de la rama de
+prueba del 2026-10-28, asomando por las esquinas de las fotos (`Recorte.astro`). Son los únicos
+que salen bien: de las 38 fotos de plato que casan con la carta, solo 12 traen el plato entero
+sin tocar el borde, y de esas solo 7 dan un borde limpio. Los siete tienen el plato nombrado en el
+texto de su publicación; ninguno es una suposición.
+
+| Recorte | Plato de la carta | Foto |
+|---|---|---|
+| `tortilla.webp` | Pintxo de tortilla de patatas con cebolla | `DL5NAUeIv4v-1` |
+| `alcachofas.webp` | Alcachofas confitadas | `DJgsTILCUYd-1` |
+| `berenjenas.webp` | Berenjenas fritas con salmorejo | `DMItK1QIr6u-1` |
+| `ensaladilla.webp` | Ensaladilla rusa casera | `DMSamLoo0l1-1` |
+| `cachopin.webp` | Cachopín de ternera | `DMaFilOITIk-1` |
+| `tarta.webp` | Tarta de queso BRUTAL con helado de Idiazábal | `DeKBZtIoDva-1` |
+| `coulant.webp` | Coulant de chocolate | `DLzdrbbIM7E-2` |
+
+**Cómo se hicieron: recortados, sin generar nada.** La máscara de primer plano de Vision, en macOS
+(`VNGenerateForegroundInstanceMaskRequest`), decide qué píxeles se quedan y el resto pasa a
+transparente; no se pinta ni se inventa un píxel. Después se recorta al contorno del plato y se
+guarda en WebP con transparencia. Se comprobó que el recorte cae exactamente sobre su foto: la
+diferencia media de color es de 2 a 4 sobre 255, que es el ruido de la compresión, frente a 11 a
+29 con el recorte desplazado 6 píxeles. **Las herramientas eran de un solo uso y no están en el
+repo**: para rehacerlo basta esa petición de Vision sobre la foto de la fototeca.
+
+**Lo que se descartó, con su porqué** (bocetos del 2026-10-28):
+
+- **Platos flotando sueltos por el Inicio, como adorno.** Mario: efecto «pegatina encima de otra».
+- **Platos dentro de una «pizarra» en La tasca**, con nombre y precio. «Nos estamos desviando.»
+- **Dos platos al pie de cada foto.** «No me convencen el par en el pie de cada foto»: los pidió
+  más repartidos. Por eso van de uno en uno y en esquinas distintas; la única foto con dos es la
+  de La tasca, que lleva en esquinas opuestas los dos platos que nombra su texto.
+- **Un plato entero encima de una foto, sobre la gente.** Es la pegatina otra vez. Siempre
+  sobresalen del borde de la foto, y nunca encima del rótulo del cristal, que hace de palabra del
+  titular.
+
 ## Las rejillas guía
 
 Cada hueco de foto se dibuja en pantalla con su proporción, la regla de tercios y el nombre

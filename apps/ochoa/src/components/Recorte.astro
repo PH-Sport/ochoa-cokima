@@ -1,0 +1,71 @@
+---
+// apps/ochoa/src/components/Recorte.astro
+//
+// Un plato recortado que se asoma por una esquina de una foto (rama de prueba
+// `feat/inicio-paralaje`, 2026-10-28). Es la capa cercana del paralaje: al bajar
+// va un poco más rápido que la foto, que es lo que dice que está delante.
+//
+// Los recortes son los siete platos que salen enteros y limpios de sus fotos de
+// Instagram, recortados sin generar nada (docs/fotografia.md). Van de uno en uno
+// y en esquinas distintas: Mario descartó en el boceto ponerlos a pares al pie
+// de cada foto. Y siempre sobresaliendo de la foto, nunca dentro: un plato
+// entero encima de una foto, sobre la gente, es el efecto pegatina que pidió
+// evitar.
+//
+// Es decoración: el plato ya lo nombra el texto o la carta, así que va sin
+// texto alternativo y fuera del árbol de accesibilidad.
+//
+// Tiene que ir dentro de un contenedor con `position: relative` que lleve
+// también `data-paralaje`: contra él se mide el paralaje y desde él se cuentan
+// las esquinas.
+import { Image } from "astro:assets";
+
+interface Props {
+  src: ImageMetadata;
+  esquina: "arriba-izq" | "arriba-dcha" | "abajo-izq" | "abajo-dcha";
+  /** Para los platos más altos que anchos, que a igual ancho pesarían más. */
+  alto?: boolean;
+  vel?: number;
+}
+const { src, esquina, alto = false, vel = 0.12 } = Astro.props;
+---
+
+<span class:list={["recorte", esquina, { alto }]} data-vel={vel} aria-hidden="true">
+  <Image src={src} alt="" widths={[200, 320, 440]} sizes="(max-width: 860px) 36vw, 220px" quality={80} loading="lazy" />
+</span>
+
+<style>
+  /* Unos dos tercios de lo que medían en «Planos»: Mario los pidió algo más
+     pequeños. */
+  .recorte {
+    position: absolute;
+    z-index: 2;
+    width: clamp(96px, 34vw, 220px);
+    pointer-events: none;
+    will-change: transform;
+  }
+  .recorte.alto {
+    width: clamp(76px, 26vw, 170px);
+  }
+  /* Asoman un cuarto de plato por fuera: lo justo para que se lea que están
+     delante y sin meterse en el texto de alrededor. */
+  .arriba-izq { top: -24px; left: -8px; }
+  .arriba-dcha { top: -24px; right: -8px; }
+  .abajo-izq { bottom: -24px; left: -8px; }
+  .abajo-dcha { bottom: -24px; right: -8px; }
+  /* Sombra de contacto corta: la de algo que está cerca, no la de algo que flota. */
+  .recorte::before {
+    content: "";
+    position: absolute;
+    inset: 12% 8% 0 10%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(26, 26, 26, 0.32), rgba(26, 26, 26, 0));
+    transform: translate(8px, 12px);
+  }
+  .recorte :global(img) {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

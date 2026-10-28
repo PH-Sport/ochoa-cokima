@@ -38,8 +38,9 @@ https://<proyecto>-git-<rama-con-guiones>-rodz-dev.vercel.app
 - `https://ochoa-git-preview-rodz-dev.vercel.app`
 
 **Desde el 2026-10-26 se trabaja solo en `preview`** (`estado.md` §1), así que lo que se le
-enseña a Mario está en los dos alias de `preview`. Cada rama tendría su alias fijo si volviera a
-haber otra, pero hoy no la hay a propósito.
+enseña a Mario está en los dos alias de `preview`. La excepción, pedida por Mario el 2026-10-28,
+es la rama de prueba `feat/inicio-paralaje`, con su alias
+`https://ochoa-git-feat-inicio-paralaje-rodz-dev.vercel.app` (`estado.md` §0).
 
 **Notas de operación:**
 

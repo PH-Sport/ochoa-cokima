@@ -8,6 +8,14 @@ import Highlights from "../components/Highlights.astro";
 import Ticker from "../components/Ticker.astro";
 import Mapa from "../components/Mapa.astro";
 import Contacto from "../components/Contacto.astro";
+import Recorte from "../components/Recorte.astro";
+import tortilla from "../assets/recortes/tortilla.webp";
+import alcachofas from "../assets/recortes/alcachofas.webp";
+import berenjenas from "../assets/recortes/berenjenas.webp";
+import ensaladilla from "../assets/recortes/ensaladilla.webp";
+import cachopin from "../assets/recortes/cachopin.webp";
+import tarta from "../assets/recortes/tarta.webp";
+import coulant from "../assets/recortes/coulant.webp";
 import barra from "../assets/casa/barra.jpg";
 import rotulo from "../assets/casa/rotulo.jpg";
 import vermu from "../assets/casa/vermu.jpg";
@@ -28,11 +36,13 @@ const cristal = {
   src: rotulo,
   alt: "Rótulo de Los Ochoa pintado en el cristal, con la terraza al otro lado",
 };
+// En la rama de prueba `feat/inicio-paralaje`, cada foto del muro lleva un
+// plato recortado asomando por una esquina distinta (`Recorte.astro`).
 const casa = [
-  { src: barra, alt: "Barra de Los Ochoa con las botellas y el espejo rotulado a mano: tortilla, gildas, ensaladilla, patatas bravas" },
-  { src: vermu, alt: "Vermú con hielo y una banderilla de anchoa y aceituna sobre mármol" },
-  { src: comedor, alt: "Interior del local: banco corrido rojo, mesas de mármol y el rótulo visto desde dentro" },
-];
+  { src: barra, alt: "Barra de Los Ochoa con las botellas y el espejo rotulado a mano: tortilla, gildas, ensaladilla, patatas bravas", plato: { src: alcachofas, esquina: "arriba-izq" } },
+  { src: vermu, alt: "Vermú con hielo y una banderilla de anchoa y aceituna sobre mármol", plato: { src: coulant, esquina: "arriba-dcha", alto: true } },
+  { src: comedor, alt: "Interior del local: banco corrido rojo, mesas de mármol y el rótulo visto desde dentro", plato: { src: berenjenas, esquina: "abajo-dcha" } },
+] as const;
 ---
 
 <Base
@@ -64,8 +74,13 @@ const casa = [
   <section class="tasca">
     <div class="wrap"><div class="rule"></div></div>
     <div class="wrap tasca-grid">
-      <div class="tasca-photo">
-        <img src="/images/mesa.jpg" alt="Mesa de mármol con varios platos de la carta servidos para compartir" width="1920" height="1080" loading="lazy" />
+      {/* Los dos platos que nombra el texto, en esquinas opuestas. */}
+      <div class="ancla" data-paralaje>
+        <div class="tasca-photo">
+          <img src="/images/mesa.jpg" alt="Mesa de mármol con varios platos de la carta servidos para compartir" width="1920" height="1080" loading="lazy" />
+        </div>
+        <Recorte src={ensaladilla} esquina="arriba-izq" alto />
+        <Recorte src={cachopin} esquina="abajo-dcha" />
       </div>
       <div>
         <p class="eyebrow">La tasca</p>
@@ -96,15 +111,18 @@ const casa = [
           va entre los dos tramos de texto y no dentro de ninguno. */}
       <h2 class="cartel titular-cristal">
         <span class="tramo">Lo que hay</span>
-        <Image
-          src={cristal.src}
-          alt={cristal.alt}
-          widths={[390, 640, 960]}
-          sizes="(max-width: 860px) 100vw, 560px"
-          quality={72}
-          loading="lazy"
-          class="cristal-shot"
-        />
+        <span class="ancla" data-paralaje>
+          <Image
+            src={cristal.src}
+            alt={cristal.alt}
+            widths={[390, 640, 960]}
+            sizes="(max-width: 860px) 100vw, 560px"
+            quality={72}
+            loading="lazy"
+            class="cristal-shot"
+          />
+          <Recorte src={tortilla} esquina="abajo-dcha" />
+        </span>
         <span class="tramo">Detrás del cristal</span>
       </h2>
       <p class="txt">
@@ -113,15 +131,18 @@ const casa = [
       </p>
       <div class="wall">
         {casa.map((c) => (
-          <Image
-            src={c.src}
-            alt={c.alt}
-            widths={[320, 640, 900]}
-            sizes="(max-width: 860px) 46vw, 33vw"
-            quality={72}
-            loading="lazy"
-            class="casa-shot"
-          />
+          <div class="ancla toma" data-paralaje>
+            <Image
+              src={c.src}
+              alt={c.alt}
+              widths={[320, 640, 900]}
+              sizes="(max-width: 860px) 46vw, 33vw"
+              quality={72}
+              loading="lazy"
+              class="casa-shot"
+            />
+            <Recorte src={c.plato.src} esquina={c.plato.esquina} alto={"alto" in c.plato} />
+          </div>
         ))}
       </div>
     </div>
@@ -137,7 +158,10 @@ const casa = [
           las dos acciones —llamar y mirar el Instagram— y solo después los
           datos en frío. */}
       <div class="visit-grid">
-        <Mapa locale="es" />
+        <div class="ancla" data-paralaje>
+          <Mapa locale="es" />
+          <Recorte src={tarta} esquina="abajo-izq" />
+        </div>
         <div class="datos">
           <Contacto locale="es" />
           <dl class="info">
@@ -266,6 +290,7 @@ const casa = [
     justify-items: start;
   }
   .cristal-shot {
+    display: block;
     width: 100%;
     height: auto;
     aspect-ratio: 16 / 9;
@@ -303,9 +328,24 @@ const casa = [
      el relleno del escalón: no hay diente que compensar. */
   .wall > :global(*:nth-child(3)) {
     grid-column: 1 / -1;
+  }
+  /* El envoltorio de cada foto que lleva plato: es la referencia de las
+     esquinas y del paralaje (`Recorte.astro`). */
+  .ancla {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+  /* En el muro, el envoltorio es ahora la pieza de la retícula: el desfase, la
+     fila de cierre y el realce rojo pasan a él, y la foto lo llena. */
+  .toma {
+    border-radius: var(--r-marco);
+  }
+  .wall > :global(.toma:nth-child(3) .casa-shot) {
     aspect-ratio: 16 / 9;
   }
   .casa-shot {
+    display: block;
     width: 100%;
     height: auto;
     aspect-ratio: 4 / 3;

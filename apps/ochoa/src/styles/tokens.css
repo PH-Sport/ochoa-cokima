@@ -120,6 +120,11 @@
      y medio era el turno de la tira de platos, y para una foto que se mira de un
      vistazo sigue siendo el justo. */
   --dur-pase: 3.5s;
+  /* Lo que tarda una foto de la portada en fundirse sobre la anterior (rama de
+     prueba `feat/inicio-paralaje`). Más de un segundo, con la curva del telón:
+     Mario la pidió suave y sin efectos, y por debajo de eso un fundido a
+     pantalla completa se lee como un parpadeo. Cabe holgado en `--dur-pase`. */
+  --dur-fundido: 1.4s;
   /* Lo que dura un plato al frente del mazo de «Lo que más sale» antes de irse
      al fondo. Fue 3,5 s mientras la tira era lo único que se movía solo; con el
      telón encima los dos cambiaban a la vez y la página latía (regla 18), así

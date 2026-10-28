@@ -11,6 +11,12 @@ import { RESTAURANT } from "../site.ts";
 // enseñar la casa viva. Eligió el telón entre cinco bocetos (collage, rejilla,
 // escaparate, ronda con fundido y telón) porque tiene carácter de tasca. La serie
 // y el porqué de cada foto, en `../data/portada.ts`.
+//
+// RAMA DE PRUEBA `feat/inicio-paralaje` (2026-10-28): Mario pidió verla a
+// pantalla completa, ligeramente oscurecida y con un fundido suave entre fotos,
+// «ningún efecto demasiado fancy». Es la ronda con fundido que se descartó el
+// 2026-10-26 frente al telón, ahora con la portada entera y un velo parejo; se
+// prueba aquí para decidir viéndola en el móvil.
 import { portada } from "../data/portada.ts";
 
 interface Props {
@@ -20,7 +26,7 @@ const { locale } = Astro.props;
 const es = locale === "es";
 ---
 
-<header class="hero" id="top">
+<header class="hero" id="top" data-paralaje>
   {/* La primera foto es la única con prioridad: es la que se pinta al entrar y
       la que mide la carga. Las demás entran en la ronda a los 3,5 s como pronto
       y se piden con prioridad baja para no competir con ella. Sin JavaScript se
@@ -29,7 +35,8 @@ const es = locale === "es";
       solo sirve los anchos de `imagesConfig` y descarta el resto en silencio
       —con 1440 el srcset se quedaba en 1200—, y pedir 1600 de una foto de 1440
       devuelve la foto entera, sin agrandarla. */}
-  <div class="pase" data-pase>
+  {/* La serie entera es la capa lejana: al bajar va más lenta que la página. */}
+  <div class="pase" data-pase data-vel="-0.3">
     {portada.map((foto, i) => (
       <Image
         src={foto.src}
@@ -76,9 +83,11 @@ const es = locale === "es";
    */
   import { congelaAlto } from "@tombo/ui/alto-congelado.ts";
   import { hastaElProximo, leeDuracion } from "../compas.ts";
+  import { montaParalaje } from "../paralaje.ts";
 
   let sueltaAnterior: (() => void) | undefined;
   let sueltaTelon: (() => void) | null = null;
+  let sueltaParalaje: (() => void) | null = null;
 
   /* El telón. La ronda avanza sola cada `--dur-pase` y, como todo lo que se
    * mueve solo (regla 6 de `docs/movimiento.md`), se para para siempre al primer
@@ -162,6 +171,11 @@ const es = locale === "es";
     sueltaAnterior = referencia ? congelaAlto({ referencia, variable: "--alto-portada" }) : undefined;
     sueltaTelon?.();
     sueltaTelon = montaTelon(e.timeStamp);
+    /* El paralaje vive aquí porque la portada es su capa lejana y está en las
+       dos portadas, la española y la inglesa; recoge también los platos de las
+       secciones de abajo. */
+    sueltaParalaje?.();
+    sueltaParalaje = montaParalaje();
   });
 </script>
 
@@ -177,7 +191,9 @@ const es = locale === "es";
        respaldo y valor del primer pintado, y `.alto-ref` como referencia viva.
        En cuanto el script mide, manda `--alto-portada`, que es ese mismo número
        congelado en píxeles. El motivo está en el script. */
-    --alto-calculado: calc(100svh - var(--t-header-h, 62px) - clamp(128px, 18vw, 156px));
+    /* En la rama de prueba, la pantalla entera bajo la cabecera: Mario la quiere
+       al 100% aunque eso apague el asomo de la primera ficha. */
+    --alto-calculado: calc(100svh - var(--t-header-h, 62px));
     height: var(--alto-portada, var(--alto-calculado));
     min-height: 420px;
     display: flex;
@@ -196,33 +212,36 @@ const es = locale === "es";
   }
   /* Su propio contexto de apilamiento: los `z-index` de las fotos ordenan la
      ronda entre ellas y no pueden subir por encima del velo ni del titular. */
+  /* Sobresale un 8% por arriba y por abajo: es el recorrido del paralaje, que
+     la desplaza como mucho 70px y nunca deja ver el fondo. */
   .pase {
     position: absolute;
-    inset: 0;
+    inset: -8% 0;
     isolation: isolate;
     background: var(--ink);
   }
-  /* Recogidas a la derecha mientras esperan su turno. Las capas van por
-     `z-index` y no por el orden del HTML: al dar la vuelta, la primera foto
-     entraba por debajo de la última y el telón no se veía. */
+  /* Transparentes mientras esperan su turno. Las capas van por `z-index` y no
+     por el orden del HTML: al dar la vuelta, la primera foto entraba por debajo
+     de la última. */
   .shot {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    clip-path: inset(0 0 0 100%);
+    opacity: 0;
   }
-  /* Cruza la pantalla entera, así que va con la curva del telón del menú y la
-     duración de la recogida, que miden lo mismo (regla 9). */
+  /* La que llega se funde encima de la anterior, que sigue entera debajo hasta
+     quedar tapada: así no hay un instante a medias en que se vea el fondo
+     oscuro. Va con la curva del telón porque ocupa la pantalla entera (regla 9). */
   .shot.on {
     z-index: 2;
-    clip-path: inset(0);
-    transition: clip-path var(--dur-recogida) var(--ease-telon);
+    opacity: 1;
+    transition: opacity var(--dur-fundido) var(--ease-telon);
   }
   .shot.fondo {
     z-index: 1;
-    clip-path: inset(0);
+    opacity: 1;
   }
 
   /* La portada es una sola pieza a sangre en todos los anchos, y el titular se
@@ -234,15 +253,20 @@ const es = locale === "es";
   /* Degradado solo bajo el texto, no una capa uniforme sobre toda la foto:
      apagar la imagen entera es justo lo que hacen las cinco webs que nos
      pusieron de referencia, y es lo que las vuelve intercambiables. */
+  /* En la rama de prueba sí hay un velo parejo, ligero, porque Mario pidió la
+     portada «ligeramente oscurecida»; el degradado de abajo sigue sosteniendo
+     el titular. */
   .veil {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      to top,
-      rgba(26, 26, 26, 0.92) 0%,
-      rgba(26, 26, 26, 0.66) 28%,
-      rgba(26, 26, 26, 0) 62%
-    );
+    background:
+      linear-gradient(
+        to top,
+        rgba(26, 26, 26, 0.85) 0%,
+        rgba(26, 26, 26, 0.5) 28%,
+        rgba(26, 26, 26, 0) 62%
+      ),
+      rgba(26, 26, 26, 0.28);
   }
   /* El cartel de cookies vive en esta misma esquina durante la primera visita.
      `--t-consent-h` lo publica el propio cartel y vuelve a 0 al decidir, así
