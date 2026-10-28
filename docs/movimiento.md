@@ -26,7 +26,7 @@ uno existe porque no cabía en los cinco de arriba, no porque hiciera falta un n
 | `--ease-telon` | `cubic-bezier(0.45, 0.02, 0.55, 1)` | La curva de lo que **recorre la pantalla entera**. Ver la regla 9. |
 | `--dur-cinta` | `34s` | La cinta rotulada **recorre**. Lineal, no con la curva: un rótulo que acelera se lee como un fallo. |
 | `--dur-pase` | `3,5s` | Lo que una foto de la portada **espera** antes de que el telón traiga la siguiente. |
-| `--dur-fundido` | `1,4s` | Lo que tarda una foto de la portada en **fundirse** sobre la anterior. Solo en la rama de prueba `feat/inicio-paralaje`, donde el fundido sustituye al telón. Con `--ease-telon`, porque ocupa la pantalla entera (regla 9). |
+| `--dur-fundido` | `1,4s` | Lo que tarda una foto de la portada en **fundirse** sobre la anterior. Solo en la rama de prueba `feat/inicio-paralaje`, donde el fundido sustituye al telón en el móvil. Con `--ease-telon`, porque ocupa la pantalla entera (regla 9). |
 | `--dur-turno` | `5,5s` | Lo que un plato **espera** al frente del mazo antes de irse al fondo. Fue 3,5 s; se alargó el 2026-10-27 para no ir al compás de la portada (regla 25). |
 | `--desfase-turno` | `0,25s` | No es una duración, es la **fase**: cuánto más tarda el primer cambio del mazo. Es lo que impide que coincida con la portada (regla 25). |
 | `--dur-baraja` | `980ms` | Lo que tarda la carta de delante en **salir torciéndose y volver al fondo** del mazo. Dos viajes, así que 1,4 veces `--dur-recogida`, con `--ease-telon`. |
@@ -350,8 +350,9 @@ más lejos; Ochoa es una tasca y es seca.
 | Enlaces del menú | Color al pasar por encima (y la brasa, en Cokima) | `color`/`box-shadow`, `--dur-out` |
 | Botones, fichas de contacto y mapa | Se hunden al tocar y recuperan al soltar | `data-tacto`, `--dur-sube` |
 | Cinta rotulada (Ochoa) | Recorre en bucle | `translateX`, `--dur-cinta` |
-| Portada (Ochoa) | El telón: cada foto entra de derecha a izquierda sobre la anterior. **En la rama `feat/inicio-paralaje`**, cada foto se funde sobre la anterior, a pantalla completa | `clip-path`, `--dur-pase`, `--dur-recogida`, `--ease-telon`; en la rama, `opacity` y `--dur-fundido` |
-| Inicio (Ochoa, solo en la rama `feat/inicio-paralaje`) | Paralaje: la portada va un 30% más lenta que la página y los platos recortados de las esquinas, un 12% más rápidos que su foto, con un tope de 70 px | `transform` desde `paralaje.ts`; nada con «reducir movimiento» |
+| Portada (Ochoa) | El telón: cada foto entra de derecha a izquierda sobre la anterior. **En la rama `feat/inicio-paralaje`**, en el móvil cada foto se funde sobre la anterior, a pantalla completa; en el ordenador no hay serie, sino un collage quieto | `clip-path`, `--dur-pase`, `--dur-recogida`, `--ease-telon`; en la rama, `opacity` y `--dur-fundido` |
+| Inicio (Ochoa, solo en la rama `feat/inicio-paralaje`) | Paralaje: la portada del móvil va un 30% más lenta que la página (tope 70 px); los platos recortados de los huecos blancos, un 4% más rápidos (tope 8 px, que es menos que su margen con el texto) | `transform` desde `paralaje.ts`; nada con «reducir movimiento» |
+| Portada del ordenador (Ochoa, solo en la rama `feat/inicio-paralaje`) | El collage sigue al cursor: cada foto se desplaza en contra 5, 9 o 13 px, más la más cercana, y vuelve al salir | `transform`, `--dur-in`, `--ease`; solo con ratón y sin «reducir movimiento» |
 | Mazo de platos (Ochoa, solo móvil) | La de delante sale por la izquierda torciéndose y vuelve al fondo; deslizando a la derecha, la anterior entra por la izquierda por encima, en la mitad del tiempo; el turno se rellena | `transform` + `opacity`, `--dur-turno`, `--desfase-turno`, `--dur-baraja`, `--ease-telon`; `scaleX` |
 | Portada | El titular se aparta del cartel de cookies | `translateY`, `--dur-out` |
 | Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |

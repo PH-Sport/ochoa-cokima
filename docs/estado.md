@@ -14,24 +14,37 @@
 ## 0. Por dónde seguir
 
 **Ochoa, 2026-10-28: una rama de prueba, `feat/inicio-paralaje`, para que Mario vea en la web el
-Inicio con paralaje.** La pidió él, sobre la regla de trabajar solo en `preview`: no se fusiona
-sin su visto bueno, y si la descarta se borra. Sale de un boceto que eligió entre varios, y trae
-tres cosas. **La portada** pasa a ocupar toda la pantalla bajo la cabecera, con un velo parejo
-ligero y las fotos fundiéndose una sobre otra en vez del telón. Abre el cocinero sobre la
-cortina roja. **El paralaje**: la portada va más lenta que la página. **Siete platos
-recortados**, sin fondo, asoman por las esquinas de las fotos de La tasca, La casa y el mapa y
-van algo más rápidos que su foto. Las piezas: `Hero.astro`, `paralaje.ts`, `Recorte.astro` y
-`--dur-fundido`. Los recortes y lo que se descartó por el camino, en `fotografia.md` §Los platos
-recortados.
+Inicio nuevo.** La pidió él, sobre la regla de trabajar solo en `preview`: no se fusiona sin su
+visto bueno, y si la descarta se borra. Sale de un boceto que eligió entre varios y lleva tres
+vueltas suyas en el mismo día. Hoy trae:
 
-- **Contradice dos decisiones anteriores, a petición de Mario.** El fundido fue uno de los cinco
-  bocetos que perdieron frente al telón el 2026-10-26. La portada a pantalla completa apaga el
-  asomo de la primera ficha de «Lo que más sale», que estaba medido a propósito.
-- **Medido sobre el build a 375 px:** la portada mide 750 px, la pantalla menos la cabecera. Sin
-  scroll lateral a seis alturas, ni a 1280 px. Por cada 100 px de scroll, una foto de sección
-  sube 100, su plato 112 y la portada 70. Ningún plato pisa un texto, con la foto centrada ni a
-  300 px por encima o por debajo.
-- **Sin medir:** en un iPhone de verdad y con «reducir movimiento».
+- **La portada del móvil**: la pantalla entera bajo la cabecera, con un velo parejo ligero y las
+  fotos fundiéndose una sobre otra en vez del telón. Abre el cocinero sobre la cortina roja y al
+  bajar va más lenta que la página.
+- **La portada del ordenador**: un collage de tres fotos enteras —el cocinero, la sala y la
+  barra— al lado del titular, que sigue al cursor unos píxeles. A pantalla completa, las fotos
+  verticales se cortaban demasiado.
+- **«Reservar» y «Ver la carta»** en la portada, en las dos. Mario: «manteniendo como prioridad
+  tanto la carta como la reserva».
+- **Seis platos recortados en los huecos blancos.** Unos rodeados por el texto de su párrafo y
+  otros al lado de un bloque corto: «Lo que hay», la dirección, el horario. Van un 4% más rápidos
+  que la página y como mucho 8 px.
+
+Las piezas: `Hero.astro`, `paralaje.ts`, `Recorte.astro` y `--dur-fundido`. Los recortes y lo
+descartado por el camino, en `fotografia.md` §Los platos recortados.
+
+- **Contradice dos decisiones anteriores, a petición de Mario.** El fundido perdió frente al telón
+  el 2026-10-26. La portada a pantalla completa apaga en el móvil el asomo de la primera ficha de
+  «Lo que más sale», que estaba medido a propósito.
+- **Medido sobre el build:**
+  - La portada del móvil mide la pantalla menos la cabecera (750 px a 375).
+  - Ningún plato pisa un texto, una foto ni un botón, ni en los dos extremos del paralaje, a 320,
+    360, 375, 390, 430, 768, 1024, 1280 y 1440 px. A 320 los del lado se ocultan: el del horario
+    pisaba las horas.
+  - El titular del ordenador no llega al collage a 900, 1024 ni 1440.
+  - Sin scroll lateral en ninguno de esos anchos.
+- **Sin medir:** en un iPhone de verdad, con «reducir movimiento» y el collage con un ratón de
+  verdad (probado con el puntero del navegador de pruebas).
 - **Para Mario:** decidir si entra en `preview`.
 
 **Ochoa, 2026-10-27: la portada es un telón de seis fotos y «Lo que más sale» es un mazo en el

@@ -255,21 +255,21 @@ años):
 
 ### Los platos recortados (rama de prueba `feat/inicio-paralaje`)
 
-**Siete platos sin fondo, en `apps/ochoa/src/assets/recortes/`.** Los usa el Inicio de la rama de
-prueba del 2026-10-28, asomando por las esquinas de las fotos (`Recorte.astro`). Son los únicos
-que salen bien: de las 38 fotos de plato que casan con la carta, solo 12 traen el plato entero
-sin tocar el borde, y de esas solo 7 dan un borde limpio. Los siete tienen el plato nombrado en el
-texto de su publicación; ninguno es una suposición.
+**Siete platos sin fondo en `apps/ochoa/src/assets/recortes/`, de los que el Inicio de la rama de
+prueba usa seis** (`Recorte.astro`). Son los únicos que salen bien: de las 38 fotos de plato que
+casan con la carta, solo 12 traen el plato entero sin tocar el borde, y de esas solo 7 dan un
+borde limpio. Los siete tienen el plato nombrado en el texto de su publicación; ninguno es una
+suposición.
 
-| Recorte | Plato de la carta | Foto |
-|---|---|---|
-| `tortilla.webp` | Pintxo de tortilla de patatas con cebolla | `DL5NAUeIv4v-1` |
-| `alcachofas.webp` | Alcachofas confitadas | `DJgsTILCUYd-1` |
-| `berenjenas.webp` | Berenjenas fritas con salmorejo | `DMItK1QIr6u-1` |
-| `ensaladilla.webp` | Ensaladilla rusa casera | `DMSamLoo0l1-1` |
-| `cachopin.webp` | Cachopín de ternera | `DMaFilOITIk-1` |
-| `tarta.webp` | Tarta de queso BRUTAL con helado de Idiazábal | `DeKBZtIoDva-1` |
-| `coulant.webp` | Coulant de chocolate | `DLzdrbbIM7E-2` |
+| Recorte | Plato de la carta | Foto | Dónde va |
+|---|---|---|---|
+| `tortilla.webp` | Pintxo de tortilla de patatas con cebolla | `DL5NAUeIv4v-1` | Manifiesto, rodeado por el texto |
+| `ensaladilla.webp` | Ensaladilla rusa casera | `DMSamLoo0l1-1` | La tasca, rodeado por el texto |
+| `cachopin.webp` | Cachopín de ternera | `DMaFilOITIk-1` | A la derecha de «Lo que hay» |
+| `alcachofas.webp` | Alcachofas confitadas | `DJgsTILCUYd-1` | La casa, rodeado por el texto |
+| `tarta.webp` | Tarta de queso BRUTAL con helado de Idiazábal | `DeKBZtIoDva-1` | A la derecha de la dirección |
+| `berenjenas.webp` | Berenjenas fritas con salmorejo | `DMItK1QIr6u-1` | A la derecha del horario |
+| `coulant.webp` | Coulant de chocolate | `DLzdrbbIM7E-2` | **Sin sitio**: el Inicio del móvil no tiene un séptimo hueco blanco que aguante a todos los anchos |
 
 **Cómo se hicieron: recortados, sin generar nada.** La máscara de primer plano de Vision, en macOS
 (`VNGenerateForegroundInstanceMaskRequest`), decide qué píxeles se quedan y el resto pasa a
@@ -279,16 +279,27 @@ diferencia media de color es de 2 a 4 sobre 255, que es el ruido de la compresi�
 29 con el recorte desplazado 6 píxeles. **Las herramientas eran de un solo uso y no están en el
 repo**: para rehacerlo basta esa petición de Vision sobre la foto de la fototeca.
 
-**Lo que se descartó, con su porqué** (bocetos del 2026-10-28):
+**Dónde caben.** Solo en blanco, y comprobado midiendo:
+
+- **Rodeados por el texto de su párrafo.** El plato reserva su hueco y el texto se aparta, así
+  que no lo pisa a ningún ancho.
+- **Al lado de un bloque corto**, donde el blanco no depende de por dónde parta una línea:
+  «Lo que hay», la dirección y el horario.
+
+Los huecos se buscaron con un barrido del Inicio sin platos, a 375 px: cualquier rectángulo libre
+de al menos 80 × 50 px, a 8 px de todo texto, foto o botón. Los que dejaba el final de una línea
+se descartaron, porque cambian con el ancho. Después se comprobó cada plato contra todo lo demás
+en nueve anchos, de 320 a 1440 px, y en los dos extremos de su paralaje.
+
+**Lo que se descartó, con su porqué** (bocetos y rama, 2026-10-28):
 
 - **Platos flotando sueltos por el Inicio, como adorno.** Mario: efecto «pegatina encima de otra».
 - **Platos dentro de una «pizarra» en La tasca**, con nombre y precio. «Nos estamos desviando.»
 - **Dos platos al pie de cada foto.** «No me convencen el par en el pie de cada foto»: los pidió
-  más repartidos. Por eso van de uno en uno y en esquinas distintas; la única foto con dos es la
-  de La tasca, que lleva en esquinas opuestas los dos platos que nombra su texto.
-- **Un plato entero encima de una foto, sobre la gente.** Es la pegatina otra vez. Siempre
-  sobresalen del borde de la foto, y nunca encima del rótulo del cristal, que hace de palabra del
-  titular.
+  más repartidos.
+- **Un plato asomando por cada esquina de foto**, con el paralaje de la portada (12% y hasta
+  70 px). «El paralaje de los platos es exageradamente notorio. Debe ser más sutil y colocarse en
+  los huecos en blanco, no encima de otras fotos o textos.» Ahora es un 4% y hasta 8 px.
 
 ## Las rejillas guía
 

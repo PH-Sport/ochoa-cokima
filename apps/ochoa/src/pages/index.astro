@@ -15,7 +15,6 @@ import berenjenas from "../assets/recortes/berenjenas.webp";
 import ensaladilla from "../assets/recortes/ensaladilla.webp";
 import cachopin from "../assets/recortes/cachopin.webp";
 import tarta from "../assets/recortes/tarta.webp";
-import coulant from "../assets/recortes/coulant.webp";
 import barra from "../assets/casa/barra.jpg";
 import rotulo from "../assets/casa/rotulo.jpg";
 import vermu from "../assets/casa/vermu.jpg";
@@ -36,13 +35,11 @@ const cristal = {
   src: rotulo,
   alt: "Rótulo de Los Ochoa pintado en el cristal, con la terraza al otro lado",
 };
-// En la rama de prueba `feat/inicio-paralaje`, cada foto del muro lleva un
-// plato recortado asomando por una esquina distinta (`Recorte.astro`).
 const casa = [
-  { src: barra, alt: "Barra de Los Ochoa con las botellas y el espejo rotulado a mano: tortilla, gildas, ensaladilla, patatas bravas", plato: { src: alcachofas, esquina: "arriba-izq" } },
-  { src: vermu, alt: "Vermú con hielo y una banderilla de anchoa y aceituna sobre mármol", plato: { src: coulant, esquina: "arriba-dcha", alto: true } },
-  { src: comedor, alt: "Interior del local: banco corrido rojo, mesas de mármol y el rótulo visto desde dentro", plato: { src: berenjenas, esquina: "abajo-dcha" } },
-] as const;
+  { src: barra, alt: "Barra de Los Ochoa con las botellas y el espejo rotulado a mano: tortilla, gildas, ensaladilla, patatas bravas" },
+  { src: vermu, alt: "Vermú con hielo y una banderilla de anchoa y aceituna sobre mármol" },
+  { src: comedor, alt: "Interior del local: banco corrido rojo, mesas de mármol y el rótulo visto desde dentro" },
+];
 ---
 
 <Base
@@ -64,7 +61,8 @@ const casa = [
     <div class="wrap">
       <div class="rule"></div>
       <blockquote>«Aperitivos de esos que se alargan hasta la noche, <strong>como filosofía de vida</strong>.»</blockquote>
-      <p class="sub">
+      <p class="sub" data-paralaje>
+        <Recorte src={tortilla} modo="flota" alto={64} />
         Un espacio divertido en plena Castellana donde beberte un buen vermú y acompañarlo de tapas
         con un toque diferente. El tapeo de toda la vida, con sabores nuevos.
       </p>
@@ -74,18 +72,14 @@ const casa = [
   <section class="tasca">
     <div class="wrap"><div class="rule"></div></div>
     <div class="wrap tasca-grid">
-      {/* Los dos platos que nombra el texto, en esquinas opuestas. */}
-      <div class="ancla" data-paralaje>
-        <div class="tasca-photo">
-          <img src="/images/mesa.jpg" alt="Mesa de mármol con varios platos de la carta servidos para compartir" width="1920" height="1080" loading="lazy" />
-        </div>
-        <Recorte src={ensaladilla} esquina="arriba-izq" alto />
-        <Recorte src={cachopin} esquina="abajo-dcha" />
+      <div class="tasca-photo">
+        <img src="/images/mesa.jpg" alt="Mesa de mármol con varios platos de la carta servidos para compartir" width="1920" height="1080" loading="lazy" />
       </div>
       <div>
         <p class="eyebrow">La tasca</p>
         <h2 class="cartel">El bar de toda la vida, renovado</h2>
-        <p class="txt">
+        <p class="txt" data-paralaje>
+          <Recorte src={ensaladilla} modo="flota" alto={76} />
           Barra, mármol y rótulo rojo. <em>El tapeo de toda la vida que te sorprenderá con sabores
           nuevos</em> y con la mejor calidad de producto — de la ensaladilla al cachopín, pasando
           por unas gyozas de txistorra.
@@ -110,39 +104,34 @@ const casa = [
           para quien lo escucha sigue siendo una frase seguida, porque la imagen
           va entre los dos tramos de texto y no dentro de ninguno. */}
       <h2 class="cartel titular-cristal">
-        <span class="tramo">Lo que hay</span>
-        <span class="ancla" data-paralaje>
-          <Image
-            src={cristal.src}
-            alt={cristal.alt}
-            widths={[390, 640, 960]}
-            sizes="(max-width: 860px) 100vw, 560px"
-            quality={72}
-            loading="lazy"
-            class="cristal-shot"
-          />
-          <Recorte src={tortilla} esquina="abajo-dcha" />
-        </span>
+        <span class="tramo" data-paralaje>Lo que hay<Recorte src={cachopin} modo="al-lado" alto={52} /></span>
+        <Image
+          src={cristal.src}
+          alt={cristal.alt}
+          widths={[390, 640, 960]}
+          sizes="(max-width: 860px) 100vw, 560px"
+          quality={72}
+          loading="lazy"
+          class="cristal-shot"
+        />
         <span class="tramo">Detrás del cristal</span>
       </h2>
-      <p class="txt">
+      <p class="txt" data-paralaje>
+        <Recorte src={alcachofas} modo="flota" alto={60} />
         Barra, mármol y vermú de media tarde. <em>El tapeo que se alarga hasta que alguien mira
         el reloj</em> y resulta que ya es de noche. Los Ochoa por dentro.
       </p>
       <div class="wall">
         {casa.map((c) => (
-          <div class="ancla toma" data-paralaje>
-            <Image
-              src={c.src}
-              alt={c.alt}
-              widths={[320, 640, 900]}
-              sizes="(max-width: 860px) 46vw, 33vw"
-              quality={72}
-              loading="lazy"
-              class="casa-shot"
-            />
-            <Recorte src={c.plato.src} esquina={c.plato.esquina} alto={"alto" in c.plato} />
-          </div>
+          <Image
+            src={c.src}
+            alt={c.alt}
+            widths={[320, 640, 900]}
+            sizes="(max-width: 860px) 46vw, 33vw"
+            quality={72}
+            loading="lazy"
+            class="casa-shot"
+          />
         ))}
       </div>
     </div>
@@ -158,17 +147,15 @@ const casa = [
           las dos acciones —llamar y mirar el Instagram— y solo después los
           datos en frío. */}
       <div class="visit-grid">
-        <div class="ancla" data-paralaje>
-          <Mapa locale="es" />
-          <Recorte src={tarta} esquina="abajo-izq" />
-        </div>
+        <Mapa locale="es" />
         <div class="datos">
           <Contacto locale="es" />
           <dl class="info">
-            <div class="block"><dt>Dirección</dt><dd>P.º de la Castellana, 117<small>28046 Madrid</small></dd></div>
-            <div class="block">
+            <div class="block" data-paralaje><dt>Dirección</dt><dd><Recorte src={tarta} modo="al-lado" alto={52} abajo={16} />P.º de la Castellana, 117<small>28046 Madrid</small></dd></div>
+            <div class="block" data-paralaje>
               <dt>Horario</dt>
               <dd>
+                <Recorte src={berenjenas} modo="al-lado" alto={88} abajo={16} />
                 <div class="hours">
                   <span>Lunes a jueves</span><b>9:00 – 1:00</b>
                   <span>Viernes</span><b>9:00 – 2:30</b>
@@ -289,8 +276,14 @@ const casa = [
     gap: clamp(10px, 2.5vw, 18px);
     justify-items: start;
   }
+  /* Rama de prueba: el primer tramo ocupa el ancho para que el plato de su
+     derecha (`Recorte.astro`, `al-lado`) tenga dónde apoyarse. El texto sigue
+     a la izquierda, como estaba. */
+  .titular-cristal .tramo:first-child {
+    position: relative;
+    justify-self: stretch;
+  }
   .cristal-shot {
-    display: block;
     width: 100%;
     height: auto;
     aspect-ratio: 16 / 9;
@@ -328,24 +321,9 @@ const casa = [
      el relleno del escalón: no hay diente que compensar. */
   .wall > :global(*:nth-child(3)) {
     grid-column: 1 / -1;
-  }
-  /* El envoltorio de cada foto que lleva plato: es la referencia de las
-     esquinas y del paralaje (`Recorte.astro`). */
-  .ancla {
-    position: relative;
-    display: block;
-    width: 100%;
-  }
-  /* En el muro, el envoltorio es ahora la pieza de la retícula: el desfase, la
-     fila de cierre y el realce rojo pasan a él, y la foto lo llena. */
-  .toma {
-    border-radius: var(--r-marco);
-  }
-  .wall > :global(.toma:nth-child(3) .casa-shot) {
     aspect-ratio: 16 / 9;
   }
   .casa-shot {
-    display: block;
     width: 100%;
     height: auto;
     aspect-ratio: 4 / 3;
@@ -385,6 +363,7 @@ const casa = [
     margin: 0;
   }
   .block {
+    position: relative;
     padding: 18px 0;
     border-bottom: 1px solid var(--line);
   }

@@ -24,6 +24,17 @@ interface Props {
 }
 const { locale } = Astro.props;
 const es = locale === "es";
+// Lo que se viene a hacer a esta web es mirar la carta y reservar (Mario,
+// 2026-10-28: «manteniendo como prioridad tanto la carta como la reserva»), así
+// que la portada lleva los dos a mano. Los textos son los que ya usa la web.
+const t = es
+  ? { reservar: "Reservar", carta: "Ver la carta", reservarHref: "/reservas", cartaHref: "/carta" }
+  : { reservar: "Book", carta: "Full menu", reservarHref: "/en/reservations", cartaHref: "/en/menu" };
+// En el ordenador, la portada no es la serie a pantalla completa: a 1440×682 las
+// fotos verticales se quedaban en una franja y se cortaban demasiado. Es un
+// collage de tres, cada una con su proporción entera —el cocinero 3:4, las otras
+// dos cuadradas—, así que no se recorta ninguna.
+const collage = [portada[0], portada[1], portada[2]];
 ---
 
 <header class="hero" id="top" data-paralaje>
@@ -53,7 +64,12 @@ const es = locale === "es";
   </div>
   <div class="veil"></div>
   <div class="wrap copy">
+    <div class="texto">
     <h1 class="cartel">{es ? "La tasca que te mereces" : "The tavern you deserve"}</h1>
+    <p class="acciones">
+      <a href={t.reservarHref} class="btn">{t.reservar}</a>
+      <a href={t.cartaHref} class="btn ghost">{t.carta}</a>
+    </p>
     <div class="pie">
       <OpenState hours={RESTAURANT.openingHours} locale={locale} />
       {/* Por qué foto va la ronda. Es un indicador, no un mando, como los turnos
@@ -62,6 +78,23 @@ const es = locale === "es";
       <div class="pager" aria-hidden="true" data-pager>
         {portada.map((_, i) => <span class:list={{ on: i === 0 }}></span>)}
       </div>
+    </div>
+    </div>
+    {/* Solo en el ordenador. Responde al cursor: cada foto se desplaza unos
+        píxeles en contra, más cuanto más cerca está, y vuelve al salir. */}
+    <div class="collage" data-collage>
+      {collage.map((foto, i) => (
+        <Image
+          src={foto.src}
+          alt={foto.alt[locale]}
+          widths={[320, 480, 640, 960]}
+          sizes="(min-width: 861px) 34vw, 1px"
+          quality={72}
+          loading="lazy"
+          class:list={["pieza", `p${i}`]}
+          data-hondo={[5, 9, 13][i]}
+        />
+      ))}
     </div>
   </div>
   {/* La referencia del alto: lleva el mismo `calc()` que la portada pero sin
@@ -106,6 +139,8 @@ const es = locale === "es";
     let actual = 0;
     let reloj: ReturnType<typeof setTimeout> | null = null;
     let parado = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    /* En el ordenador la serie no se ve —manda el collage—, así que no corre. */
+    const escritorio = matchMedia("(min-width: 861px)");
 
     /* La que llega se pone encima y se descubre; la que se va se queda debajo,
        entera, hasta que la tapa. Las demás, recogidas. */
@@ -145,7 +180,7 @@ const es = locale === "es";
       hero.addEventListener(ev, para, { passive: true, once: true, signal });
     }
     let enVista = false;
-    const decide = () => (enVista && !document.hidden ? arranca() : pausa());
+    const decide = () => (enVista && !document.hidden && !escritorio.matches ? arranca() : pausa());
     const ojo = new IntersectionObserver(
       ([e]) => {
         /* La proporción y no `isIntersecting`: esa es cierta en cuanto asoma un
@@ -157,6 +192,7 @@ const es = locale === "es";
     );
     ojo.observe(hero);
     document.addEventListener("visibilitychange", decide, { signal });
+    escritorio.addEventListener("change", decide, { signal });
 
     return () => {
       pausa();
@@ -164,6 +200,59 @@ const es = locale === "es";
       abort.abort();
     };
   }
+
+  /* El collage del ordenador sigue al cursor, poco y sin prisa: cada foto se
+   * desplaza en contra hasta `data-hondo` píxeles según dónde esté el cursor
+   * dentro de la portada, y vuelve a su sitio al salir. Solo con un ratón de
+   * verdad —en una pantalla táctil no hay cursor que seguir— y nada si se pide
+   * menos movimiento. El suavizado no lo hace el script: lo hace la transición
+   * del CSS, que se reorienta sola con cada movimiento. */
+  function montaCollage() {
+    const hero = document.querySelector<HTMLElement>(".hero");
+    const piezas = [...document.querySelectorAll<HTMLElement>(".hero [data-collage] > img")];
+    if (!hero || !piezas.length) return null;
+    if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return null;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return null;
+
+    const abort = new AbortController();
+    let pendiente = 0;
+    let nx = 0;
+    let ny = 0;
+    const pinta = () => {
+      pendiente = 0;
+      for (const p of piezas) {
+        const h = parseFloat(p.dataset.hondo ?? "0");
+        p.style.transform = `translate3d(${(-nx * h).toFixed(1)}px, ${(-ny * h).toFixed(1)}px, 0)`;
+      }
+    };
+    const pide = () => {
+      if (!pendiente) pendiente = requestAnimationFrame(pinta);
+    };
+    hero.addEventListener(
+      "pointermove",
+      (e) => {
+        const r = hero.getBoundingClientRect();
+        nx = ((e.clientX - r.left) / r.width) * 2 - 1;
+        ny = ((e.clientY - r.top) / r.height) * 2 - 1;
+        pide();
+      },
+      { signal: abort.signal },
+    );
+    hero.addEventListener(
+      "pointerleave",
+      () => {
+        nx = 0;
+        ny = 0;
+        pide();
+      },
+      { signal: abort.signal },
+    );
+    return () => {
+      abort.abort();
+      if (pendiente) cancelAnimationFrame(pendiente);
+    };
+  }
+  let sueltaCollage: (() => void) | null = null;
 
   document.addEventListener("astro:page-load", (e) => {
     sueltaAnterior?.();
@@ -176,6 +265,8 @@ const es = locale === "es";
        secciones de abajo. */
     sueltaParalaje?.();
     sueltaParalaje = montaParalaje();
+    sueltaCollage?.();
+    sueltaCollage = montaCollage();
   });
 </script>
 
@@ -304,6 +395,96 @@ const es = locale === "es";
     color: var(--paper);
     text-shadow: 0.04em 0.045em 0 var(--rojo);
   }
+  /* Reservar y la carta, lo primero que se viene a hacer. Sobre la foto, el
+     botón en hueco pasa a blanco para leerse. */
+  .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 0 0 18px;
+  }
+  .hero .acciones .btn.ghost {
+    color: var(--paper);
+    border-color: var(--paper);
+    box-shadow: 3px 3px 0 var(--paper);
+  }
+  .collage {
+    display: none;
+  }
+
+  /* El ordenador: papel, el titular a la izquierda con los dos botones y el
+     collage a la derecha. Ni velo ni serie ni puntos, que son de la foto a
+     sangre del móvil. El alto sigue siendo el de la pantalla bajo la cabecera,
+     congelado como en el móvil (regla 16). */
+  @media (min-width: 861px) {
+    .hero {
+      align-items: center;
+      background: var(--paper);
+      /* El alto del collage: lo que deja la portada menos su relleno, sin
+         pasar de 600 px ni comerse más de lo que cabe a lo ancho. */
+      --hueco: clamp(28px, 4vw, 56px);
+      --alto-collage: min(calc(var(--alto-portada, var(--alto-calculado)) - 2 * var(--hueco)), 44vw, 600px);
+      --junta: clamp(14px, 1.4vw, 22px);
+    }
+    .pase,
+    .veil,
+    .pager {
+      display: none;
+    }
+    .copy {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: clamp(28px, 4vw, 64px);
+      padding-block: var(--hueco);
+      --t-text: var(--ink);
+      --t-text-dim: var(--ink-dim);
+      --t-text-faint: var(--ink-faint);
+    }
+    /* Al lado del collage el titular tiene media pantalla, no la entera: con el
+       11,5vw del móvil, a 900 px la S de «mereces» se metía bajo las fotos. */
+    .hero h1 {
+      color: var(--ink);
+      font-size: clamp(2.6rem, 6vw, 5.4rem);
+    }
+    .hero .acciones .btn.ghost {
+      color: var(--ink);
+      border-color: var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+    /* El cocinero entero a la izquierda y las dos cuadradas apiladas a su
+       derecha: cada una con su proporción, así que ninguna se recorta. */
+    .collage {
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: var(--junta);
+      align-items: center;
+    }
+    .pieza {
+      display: block;
+      width: auto;
+      object-fit: cover;
+      border: 2px solid var(--ink);
+      border-radius: var(--r-marco);
+      transition: transform var(--dur-in) var(--ease);
+      will-change: transform;
+    }
+    .p0 {
+      grid-row: 1 / 3;
+      height: var(--alto-collage);
+      aspect-ratio: 3 / 4;
+      box-shadow: -8px 8px 0 rgba(198, 34, 43, 0.9);
+    }
+    .p1,
+    .p2 {
+      height: calc((var(--alto-collage) - var(--junta)) / 2);
+      aspect-ratio: 1;
+    }
+    .p2 {
+      box-shadow: 8px 8px 0 rgba(198, 34, 43, 0.9);
+    }
+  }
+
   /* El estado de apertura a la izquierda y la ronda a la derecha, en la misma
      línea: así los puntos no tapan foto que no tape ya el texto. */
   .pie {
