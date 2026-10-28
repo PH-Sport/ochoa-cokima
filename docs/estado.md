@@ -82,34 +82,62 @@ componentes. Su manifiesto, La tasca y La casa siguen como en `preview`, porque 
 - La casa en el ordenador: *«no veo una estructura clara, como si estuviese desordenado»*.
 - Quiere animar algún vídeo con IA y pregunta dónde iría.
 
-**Para esas tres cosas hay opciones en el probador**,
-`https://claude.ai/artifact/HFFN1Qx8eCbYDRYw6z56DC` (privado de Mario). Es la web real
-construida, con un selector:
+**Para esas tres cosas hubo una primera ronda en el probador**,
+`https://claude.ai/artifact/HFFN1Qx8eCbYDRYw6z56DC` (privado de Mario): la web real construida,
+con un selector. Lo que eligió y lo que se queda fuera:
 
-- **Navegación del ordenador:**
-  - «La chapa»: una chapa de papel viaja bajo la sección;
-  - «La foto»: asoma la foto de la sección y sigue al cursor;
-  - «El relieve»: secciones en letra de rótulo y la luz es el cursor.
-- **Fondo**, a partir de lo rojo del local:
-  - «El trazo»: dibujos de una línea, como los del cristal, que se dibujan al bajar;
-  - «El espejo»: palabras en la letra pintada del espejo de la barra;
-  - «Las banderillas»: palillos y aceitunas que flotan y esquivan el cursor.
-- **La casa:**
-  - «Texto y muro»: dos por dos, todas iguales;
-  - «Mosaico»: tres columnas sin escalones;
-  - «El inventario»: «Lo que hay» es una lista, como el espejo, y cada cosa enseña su foto.
+- **Navegación del ordenador: «El relieve», elegida.** Las secciones en letra de rótulo, y la
+  luz es el cursor: la sombra de los rótulos de la barra y del titular cae hacia el otro lado.
+  Fuera «La chapa» (una chapa de papel bajo la sección) y «La foto» (asomaba la foto de la
+  sección y seguía al cursor).
+- **Fondo: ninguna de las tres.** De «El espejo» le gustan las palabras sueltas, pero *«se me
+  sigue quedando soso»*; quiere algo *«como lo que hicimos con la web de PHSPORT, pero adaptado
+  al lenguaje de esta web»*. Fuera también «El trazo» (dibujos de una línea) y «Las banderillas».
+- **La casa: «Mosaico»**, pero *«algo más animada/interactiva»*: que las fotos salgan más a
+  menudo, *«que cambiasen de forma y de posición según van saliendo»*, con movimientos suaves.
+  Fuera «Texto y muro» y «El inventario».
 
-Nada de esto está en la rama. Su código vive solo en el Artifact (se lee con la acción `read`),
-y lo elegido se reescribe en el código de verdad con sus tokens y reglas. Dos cosas a saber:
+**La segunda ronda está en el mismo enlace** (versión 2 del probador), con El relieve ya fijo:
 
-- «El espejo» traería una tercera fuente, Yellowtail, por la letra del espejo.
-- Tres animan fuera de `transform` y `opacity`, así que pedirían su excepción en la regla 2:
-  «El trazo» y el subrayado de «El espejo» dibujan con `stroke-dashoffset`, y «El relieve»
-  cambia `text-shadow` al mover el ratón.
+- **Fondo, a la manera de PHSPORT:** un lienzo fijo detrás de toda la página, dibujado en directo
+  con WebGL2 como `ph-ambient.ts` de esa web, que no para, responde al cursor con un muelle y
+  baja al 28 % detrás del texto. Tres escenas:
+  - «Las palabras»: las del espejo de la barra (Tortilla, Gildas, Ensaladilla, PATATAS BRAVAS,
+    en versales como allí) y la del cristal (Vermú) se van pintando a mano donde hay blanco
+    libre, se quedan unos segundos y se borran; nunca más de tres (dos en el móvil). El cursor
+    es la luz, como en El relieve; en el móvil pasea sola. Van fijas a la pantalla: atadas al
+    scroll, en el iPhone el lienzo llega tarde y bailarían. Primero se buscaba el hueco
+    preguntando a la página punto por punto, y alguna palabra rozaba un texto; ahora se mira la
+    caja de cada pieza;
+  - «El vermú»: la red de luz de PHSPORT (Velo); en blanco se veía como una neblina rosa, así que
+    se dejan solo las vetas con luz, y queda como el mármol de las mesas en rojo;
+  - «Vermú y palabras»: las dos, y la luz del vermú enciende las palabras. Es la que sale por
+    defecto.
+- **La casa, «Mosaico vivo»:** cuatro fotos en la rejilla del mosaico. Cada tres segundos, más o
+  menos y sin compás, la grande se encoge y una vecina crece en su hueco con una foto nueva; la
+  que se encoge va encima y arranca antes. Nunca se estira una foto: cada tesela es una ventana
+  con `clip-path` y la foto va debajo con `transform`, a la escala que la cubre. Que dos pequeñas
+  se cambiaran el sitio se probó y se quitó: se atravesaban. Con el ratón encima se para; al
+  pulsar una se pone grande, y desde ahí no se mueve sola (regla 6).
+
+Nada de esto está en la rama. El código del probador vive solo en el Artifact (se lee con la
+acción `read`; el fondo es `fondo.js`), y lo elegido se reescribe en el código de verdad con sus
+tokens y reglas. Lo que pediría:
+
+- el fondo es movimiento continuo en la GPU mientras se ve la página, como en PHSPORT: necesita
+  su excepción escrita en `movimiento.md` y medirlo en un iPhone antes de darlo por bueno;
+- «Las palabras» trae una tercera fuente, Yellowtail, por la letra del espejo;
+- El relieve cambia `text-shadow` al mover el ratón: otra excepción a la regla 2.
+
+**Medido en el probador**, en local con Chromium a 1440 y WebKit a 390: sin errores ni scroll
+lateral; mientras el mosaico cambia, la foto cubre siempre su ventana, con 8 px de sobra como
+mínimo. Que las palabras nacen en blanco libre se vio en capturas, no se midió. **Sin medir:** en
+un iPhone de verdad, con un ratón de verdad y dentro del marco del Artifact.
 
 **Para Mario:**
 
-- elegir una opción de cada grupo en el probador;
+- elegir fondo y decir si el mosaico vivo vale; con eso, El relieve, el fondo y el mosaico se
+  escriben en la rama a la vez;
 - decidir si esta rama entra en `preview`, y si `feat/inicio-paralaje` se borra;
 - **el vídeo con IA.** La recomendación es el fondo del manifiesto, en lugar de la foto de las
   botellas:
