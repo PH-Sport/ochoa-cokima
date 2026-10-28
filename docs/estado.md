@@ -27,16 +27,14 @@ bueno de Mario. Es la tercera vuelta del día al Inicio:
   que dijo la investigación, que sigue valiendo.
 - **Y entonces pidió quedarse con la base de hoy** y su estructura: «Reservar» siempre a mano,
   los botones que se hunden, los títulos con su sombra, el menú desplegable y el mapa en 3D.
-  Encima, que la home *«se sienta viva, no algo plano y estático»*. Eligió además que el botón
-  del menú crezca hasta ser el menú, y que entren los muelles de Mochi y su cambio con
-  desenfoque. Esto último pidió dos excepciones a las reglas 1 y 2 de `movimiento.md`, escritas
-  allí con la fecha.
+  Encima, que la home *«se sienta viva, no algo plano y estático»*. Eligió además los muelles de
+  Mochi y su cambio con desenfoque, que pidieron dos excepciones a las reglas 1 y 2 de
+  `movimiento.md`, escritas allí con la fecha. También eligió que el botón del menú creciera hasta
+  ser el menú, pero al verlo volvió a la cortina de siempre: *«queda más simétrico»*.
 
-**Lo que trae la rama** (en `Nav.astro`, `Hero.astro`, `pages/index.astro` y `paralaje.ts`):
+**Lo que trae la rama** (en `Hero.astro`, `pages/index.astro` y `paralaje.ts`; el menú es otra
+vez el de `preview`):
 
-- **El menú:** el botón «MENÚ» crece hasta ser el panel, con el muelle de Mochi, y al cerrar se
-  encoge de vuelta en él. Los enlaces llegan desenfocados y se enfocan. Cokima sigue con su
-  persiana.
 - **Paralaje en segundo plano** en tres fondos: la portada, las botellas del manifiesto y la
   foto de La tasca. Las cifras, en `movimiento.md` §Qué se mueve hoy.
 - **El manifiesto deja el blanco:** es una banda roja con la pared de botellas en blanco y negro
@@ -57,9 +55,9 @@ WebKit a 390 px; el ordenador, con Chromium a 1024 y 1440:
   siguió igual otros 9 s.
 - El paneo está parado con el manifiesto fuera de la vista, en los dos. En el móvil, corre al
   verlo y queda quieto tras un toque.
-- Con «reducir movimiento» (en el ordenador), ni paralaje, ni paneo, ni muro; el menú abre
-  igual.
-- El menú acaba en el panel entero bajo la cabecera, en móvil y ordenador y en los dos idiomas.
+- Con «reducir movimiento» (en el ordenador), ni paralaje, ni paneo, ni muro.
+- La cortina, de vuelta, en móvil y ordenador: cerrada no se ve, a los 150 ms ha bajado un 26%,
+  abierta ocupa todo bajo la cabecera y al cerrar se recoge entera.
 - Sin scroll lateral a 390, 1024 y 1440, y sin errores de JavaScript.
 - El muro empieza a 1.506 px (390), 2.199 (1024) y 2.000 (1440) de lo último que cambia solo
   más arriba. Es más de una pantalla, así que no comparte compás con nada (regla 25).
@@ -74,9 +72,54 @@ WebKit a 390 px; el ordenador, con Chromium a 1024 y 1440:
 componentes. Su manifiesto, La tasca y La casa siguen como en `preview`, porque viven en
 `pages/en/index.astro`. Se igualan cuando Mario dé el visto bueno, no antes.
 
+**Lo que dijo Mario al verla, el mismo 2026-10-28:**
+
+- El menú, a la cortina (hecho).
+- El manifiesto le gusta: *«aporta algo de dinamismo»*.
+- En el ordenador quiere las secciones a la vista y no un menú, con algo que reaccione al cursor.
+- Echa en falta un fondo: el blanco le parece plano, y propone *«detalles sutiles rojos por el
+  fondo que vayan moviéndose, haciendo formas»*, como hacen en el local.
+- La casa en el ordenador: *«no veo una estructura clara, como si estuviese desordenado»*.
+- Quiere animar algún vídeo con IA y pregunta dónde iría.
+
+**Para esas tres cosas hay opciones en el probador**,
+`https://claude.ai/artifact/HFFN1Qx8eCbYDRYw6z56DC` (privado de Mario). Es la web real
+construida, con un selector:
+
+- **Navegación del ordenador:**
+  - «La chapa»: una chapa de papel viaja bajo la sección;
+  - «La foto»: asoma la foto de la sección y sigue al cursor;
+  - «El relieve»: secciones en letra de rótulo y la luz es el cursor.
+- **Fondo**, a partir de lo rojo del local:
+  - «El trazo»: dibujos de una línea, como los del cristal, que se dibujan al bajar;
+  - «El espejo»: palabras en la letra pintada del espejo de la barra;
+  - «Las banderillas»: palillos y aceitunas que flotan y esquivan el cursor.
+- **La casa:**
+  - «Texto y muro»: dos por dos, todas iguales;
+  - «Mosaico»: tres columnas sin escalones;
+  - «El inventario»: «Lo que hay» es una lista, como el espejo, y cada cosa enseña su foto.
+
+Nada de esto está en la rama. Su código vive solo en el Artifact (se lee con la acción `read`),
+y lo elegido se reescribe en el código de verdad con sus tokens y reglas. Dos cosas a saber:
+
+- «El espejo» traería una tercera fuente, Yellowtail, por la letra del espejo.
+- Tres animan fuera de `transform` y `opacity`, así que pedirían su excepción en la regla 2:
+  «El trazo» y el subrayado de «El espejo» dibujan con `stroke-dashoffset`, y «El relieve»
+  cambia `text-shadow` al mover el ratón.
+
 **Para Mario:**
 
+- elegir una opción de cada grupo en el probador;
 - decidir si esta rama entra en `preview`, y si `feat/inicio-paralaje` se borra;
+- **el vídeo con IA.** La recomendación es el fondo del manifiesto, en lugar de la foto de las
+  botellas:
+  - va en blanco y negro multiplicado sobre el rojo, que disimula los fallos típicos de la IA;
+  - está a media página, así que no frena la carga de la portada;
+  - es el sitio que ya le gusta.
+  Mejor animando una foto real con poco movimiento, sin caras ni manos en primer plano: una caña
+  tirándose, las botellas con luz, un vermú con hielo. En bucle de 5 a 8 s. La portada se
+  descartó como sitio: ya tiene el telón que eligió el 2026-10-27, y en un iPhone con ahorro de
+  energía el vídeo no arranca;
 - **el menú del día**, si lo hay a mediodía, con su precio y lo que incluye. Lo anuncia su
   Instagram («nuestro menú del día») y lo cuenta `.impeccable.md`, pero no está en la carta. La
   investigación dice que a mediodía es lo primero que se compara (§6 del documento archivado).
