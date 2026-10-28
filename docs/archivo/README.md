@@ -27,6 +27,7 @@ reescritas deja de decir qué había cuando se escribió, y aquí lo que importa
 | `2026-08-06-entrada-ochoa-design.md` | La entrada de Los Ochoa | Las variantes de movimiento que se compararon y por qué ganó la que ganó |
 | `barra-del-navegador-ios.md` | La barra del navegador en iPhone, **resuelta el 2026-08-01** | El caso entero: lo que se probó y no era, y su **§8, los tres errores de método**, que se copiaron a `../metodo.md` porque se repiten |
 | `estado-divergencia-layout.md` | Registro de la fase 2, tarea por tarea | Historia. **Su cabecera ya no es cierta**: habla de una rama que no existe y de 37 tests cuando hay 45 |
+| `2026-10-28-ochoa-inicio-direcciones.md` | Las cuatro direcciones del Inicio de Ochoa, **descartadas el 2026-10-28** | Lo investigado en foros y escaparates, la nota de cada dirección y por qué ninguna convenció a Mario |
 
 La receta portable que salió del caso de la barra **no está aquí**: sigue viva en
 `../receta-barra-ios-astro.md`, porque le sirve a cualquier web con `<ClientRouter />` y no caduca

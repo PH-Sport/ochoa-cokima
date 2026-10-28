@@ -1,6 +1,6 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-10-27 · Ochoa tiene foto en sus seis destacados y portada de seis fotos; Cokima, portada y casa
+> **Estado: vivo** · revisado 2026-10-28 · Ochoa tiene foto en sus seis destacados y portada de seis fotos (y, en la rama `feat/inicio-vivo`, siete más de la casa); Cokima, portada y casa
 
 ## Estado
 
@@ -135,11 +135,26 @@ descripciones viven en `apps/cokima/src/data/casa.ts`, compartido por los dos id
 | Ochoa | `src/assets/casa/rotulo.jpg` | ✅ `LosOchoa-1`: el rótulo pintado en el cristal. |
 | Ochoa | `src/assets/casa/vermu.jpg` | ✅ `LosOchoa-4`: vermú con banderilla sobre mármol. |
 | Ochoa | `src/assets/casa/comedor.jpg` | ✅ `LosOchoa-3`: banco corrido rojo y mesas de mármol. |
+| Ochoa | `src/assets/casa/canas.jpg` | ✅ `DCUbNe1tkBq-1`: un camarero tirando cañas con clientes en la barra. Muro, detrás de `barra.jpg`. Solo en la rama `feat/inicio-vivo`, como las seis siguientes. |
+| Ochoa | `src/assets/casa/delantal.jpg` | ✅ `DO6RuaSCJJP-2`: Guille poniéndose el delantal (el texto lo nombra). Vertical, encuadre `50% 18%`. Muro, detrás de `canas.jpg`. Sigue siendo candidata al hueco del equipo: usarla aquí no decide ese hueco. |
+| Ochoa | `src/assets/casa/cafe.jpg` | ✅ `Dc-g3Ofonrw-1`: una camarera sirviendo la leche en el café. Vertical, `50% 45%`. Muro, detrás de `vermu.jpg`. |
+| Ochoa | `src/assets/casa/gafas-de-cana.jpg` | ✅ `DUla9WSCIlS-1`: un cliente con la camiseta de la casa y dos cañas por gafas. Vertical, `50% 30%`. Muro, detrás de `cafe.jpg`. |
+| Ochoa | `src/assets/casa/futbol.jpg` | ✅ `DDj0by3N125-1`: clientes viendo el fútbol en la barra. Muro, detrás de `comedor.jpg`. |
+| Ochoa | `src/assets/casa/bandeja.jpg` | ✅ `DJE_GP0CEZO-1`: un camarero llevando unas bravas (el plato, a la vista; el texto habla de «extra de salsa»). Vertical, `50% 30%`. Muro, detrás de `futbol.jpg`. |
+| Ochoa | `src/assets/casa/botellas.jpg` | ✅ `DI9SX5Ri98B-1`: la pared de botellas con la etiqueta de la casa. Fondo del manifiesto: en blanco y negro y multiplicada sobre el rojo, así que se lee como rojo y negro. |
 | Ochoa | `src/assets/casa/equipo.jpg` | Hueco en «Conócenos», 4:3 junto al texto del equipo. **Candidatos de Instagram (2026-10-26):** el cocinero sonriendo con el cuchillo sobre la cortina roja (`DQB1FAiCKup-1`) y Guille poniéndose el delantal (`DO6RuaSCJJP`). Mejores que `LosOchoa-9`, el bocadillo de 2021. Sin poner: espera a que Mario elija |
 | Cokima | `src/assets/casa/pase.jpg` | ✅ `DepAPTwNTvJ-1`: la sartén en llamas, la misma de la portada. |
 | Cokima | `src/assets/casa/sala.jpg` | ✅ `Dd0yh8eKSfB-1`: vino sirviéndose en una mesa puesta. **Es una sustituta:** no hay foto de la sala en las publicaciones recientes, y la mesa es la sala vista de cerca. Si aparece una de la sala de noche, se cambia. |
 | Cokima | `src/assets/casa/producto.jpg` | ✅ `Deh1PKrtAKZ-1`: maracuyá abierto en macro. No es el «fondo negro, luz dura» del encargo, pero sí lo que dice el texto de la sección: «el producto crudo antes de que le pase nada». |
 | Cokima | `src/assets/casa/equipo.jpg` | ✅ `Dd6QjErCvhW-2`: un cocinero salseando un plato. Vertical en un hueco 4:3: lleva `object-position: 50% 20%` en `casa.ts` para que el recorte no le corte la cara. |
+
+**En la rama `feat/inicio-vivo` (2026-10-28), el muro de Ochoa cambia solo**, y por eso cada uno
+de sus tres huecos tiene tres fotos: la de siempre y dos de Instagram, con gente. Mario pidió
+que la home «se sienta viva» y que haya «elementos que vayan rotando/cambiando». Las siete salen
+de `fototeca/instagram/tasquita.losochoa/` tal cual, a su tamaño de Instagram (1440 de ancho, o
+1351 la de las gafas), solo recomprimidas con `sips` a calidad 82. Ninguna nombra un plato de la
+carta, así que no hace falta `confirmar`. El encuadre de las verticales va en `index.astro`, junto
+a su texto alternativo.
 
 ## La fototeca: las fotos recientes de Instagram
 
@@ -172,6 +187,14 @@ ya enseña, como se haría a mano con el inspector. Dos piezas:
    `fototeca/instagram/<cuenta>/<código>-<n>.jpg` y las apunta en `fototeca/catalogo.json`, que
    guarda la decisión sobre cada foto: tipo, plato, hueco, estado y nota. Volver a ejecutarlo no
    pisa lo escrito a mano.
+
+**`confirmar`: el plato es una suposición.** Desde el 2026-10-28 Mario quiere usar también las
+fotos cuyo plato no está asegurado, marcadas para preguntarle al equipo. Esas fichas llevan el
+campo `confirmar` con la pregunta tal cual habría que hacérsela («¿Son las gyozas de pollo
+teriyaki? Salen en vaporera; el texto solo dice "gyozas"»). Se da por asegurado lo que nombra el
+texto de su publicación, también cuando un carrusel enumera sus platos en orden; lo identificado
+solo a la vista va con `confirmar`. Al resolverlo, se corrige `dish` si hace falta y se borra el
+campo. El script lo conserva al volver a ejecutarse, como el resto de lo escrito a mano.
 
 **Toda la carpeta `fototeca/` queda fuera de git, catálogo incluido.** Las fotos se vuelven a bajar
 abriendo la publicación. El catálogo se quedó fuera por decisión de Mario el 2026-10-26: el repo es

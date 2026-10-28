@@ -20,7 +20,7 @@ const { locale } = Astro.props;
 const es = locale === "es";
 ---
 
-<header class="hero" id="top">
+<header class="hero" id="top" data-paralaje>
   {/* La primera foto es la única con prioridad: es la que se pinta al entrar y
       la que mide la carga. Las demás entran en la ronda a los 3,5 s como pronto
       y se piden con prioridad baja para no competir con ella. Sin JavaScript se
@@ -29,7 +29,9 @@ const es = locale === "es";
       solo sirve los anchos de `imagesConfig` y descarta el resto en silencio
       —con 1440 el srcset se quedaba en 1200—, y pedir 1600 de una foto de 1440
       devuelve la foto entera, sin agrandarla. */}
-  <div class="pase" data-pase>
+  {/* La serie entera es la capa lejana del paralaje (2026-10-28, «paralaje en
+      segundo plano»): al bajar va más lenta que la página. */}
+  <div class="pase" data-pase data-vel="-0.25" data-tope="60">
     {portada.map((foto, i) => (
       <Image
         src={foto.src}
@@ -76,9 +78,11 @@ const es = locale === "es";
    */
   import { congelaAlto } from "@tombo/ui/alto-congelado.ts";
   import { hastaElProximo, leeDuracion } from "../compas.ts";
+  import { montaParalaje } from "../paralaje.ts";
 
   let sueltaAnterior: (() => void) | undefined;
   let sueltaTelon: (() => void) | null = null;
+  let sueltaParalaje: (() => void) | null = null;
 
   /* El telón. La ronda avanza sola cada `--dur-pase` y, como todo lo que se
    * mueve solo (regla 6 de `docs/movimiento.md`), se para para siempre al primer
@@ -162,6 +166,10 @@ const es = locale === "es";
     sueltaAnterior = referencia ? congelaAlto({ referencia, variable: "--alto-portada" }) : undefined;
     sueltaTelon?.();
     sueltaTelon = montaTelon(e.timeStamp);
+    /* El paralaje vive aquí porque la portada es su primera capa y está en las
+       dos portadas; recoge también las fotos de fondo de las secciones. */
+    sueltaParalaje?.();
+    sueltaParalaje = montaParalaje();
   });
 </script>
 
@@ -196,9 +204,11 @@ const es = locale === "es";
   }
   /* Su propio contexto de apilamiento: los `z-index` de las fotos ordenan la
      ronda entre ellas y no pueden subir por encima del velo ni del titular. */
+  /* Sobresale un 8% por arriba y por abajo: es el recorrido del paralaje, que
+     la desplaza como mucho 60 px y nunca deja ver el fondo. */
   .pase {
     position: absolute;
-    inset: 0;
+    inset: -8% 0;
     isolation: isolate;
     background: var(--ink);
   }

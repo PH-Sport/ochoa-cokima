@@ -12,6 +12,13 @@ import barra from "../assets/casa/barra.jpg";
 import rotulo from "../assets/casa/rotulo.jpg";
 import vermu from "../assets/casa/vermu.jpg";
 import comedor from "../assets/casa/comedor.jpg";
+import canas from "../assets/casa/canas.jpg";
+import delantal from "../assets/casa/delantal.jpg";
+import cafe from "../assets/casa/cafe.jpg";
+import gafasDeCana from "../assets/casa/gafas-de-cana.jpg";
+import futbol from "../assets/casa/futbol.jpg";
+import bandeja from "../assets/casa/bandeja.jpg";
+import botellas from "../assets/casa/botellas.jpg";
 
 const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data));
 
@@ -28,10 +35,28 @@ const cristal = {
   src: rotulo,
   alt: "Rótulo de Los Ochoa pintado en el cristal, con la terraza al otro lado",
 };
-const casa = [
-  { src: barra, alt: "Barra de Los Ochoa con las botellas y el espejo rotulado a mano: tortilla, gildas, ensaladilla, patatas bravas" },
-  { src: vermu, alt: "Vermú con hielo y una banderilla de anchoa y aceituna sobre mármol" },
-  { src: comedor, alt: "Interior del local: banco corrido rojo, mesas de mármol y el rótulo visto desde dentro" },
+// El muro está vivo (2026-10-28: «elementos que vayan rotando/cambiando»): cada
+// toma tiene su serie y cambia de foto de una en una, con el fundido con
+// desenfoque de Mochi. La primera de cada serie es la de siempre. Las nuevas son
+// de su Instagram (fototeca, docs/fotografia.md); `pos` encuadra las verticales
+// para que el recorte a 4:3 no se lleve la cara.
+type Toma = { src: ImageMetadata; alt: string; pos?: string };
+const muro: Toma[][] = [
+  [
+    { src: barra, alt: "Barra de Los Ochoa con las botellas y el espejo rotulado a mano: tortilla, gildas, ensaladilla, patatas bravas" },
+    { src: canas, alt: "Camarero tirando cañas con clientes en la barra" },
+    { src: delantal, alt: "Un camarero poniéndose el delantal de la casa", pos: "50% 18%" },
+  ],
+  [
+    { src: vermu, alt: "Vermú con hielo y una banderilla de anchoa y aceituna sobre mármol" },
+    { src: cafe, alt: "Camarera sirviendo la leche en el café", pos: "50% 45%" },
+    { src: gafasDeCana, alt: "Un cliente con la camiseta de Los Ochoa y dos cañas por gafas", pos: "50% 30%" },
+  ],
+  [
+    { src: comedor, alt: "Interior del local: banco corrido rojo, mesas de mármol y el rótulo visto desde dentro" },
+    { src: futbol, alt: "Clientes viendo el fútbol en la barra" },
+    { src: bandeja, alt: "Camarero llevando unas bravas", pos: "50% 30%" },
+  ],
 ];
 ---
 
@@ -50,7 +75,13 @@ const casa = [
       gastaría entero. Aquí hace de corte entre los platos y el manifiesto. */}
   <Ticker locale="es" />
 
-  <section class="manifesto">
+  {/* El fondo es la pared de botellas de la casa, teñida al rojo como un cartel a
+      dos tintas, que va y viene muy despacio (`--dur-paneo`) y además va más
+      lenta que la página. Es decoración: la cita se lee igual sin ella. */}
+  <section class="manifesto" data-paralaje data-paneo>
+    <div class="fondo-paneo" data-vel="-0.12" data-tope="40" aria-hidden="true">
+      <Image src={botellas} alt="" widths={[640, 960, 1440]} sizes="100vw" quality={70} loading="lazy" class="paneo" />
+    </div>
     <div class="wrap">
       <div class="rule"></div>
       <blockquote>«Aperitivos de esos que se alargan hasta la noche, <strong>como filosofía de vida</strong>.»</blockquote>
@@ -64,8 +95,8 @@ const casa = [
   <section class="tasca">
     <div class="wrap"><div class="rule"></div></div>
     <div class="wrap tasca-grid">
-      <div class="tasca-photo">
-        <img src="/images/mesa.jpg" alt="Mesa de mármol con varios platos de la carta servidos para compartir" width="1920" height="1080" loading="lazy" />
+      <div class="tasca-photo" data-paralaje>
+        <img src="/images/mesa.jpg" alt="Mesa de mármol con varios platos de la carta servidos para compartir" width="1920" height="1080" loading="lazy" data-vel="-0.08" data-tope="22" />
       </div>
       <div>
         <p class="eyebrow">La tasca</p>
@@ -111,17 +142,23 @@ const casa = [
         Barra, mármol y vermú de media tarde. <em>El tapeo que se alarga hasta que alguien mira
         el reloj</em> y resulta que ya es de noche. Los Ochoa por dentro.
       </p>
-      <div class="wall">
-        {casa.map((c) => (
-          <Image
-            src={c.src}
-            alt={c.alt}
-            widths={[320, 640, 900]}
-            sizes="(max-width: 860px) 46vw, 33vw"
-            quality={72}
-            loading="lazy"
-            class="casa-shot"
-          />
+      <div class="wall" data-muro>
+        {muro.map((serie) => (
+          <div class="toma" data-muro-toma>
+            {serie.map((f, i) => (
+              <Image
+                src={f.src}
+                alt={f.alt}
+                widths={[320, 640, 900]}
+                sizes="(max-width: 860px) 46vw, 33vw"
+                quality={72}
+                loading="lazy"
+                class:list={["casa-shot", { on: i === 0 }]}
+                style={f.pos ? `object-position: ${f.pos}` : undefined}
+                aria-hidden={i === 0 ? undefined : "true"}
+              />
+            ))}
+          </div>
         ))}
       </div>
     </div>
@@ -159,6 +196,102 @@ const casa = [
     </div>
   </section>
 </Base>
+
+<script>
+  /* LA HOME VIVA (2026-10-28, Mario: «que se sienta viva, no algo plano y
+   * estático»). Dos cosas que se mueven solas, con la misma doctrina que el telón
+   * y el mazo (regla 6 de docs/movimiento.md): no corren fuera de pantalla ni con
+   * la pestaña oculta, se paran para siempre al primer toque y con «reducir
+   * movimiento» no arrancan.
+   *  · El muro de La casa cambia una foto cada `--dur-muro`, de una en una: la que
+   *    llega entra desenfocada y un poco grande y se asienta con el muelle de
+   *    Mochi; la que se va se queda debajo, entera, hasta quedar tapada.
+   *  · El fondo del manifiesto hace su paneo solo mientras se ve. */
+  import { leeDuracion } from "../compas.ts";
+
+  let suelta: (() => void) | null = null;
+
+  function montaVida() {
+    const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const abort = new AbortController();
+    const { signal } = abort;
+
+    const manifiesto = document.querySelector<HTMLElement>("[data-paneo]");
+    let ojoPaneo: IntersectionObserver | null = null;
+    if (manifiesto && !quieto) {
+      ojoPaneo = new IntersectionObserver(([e]) => manifiesto.classList.toggle("en-vista", e.isIntersecting));
+      ojoPaneo.observe(manifiesto);
+      manifiesto.addEventListener("pointerdown", () => manifiesto.classList.add("quieto"), { once: true, signal });
+    }
+
+    const muro = document.querySelector<HTMLElement>("[data-muro]");
+    const tomas = muro ? [...muro.querySelectorAll<HTMLElement>("[data-muro-toma]")] : [];
+    let reloj: ReturnType<typeof setTimeout> | null = null;
+    let turno = 0;
+    let parado = quieto;
+    let enVista = false;
+    const pasa = () => {
+      const toma = tomas[turno % tomas.length];
+      turno++;
+      const fotos = [...toma.querySelectorAll<HTMLImageElement>("img")];
+      const i = fotos.findIndex((f) => f.classList.contains("on"));
+      const sig = fotos[(i + 1) % fotos.length];
+      /* Si la siguiente no ha llegado, se salta el turno en vez de enseñar un hueco */
+      if (!sig.complete || sig.naturalWidth === 0) return;
+      fotos.forEach((f) => f.classList.remove("fondo"));
+      fotos[i].classList.replace("on", "fondo");
+      fotos[i].setAttribute("aria-hidden", "true");
+      sig.removeAttribute("aria-hidden");
+      void sig.offsetWidth;
+      sig.classList.add("on");
+    };
+    const pausa = () => {
+      if (reloj) clearTimeout(reloj);
+      reloj = null;
+    };
+    const arranca = () => {
+      if (parado || reloj || !enVista || document.hidden) return;
+      reloj = setTimeout(() => {
+        reloj = null;
+        pasa();
+        arranca();
+      }, leeDuracion("--dur-muro"));
+    };
+    let ojoMuro: IntersectionObserver | null = null;
+    if (muro && tomas.length && !quieto) {
+      ojoMuro = new IntersectionObserver(
+        ([e]) => {
+          enVista = e.intersectionRatio >= 0.3;
+          if (enVista) arranca();
+          else pausa();
+        },
+        { threshold: [0, 0.3] },
+      );
+      ojoMuro.observe(muro);
+      document.addEventListener("visibilitychange", () => (document.hidden ? pausa() : arranca()), { signal });
+      muro.addEventListener(
+        "pointerdown",
+        () => {
+          parado = true;
+          pausa();
+        },
+        { once: true, signal },
+      );
+    }
+
+    return () => {
+      pausa();
+      ojoMuro?.disconnect();
+      ojoPaneo?.disconnect();
+      abort.abort();
+    };
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    suelta?.();
+    suelta = montaVida();
+  });
+</script>
 
 <style>
   .manifesto {
@@ -389,8 +522,10 @@ const casa = [
      lateral en esta marca — es justo lo que la separa de Cokima. Va al final
      de la hoja porque comparte especificidad con las reglas de arriba. */
   @media (max-width: 860px) {
+    /* Abajo también: desde que lleva fondo es una banda, y el texto no puede
+       tocar su borde. */
     .manifesto {
-      padding: 28px 0 0;
+      padding: 28px 0 40px;
     }
     .visita {
       padding-top: 28px;
@@ -414,6 +549,155 @@ const casa = [
     .txt {
       font-size: 1rem;
       margin-top: 0.9rem;
+    }
+  }
+
+  /* ---- LA HOME VIVA (2026-10-28) ---- */
+
+  /* El manifiesto, sobre la pared de botellas de la casa teñida al rojo: la foto
+     en grises, multiplicada sobre el rojo, queda como un cartel a dos tintas. El
+     paneo es solo `transform` y va y viene en `--dur-paneo`; el paralaje lo lleva
+     el envoltorio, para que los dos movimientos no se pisen. La cita pasa al
+     papel con el relieve de tinta de los rótulos, y lo que antes iba en rojo va
+     en tinta con el relieve en papel: rojo sobre rojo no se vería. */
+  .manifesto {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--rojo);
+    color: var(--paper);
+  }
+  /* La mezcla va en el envoltorio y no en la foto: el paralaje le pone un
+     `transform`, que lo convierte en su propio grupo de pintado, y una foto que
+     se multiplicara dentro se multiplicaría contra nada (salía gris, sin rojo).
+     Así se multiplica el grupo entero contra el rojo de la sección, que está
+     aislada (`isolation`) para que la mezcla no se salga de ella. */
+  .fondo-paneo {
+    position: absolute;
+    inset: -10% 0;
+    z-index: -1;
+    mix-blend-mode: multiply;
+  }
+  .paneo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.15) brightness(1.05);
+    transform: scale(1.1);
+    animation: paneo var(--dur-paneo) var(--ease-telon) infinite alternate;
+    animation-play-state: paused;
+  }
+  .manifesto:global(.en-vista) .paneo {
+    animation-play-state: running;
+  }
+  .manifesto:global(.quieto) .paneo {
+    animation-play-state: paused;
+  }
+  @keyframes paneo {
+    from {
+      transform: scale(1.1) translate3d(-2.5%, 1%, 0);
+    }
+    to {
+      transform: scale(1.1) translate3d(2.5%, -1%, 0);
+    }
+  }
+  /* La regla global de «reducir movimiento» acorta las animaciones pero no las
+     detiene, y un paneo infinito acortado parpadearía: aquí se quita. */
+  @media (prefers-reduced-motion: reduce) {
+    .paneo {
+      animation: none;
+    }
+  }
+  .manifesto .rule {
+    border-color: var(--paper);
+  }
+  .manifesto blockquote {
+    color: var(--paper);
+    text-shadow: 0.045em 0.05em 0 var(--ink);
+  }
+  .manifesto blockquote strong {
+    color: var(--ink);
+    text-shadow: 0.045em 0.05em 0 var(--paper);
+  }
+  .manifesto .sub {
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  /* La mesa de La tasca es la capa lejana dentro de su marco: sobresale un 8%
+     por arriba y por abajo para tener recorrido. */
+  .tasca-photo img {
+    position: relative;
+    top: -8%;
+    height: 116%;
+  }
+
+  /* El muro vivo: cada toma es un marco con su serie apilada. La foto que llega
+     entra desenfocada y un poco grande (el cambio de Mochi, `--desenfoque`) y se
+     asienta con su muelle; la que se va se queda debajo, entera, hasta quedar
+     tapada, así que nunca se ve un hueco. Los realces rojos y el desfase de la
+     retícula se los quedan las tomas, que son ahora los hijos del muro. */
+  .toma {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border: 2px solid var(--ink);
+    border-radius: var(--r-marco);
+    overflow: hidden;
+    background: var(--paper-3);
+  }
+  .toma .casa-shot {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    border: 0;
+    border-radius: 0;
+    opacity: 0;
+    filter: blur(var(--desenfoque));
+    transform: scale(1.06);
+  }
+  .toma .casa-shot:global(.on) {
+    z-index: 2;
+    opacity: 1;
+    filter: none;
+    transform: none;
+    transition:
+      opacity var(--dur-in) var(--ease),
+      filter var(--dur-in) var(--ease),
+      transform var(--dur-muelle) var(--ease-muelle);
+  }
+  .toma .casa-shot:global(.fondo) {
+    z-index: 1;
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+
+  /* En el ordenador, nada de fotos gigantes (Mario, 2026-10-28: «no me puedes
+     poner una foto tan enorme»). El muro va a tres columnas iguales, con el
+     escalón de la del medio, y el titular de La casa se lee en una fila: «Lo que
+     hay [la foto del cristal] detrás del cristal», con la foto del tamaño de una
+     palabra grande. Entre 861 y 1199 px la fila no cabe: el titular sigue en
+     columna y la foto se queda en 640 px. */
+  @media (min-width: 861px) {
+    .wall {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .wall > :global(.toma:nth-child(3)) {
+      grid-column: auto;
+      aspect-ratio: 4 / 3;
+    }
+    .cristal-shot {
+      max-width: 640px;
+    }
+  }
+  @media (min-width: 1200px) {
+    .titular-cristal {
+      grid-template-columns: auto minmax(0, 460px) auto;
+      align-items: center;
+      justify-content: start;
+      column-gap: clamp(16px, 2vw, 28px);
     }
   }
 </style>

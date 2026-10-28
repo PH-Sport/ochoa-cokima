@@ -1,10 +1,11 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-10-27 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-10-28 · **el punto de entrada del repo**
 
-- **Corte:** 2026-10-27
+- **Corte:** 2026-10-28
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
-  nada nuevo aún)
+  nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
+  de decidir: `feat/inicio-vivo`, esta, y `feat/inicio-paralaje`, parada (§0)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
 - **Hay una sola versión de este documento**, la de `preview`. Hasta el 2026-10-26 hubo dos —la de
   `tmp/entrada-cokima`, que era la buena, y la de `preview`—; se juntaron ese día (§1).
@@ -12,6 +13,73 @@
 ---
 
 ## 0. Por dónde seguir
+
+**Ochoa, 2026-10-28: la home viva, en la rama de prueba `feat/inicio-vivo`.** Se ve en
+`https://ochoa-git-feat-inicio-vivo-rodz-dev.vercel.app` y no entra en `preview` sin el visto
+bueno de Mario. Es la tercera vuelta del día al Inicio:
+
+- **Primero, la rama `feat/inicio-paralaje`:** la portada a pantalla completa con fundido, platos
+  recortados en los huecos blancos y un collage en el ordenador. Mario la paró: *«en ordenador es
+  muy incómodo. Está extremadamente vacío»*, y *«no me puedes poner una foto tan enorme y un
+  plato en PNG tan enano»*. Su §0 propio vive solo en esa rama.
+- **Después, cuatro direcciones nuevas**, investigadas y puntuadas por un revisor. Tampoco le
+  convenció ninguna. Están cerradas en `archivo/2026-10-28-ochoa-inicio-direcciones.md`, con lo
+  que dijo la investigación, que sigue valiendo.
+- **Y entonces pidió quedarse con la base de hoy** y su estructura: «Reservar» siempre a mano,
+  los botones que se hunden, los títulos con su sombra, el menú desplegable y el mapa en 3D.
+  Encima, que la home *«se sienta viva, no algo plano y estático»*. Eligió además que el botón
+  del menú crezca hasta ser el menú, y que entren los muelles de Mochi y su cambio con
+  desenfoque. Esto último pidió dos excepciones a las reglas 1 y 2 de `movimiento.md`, escritas
+  allí con la fecha.
+
+**Lo que trae la rama** (en `Nav.astro`, `Hero.astro`, `pages/index.astro` y `paralaje.ts`):
+
+- **El menú:** el botón «MENÚ» crece hasta ser el panel, con el muelle de Mochi, y al cerrar se
+  encoge de vuelta en él. Los enlaces llegan desenfocados y se enfocan. Cokima sigue con su
+  persiana.
+- **Paralaje en segundo plano** en tres fondos: la portada, las botellas del manifiesto y la
+  foto de La tasca. Las cifras, en `movimiento.md` §Qué se mueve hoy.
+- **El manifiesto deja el blanco:** es una banda roja con la pared de botellas en blanco y negro
+  multiplicada encima, que va y viene de lado en 26 s. La cita va en blanco, con la sombra de
+  los títulos. Primero la foto salía gris, sin ningún error: la trampa es ya la regla 26 de
+  `movimiento.md`.
+- **El muro de La casa cambia solo:** una foto cada 4 s, por turnos entre los tres huecos, con
+  seis fotos nuevas de Instagram; la séptima es la de las botellas (`fotografia.md` §Fotos de la
+  casa).
+- **En el ordenador, La casa ya no lleva la foto enorme** que Mario señaló. Desde 1200 px el
+  titular va en una fila, «Lo que hay [foto] Detrás del cristal», con la foto a 460 px como
+  mucho; entre 861 y 1199, a 640. El muro va en tres columnas.
+
+**Medido sobre el build** con un servidor local que sustituye a `/_vercel/image`. El móvil, con
+WebKit a 390 px; el ordenador, con Chromium a 1024 y 1440:
+
+- El muro cambió dos fotos en 9 s, en el móvil y en el ordenador. En el móvil, tras un toque,
+  siguió igual otros 9 s.
+- El paneo está parado con el manifiesto fuera de la vista, en los dos. En el móvil, corre al
+  verlo y queda quieto tras un toque.
+- Con «reducir movimiento» (en el ordenador), ni paralaje, ni paneo, ni muro; el menú abre
+  igual.
+- El menú acaba en el panel entero bajo la cabecera, en móvil y ordenador y en los dos idiomas.
+- Sin scroll lateral a 390, 1024 y 1440, y sin errores de JavaScript.
+- El muro empieza a 1.506 px (390), 2.199 (1024) y 2.000 (1440) de lo último que cambia solo
+  más arriba. Es más de una pantalla, así que no comparte compás con nada (regla 25).
+
+**Sin medir:**
+
+- en un iPhone de verdad;
+- en una conexión lenta (si la foto siguiente no ha llegado, el muro se salta el turno);
+- lo que cuesta el desenfoque en un móvil modesto.
+
+**A medias y a propósito: el inglés.** La home inglesa comparte la portada y el menú, porque son
+componentes. Su manifiesto, La tasca y La casa siguen como en `preview`, porque viven en
+`pages/en/index.astro`. Se igualan cuando Mario dé el visto bueno, no antes.
+
+**Para Mario:**
+
+- decidir si esta rama entra en `preview`, y si `feat/inicio-paralaje` se borra;
+- **el menú del día**, si lo hay a mediodía, con su precio y lo que incluye. Lo anuncia su
+  Instagram («nuestro menú del día») y lo cuenta `.impeccable.md`, pero no está en la carta. La
+  investigación dice que a mediodía es lo primero que se compara (§6 del documento archivado).
 
 **Ochoa, 2026-10-27: la portada es un telón de seis fotos y «Lo que más sale» es un mazo en el
 móvil.** Mario lo eligió en dos bocetos. La portada deja la fachada y pasa a seis fotos de la casa

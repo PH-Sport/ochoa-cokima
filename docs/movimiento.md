@@ -18,7 +18,7 @@ Viven en `apps/<app>/src/styles/tokens.css`.
 | `--shift` | `14px` | `18px` | Cuánto se desplaza lo que entra. |
 | `--stagger` | `30ms` | `65ms` | El escalón entre hermanos en cascada. |
 
-**Once más, solo en Ochoa,** para movimientos que no son ni entrar ni responder a un dedo. Cada
+**Diecinueve más, solo en Ochoa,** para movimientos que no son ni entrar ni responder a un dedo. Cada
 uno existe porque no cabía en los cinco de arriba, no porque hiciera falta un número nuevo:
 
 | Token | Ochoa | Para qué |
@@ -26,6 +26,11 @@ uno existe porque no cabía en los cinco de arriba, no porque hiciera falta un n
 | `--ease-telon` | `cubic-bezier(0.45, 0.02, 0.55, 1)` | La curva de lo que **recorre la pantalla entera**. Ver la regla 9. |
 | `--dur-cinta` | `34s` | La cinta rotulada **recorre**. Lineal, no con la curva: un rótulo que acelera se lee como un fallo. |
 | `--dur-pase` | `3,5s` | Lo que una foto de la portada **espera** antes de que el telón traiga la siguiente. |
+| `--ease-muelle` / `--dur-muelle` | `linear(…)` / `590ms` | El muelle `morph` de Mochi: lo que **se transforma**, como el botón «MENÚ» que crece hasta ser el menú. Rebota un 0,50%, que no se ve (regla 1). |
+| `--ease-muelle-vuelta` / `--dur-muelle-vuelta` | `linear(…)` / `480ms` | El muelle `back` de Mochi: lo que **vuelve a su sitio**, como el menú que se recoge en su botón. Rebota un 0,77%. |
+| `--desenfoque` / `--escala-entrada` | `12px` / `0.94` | El cambio de contenido de Mochi: lo que llega lo hace desenfocado y un pelo más pequeño, y se enfoca al asentarse (regla 2). |
+| `--dur-muro` | `4s` | Lo que una foto del muro de La casa **espera** antes de que cambie la siguiente. Con su propio reloj y no con `compas.ts`: el muro no comparte pantalla con la portada ni con el mazo (regla 25). |
+| `--dur-paneo` | `26s` | Lo que tarda el fondo del manifiesto en **ir de un lado al otro**; luego vuelve. Con `--ease-telon`, que frena en los dos extremos: con la quíntica, cada vuelta daría un tirón. |
 | `--dur-turno` | `5,5s` | Lo que un plato **espera** al frente del mazo antes de irse al fondo. Fue 3,5 s; se alargó el 2026-10-27 para no ir al compás de la portada (regla 25). |
 | `--desfase-turno` | `0,25s` | No es una duración, es la **fase**: cuánto más tarda el primer cambio del mazo. Es lo que impide que coincida con la portada (regla 25). |
 | `--dur-baraja` | `980ms` | Lo que tarda la carta de delante en **salir torciéndose y volver al fondo** del mazo. Dos viajes, así que 1,4 veces `--dur-recogida`, con `--ease-telon`. |
@@ -48,8 +53,15 @@ más lejos; Ochoa es una tasca y es seca.
 ## Las reglas
 
 1. **Nunca bounce ni elástica.** Envejece mal y delata plantilla. Las cosas reales
-   desaceleran, no rebotan.
-2. **Solo `transform` y `opacity`.** Animar `width`, `height`, `padding` o `margin` obliga al
+   desaceleran, no rebotan. **Excepción, decidida por Mario el 2026-10-28:** los muelles de
+   Mochi, que rebotan menos de un 1% y no se ve. Son `--ease-muelle` y `--ease-muelle-vuelta`,
+   generados con la fórmula de Mochi, y no hay otros: un muelle nuevo se genera igual, no se
+   escribe a ojo.
+2. **Solo `transform` y `opacity`.** (Y `clip-path`, que ya se usaba en el telón y en el menú.)
+   **Excepción, decidida por Mario el 2026-10-28:** `filter: blur()` en los cambios de
+   contenido, que es el gesto de Mochi (`--desenfoque`). Solo en lo que entra o cambia —los
+   enlaces del menú, las fotos del muro de La casa—, nunca en una foto a pantalla completa ni
+   ligado al scroll, que es donde el desenfoque cuesta. Animar `width`, `height`, `padding` o `margin` obliga al
    navegador a recalcular la disposición en cada fotograma. La portada lo hacía —el titular se
    apartaba del cartel de cookies moviendo su `padding-bottom`— y ahora se aparta con
    `translateY`, con el mismo resultado en pantalla.
@@ -339,17 +351,28 @@ más lejos; Ochoa es una tasca y es seca.
     200 / 300 / 400 ms **en los dos sentidos**; la de delante, quieta hasta quedar tapada (1% a
     la vista a los 500 ms) y retirándose debajo después.
 
+26. **Una mezcla dentro de algo que se mueve con `transform` solo se mezcla con lo de dentro.**
+    El `transform` hace de su elemento una capa aparte, y un `mix-blend-mode` en uno de sus hijos
+    ya no ve lo que hay detrás de esa capa. El fondo del manifiesto (rama `feat/inicio-vivo`,
+    2026-10-28) multiplicaba la foto de las botellas sobre el rojo de la sección. Al poner el
+    paralaje en su envoltorio, la foto salió gris, sin rojo con el que mezclarse, y sin dar un
+    solo error. **La mezcla va en el elemento que se mueve, no dentro**, y la sección lleva
+    `isolation: isolate` para que no se mezcle con nada más allá de ella.
+
 ## Qué se mueve hoy
 
 | Dónde | Qué | Con qué |
 |---|---|---|
-| Menú a pantalla completa | El panel cae como una persiana y se recoge al cerrar | `clip-path`, `--dur-in` / `--dur-out` |
-| Menú a pantalla completa | Las secciones entran en cascada | `translateY(--shift)`, `--dur-in`, `--stagger` |
+| Menú a pantalla completa | El panel cae como una persiana y se recoge al cerrar. **En Ochoa, en la rama `feat/inicio-vivo`**, el botón «MENÚ» crece hasta ser el panel y al cerrar se encoge de vuelta en él | `clip-path`, `--dur-in` / `--dur-out`; en la rama, desde el rectángulo del botón con `--ease-muelle` / `--ease-muelle-vuelta` |
+| Menú a pantalla completa | Las secciones entran en cascada. **En la rama**, llegan además desenfocadas y un pelo pequeñas, y se enfocan al asentarse | `translateY(--shift)`, `--dur-in`, `--stagger`; en la rama, `filter` con `--desenfoque` y `scale` con `--escala-entrada` y `--ease-muelle` |
 | Botón del menú | El subrayado se recoge al abrir | `transform`, `--dur-out` |
 | Enlaces del menú | Color al pasar por encima (y la brasa, en Cokima) | `color`/`box-shadow`, `--dur-out` |
 | Botones, fichas de contacto y mapa | Se hunden al tocar y recuperan al soltar | `data-tacto`, `--dur-sube` |
 | Cinta rotulada (Ochoa) | Recorre en bucle | `translateX`, `--dur-cinta` |
 | Portada (Ochoa) | El telón: cada foto entra de derecha a izquierda sobre la anterior | `clip-path`, `--dur-pase`, `--dur-recogida`, `--ease-telon` |
+| Paralaje (Ochoa, solo en la rama `feat/inicio-vivo`) | Tres fondos van más lentos que la página: la portada un 25% (tope 60 px), las botellas del manifiesto un 12% (tope 40) y la foto de La tasca un 8% dentro de su marco (tope 22) | `transform` desde `apps/ochoa/src/paralaje.ts`; nada con «reducir movimiento» |
+| Manifiesto (Ochoa, solo en la rama) | La pared de botellas, en blanco y negro y multiplicada sobre el rojo, va y viene de lado | `transform`, `--dur-paneo`, `--ease-telon`; solo a la vista, se para al primer toque; nada con «reducir movimiento» |
+| Muro de La casa (Ochoa, solo en la rama) | Cambia una foto cada `--dur-muro`, por turnos entre los tres huecos: la nueva llega desenfocada y un pelo grande y se asienta con el muelle; la que se va se queda debajo hasta quedar tapada | `opacity` + `filter` con `--dur-in`, `transform` con `--ease-muelle`; con un 30% a la vista y la pestaña delante; se para al primer toque; nada con «reducir movimiento» |
 | Mazo de platos (Ochoa, solo móvil) | La de delante sale por la izquierda torciéndose y vuelve al fondo; deslizando a la derecha, la anterior entra por la izquierda por encima, en la mitad del tiempo; el turno se rellena | `transform` + `opacity`, `--dur-turno`, `--desfase-turno`, `--dur-baraja`, `--ease-telon`; `scaleX` |
 | Portada | El titular se aparta del cartel de cookies | `translateY`, `--dur-out` |
 | Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |
