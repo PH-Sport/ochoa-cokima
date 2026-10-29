@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-10-28 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-10-29 · **el punto de entrada del repo**
 
-- **Corte:** 2026-10-28
+- **Corte:** 2026-10-29
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
   nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
   de decidir: `feat/inicio-vivo`, esta, y `feat/inicio-paralaje`, parada (§0)
@@ -120,6 +120,52 @@ con un selector. Lo que eligió y lo que se queda fuera:
   se cambiaran el sitio se probó y se quitó: se atravesaban. Con el ratón encima se para; al
   pulsar una se pone grande, y desde ahí no se mueve sola (regla 6).
 
+**Lo que eligió de la segunda ronda, el 2026-10-29:**
+
+- **Fondo: «Vermú y palabras».** El vermú, *«ideal»*. De las palabras vio dos letras y se queda
+  con la clásica del espejo (Yellowtail): fuera la de los títulos, que llevaba PATATAS BRAVAS.
+  Esa vuelve como «Bravas» en la clásica, entran dos de la carta, «Croquetas» y «Callos», y que
+  salgan *«ligeramente»* más a menudo.
+- **La casa: el mosaico vivo**, *«me gusta mucho»*. Dos etiquetas no se entendían: «La ronda»
+  (el chico con dos cañas por gafas) pasa a «Las gafas», que es lo que se ve, y «El delantal»
+  (Guille) a «El equipo». Las que le cuadran nombran lo que sale: el café, la barra, las bravas.
+- **La portada no le convence,** *«principalmente por las fotos»*, y en el ordenador tampoco la
+  estructura. En el móvil la quiere a pantalla completa.
+- **Conócenos** está *«básicamente en blanco»*. Va después, con fotos que no salgan en la home
+  (le gusta mucho la del cubo de madera, `DMf4a_eoWqt-1`) y sin el equipo completo.
+
+**La tercera ronda, en el mismo enlace** (versión 3 del probador):
+
+- **Portada en el móvil:** llena la pantalla bajo la cabecera. Deja de restar la franja por la que
+  asomaba el primer plato, que invitaba a bajar; Mario prefiere la pantalla completa.
+- **Portada en el ordenador:** a 1440×900 la portada es una franja de 1440×682, y las fotos de
+  Instagram son verticales o cuadradas: se ve entre el 36 y el 47 % de su alto, y en una pantalla
+  de alta densidad salen estiradas al doble. Tres formas que las enseñan casi enteras y sin
+  estirar, con el telón de la web, más «Como ahora» para comparar:
+  - «El tríptico»: tres fotos verticales en fila, cada una con su telón, nunca dos a la vez;
+  - «La tira»: todas en fila, enteras, pasando de derecha a izquierda a 22 px/s;
+  - «El rótulo»: el titular en un panel rojo en el centro, con la sombra en tinta, entre dos
+    fotos que se turnan.
+
+  Las tres siguen las reglas de lo que se mueve solo: se paran para siempre al primer toque, no
+  corren con menos de media portada a la vista ni con la pestaña oculta, y no arrancan con
+  «reducir movimiento». No son la «pared» ni el «escaparate» de los cinco bocetos del
+  2026-10-26: aquellos eran rejillas quietas, de seis y de tres fotos.
+- **Fotos nuevas:** ocho de Instagram que no salen en el resto de la home, elegidas entre las 25
+  sin usar: dos brindis (`DMsOEbToHc4-1`, `DPyg6SPCGH5-3`), una clienta (`DPeYU5ziIo6-2`), un
+  camarero con un brioche (`C66BbqHtC1M-1`), vermú y gilda (`DHQbxoKiBLd-1`), una caña
+  tirándose (`DLAgINkIMFS-1`), el rótulo del cristal (`C2Pz8szNUrq-10`) y vino en la mesa
+  (`DNF9_F0IzXV-1`). Fuera las de Navidad, que caducan; la de la camiseta del Madrid, que es de
+  un equipo; y la del guante de Spiderman, que es más de Cokima. El cubo de madera se guarda para
+  Conócenos. Las de ahora
+  siguen en el selector, recomprimidas igual que las nuevas para que la comparación sea justa.
+- **Palabras:** las siete en la letra clásica, esperas un 25 % más cortas y más sitios donde
+  buscar hueco, con un tamaño algo menor si no caben. Y un arreglo: las teselas del mosaico vivo
+  miden el mosaico entero y sus fotos se salen de la ventana que se ve, así que contaban como
+  tapando blanco libre y las palabras no encontraban sitio cerca de La casa.
+- **El titular de la portada no seguía al cursor** en la segunda ronda: la regla del componente,
+  con su atributo de ámbito, pesaba más que la del probador. Arreglado.
+
 Nada de esto está en la rama. El código del probador vive solo en el Artifact (se lee con la
 acción `read`; el fondo es `fondo.js`), y lo elegido se reescribe en el código de verdad con sus
 tokens y reglas. Lo que pediría:
@@ -127,17 +173,38 @@ tokens y reglas. Lo que pediría:
 - el fondo es movimiento continuo en la GPU mientras se ve la página, como en PHSPORT: necesita
   su excepción escrita en `movimiento.md` y medirlo en un iPhone antes de darlo por bueno;
 - «Las palabras» trae una tercera fuente, Yellowtail, por la letra del espejo;
-- El relieve cambia `text-shadow` al mover el ratón: otra excepción a la regla 2.
+- El relieve cambia `text-shadow` al mover el ratón: otra excepción a la regla 2;
+- la portada que elija cambia sola: en el código de verdad pregunta a `compas.ts` cuándo le
+  toca, como el telón de hoy (regla 25); en el probador lleva su propio reloj.
 
-**Medido en el probador**, en local con Chromium a 1440 y WebKit a 390: sin errores ni scroll
-lateral; mientras el mosaico cambia, la foto cubre siempre su ventana, con 8 px de sobra como
-mínimo. Que las palabras nacen en blanco libre se vio en capturas, no se midió. **Sin medir:** en
-un iPhone de verdad, con un ratón de verdad y dentro del marco del Artifact.
+**Medido en el probador**, en local con Chromium (ordenador) y WebKit a 390×844 (móvil), sin
+errores ni scroll lateral en ninguna de las dos rondas:
+
+- segunda ronda: mientras el mosaico cambia, la foto cubre siempre su ventana, con 8 px de sobra
+  como mínimo;
+- portada en el móvil: cabecera 62 + portada 782 = 844, la pantalla entera;
+- portada en el ordenador, a 1440×900 y densidad 2: con «Como ahora» se ve el 48 % del alto de la
+  foto, estirada a 1,98×; en el tríptico, entre el 60 y el 80 % del ancho y el 86 % del alto (el
+  resto lo guarda el sobrante del paralaje), a entre 0,82× y 1,10×;
+- el tríptico cambia una hoja cada 2,9 a 3,7 s, de una en una; el rótulo alterna cada 3,3 a
+  3,9 s; la tira avanza a 21,5 px/s. Tras tocar la portada, ningún cambio en 9 s; con la portada
+  fuera de la vista, la tira quieta; con «reducir movimiento», ni cambios ni tira;
+- el titular del rótulo cabe en su columna a 1024, 1280, 1440 y 1920 de ancho;
+- palabras nacidas con la página quieta: en el ordenador, 40 s en Lo que más sale, La tasca y
+  Dónde estamos, 7 antes y 15 ahora; en el móvil, 60 s en La tasca, 6 antes y 10 ahora. Con las
+  vidas también más cortas salían 19 en el ordenador, casi el triple, y se dejaron como estaban.
+
+Que las palabras nacen en blanco libre se vio en capturas, no se midió. **Sin medir:** en un
+iPhone de verdad, con un ratón de verdad y dentro del marco del Artifact (el navegador del agente
+no tiene sesión en claude.ai).
 
 **Para Mario:**
 
-- elegir fondo y decir si el mosaico vivo vale; con eso, El relieve, el fondo y el mosaico se
-  escriben en la rama a la vez;
+- elegir la portada del ordenador y la serie de fotos (tercera ronda); con eso, El relieve, la
+  portada, el fondo y el mosaico se escriben en la rama a la vez. Después, Conócenos: qué quiere
+  decir con el equipo «no completo», si vale usar frases que la casa ya ha publicado (la del cubo,
+  *«Este bar invita dos veces…»*, o las de su Instagram) y los datos de la historia, que no se
+  pueden inventar;
 - decidir si esta rama entra en `preview`, y si `feat/inicio-paralaje` se borra;
 - **el vídeo con IA.** La recomendación es el fondo del manifiesto, en lugar de la foto de las
   botellas:
