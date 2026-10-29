@@ -194,13 +194,20 @@
     transition: none;
   }
   /* Frenan con la quíntica de la casa, que es la que frena como frena un objeto
-     de verdad. El que está más a la derecha llega primero: es de donde vienen. */
-  :global(html[data-intro="va"] .nav-actions > .menu-btn) {
+     de verdad. El que está más a la derecha llega primero: es de donde vienen.
+     En el móvil es «Menú»; en el ordenador, el idioma, y las secciones de El
+     relieve (2026-10-29) llegan las últimas, a la izquierda de «Reservar». Lo
+     que no se ve en cada ancho tiene su animación igual, y no hace nada. */
+  :global(html[data-intro="va"] .nav-actions > :is(.menu-btn, .idioma)) {
     animation: llega var(--dur-recogida) var(--ease) var(--espera-firma) both;
   }
   :global(html[data-intro="va"] .nav-actions > .btn) {
     animation: llega var(--dur-recogida) var(--ease)
       calc(var(--espera-firma) + var(--stagger) * 2) both;
+  }
+  :global(html[data-intro="va"] .nav-actions > .secciones) {
+    animation: llega var(--dur-recogida) var(--ease)
+      calc(var(--espera-firma) + var(--stagger) * 4) both;
   }
 
   /* Mientras la entrada está puesta, el rótulo de la barra espera apagado: dos

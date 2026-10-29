@@ -48,7 +48,7 @@ const es = locale === "es";
   </div>
   <div class="veil"></div>
   <div class="wrap copy">
-    <h1 class="cartel">{es ? "La tasca que te mereces" : "The tavern you deserve"}</h1>
+    <h1 class="cartel" data-relieve="0.075">{es ? "La tasca que te mereces" : "The tavern you deserve"}</h1>
     <div class="pie">
       <OpenState hours={RESTAURANT.openingHours} locale={locale} />
       {/* Por qué foto va la ronda. Es un indicador, no un mando, como los turnos
@@ -286,9 +286,13 @@ const es = locale === "es";
     margin: 0 0 14px;
     max-width: 14ch;
     /* Sobre la foto, el cartel invierte su fórmula: la tinta pasa a ser el
-       papel y la sombra dura la pone el rojo de la marca. */
+       papel y la sombra dura la pone el rojo de la marca. Con ratón, la sombra
+       cae al lado contrario del cursor (El relieve, `relieve.ts`).
+       Va aquí, en la regla del componente, y no en una hoja de fuera: en el
+       probador se puso fuera y no se movía, porque esta regla, con su atributo
+       de ámbito, pesaba más. */
     color: var(--paper);
-    text-shadow: 0.04em 0.045em 0 var(--rojo);
+    text-shadow: var(--relieve-x, 0.04em) var(--relieve-y, 0.045em) 0 var(--rojo);
   }
   /* El estado de apertura a la izquierda y la ronda a la derecha, en la misma
      línea: así los puntos no tapan foto que no tape ya el texto. */

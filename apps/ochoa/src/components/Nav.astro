@@ -32,6 +32,27 @@ const links = es
     ];
 const home = es ? "/" : "/en/";
 const reserve = es ? "/reservas" : "/en/reservations";
+// EL RELIEVE (2026-10-29): en el ordenador, la barra enseña las secciones en vez
+// del botón «Menú». Mario lo pidió al ver la home viva —en el ordenador quería las
+// secciones a la vista y no un menú, con algo que reaccionara al cursor— y eligió
+// esta forma en el probador (docs/ochoa-inicio-vivo.md). Son las del menú menos
+// «Reservar», que ya es el botón de al lado, con las mismas etiquetas que el panel
+// en cada idioma. «Dónde estamos» no sale de la home si ya se está en ella.
+const sinBarra = (ruta: string) => ruta.replace(/\/$/, "") || "/";
+const enInicio = sinBarra(Astro.url.pathname) === sinBarra(home);
+const secciones = es
+  ? [
+      { href: "/carta", label: "La carta" },
+      { href: enInicio ? "#visita" : "/#visita", label: "Dónde estamos" },
+      { href: "/conocenos", label: "Conócenos" },
+    ]
+  : [
+      { href: "/en/menu", label: "Menu" },
+      { href: enInicio ? "#visit" : "/en/#visit", label: "Find us" },
+      { href: "/en/about", label: "About us" },
+    ];
+// El otro idioma, que en el móvil vive en el pie del panel.
+const otro = es ? { corto: "EN", lang: "en", nombre: "English" } : { corto: "ES", lang: "es", nombre: "Español" };
 // El botón dice la palabra en vez de dibujar tres rayas, así que estos dos
 // textos dejan de ser solo el nombre accesible y pasan a verse. Por eso «Cerrar»
 // y no «Cerrar el menú»: en la barra hay sitio para una palabra, y el estado ya
@@ -46,11 +67,21 @@ const t = es
   <div class="wrap nav-in">
     {/* `data-intro-destino`: es aquí donde aterriza el rótulo de la entrada, y
         de donde se dispara al volver a la home desde otra página. */}
-    <a class="brand cartel" href={home} data-intro-destino>Los Ochoa</a>
+    {/* `data-relieve`: lo más larga que puede ser su sombra cuando el cursor la
+        tiene cerca, en `em` (ver `relieve.ts`). */}
+    <a class="brand cartel" href={home} data-intro-destino data-relieve="0.085">Los Ochoa</a>
     {/* `data-intro-aparta`: lo que la entrada saca fuera de la ventana para que
         vuelva deslizándose por el borde derecho. El nombre de la clase es cosa
-        de esta casa, así que el contrato con @tombo/ui va por atributo. */}
+        de esta casa, así que el contrato con @tombo/ui va por atributo. Las
+        secciones y el idioma van dentro para entrar igual que los botones:
+        fuera, se habrían visto puestas sobre la plancha desde el primer
+        fotograma. */}
     <div class="nav-actions" data-intro-aparta>
+      <div class="secciones">
+        {secciones.map((s) => (
+          <a href={s.href} class="seccion" data-relieve="0.12">{s.label}</a>
+        ))}
+      </div>
       <a href={reserve} class="btn">{t.reserve}</a>
       <button
         type="button"
@@ -61,6 +92,7 @@ const t = es
       >
         <span class="rotulo" data-label-open={t.menu} data-label-close={t.close}>{t.menu}</span>
       </button>
+      <a href={altPath} class="idioma" lang={otro.lang} hreflang={otro.lang} aria-label={otro.nombre}>{otro.corto}</a>
     </div>
   </div>
 </nav>
@@ -93,8 +125,26 @@ const t = es
 
 <script>
   import { initMenuOverlay } from "@tombo/ui/menu-overlay.ts";
+  import { montaRelieve } from "../relieve.ts";
 
   initMenuOverlay();
+
+  /* El relieve se vuelve a montar en cada página: el router cambia la barra
+     entera, y con ella las piezas que llevan `data-relieve`. */
+  let sueltaRelieve: (() => void) | null = null;
+  document.addEventListener("astro:page-load", () => {
+    sueltaRelieve?.();
+    sueltaRelieve = montaRelieve();
+  });
+
+  /* Desde 861 px el botón «Menú» no existe y su sitio lo ocupan las secciones.
+     Si el menú estaba abierto al ensanchar la ventana, se cierra: si no, el
+     panel seguiría tapando la página, con el scroll bloqueado y sin el botón
+     que lo cierra a la vista. */
+  matchMedia("(min-width: 861px)").addEventListener("change", (e) => {
+    const boton = document.querySelector<HTMLButtonElement>(".nav [data-menu-toggle]");
+    if (e.matches && boton?.getAttribute("aria-expanded") === "true") boton.click();
+  });
 </script>
 
 <style>
@@ -246,6 +296,80 @@ const t = es
   .menu-btn[aria-expanded="true"] .rotulo::after {
     transform: scaleX(0.4);
     transform-origin: left center;
+  }
+
+  /* EL RELIEVE. En el móvil sigue el botón «Menú» con la cortina; desde 861 px
+     la barra enseña las secciones en letra de rótulo y el idioma, y el botón
+     desaparece. 861 es el corte de toda la home: donde la portada deja de ser
+     el telón y pasa a ser la tira. */
+  .secciones,
+  .idioma {
+    display: none;
+  }
+  @media (min-width: 861px) {
+    .menu-btn {
+      display: none;
+    }
+    .secciones {
+      display: flex;
+    }
+    .idioma {
+      display: inline-flex;
+    }
+  }
+  /* El aire hasta «Reservar» es el del probador que vio Mario, donde las
+     secciones iban fuera de este grupo con los 16 px de hueco de la barra: aquí
+     el hueco es de 10, y los seis que faltan van en el margen. */
+  .secciones {
+    align-items: center;
+    margin-right: calc(6px + clamp(2px, 0.8vw, 12px));
+  }
+  /* Anton en versal, como el rótulo de la casa pero un punto más suelta y más
+     pequeña: tiene que leerse como sección, no competir con «Los Ochoa». La
+     sombra es tinta sobre el rojo, como la del rótulo, y la mueve el cursor. */
+  .seccion {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 12px;
+    color: var(--paper);
+    font-family: var(--display);
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: 1.24rem;
+    letter-spacing: 0.035em;
+    white-space: nowrap;
+    text-shadow: var(--relieve-x, 0.06em) var(--relieve-y, 0.07em) 0 var(--ink);
+    transition: transform var(--dur-out) var(--ease);
+  }
+  /* Al pasar por encima se despega un poco del rojo; al pulsar baja hasta su
+     sombra y se apoya, que es lo que hacen los botones de la casa. */
+  .seccion:hover {
+    transform: translate(-1px, -2px);
+  }
+  .seccion:active {
+    transform: translate(var(--relieve-x, 0.06em), var(--relieve-y, 0.07em));
+    text-shadow: 0 0 0 var(--ink);
+  }
+  .seccion:focus-visible,
+  .idioma:focus-visible {
+    outline: 2px solid var(--paper);
+    outline-offset: 2px;
+    border-radius: var(--r-chapa);
+  }
+  /* La versal apretada de las etiquetas, la misma del botón «Menú» al que
+     sustituye: es un ajuste, no una sección. */
+  .idioma {
+    align-items: center;
+    min-height: 44px;
+    padding: 0 0 0 10px;
+    color: var(--paper);
+    font-family: var(--sans);
+    font-weight: 700;
+    font-stretch: var(--wd-rotulo);
+    letter-spacing: 0.09em;
+    font-size: var(--fs-label);
   }
 
   /* El panel cubre la pantalla entera por debajo de la barra. `visibility`, y no

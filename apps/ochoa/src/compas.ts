@@ -24,6 +24,11 @@ export function leeDuracion(token: string): number {
   return v.endsWith("ms") ? parseFloat(v) : parseFloat(v) * 1000;
 }
 
+/** Lee un token numérico (una velocidad, una fracción) sin su unidad. */
+export function leeNumero(token: string): number {
+  return parseFloat(getComputedStyle(document.documentElement).getPropertyValue(token));
+}
+
 /**
  * Milisegundos que faltan para el próximo cambio de una serie que cambia en
  * `primero`, `primero + periodo`, `primero + 2·periodo`… contados desde `origen`.

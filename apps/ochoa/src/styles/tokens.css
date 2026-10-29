@@ -140,6 +140,15 @@
      que está vivo. */
   --dur-muro: 4s;
   --dur-paneo: 26s;
+
+  /* LO QUE MARIO ELIGIÓ EN EL PROBADOR (2026-10-29). El porqué de cada pieza y
+     lo que se descartó, en `docs/ochoa-inicio-vivo.md`; las excepciones a las
+     reglas, en `docs/movimiento.md`. */
+  /* El relieve: la sombra de los rótulos de la barra y del titular cae al lado
+     contrario del cursor, y lo sigue acercándose cada fotograma esta fracción
+     de lo que le falta. Es la curva del gesto, no una duración: con 0,22 llega
+     al 90% en diez fotogramas, sin saltos aunque el ratón los dé. */
+  --relieve-suave: 0.22;
   /* Lo que dura un plato al frente del mazo de «Lo que más sale» antes de irse
      al fondo. Fue 3,5 s mientras la tira era lo único que se movía solo; con el
      telón encima los dos cambiaban a la vez y la página latía (regla 18), así

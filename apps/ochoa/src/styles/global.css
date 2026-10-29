@@ -96,6 +96,12 @@ img {
 }
 
 /* titulares de cartel: Anton + sombra dura, como el rótulo real */
+/* La sombra lee `--relieve-x` y `--relieve-y`: con ratón, el cursor es la luz y
+   la sombra cae al otro lado (El relieve, 2026-10-29). Los publica
+   `relieve.ts` solo en las piezas marcadas con `data-relieve` —el rótulo de la
+   barra, sus secciones y el titular de la portada—; en las demás, sin ratón o
+   sin script, manda la fórmula de siempre. La fórmula sigue siendo una sola: se
+   le añade la luz aquí en vez de copiar el valor en cada pieza (regla 20). */
 .cartel {
   font-family: var(--display);
   font-weight: 400;
@@ -103,7 +109,7 @@ img {
   color: var(--rojo);
   letter-spacing: 0.015em;
   line-height: var(--lh-cartel);
-  text-shadow: 0.045em 0.05em 0 var(--ink);
+  text-shadow: var(--relieve-x, 0.045em) var(--relieve-y, 0.05em) 0 var(--ink);
 }
 
 /* La etiqueta es la bisagra entre Anton y el texto: misma versal apretada del
