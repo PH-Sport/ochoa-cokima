@@ -18,6 +18,23 @@
   src: url("/fonts/archivo-var.woff2") format("woff2");
 }
 
+/* La letra de las palabras pintadas a mano en el espejo de la barra —Tortilla,
+   Gildas, Ensaladilla—, que el fondo vivo de la home (2026-10-29) pinta en el
+   blanco libre. Solo la usa ese lienzo, y una `@font-face` no descarga nada
+   hasta que alguien la pide: el resto de páginas no la paga.
+   Origen: Yellowtail, de Astigmatic (Brian J. Bonislawsky), bajada de Google
+   Fonts el 2026-10-29 —su subconjunto latino, versión 25, que trae ú y ñ— y
+   servida desde aquí, como Anton y Archivo. Licencia Apache 2.0
+   (https://www.apache.org/licenses/LICENSE-2.0), no OFL: su ficha está en
+   `apache/yellowtail` del repositorio google/fonts. */
+@font-face {
+  font-family: "Yellowtail";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/yellowtail-400.woff2") format("woff2");
+}
+
 * {
   box-sizing: border-box;
 }

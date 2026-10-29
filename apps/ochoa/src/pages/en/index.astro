@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import { pickFeatured } from "@tombo/content";
 import { Image } from "astro:assets";
 import Base from "../../layouts/Base.astro";
+import Fondo from "../../components/Fondo.astro";
 import Hero from "../../components/Hero.astro";
 import Highlights from "../../components/Highlights.astro";
 import Ticker from "../../components/Ticker.astro";
@@ -35,6 +36,7 @@ const casa = [
   locale="en"
   altPath="/"
 >
+  <Fondo />
   <Hero locale="en" />
 
   <Highlights dishes={featured} locale="en" href="/en/menu" />

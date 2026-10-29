@@ -24,6 +24,17 @@ export function leeDuracion(token: string): number {
   return v.endsWith("ms") ? parseFloat(v) : parseFloat(v) * 1000;
 }
 
+/** Lee un token que es una lista de duraciones (`8.2s 10.4s …`), en milisegundos.
+ *  Son los ritmos sin compás de la home viva: una espera distinta cada vez, por
+ *  turnos, y todas en `tokens.css` como cualquier otra duración. */
+export function leeDuraciones(token: string): number[] {
+  const v = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+  return v
+    .split(/[\s,]+/)
+    .filter(Boolean)
+    .map((p) => (p.endsWith("ms") ? parseFloat(p) : parseFloat(p) * 1000));
+}
+
 /** Lee un token numérico (una velocidad, una fracción) sin su unidad. */
 export function leeNumero(token: string): number {
   return parseFloat(getComputedStyle(document.documentElement).getPropertyValue(token));

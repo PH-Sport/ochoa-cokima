@@ -149,6 +149,23 @@
      de lo que le falta. Es la curva del gesto, no una duración: con 0,22 llega
      al 90% en diez fotogramas, sin saltos aunque el ratón los dé. */
   --relieve-suave: 0.22;
+  /* Las palabras del fondo vivo. Cada una vive lo que le toque de
+     `--vidas-palabra` y la siguiente espera lo que le toque de
+     `--esperas-palabra`, por turnos: las dos listas no casan entre sí, así que
+     no hay compás que seguir (regla 18). Las esperas son un 25% más cortas que
+     en la segunda ronda, que es lo que Mario pidió («ligeramente» más a menudo);
+     con las vidas también más cortas salían casi el triple, y se dejaron. */
+  --vidas-palabra: 8.2s 10.4s 9.1s 11.3s 9.7s 8.8s;
+  --esperas-palabra: 1.3s 2.3s 1.7s 2.8s 1.5s 2.2s;
+  /* Lo que tarda el pincel en pintar una palabra de izquierda a derecha, y lo
+     que tarda en borrarse. */
+  --dur-pincel: 1.7s;
+  --dur-borrado: 1.4s;
+  /* Si no hay blanco libre donde pintar, se vuelve a buscar al cabo de esto. */
+  --reintento-palabra: 0.9s;
+  /* Cada cuánto se mira si una palabra ha quedado tapada al bajar la página:
+     si es así, se borra antes de tiempo. */
+  --revisa-palabra: 0.65s;
   /* Lo que dura un plato al frente del mazo de «Lo que más sale» antes de irse
      al fondo. Fue 3,5 s mientras la tira era lo único que se movía solo; con el
      telón encima los dos cambiaban a la vez y la página latía (regla 18), así

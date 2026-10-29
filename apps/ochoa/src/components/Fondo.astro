@@ -1,0 +1,47 @@
+---
+// El fondo vivo de la home, «Vermú y palabras» (2026-10-29): un lienzo fijo
+// detrás de toda la página, dibujado en directo. Qué pinta y por qué, en
+// `../fondo.ts`; lo que se probó y se descartó, en docs/ochoa-inicio-vivo.md.
+// Solo en la home, en los dos idiomas: el resto de páginas son para leer la carta
+// o reservar, y ahí no se le pide a nadie que mire el fondo.
+---
+
+{/* Decoración pura: no dice nada que no diga la página. */}
+<canvas class="fondo-vivo" data-fondo aria-hidden="true"></canvas>
+
+<script>
+  import { montaFondo } from "../fondo.ts";
+
+  /* Como la portada (`Hero.astro`): cada `astro:page-load` suelta lo anterior y
+     monta lo de la página nueva, que puede no tener lienzo. Y se suelta también
+     antes de cambiar de página, para que la GPU no siga pintando un lienzo que ya
+     se está yendo. */
+  let suelta: (() => void) | null = null;
+  const soltar = () => {
+    suelta?.();
+    suelta = null;
+  };
+  document.addEventListener("astro:before-swap", soltar);
+  document.addEventListener("astro:page-load", () => {
+    soltar();
+    suelta = montaFondo();
+  });
+</script>
+
+<style>
+  /* Fijo y detrás de todo. Se ve porque las secciones blancas de la home no
+     tienen fondo propio: el blanco que se ve es el del `body`, que el navegador
+     pinta como fondo del lienzo de la página, por debajo de esta capa. Si un día
+     `html` llevara fondo, el `body` pintaría el suyo encima y lo taparía.
+     Alto de la pantalla grande (`lvh`): así no se redimensiona cada vez que se
+     esconde o aparece la barra del navegador en el móvil. */
+  .fondo-vivo {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100lvh;
+    z-index: -1;
+    pointer-events: none;
+  }
+</style>

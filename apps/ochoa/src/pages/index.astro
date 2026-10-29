@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import { pickFeatured } from "@tombo/content";
 import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
+import Fondo from "../components/Fondo.astro";
 import Hero from "../components/Hero.astro";
 import Highlights from "../components/Highlights.astro";
 import Ticker from "../components/Ticker.astro";
@@ -66,6 +67,7 @@ const muro: Toma[][] = [
   locale="es"
   altPath="/en/"
 >
+  <Fondo />
   <Hero locale="es" />
 
   <Highlights dishes={featured} locale="es" href="/carta" />
