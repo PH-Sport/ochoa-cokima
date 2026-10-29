@@ -1,6 +1,6 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-10-28 · Ochoa tiene foto en sus seis destacados y portada de seis fotos (y, en la rama `feat/inicio-vivo`, siete más de la casa); Cokima, portada y casa
+> **Estado: vivo** · revisado 2026-10-29 · Ochoa tiene foto en sus seis destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, portada y casa
 
 ## Estado
 
@@ -76,16 +76,20 @@ mayor resolución disponible.
 | Destino | Qué buscamos |
 |---|---|
 | `apps/cokima/src/assets/hero.jpg` | ✅ **`DepAPTwNTvJ-1`, puesta el 2026-10-26**: la sartén en llamas en el fogón (cuadrada, 1440), con su copia a 1200 en `public/images/` para las redes. Sustituye a la burrata de 2021. Es la misma foto que el pase de «la casa», pero **en pantalla no se repite: la portada con foto (`Hero.astro`) quedó huérfana al entrar el rediseño en `preview` el 2026-10-26**, y la cabecera es el vídeo. Esta foto solo se ve al compartir el enlace. Mientras la portada vieja estuvo puesta, a 390px el tramo rojo del titular caía sobre el fuego y se leía mal; con la burrata pasaba lo mismo o peor (titular blanco sobre la burrata blanca), y otras dos fotos oscuras tampoco lo resolvían. Era el velo de esa portada, no la foto. **Si `Hero.astro` vuelve a usarse, revisar eso antes.** |
-| `apps/ochoa/src/assets/portada/*.jpg` | ✅ **Desde el 2026-10-27, seis fotos de la casa con gente que se relevan con un telón** (la serie y sus textos alternativos, en `src/data/portada.ts`): la sala con el rótulo, el camarero con dos clientas (`DQe2dPqiJwV-1`), el cocinero (`DQB1FAiCKup-1`), el camarero bajo los rótulos (`DV_ZtJHCPRQ-1`), el camarero sirviendo (`DPeYU5ziIo6-1`) y el cartel colgante (`DPyg6SPCGH5-1`); la sala es `DHdb1_hCOls-1`. Mario la pidió el 2026-10-26 —«no nos hace falta una foto del local en la portada»— y eligió el telón entre cinco bocetos. La fachada (`hero.jpg`, `LosOchoa-5`) ya no se ve en la portada; **sigue siendo la imagen al compartir el enlace** (§Nota técnica). El archivo de `src/assets/hero.jpg` se queda sin uso, y no se ha borrado. |
+| `apps/ochoa/src/assets/portada/*.jpg` | ✅ **Desde el 2026-10-29, ocho fotos de Instagram que no salen en el resto de la home** (la serie, sus encuadres y sus textos, en `src/data/portada.ts`; en el móvil, telón; en el ordenador, la tira, `ochoa-inicio-vivo.md`). En orden: `brindis.jpg` (`DMsOEbToHc4-1`, brindis con vino y caña), `clienta.jpg` (`DPeYU5ziIo6-2`), `brioche.jpg` (`C66BbqHtC1M-1`, el camarero con un brioche; la única a 2060 px), `vermu-gilda.jpg` (`DHQbxoKiBLd-1`), `brindis-barra.jpg` (`DPyg6SPCGH5-3`, caña y vermú), `cana.jpg` (`DLAgINkIMFS-1`, tirando una caña), `cristal.jpg` (`C2Pz8szNUrq-10`, el rótulo del cristal) y `vino.jpg` (`DNF9_F0IzXV-1`). Copiadas de la fototeca tal cual, a su tamaño de Instagram. Mario las eligió en la tercera ronda del probador: la serie anterior no le convencía, *«principalmente por las fotos»*. Fuera de la elección, con su motivo: las de Navidad, que caducan; la de la camiseta del Madrid, que es de un equipo; y la del guante de Spiderman, que es más de Cokima. **Las seis de antes salen de la portada y sus archivos se quedan sin uso, sin borrar:** `sala.jpg` (`DHdb1_hCOls-1`), `barra-clientas.jpg` (`DQe2dPqiJwV-1`), `cocinero.jpg` (`DQB1FAiCKup-1`), `barra-rotulos.jpg` (`DV_ZtJHCPRQ-1`), `sirviendo.jpg` (`DPeYU5ziIo6-1`) y `rotulo-exterior.jpg` (`DPyg6SPCGH5-1`); fueron la portada del 2026-10-27 al 29. La fachada (`hero.jpg`, `LosOchoa-5`) tampoco se ve en la portada desde el 2026-10-27; **sigue siendo la imagen al compartir el enlace** (§Nota técnica), y el archivo de `src/assets/hero.jpg` sigue sin uso y sin borrar. |
 
-**Ojo con el encuadre de la portada de Ochoa, que cambia de lado según la pantalla.** Las seis son
-cuadradas o verticales y se sirven a sangre. En el móvil la portada es vertical y se recortan por
-los lados: medidas a 390 px, las seis guardan caras y rótulos centradas. En el ordenador es al
-revés —1440×682 a 1440 px— y se recortan por arriba y por abajo: centradas, al camarero con las
-clientas y al cocinero se les iba la cara, y llevan `position` en `portada.ts` (`50% 20%` y
-`50% 12%`). La del camarero sirviendo se deja centrada a propósito: subiéndola entraba él pero se
-iba la clienta, que es la que mira a cámara. **Al cambiar o añadir una foto, mirar las dos
-pantallas.** A 1440 px y pantalla retina la foto se estira 2× (calculado, no medido: la foto es de 1440 y la pantalla pide 2880).
+**El encuadre de la portada de Ochoa solo cuenta en el móvil.** Ahí la portada llena la pantalla
+y cada foto se recorta por los lados, así que lleva su `encuadre` (`object-position`) en
+`portada.ts`, hacia lo que cuenta y no al centro: `brindis` y `clienta` `42% 50%`, `brioche`
+`50% 50%`, `vermu-gilda` `95% 50%`, `brindis-barra` `46% 50%`, `cana` `15% 50%` y `vino`
+`100% 50%`. **El rótulo del cristal no sale en el móvil:** en vertical se leía «S OCHO». **La del
+vino va además acercada un 15 % hacia la copa** (`acerca: 1.15`, con `scale` desde su encuadre):
+pegada a la derecha aún asomaba el servilletero con «HOA» cortado en el borde izquierdo, y con el
+15 % desaparece el texto (medido en el probador en WebKit a 390×844 a 3×). En el ordenador la tira
+las enseña enteras, a su proporción y al alto de la portada, y el encuadre no cuenta: medido a
+1440×900 y densidad 2, se ve todo el ancho y el 86 % del alto de cada una, a entre 0,88 y 1,10×
+(con el telón a todo lo ancho, el 36-47 % del alto, a 1,98×). **Al cambiar o añadir una foto, mirar
+las dos pantallas.**
 
 ### Fotos de plato
 
@@ -124,7 +128,8 @@ la tienen porque el texto de la publicación nombra el plato. Además, se ve lo 
 ### Fotos de la casa — el local, no el plato
 
 Las webs enseñaban solo comida y faltaba la casa: la barra, la sala, la gente. La sección «La
-casa» de cada home es eso. **En las dos casas está resuelta con cuatro fotos reales y se publica.**
+casa» de cada home es eso. **En las dos casas está resuelta con fotos reales y se publica:** cuatro
+en Cokima y, en Ochoa, diez que se turnan en el mosaico vivo desde el 2026-10-29 (abajo).
 En Cokima van apaisadas 4:3 en dos columnas desfasadas, en castellano y en inglés (la versión
 inglesa no tenía la sección; se le puso el 2026-10-26 con el texto traducido). Las fotos y sus
 descripciones viven en `apps/cokima/src/data/casa.ts`, compartido por los dos idiomas.
@@ -132,29 +137,35 @@ descripciones viven en `apps/cokima/src/data/casa.ts`, compartido por los dos id
 | App | Archivo | Estado |
 |---|---|---|
 | Ochoa | `src/assets/casa/barra.jpg` | ✅ `LosOchoa-8`: la barra con el espejo rotulado a mano. |
-| Ochoa | `src/assets/casa/rotulo.jpg` | ✅ `LosOchoa-1`: el rótulo pintado en el cristal. |
+| Ochoa | `src/assets/casa/rotulo.jpg` | ✅ `LosOchoa-1`: el rótulo pintado en el cristal. Abre el mosaico en la grande, con encuadre `50% 20%`. |
 | Ochoa | `src/assets/casa/vermu.jpg` | ✅ `LosOchoa-4`: vermú con banderilla sobre mármol. |
 | Ochoa | `src/assets/casa/comedor.jpg` | ✅ `LosOchoa-3`: banco corrido rojo y mesas de mármol. |
-| Ochoa | `src/assets/casa/canas.jpg` | ✅ `DCUbNe1tkBq-1`: un camarero tirando cañas con clientes en la barra. Muro, detrás de `barra.jpg`. Solo en la rama `feat/inicio-vivo`, como las seis siguientes. |
-| Ochoa | `src/assets/casa/delantal.jpg` | ✅ `DO6RuaSCJJP-2`: Guille poniéndose el delantal (el texto lo nombra). Vertical, encuadre `50% 18%`. Muro, detrás de `canas.jpg`. Sigue siendo candidata al hueco del equipo: usarla aquí no decide ese hueco. |
-| Ochoa | `src/assets/casa/cafe.jpg` | ✅ `Dc-g3Ofonrw-1`: una camarera sirviendo la leche en el café. Vertical, `50% 45%`. Muro, detrás de `vermu.jpg`. |
-| Ochoa | `src/assets/casa/gafas-de-cana.jpg` | ✅ `DUla9WSCIlS-1`: un cliente con la camiseta de la casa y dos cañas por gafas. Vertical, `50% 30%`. Muro, detrás de `cafe.jpg`. |
-| Ochoa | `src/assets/casa/futbol.jpg` | ✅ `DDj0by3N125-1`: clientes viendo el fútbol en la barra. Muro, detrás de `comedor.jpg`. |
-| Ochoa | `src/assets/casa/bandeja.jpg` | ✅ `DJE_GP0CEZO-1`: un camarero llevando unas bravas (el plato, a la vista; el texto habla de «extra de salsa»). Vertical, `50% 30%`. Muro, detrás de `futbol.jpg`. |
+| Ochoa | `src/assets/casa/canas.jpg` | ✅ `DCUbNe1tkBq-1`: un camarero tirando cañas con clientes en la barra. Mosaico, como las cinco siguientes; entraron con el muro el 2026-10-28. |
+| Ochoa | `src/assets/casa/delantal.jpg` | ✅ `DO6RuaSCJJP-2`: Guille poniéndose el delantal (el texto lo nombra). Vertical, encuadre `50% 18%`. Era candidata al hueco del equipo de «Conócenos», que Mario decidió quitar el 2026-10-29 (fila de `equipo.jpg`). |
+| Ochoa | `src/assets/casa/cafe.jpg` | ✅ `Dc-g3Ofonrw-1`: una camarera sirviendo la leche en el café. Vertical, `50% 45%`. |
+| Ochoa | `src/assets/casa/gafas-de-cana.jpg` | ✅ `DUla9WSCIlS-1`: un cliente con la camiseta de la casa y dos cañas por gafas. Vertical, `50% 30%`. |
+| Ochoa | `src/assets/casa/futbol.jpg` | ✅ `DDj0by3N125-1`: clientes viendo el fútbol en la barra. |
+| Ochoa | `src/assets/casa/bandeja.jpg` | ✅ `DJE_GP0CEZO-1`: un camarero llevando unas bravas (el plato, a la vista; el texto habla de «extra de salsa»). Vertical, `50% 30%`. |
 | Ochoa | `src/assets/casa/botellas.jpg` | ✅ `DI9SX5Ri98B-1`: la pared de botellas con la etiqueta de la casa. Fondo del manifiesto: en blanco y negro y multiplicada sobre el rojo, así que se lee como rojo y negro. |
-| Ochoa | `src/assets/casa/equipo.jpg` | Hueco en «Conócenos», 4:3 junto al texto del equipo. **Candidatos de Instagram (2026-10-26):** el cocinero sonriendo con el cuchillo sobre la cortina roja (`DQB1FAiCKup-1`) y Guille poniéndose el delantal (`DO6RuaSCJJP`). Mejores que `LosOchoa-9`, el bocadillo de 2021. Sin poner: espera a que Mario elija |
+| Ochoa | `src/assets/casa/equipo.jpg` | Hueco en «Conócenos», 4:3 junto al texto del equipo. **Ya no se busca:** el 2026-10-29 Mario decidió centrar «Conócenos» *«únicamente en la experiencia del restaurante»*, y la sección del equipo se quita. El hueco sigue en el código hasta que llegue el rediseño de la página, que se prepara en el probador. Los candidatos que hubo (2026-10-26): el cocinero con el cuchillo sobre la cortina roja (`DQB1FAiCKup-1`) y Guille poniéndose el delantal (`DO6RuaSCJJP`) |
 | Cokima | `src/assets/casa/pase.jpg` | ✅ `DepAPTwNTvJ-1`: la sartén en llamas, la misma de la portada. |
 | Cokima | `src/assets/casa/sala.jpg` | ✅ `Dd0yh8eKSfB-1`: vino sirviéndose en una mesa puesta. **Es una sustituta:** no hay foto de la sala en las publicaciones recientes, y la mesa es la sala vista de cerca. Si aparece una de la sala de noche, se cambia. |
 | Cokima | `src/assets/casa/producto.jpg` | ✅ `Deh1PKrtAKZ-1`: maracuyá abierto en macro. No es el «fondo negro, luz dura» del encargo, pero sí lo que dice el texto de la sección: «el producto crudo antes de que le pase nada». |
 | Cokima | `src/assets/casa/equipo.jpg` | ✅ `Dd6QjErCvhW-2`: un cocinero salseando un plato. Vertical en un hueco 4:3: lleva `object-position: 50% 20%` en `casa.ts` para que el recorte no le corte la cara. |
 
-**En la rama `feat/inicio-vivo` (2026-10-28), el muro de Ochoa cambia solo**, y por eso cada uno
-de sus tres huecos tiene tres fotos: la de siempre y dos de Instagram, con gente. Mario pidió
-que la home «se sienta viva» y que haya «elementos que vayan rotando/cambiando». Las siete salen
-de `fototeca/instagram/tasquita.losochoa/` tal cual, a su tamaño de Instagram (1440 de ancho, o
-1351 la de las gafas), solo recomprimidas con `sips` a calidad 82. Ninguna nombra un plato de la
-carta, así que no hace falta `confirmar`. El encuadre de las verticales va en `index.astro`, junto
-a su texto alternativo.
+**Desde el 2026-10-29, las diez de Ochoa se turnan en el mosaico vivo de La casa**
+(`ochoa-inicio-vivo.md` §3.3), en las dos homes. La serie, su orden, sus encuadres, sus textos y
+sus etiquetas viven en `src/data/casa.ts`. Las seis de Instagram entraron el 2026-10-28 con el muro
+que cambiaba solo, al que sustituyó el mosaico; salen de `fototeca/instagram/tasquita.losochoa/`
+tal cual, a su tamaño de Instagram (1440 de ancho, o 1351 la de las gafas), solo recomprimidas con
+`sips` a calidad 82. Ninguna nombra un plato de la carta, así que no hace falta `confirmar`.
+
+**La foto grande del mosaico lleva su nombre, como una chapa:** El cristal (`rotulo`), La barra
+(`barra`), Las cañas (`canas`), El vermú (`vermu`), Las bravas (`bandeja`), El café (`cafe`), El
+comedor (`comedor`), El fútbol (`futbol`), Las gafas (`gafas-de-cana`) y El equipo (`delantal`). Dos
+las cambió Mario el 2026-10-29 porque no se entendían: «La ronda» pasó a «Las gafas», que es lo que
+se ve, y «El delantal» a «El equipo». En inglés van traducidas tal cual: The glass, The bar, The
+beers, The vermouth, The bravas, The coffee, The dining room, The football, The glasses y The team.
 
 ## La fototeca: las fotos recientes de Instagram
 
@@ -269,8 +280,9 @@ años):
   de arriba).
 - **Del local y de gente hay material de verdad:** el camarero en la barra con los rótulos
   pintados, la sala con «La tasca que te mereces» y clientes, el comedor con «Conservas», el
-  cocinero, Guille poniéndose el delantal, clientes viendo el fútbol. Seis de ellas son, desde el
-  2026-10-27, la portada de Ochoa (tabla de portadas).
+  cocinero, Guille poniéndose el delantal, clientes viendo el fútbol. Seis de ellas fueron la
+  portada de Ochoa del 2026-10-27 al 29; desde entonces la portada es otra serie de ocho (tabla de
+  portadas).
 - **Dos señales de que la carta transcrita puede estar desfasada:** Cokima publica una pannacotta
   andina que no está en `menu-es.json`, y una «nueva versión de oreja» con alioli y chips de
   boniato, cuando la carta dice milhojas de patata y salsa brava. Hay que preguntarlo al
@@ -311,7 +323,7 @@ estable. Al sustituir una portada hay que cambiar **las dos copias**.
 
 En Ochoa el `og:image` apunta a `/images/hero.jpg` —la fachada—. Se eligió para que la vista
 previa en redes fuera la misma imagen que ve quien entra, y **desde el 2026-10-27 ya no lo es**: la
-portada abre con la sala. Se dejó así a propósito, sin decidir: la fachada dice qué sitio es mejor
-que cualquiera de las seis en una miniatura. Si Mario prefiere la sala, es copiarla a
-`public/images/` y cambiar la ruta en `Base.astro`. `/images/mesa.jpg` es el cenital de la mesa, que
-sirve la sección «la tasca».
+portada abrió con la sala y, desde el 2026-10-29, abre con un brindis. Se dejó así a propósito, sin
+decidir: la fachada dice qué sitio es mejor que cualquiera de las fotos de la portada en una
+miniatura. Si Mario prefiere otra, es copiarla a `public/images/` y cambiar la ruta en `Base.astro`.
+`/images/mesa.jpg` es el cenital de la mesa, que sirve la sección «la tasca».

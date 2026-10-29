@@ -1,6 +1,6 @@
 # Movimiento
 
-> **Estado: vivo** · revisado 2026-10-27
+> **Estado: vivo** · revisado 2026-10-29
 
 Pocas animaciones, concretas, y todas saliendo de los mismos cinco valores. **No hay un solo
 milisegundo suelto en los componentes**: si algo se mueve, su duración y su curva vienen de
@@ -18,18 +18,28 @@ Viven en `apps/<app>/src/styles/tokens.css`.
 | `--shift` | `14px` | `18px` | Cuánto se desplaza lo que entra. |
 | `--stagger` | `30ms` | `65ms` | El escalón entre hermanos en cascada. |
 
-**Dieciséis más, solo en Ochoa,** para movimientos que no son ni entrar ni responder a un dedo. Cada
-uno existe porque no cabía en los cinco de arriba, no porque hiciera falta un número nuevo:
+**Veintiocho más, solo en Ochoa,** para movimientos que no son ni entrar ni responder a un dedo. Cada
+uno existe porque no cabía en los cinco de arriba, no porque hiciera falta un número nuevo. Los
+trece últimos llegaron el 2026-10-29 con la home viva (`ochoa-inicio-vivo.md`); tres son listas, para
+los ritmos sin compás, y dos no son duraciones sino una velocidad y una fracción, porque también
+salen de aquí:
 
 | Token | Ochoa | Para qué |
 |---|---|---|
 | `--ease-telon` | `cubic-bezier(0.45, 0.02, 0.55, 1)` | La curva de lo que **recorre la pantalla entera**. Ver la regla 9. |
 | `--dur-cinta` | `34s` | La cinta rotulada **recorre**. Lineal, no con la curva: un rótulo que acelera se lee como un fallo. |
 | `--dur-pase` | `3,5s` | Lo que una foto de la portada **espera** antes de que el telón traiga la siguiente. |
-| `--ease-muelle` / `--dur-muelle` | `linear(…)` / `590ms` | El muelle `morph` de Mochi: lo que **se asienta**, como la foto que llega al muro de La casa. Rebota un 0,50%, que no se ve (regla 1). |
-| `--desenfoque` | `12px` | El cambio de contenido de Mochi: lo que llega lo hace desenfocado y se enfoca al asentarse (regla 2). |
-| `--dur-muro` | `4s` | Lo que una foto del muro de La casa **espera** antes de que cambie la siguiente. Con su propio reloj y no con `compas.ts`: el muro no comparte pantalla con la portada ni con el mazo (regla 25). |
+| `--ease-muelle` / `--dur-muelle` | `linear(…)` / `590ms` | El muelle `morph` de Mochi: lo que **se asienta**. Rebota un 0,50%, que no se ve (regla 1). **Sin uso desde el 2026-10-29:** lo usaba la foto que llegaba al muro de La casa, y el mosaico vivo que lo sustituyó se recompone con `--ease-telon`. |
+| `--desenfoque` | `12px` | El cambio de contenido de Mochi: lo que llega lo hace desenfocado y se enfoca al asentarse (regla 2). Hoy, la foto nueva del mosaico de La casa. |
 | `--dur-paneo` | `26s` | Lo que tarda el fondo del manifiesto en **ir de un lado al otro**; luego vuelve. Con `--ease-telon`, que frena en los dos extremos: con la quíntica, cada vuelta daría un tirón. |
+| `--vel-tira` | `28px` | Lo que **avanza la tira** de la portada en el ordenador, en píxeles por segundo. Una velocidad y no una duración: lo que tarda una vuelta depende de lo que mida la fila, y eso cambia con el alto de la pantalla. Lineal, como la cinta. |
+| `--relieve-suave` | `0.22` | La fracción de lo que le falta que **recorre la sombra de El relieve** en cada fotograma para alcanzar al cursor: al 90% en diez fotogramas. |
+| `--vidas-palabra` / `--esperas-palabra` | `8.2s 10.4s …` / `1.3s 2.3s …` | Lo que **vive** cada palabra del fondo y lo que **espera** la siguiente, por turnos. Dos listas que no casan entre sí: no hay compás (regla 18). |
+| `--dur-pincel` / `--dur-borrado` | `1.7s` / `1.4s` | Lo que tarda una palabra del fondo en **pintarse** de izquierda a derecha, y en **borrarse**. |
+| `--reintento-palabra` / `--revisa-palabra` | `0.9s` / `0.65s` | Cuándo se vuelve a **buscar hueco** si no lo había, y cada cuánto se mira si una palabra ha quedado **tapada** al bajar (entonces se borra antes). |
+| `--dur-mosaico` / `--dur-mosaico-elige` | `1.2s` / `720ms` | Lo que tarda el mosaico de La casa en **recomponerse** solo, y cuando alguien **pulsa** una foto. Los dos con `--ease-telon`: recorren el mosaico entero (regla 9). |
+| `--respiros-mosaico` / `--espera-mosaico` | `1.7s 1.3s …` / `1.1s` | La **pausa** entre un cambio del mosaico y el siguiente, por turnos y sin compás, y la del primero al asomar. Con su propio reloj y no con `compas.ts`: el mosaico no comparte pantalla con la portada ni con el mazo (regla 25). |
+| `--dur-ventana` | `900ms` | Lo que tarda la foto del mosaico en **seguir al ratón** dentro de su ventana. |
 | `--dur-turno` | `5,5s` | Lo que un plato **espera** al frente del mazo antes de irse al fondo. Fue 3,5 s; se alargó el 2026-10-27 para no ir al compás de la portada (regla 25). |
 | `--desfase-turno` | `0,25s` | No es una duración, es la **fase**: cuánto más tarda el primer cambio del mazo. Es lo que impide que coincida con la portada (regla 25). |
 | `--dur-baraja` | `980ms` | Lo que tarda la carta de delante en **salir torciéndose y volver al fondo** del mazo. Dos viajes, así que 1,4 veces `--dur-recogida`, con `--ease-telon`. |
@@ -54,12 +64,19 @@ más lejos; Ochoa es una tasca y es seca.
 1. **Nunca bounce ni elástica.** Envejece mal y delata plantilla. Las cosas reales
    desaceleran, no rebotan. **Excepción, decidida por Mario el 2026-10-28:** el muelle `morph`
    de Mochi, que rebota un 0,50% y no se ve. Es `--ease-muelle`, generado con la fórmula de
-   Mochi, y no hay otro: un muelle nuevo se genera igual, no se escribe a ojo.
+   Mochi, y no hay otro: un muelle nuevo se genera igual, no se escribe a ojo. **Desde el
+   2026-10-29 no lo usa nada** —lo usaba el muro de La casa, y el mosaico vivo que lo sustituyó
+   se mueve con `--ease-telon`—; la excepción se queda mientras siga en pie la decisión.
 2. **Solo `transform` y `opacity`.** (Y `clip-path`, que ya se usaba en el telón y en el menú.)
    **Excepción, decidida por Mario el 2026-10-28:** `filter: blur()` en los cambios de
    contenido, que es el gesto de Mochi (`--desenfoque`). Solo en lo que entra o cambia —hoy,
-   las fotos del muro de La casa—, nunca en una foto a pantalla completa ni ligado al scroll,
-   que es donde el desenfoque cuesta. Animar `width`, `height`, `padding` o `margin` obliga al
+   la foto nueva del mosaico de La casa—, nunca en una foto a pantalla completa ni ligado al
+   scroll, que es donde el desenfoque cuesta. **Otra, del 2026-10-29: `text-shadow` en El
+   relieve**, la luz del cursor sobre los rótulos del ordenador, que Mario eligió en el
+   probador. Una sombra que cambia se repinta en cada fotograma, y eso es justo lo que esta regla
+   evita; se admite porque son cinco rótulos (las tres secciones de la barra, «Los Ochoa» y el
+   titular de la portada), solo con ratón y solo mientras la luz alcanza al cursor: cuando lo
+   alcanza, no se pide ni un fotograma más (`relieve.ts`). Animar `width`, `height`, `padding` o `margin` obliga al
    navegador a recalcular la disposición en cada fotograma. La portada lo hacía —el titular se
    apartaba del cartel de cookies moviendo su `padding-bottom`— y ahora se aparta con
    `translateY`, con el mismo resultado en pantalla.
@@ -89,6 +106,15 @@ más lejos; Ochoa es una tasca y es seca.
    donde la carta hacía 10, y parando la cinta baja a esos mismos 10. Se pausa con
    `animation-play-state`, no se anula: al volver a la vista el rótulo sigue por donde iba en
    vez de recomponerse desde el principio.
+
+   **Excepción, decidida por Mario el 2026-10-29: el fondo vivo de la home** («Vermú y
+   palabras», `fondo.ts`). Es un lienzo de WebGL2 detrás de toda la página que pinta en la GPU
+   en cada fotograma mientras se ve, y no se para al tocar: no es contenido que alguien esté
+   leyendo y le quite el sitio, es el fondo, y tocar la página es como se baja por ella. Lo que sí
+   cumple: con la pestaña oculta no pinta ni un fotograma, con «reducir movimiento» pinta uno
+   quieto y solo lo repite al bajar o al cambiar el tamaño, y al salir de la home suelta la GPU.
+   Lo que cuesta en un móvil modesto **no está medido**; si se nota, la palanca es la densidad
+   a la que pinta (`MAX_DPR` y `ESCALA`).
 7. **La respuesta al dedo no sale de `:active`.** En Safari de iOS ese estado no se aplica de
    forma fiable sin un listener táctil en la página. Va por `pointerdown`/`pointerup` desde el
    script del layout, marcando las piezas con `data-tacto`; `:active` se queda de respaldo para
@@ -260,6 +286,22 @@ más lejos; Ochoa es una tasca y es seca.
     Se anima un pseudo-elemento con `transform`, nunca la `box-shadow` del botón: una sombra
     animada repinta en cada fotograma y esto se compone en la GPU.
 
+    **Dos excepciones, decididas por Mario el 2026-10-29 viéndolas en el probador**
+    (`ochoa-inicio-vivo.md`). Las dos se mueven a la vista y no son pequeñas; las dos guardan la
+    tercera condición, **sin compás**:
+
+    - **El fondo vivo.** Las vetas rojas del vermú se ven moverse, y las palabras se ven
+      pintarse y borrarse. Mario pidió justo eso —*«detalles sutiles rojos por el fondo que
+      vayan moviéndose, haciendo formas»*— y el sitio lo da el gesto: la luz de un vaso sobre el
+      mármol y las palabras del espejo de la barra. El compás no se oye: las vidas y las esperas de
+      las palabras son dos listas que no casan (`--vidas-palabra`, `--esperas-palabra`), y la luz
+      que pasea sin ratón suma senos de periodos que no casan entre sí.
+    - **La tira de la portada en el ordenador.** Las ocho fotos pasan sin parar a 28 px/s, y
+      ocupan la portada entera. Es la forma de enseñar fotos verticales enteras en una franja
+      apaisada (en la de antes se veía el 36-47 % de su alto). No tiene compás porque no tiene
+      cambios: es un avance lineal y continuo, como la cinta rotulada. Se para para siempre al
+      primer toque y no corre con menos de media portada a la vista (regla 6).
+
 19. **Tocar una animación por la Web Animations API la desacopla del CSS, y eso falsea la
     comprobación siguiente.** Al verificar que el rescoldo se pausaba fuera de pantalla salió que
     no se pausaba. La regla estaba bien: el test había hecho antes `anim.currentTime = ...` y
@@ -328,6 +370,16 @@ más lejos; Ochoa es una tasca y es seca.
     0,75 / 0,75 / 1,25 / 0,25 / 0,25 s, las mismas que en el boceto; y bajando a los 7,45 s, el
     mazo cambió a los 11,28, en su hueco y no al azar.
 
+    **Con la home viva (2026-10-29), cómo queda cada pieza.** En el móvil, el telón y el mazo
+    siguen preguntando a `compas.ts`. En el ordenador, la portada es la tira, que no cambia sino
+    que avanza sin parar, así que no tiene compás con el que coincidir. El mosaico de La casa
+    lleva su propio reloj porque nunca comparte pantalla con la portada ni con el mazo: medido
+    sobre el build, empieza 1.381 px por debajo de «Lo que más sale» a 390 (pantalla de 844) y
+    1.555 por debajo de la portada a 1024. Y su ritmo no es un compás: pausas por turnos de una
+    lista (`--respiros-mosaico`). Las palabras del fondo sí pueden salir en la misma pantalla que
+    el mazo o el mosaico, pero tampoco llevan compás —sus vidas y sus esperas son listas que no
+    casan— y no cambian de golpe: se pintan en 1,7 s y se borran en 1,4.
+
     **Y en un mazo, recolocar no es animar.** Hacia atrás el mazo solo se recolocaba, y la carta
     que volvía del fondo saltaba de capa en el primer fotograma: aparecía fundiéndose *encima* de
     la de delante, las dos a medio transparentar —Mario lo vio en su iPhone el 2026-10-27—. El
@@ -357,6 +409,21 @@ más lejos; Ochoa es una tasca y es seca.
     solo error. **La mezcla va en el elemento que se mueve, no dentro**, y la sección lleva
     `isolation: isolate` para que no se mezcle con nada más allá de ella.
 
+27. **Dos piezas que tienen que moverse juntas no se confían a dos transiciones de propiedades
+    distintas.** El navegador no las lleva en el mismo sitio: la de `transform` (y la de
+    `opacity`) corre en el compositor, y la de `clip-path`, en el hilo principal. Mientras el
+    hilo principal va desahogado no se nota; cuando va cargado, la del compositor se adelanta.
+    Pasó en el mosaico de La casa (2026-10-29): la ventana se recortaba con una transición de
+    `clip-path` y la foto se colocaba con una de `transform`, y con el lienzo del fondo vivo
+    ocupando la CPU, al empezar un cambio asomaba una franja de 26 px sin foto al pie de la
+    tesela. **La medición con estilos calculados decía que la foto cubría siempre su ventana**,
+    porque los dos valores calculados cuadraban; lo que no cuadraba era lo pintado, y solo se
+    vio en capturas. La cura es calcular las dos en el mismo `requestAnimationFrame`
+    (`mosaico.ts`), con las curvas de `tokens.css` (`leeCurva` en `compas.ts`): si el hilo va a
+    tirones, van a tirones juntas. Lo que puede adelantarse sin destapar nada —el fundido de la
+    foto que entra— se queda en CSS. **Se comprueba con capturas a mitad del cambio, con carga
+    en la página, no leyendo `getComputedStyle`.**
+
 ## Qué se mueve hoy
 
 | Dónde | Qué | Con qué |
@@ -367,10 +434,13 @@ más lejos; Ochoa es una tasca y es seca.
 | Enlaces del menú | Color al pasar por encima (y la brasa, en Cokima) | `color`/`box-shadow`, `--dur-out` |
 | Botones, fichas de contacto y mapa | Se hunden al tocar y recuperan al soltar | `data-tacto`, `--dur-sube` |
 | Cinta rotulada (Ochoa) | Recorre en bucle | `translateX`, `--dur-cinta` |
-| Portada (Ochoa) | El telón: cada foto entra de derecha a izquierda sobre la anterior | `clip-path`, `--dur-pase`, `--dur-recogida`, `--ease-telon` |
-| Paralaje (Ochoa, solo en la rama `feat/inicio-vivo`) | Tres fondos van más lentos que la página: la portada un 25% (tope 60 px), las botellas del manifiesto un 12% (tope 40) y la foto de La tasca un 8% dentro de su marco (tope 22) | `transform` desde `apps/ochoa/src/paralaje.ts`; nada con «reducir movimiento» |
-| Manifiesto (Ochoa, solo en la rama) | La pared de botellas, en blanco y negro y multiplicada sobre el rojo, va y viene de lado | `transform`, `--dur-paneo`, `--ease-telon`; solo a la vista, se para al primer toque; nada con «reducir movimiento» |
-| Muro de La casa (Ochoa, solo en la rama) | Cambia una foto cada `--dur-muro`, por turnos entre los tres huecos: la nueva llega desenfocada y un pelo grande y se asienta con el muelle; la que se va se queda debajo hasta quedar tapada | `opacity` + `filter` con `--dur-in`, `transform` con `--ease-muelle`; con un 30% a la vista y la pestaña delante; se para al primer toque; nada con «reducir movimiento» |
+| Portada en el móvil (Ochoa) | El telón: cada foto entra de derecha a izquierda sobre la anterior | `clip-path`, `--dur-pase`, `--dur-recogida`, `--ease-telon`; con `compas.ts` |
+| Portada en el ordenador (Ochoa) | La tira: las ocho fotos en fila, enteras, pasan de derecha a izquierda sin parar; la serie va dos veces para que la vuelta no se note | `translateX` con la Web Animations API, lineal, a `--vel-tira`; con media portada a la vista y la pestaña delante; se para al primer toque; quieta con «reducir movimiento» |
+| Paralaje (Ochoa) | Tres fondos van más lentos que la página: la portada un 25% (tope 60 px), las botellas del manifiesto un 12% (tope 40) y la foto de La tasca un 8% dentro de su marco (tope 22) | `transform` desde `apps/ochoa/src/paralaje.ts`; nada con «reducir movimiento» |
+| Manifiesto (Ochoa, en los dos idiomas) | La pared de botellas, en blanco y negro y multiplicada sobre el rojo, va y viene de lado | `transform`, `--dur-paneo`, `--ease-telon`; solo a la vista, se para al primer toque; nada con «reducir movimiento» |
+| Mosaico de La casa (Ochoa) | Cada 2,5 a 3,3 s la tesela grande se encoge y una vecina crece en su hueco con una foto nueva, que llega desenfocada; con el ratón encima, cada foto se desplaza un poco en su ventana | `clip-path` + `transform` desde `mosaico.ts`, en el mismo fotograma (regla 27), con `--dur-mosaico`, `--respiros-mosaico` y `--ease-telon`; `opacity` + `filter` en CSS; con un 30% a la vista y la pestaña delante; se para con el ratón encima y para siempre al pulsar una foto; nada con «reducir movimiento» |
+| Fondo de la home (Ochoa) | Las vetas rojas del vermú se mueven sin parar, y las palabras del espejo se pintan en el blanco libre, viven unos segundos y se borran | WebGL2 desde `fondo.ts`, en cada fotograma mientras se ve la página (excepción de las reglas 6 y 18); `--vidas-palabra`, `--esperas-palabra`, `--dur-pincel`, `--dur-borrado`; nada con la pestaña oculta; un fotograma quieto con «reducir movimiento» |
+| Barra del ordenador (Ochoa) | El relieve: la sombra de las secciones, del rótulo y del titular de la portada cae al lado contrario del cursor | `text-shadow` desde `relieve.ts` (excepción de la regla 2), `--relieve-suave`; solo con ratón |
 | Mazo de platos (Ochoa, solo móvil) | La de delante sale por la izquierda torciéndose y vuelve al fondo; deslizando a la derecha, la anterior entra por la izquierda por encima, en la mitad del tiempo; el turno se rellena | `transform` + `opacity`, `--dur-turno`, `--desfase-turno`, `--dur-baraja`, `--ease-telon`; `scaleX` |
 | Portada | El titular se aparta del cartel de cookies | `translateY`, `--dur-out` |
 | Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |
@@ -378,6 +448,6 @@ más lejos; Ochoa es una tasca y es seca.
 | Entrada (Cokima) | La cabecera, el cartel de cookies y el aviso entran al deslizar | `opacity` + `visibility`, `--dur-in` / `--dur-out` |
 | Entre páginas | Barrido lateral, bidireccional | `translateX`, `--dur-in` |
 | Entrada a la web (Ochoa) | «LOS» y «OCHOA» llegan torcidas de lados opuestos y encajan, se les despega la sombra, y la plancha se recoge hasta ser la barra con el rótulo aterrizando dentro | `transform`, `--dur-in`, `--tuerce`, `--stagger`, `--dur-firma` |
-| Entrada a la web (Ochoa) | La plancha se recoge y los botones de la barra entran desde el borde derecho | `clip-path` + `transform`, `--espera-firma`, `--dur-recogida`, `--ease-telon` |
+| Entrada a la web (Ochoa) | La plancha se recoge y los botones de la barra —en el ordenador, también las secciones y el idioma— entran desde el borde derecho | `clip-path` + `transform`, `--espera-firma`, `--dur-recogida`, `--ease-telon` |
 
 Y ya. Todo lo demás está quieto a propósito.

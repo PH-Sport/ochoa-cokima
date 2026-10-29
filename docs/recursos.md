@@ -1,6 +1,6 @@
 # Recursos: identificadores, accesos y material
 
-> **Estado: vivo** · revisado 2026-10-28
+> **Estado: vivo** · revisado 2026-10-29
 
 **Lo que cuesta recuperar y no se deduce del código.** URLs, slugs, IDs de proyecto y dónde vive
 el material que entrega Mario. Todo lo de aquí está verificado; cada bloque dice cuándo y cómo.
@@ -41,8 +41,9 @@ https://<proyecto>-git-<rama-con-guiones>-rodz-dev.vercel.app
 enseña a Mario está en los dos alias de `preview`. La excepción, pedida por Mario el 2026-10-28,
 son las ramas de prueba para ver una propuesta en la web antes de decidir (`estado.md` §0):
 
-- `https://ochoa-git-feat-inicio-vivo-rodz-dev.vercel.app` — la home viva, la que espera su
-  visto bueno.
+- `https://ochoa-git-feat-inicio-vivo-rodz-dev.vercel.app` — la home viva como quedó en la rama.
+  Desde el 2026-10-29 está entera en `preview`, con lo que Mario eligió en el probador encima
+  (`ochoa-inicio-vivo.md`): para ver lo vigente, el alias de `preview`.
 - `https://ochoa-git-feat-inicio-paralaje-rodz-dev.vercel.app` — el Inicio en paralaje, parado
   ese mismo día.
 

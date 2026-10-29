@@ -5,7 +5,8 @@
 - **Corte:** 2026-10-29
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
   nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
-  de decidir: `feat/inicio-vivo`, esta, y `feat/inicio-paralaje`, parada (§0)
+  de decidir: `feat/inicio-vivo`, que entró entera en `preview` el 2026-10-29, y
+  `feat/inicio-paralaje`, parada. Si se borran lo decide Mario (§0)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
 - **Hay una sola versión de este documento**, la de `preview`. Hasta el 2026-10-26 hubo dos —la de
   `tmp/entrada-cokima`, que era la buena, y la de `preview`—; se juntaron ese día (§1).
@@ -14,214 +15,68 @@
 
 ## 0. Por dónde seguir
 
-**Ochoa, 2026-10-28: la home viva, en la rama de prueba `feat/inicio-vivo`.** Se ve en
-`https://ochoa-git-feat-inicio-vivo-rodz-dev.vercel.app` y no entra en `preview` sin el visto
-bueno de Mario. Es la tercera vuelta del día al Inicio:
+**Ochoa, 2026-10-29: la home viva está en `preview`.** Mario la fue eligiendo en tres rondas de un
+probador montado sobre la web real, y está en las dos homes, la española y la inglesa. **El porqué
+de cada pieza, lo que se descartó en cada ronda y las cifras medidas están en
+`ochoa-inicio-vivo.md`**; aquí, lo justo para orientarse:
 
-- **Primero, la rama `feat/inicio-paralaje`:** la portada a pantalla completa con fundido, platos
-  recortados en los huecos blancos y un collage en el ordenador. Mario la paró: *«en ordenador es
-  muy incómodo. Está extremadamente vacío»*, y *«no me puedes poner una foto tan enorme y un
-  plato en PNG tan enano»*. Su §0 propio vive solo en esa rama.
-- **Después, cuatro direcciones nuevas**, investigadas y puntuadas por un revisor. Tampoco le
-  convenció ninguna. Están cerradas en `archivo/2026-10-28-ochoa-inicio-direcciones.md`, con lo
-  que dijo la investigación, que sigue valiendo.
-- **Y entonces pidió quedarse con la base de hoy** y su estructura: «Reservar» siempre a mano,
-  los botones que se hunden, los títulos con su sombra, el menú desplegable y el mapa en 3D.
-  Encima, que la home *«se sienta viva, no algo plano y estático»*. Eligió además los muelles de
-  Mochi y su cambio con desenfoque, que pidieron dos excepciones a las reglas 1 y 2 de
-  `movimiento.md`, escritas allí con la fecha. También eligió que el botón del menú creciera hasta
-  ser el menú, pero al verlo volvió a la cortina de siempre: *«queda más simétrico»*.
+- **En el ordenador, la barra enseña las secciones** («El relieve»): La carta, Dónde estamos y
+  Conócenos en letra de rótulo, y el cursor es la luz que mueve su sombra y la del titular. En el
+  móvil sigue el botón «Menú» con la cortina.
+- **Un fondo vivo, «Vermú y palabras»:** vetas rojas de luz de vermú y las palabras del espejo de
+  la barra pintándose a mano en el blanco libre. Trae una tercera letra, Yellowtail, servida desde
+  la web; su licencia es la Apache 2.0, no la OFL.
+- **La casa es un mosaico vivo** de diez fotos que cambian de forma y de sitio cada 3 s más o
+  menos, con el nombre de la foto grande como una chapa.
+- **La portada:** en el móvil, a pantalla completa bajo la cabecera, con el telón; en el
+  ordenador, «la tira», las ocho fotos en fila y enteras pasando despacio. Es una serie nueva de
+  ocho fotos de Instagram; las seis de antes salen de la portada, sin borrar (`fotografia.md`).
+- **De la rama `feat/inicio-vivo` se quedan** el paralaje de tres fondos, el manifiesto rojo con
+  las botellas y el menú de cortina. El muro de La casa y el telón del ordenador se sustituyeron.
 
-**Lo que trae la rama** (en `Hero.astro`, `pages/index.astro` y `paralaje.ts`; el menú es otra
-vez el de `preview`):
+Lo que se mueve solo sigue la regla 6 de `movimiento.md`, y lo que no cabe en las reglas lleva su
+excepción escrita allí con fecha: el fondo, la sombra de El relieve y la tira. Una trampa nueva
+quedó como regla 27: la ventana del mosaico y su foto no pueden ir en dos transiciones de CSS,
+porque el navegador las lleva en sitios distintos y la foto se adelanta.
 
-- **Paralaje en segundo plano** en tres fondos: la portada, las botellas del manifiesto y la
-  foto de La tasca. Las cifras, en `movimiento.md` §Qué se mueve hoy.
-- **El manifiesto deja el blanco:** es una banda roja con la pared de botellas en blanco y negro
-  multiplicada encima, que va y viene de lado en 26 s. La cita va en blanco, con la sombra de
-  los títulos. Primero la foto salía gris, sin ningún error: la trampa es ya la regla 26 de
-  `movimiento.md`.
-- **El muro de La casa cambia solo:** una foto cada 4 s, por turnos entre los tres huecos, con
-  seis fotos nuevas de Instagram; la séptima es la de las botellas (`fotografia.md` §Fotos de la
-  casa).
-- **En el ordenador, La casa ya no lleva la foto enorme** que Mario señaló. Desde 1200 px el
-  titular va en una fila, «Lo que hay [foto] Detrás del cristal», con la foto a 460 px como
-  mucho; entre 861 y 1199, a 640. El muro va en tres columnas.
+**Medido sobre el build** (Chromium a 1440 y 1024, WebKit a 390; cifras en
+`ochoa-inicio-vivo.md` §6): sin errores de JavaScript ni scroll lateral; en el móvil, cabecera +
+portada = la pantalla; la tira, a 28 px/s, parada al tocarla, en pausa fuera de la vista y quieta
+con «reducir movimiento»; la foto del mosaico cubre siempre su ventana; la sombra de El relieve
+cambia con el cursor; las palabras, solo en Yellowtail. **Sin medir:** en un iPhone de verdad
+—sobre todo lo que cuesta el fondo en la GPU de un móvil modesto—, con un ratón de verdad y en una
+conexión lenta.
 
-**Medido sobre el build** con un servidor local que sustituye a `/_vercel/image`. El móvil, con
-WebKit a 390 px; el ordenador, con Chromium a 1024 y 1440:
+**Lo que espera a Mario:**
 
-- El muro cambió dos fotos en 9 s, en el móvil y en el ordenador. En el móvil, tras un toque,
-  siguió igual otros 9 s.
-- El paneo está parado con el manifiesto fuera de la vista, en los dos. En el móvil, corre al
-  verlo y queda quieto tras un toque.
-- Con «reducir movimiento» (en el ordenador), ni paralaje, ni paneo, ni muro.
-- La cortina, de vuelta, en móvil y ordenador: cerrada no se ve, a los 150 ms ha bajado un 26%,
-  abierta ocupa todo bajo la cabecera y al cerrar se recoge entera.
-- Sin scroll lateral a 390, 1024 y 1440, y sin errores de JavaScript.
-- El muro empieza a 1.506 px (390), 2.199 (1024) y 2.000 (1440) de lo último que cambia solo
-  más arriba. Es más de una pantalla, así que no comparte compás con nada (regla 25).
-
-**Sin medir:**
-
-- en un iPhone de verdad;
-- en una conexión lenta (si la foto siguiente no ha llegado, el muro se salta el turno);
-- lo que cuesta el desenfoque en un móvil modesto.
-
-**A medias y a propósito: el inglés.** La home inglesa comparte la portada y el menú, porque son
-componentes. Su manifiesto, La tasca y La casa siguen como en `preview`, porque viven en
-`pages/en/index.astro`. Se igualan cuando Mario dé el visto bueno, no antes.
-
-**Lo que dijo Mario al verla, el mismo 2026-10-28:**
-
-- El menú, a la cortina (hecho).
-- El manifiesto le gusta: *«aporta algo de dinamismo»*.
-- En el ordenador quiere las secciones a la vista y no un menú, con algo que reaccione al cursor.
-- Echa en falta un fondo: el blanco le parece plano, y propone *«detalles sutiles rojos por el
-  fondo que vayan moviéndose, haciendo formas»*, como hacen en el local.
-- La casa en el ordenador: *«no veo una estructura clara, como si estuviese desordenado»*.
-- Quiere animar algún vídeo con IA y pregunta dónde iría.
-
-**Para esas tres cosas hubo una primera ronda en el probador**,
-`https://claude.ai/artifact/HFFN1Qx8eCbYDRYw6z56DC` (privado de Mario): la web real construida,
-con un selector. Lo que eligió y lo que se queda fuera:
-
-- **Navegación del ordenador: «El relieve», elegida.** Las secciones en letra de rótulo, y la
-  luz es el cursor: la sombra de los rótulos de la barra y del titular cae hacia el otro lado.
-  Fuera «La chapa» (una chapa de papel bajo la sección) y «La foto» (asomaba la foto de la
-  sección y seguía al cursor).
-- **Fondo: ninguna de las tres.** De «El espejo» le gustan las palabras sueltas, pero *«se me
-  sigue quedando soso»*; quiere algo *«como lo que hicimos con la web de PHSPORT, pero adaptado
-  al lenguaje de esta web»*. Fuera también «El trazo» (dibujos de una línea) y «Las banderillas».
-- **La casa: «Mosaico»**, pero *«algo más animada/interactiva»*: que las fotos salgan más a
-  menudo, *«que cambiasen de forma y de posición según van saliendo»*, con movimientos suaves.
-  Fuera «Texto y muro» y «El inventario».
-
-**La segunda ronda está en el mismo enlace** (versión 2 del probador), con El relieve ya fijo:
-
-- **Fondo, a la manera de PHSPORT:** un lienzo fijo detrás de toda la página, dibujado en directo
-  con WebGL2 como `ph-ambient.ts` de esa web, que no para, responde al cursor con un muelle y
-  baja al 28 % detrás del texto. Tres escenas:
-  - «Las palabras»: las del espejo de la barra (Tortilla, Gildas, Ensaladilla, PATATAS BRAVAS,
-    en versales como allí) y la del cristal (Vermú) se van pintando a mano donde hay blanco
-    libre, se quedan unos segundos y se borran; nunca más de tres (dos en el móvil). El cursor
-    es la luz, como en El relieve; en el móvil pasea sola. Van fijas a la pantalla: atadas al
-    scroll, en el iPhone el lienzo llega tarde y bailarían. Primero se buscaba el hueco
-    preguntando a la página punto por punto, y alguna palabra rozaba un texto; ahora se mira la
-    caja de cada pieza;
-  - «El vermú»: la red de luz de PHSPORT (Velo); en blanco se veía como una neblina rosa, así que
-    se dejan solo las vetas con luz, y queda como el mármol de las mesas en rojo;
-  - «Vermú y palabras»: las dos, y la luz del vermú enciende las palabras. Es la que sale por
-    defecto.
-- **La casa, «Mosaico vivo»:** cuatro fotos en la rejilla del mosaico. Cada tres segundos, más o
-  menos y sin compás, la grande se encoge y una vecina crece en su hueco con una foto nueva; la
-  que se encoge va encima y arranca antes. Nunca se estira una foto: cada tesela es una ventana
-  con `clip-path` y la foto va debajo con `transform`, a la escala que la cubre. Que dos pequeñas
-  se cambiaran el sitio se probó y se quitó: se atravesaban. Con el ratón encima se para; al
-  pulsar una se pone grande, y desde ahí no se mueve sola (regla 6).
-
-**Lo que eligió de la segunda ronda, el 2026-10-29:**
-
-- **Fondo: «Vermú y palabras».** El vermú, *«ideal»*. De las palabras vio dos letras y se queda
-  con la clásica del espejo (Yellowtail): fuera la de los títulos, que llevaba PATATAS BRAVAS.
-  Esa vuelve como «Bravas» en la clásica, entran dos de la carta, «Croquetas» y «Callos», y que
-  salgan *«ligeramente»* más a menudo.
-- **La casa: el mosaico vivo**, *«me gusta mucho»*. Dos etiquetas no se entendían: «La ronda»
-  (el chico con dos cañas por gafas) pasa a «Las gafas», que es lo que se ve, y «El delantal»
-  (Guille) a «El equipo». Las que le cuadran nombran lo que sale: el café, la barra, las bravas.
-- **La portada no le convence,** *«principalmente por las fotos»*, y en el ordenador tampoco la
-  estructura. En el móvil la quiere a pantalla completa.
-- **Conócenos** está *«básicamente en blanco»*. Va después, con fotos que no salgan en la home
-  (le gusta mucho la del cubo de madera, `DMf4a_eoWqt-1`) y sin el equipo completo.
-
-**La tercera ronda, en el mismo enlace** (versión 3 del probador):
-
-- **Portada en el móvil:** llena la pantalla bajo la cabecera. Deja de restar la franja por la que
-  asomaba el primer plato, que invitaba a bajar; Mario prefiere la pantalla completa.
-- **Portada en el ordenador:** a 1440×900 la portada es una franja de 1440×682, y las fotos de
-  Instagram son verticales o cuadradas: se ve entre el 36 y el 47 % de su alto, y en una pantalla
-  de alta densidad salen estiradas al doble. Tres formas que las enseñan casi enteras y sin
-  estirar, con el telón de la web, más «Como ahora» para comparar:
-  - «El tríptico»: tres fotos verticales en fila, cada una con su telón, nunca dos a la vez;
-  - «La tira»: todas en fila, enteras, pasando de derecha a izquierda a 22 px/s;
-  - «El rótulo»: el titular en un panel rojo en el centro, con la sombra en tinta, entre dos
-    fotos que se turnan.
-
-  Las tres siguen las reglas de lo que se mueve solo: se paran para siempre al primer toque, no
-  corren con menos de media portada a la vista ni con la pestaña oculta, y no arrancan con
-  «reducir movimiento». No son la «pared» ni el «escaparate» de los cinco bocetos del
-  2026-10-26: aquellos eran rejillas quietas, de seis y de tres fotos.
-- **Fotos nuevas:** ocho de Instagram que no salen en el resto de la home, elegidas entre las 25
-  sin usar: dos brindis (`DMsOEbToHc4-1`, `DPyg6SPCGH5-3`), una clienta (`DPeYU5ziIo6-2`), un
-  camarero con un brioche (`C66BbqHtC1M-1`), vermú y gilda (`DHQbxoKiBLd-1`), una caña
-  tirándose (`DLAgINkIMFS-1`), el rótulo del cristal (`C2Pz8szNUrq-10`) y vino en la mesa
-  (`DNF9_F0IzXV-1`). Fuera las de Navidad, que caducan; la de la camiseta del Madrid, que es de
-  un equipo; y la del guante de Spiderman, que es más de Cokima. El cubo de madera se guarda para
-  Conócenos. Las de ahora
-  siguen en el selector, recomprimidas igual que las nuevas para que la comparación sea justa.
-- **Palabras:** las siete en la letra clásica, esperas un 25 % más cortas y más sitios donde
-  buscar hueco, con un tamaño algo menor si no caben. Y un arreglo: las teselas del mosaico vivo
-  miden el mosaico entero y sus fotos se salen de la ventana que se ve, así que contaban como
-  tapando blanco libre y las palabras no encontraban sitio cerca de La casa.
-- **El titular de la portada no seguía al cursor** en la segunda ronda: la regla del componente,
-  con su atributo de ámbito, pesaba más que la del probador. Arreglado.
-
-Nada de esto está en la rama. El código del probador vive solo en el Artifact (se lee con la
-acción `read`; el fondo es `fondo.js`), y lo elegido se reescribe en el código de verdad con sus
-tokens y reglas. Lo que pediría:
-
-- el fondo es movimiento continuo en la GPU mientras se ve la página, como en PHSPORT: necesita
-  su excepción escrita en `movimiento.md` y medirlo en un iPhone antes de darlo por bueno;
-- «Las palabras» trae una tercera fuente, Yellowtail, por la letra del espejo;
-- El relieve cambia `text-shadow` al mover el ratón: otra excepción a la regla 2;
-- la portada que elija cambia sola: en el código de verdad pregunta a `compas.ts` cuándo le
-  toca, como el telón de hoy (regla 25); en el probador lleva su propio reloj.
-
-**Medido en el probador**, en local con Chromium (ordenador) y WebKit a 390×844 (móvil), sin
-errores ni scroll lateral en ninguna de las dos rondas:
-
-- segunda ronda: mientras el mosaico cambia, la foto cubre siempre su ventana, con 8 px de sobra
-  como mínimo;
-- portada en el móvil: cabecera 62 + portada 782 = 844, la pantalla entera;
-- portada en el ordenador, a 1440×900 y densidad 2: con «Como ahora» se ve el 48 % del alto de la
-  foto, estirada a 1,98×; en el tríptico, entre el 60 y el 80 % del ancho y el 86 % del alto (el
-  resto lo guarda el sobrante del paralaje), a entre 0,82× y 1,10×;
-- el tríptico cambia una hoja cada 2,9 a 3,7 s, de una en una; el rótulo alterna cada 3,3 a
-  3,9 s; la tira avanza a 21,5 px/s. Tras tocar la portada, ningún cambio en 9 s; con la portada
-  fuera de la vista, la tira quieta; con «reducir movimiento», ni cambios ni tira;
-- el titular del rótulo cabe en su columna a 1024, 1280, 1440 y 1920 de ancho;
-- palabras nacidas con la página quieta: en el ordenador, 40 s en Lo que más sale, La tasca y
-  Dónde estamos, 7 antes y 15 ahora; en el móvil, 60 s en La tasca, 6 antes y 10 ahora. Con las
-  vidas también más cortas salían 19 en el ordenador, casi el triple, y se dejaron como estaban.
-
-Que las palabras nacen en blanco libre se vio en capturas, no se midió. **Sin medir:** en un
-iPhone de verdad, con un ratón de verdad y dentro del marco del Artifact (el navegador del agente
-no tiene sesión en claude.ai).
-
-**Para Mario:**
-
-- elegir la portada del ordenador y la serie de fotos (tercera ronda); con eso, El relieve, la
-  portada, el fondo y el mosaico se escriben en la rama a la vez. Después, Conócenos: qué quiere
-  decir con el equipo «no completo», si vale usar frases que la casa ya ha publicado (la del cubo,
-  *«Este bar invita dos veces…»*, o las de su Instagram) y los datos de la historia, que no se
-  pueden inventar;
-- decidir si esta rama entra en `preview`, y si `feat/inicio-paralaje` se borra;
-- **el vídeo con IA.** La recomendación es el fondo del manifiesto, en lugar de la foto de las
+- **Verlo en su iPhone y en el ordenador**, en el alias de `preview` cuando se suba.
+- **«Conócenos», decidido el 2026-10-29 y por hacer.** La página se centra *«únicamente en la
+  experiencia del restaurante»*, así que la sección del equipo se quita. Y sí a usar frases que la
+  casa ya ha publicado —la del cubo de madera, las de su Instagram—: *«cuánto menos podamos
+  inventarnos, mejor, al menos, por el momento»*. Lleva fotos que no salen en la home (le gusta
+  mucho la del cubo, `DMf4a_eoWqt-1`). El rediseño se está preparando en el probador; el código de
+  la página sigue como estaba hasta que lo elija. Los datos de la historia siguen sin poder
+  inventarse.
+- **El vídeo con IA.** La recomendación es el fondo del manifiesto, en lugar de la foto de las
   botellas:
   - va en blanco y negro multiplicado sobre el rojo, que disimula los fallos típicos de la IA;
   - está a media página, así que no frena la carga de la portada;
   - es el sitio que ya le gusta.
   Mejor animando una foto real con poco movimiento, sin caras ni manos en primer plano: una caña
   tirándose, las botellas con luz, un vermú con hielo. En bucle de 5 a 8 s. La portada se
-  descartó como sitio: ya tiene el telón que eligió el 2026-10-27, y en un iPhone con ahorro de
-  energía el vídeo no arranca;
-- **el menú del día**, si lo hay a mediodía, con su precio y lo que incluye. Lo anuncia su
+  descartó como sitio: ya cambia sola —el telón en el móvil, la tira en el ordenador—, y en un
+  iPhone con ahorro de energía el vídeo no arranca.
+- **El menú del día**, si lo hay a mediodía, con su precio y lo que incluye. Lo anuncia su
   Instagram («nuestro menú del día») y lo cuenta `.impeccable.md`, pero no está en la carta. La
-  investigación dice que a mediodía es lo primero que se compara (§6 del documento archivado).
+  investigación dice que a mediodía es lo primero que se compara
+  (`archivo/2026-10-28-ochoa-inicio-direcciones.md` §2).
+- **Las ramas de prueba:** si `feat/inicio-paralaje` se borra, y si `feat/inicio-vivo` sigue
+  haciendo falta, ahora que está entera dentro de `preview`.
 
 **Ochoa, 2026-10-27: la portada es un telón de seis fotos y «Lo que más sale» es un mazo en el
 móvil.** Mario lo eligió en dos bocetos. La portada deja la fachada y pasa a seis fotos de la casa
-con gente (`apps/ochoa/src/data/portada.ts`) que entran de derecha a izquierda cada 3,5 s. Los
+con gente (`apps/ochoa/src/data/portada.ts`) que entran de derecha a izquierda cada 3,5 s. (Desde
+el 2026-10-29 la serie es otra, y en el ordenador la portada es la tira: ver arriba.) Los
 destacados, en el móvil, se apilan con las dos siguientes asomando por la izquierda, y la de
 delante se va al fondo cada 5,5 s; en el ordenador siguen siendo la fila quieta. Deslizar a la
 derecha trae la anterior entrando por la izquierda, por encima, y el resto del mazo espera quieto
@@ -236,7 +91,8 @@ alturas, y separaciones entre cambios de 0,25 s o más. Encuadre de las fotos en
 **Sin medir:** en un iPhone de verdad, con «reducir movimiento» activado (por código no arranca
 ninguno de los dos), y la carga en una conexión lenta (si la foto siguiente no ha llegado, el
 telón se salta ese turno). **Para Mario:** la vista previa en redes sigue siendo la fachada
-(`fotografia.md` §Nota técnica), y el hueco del equipo sigue sin foto. Y un efecto de rebote: la
+(`fotografia.md` §Nota técnica), y el hueco del equipo sigue sin foto (el 2026-10-29 Mario decidió
+quitar esa sección de «Conócenos»: ver arriba). Y un efecto de rebote: la
 hipótesis de §3.sexies sobre la barra de iOS —el scroll animado de la tira— ya no aplica en el
 móvil, porque el mazo no hace scroll.
 
@@ -712,9 +568,10 @@ uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las p
 
 - [ ] **Fotografía real.** Desde el 2026-10-26, **Ochoa tiene foto en sus seis destacados**
       y Cokima en su portada y su casa (§0). Faltan los **cinco destacados de Cokima** (con
-      la sesión de Mario se puede recorrer su perfil entero, como se hizo con Ochoa), el
-      equipo de Ochoa en «Conócenos» y, si Mario la quiere, la portada de varias fotos de
-      Ochoa. Detalle y claves de archivo exactas en `fotografia.md`.
+      la sesión de Mario se puede recorrer su perfil entero, como se hizo con Ochoa). La
+      portada de varias fotos de Ochoa está puesta desde el 2026-10-27, con serie nueva el 29, y
+      la foto del equipo ya no hace falta: «Conócenos» quita esa sección (§0, 2026-10-29).
+      Detalle y claves de archivo exactas en `fotografia.md`.
 
 **Menores:**
 
@@ -1458,6 +1315,7 @@ cualquier máquina, debería poder ponerse al día sin más que este repositorio
 | Documento | Qué es |
 |---|---|
 | `cokima-el-rediseno.md` | **Léelo primero.** Por qué Cokima se rehace, qué se descartó y por qué cada decisión de la entrada es la que es |
+| `ochoa-inicio-vivo.md` | Por qué la home de Ochoa es como es desde el 2026-10-29: El relieve, el fondo vivo, el mosaico de La casa y la portada; lo que se descartó en cada ronda del probador y lo medido |
 | `trabajar-con-mario.md` | Con quién se trabaja y cómo se le reporta: corto porque dirige desde el móvil, progreso visible primero, y por qué una sensación suya es un dato |
 | `metodo.md` | Cómo se decide lo visual (bocetos comparables) y cómo se verifica de verdad en el navegador. Las averías conocidas del entorno |
 | `recursos.md` | Identificadores que cuesta recuperar: IDs de Vercel, slugs, cartas oficiales y dónde deja Mario el material |
