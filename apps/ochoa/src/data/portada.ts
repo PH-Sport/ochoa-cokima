@@ -1,74 +1,107 @@
-// La portada de Ochoa: seis fotos de la casa que se relevan con el telón. Viven
-// aquí y no en el componente para que la versión en inglés no se quede con otra
-// serie.
+// La portada de Ochoa: ocho fotos de su Instagram. Viven aquí y no en el
+// componente para que la versión en inglés no se quede con otra serie.
 //
-// Mario la cambió el 2026-10-26: «realmente no nos hace falta una foto del local
-// en la portada», y propuso un collage o un carrusel con lo que sube el equipo a
-// Instagram. Eligió el carrusel con telón entre cinco bocetos. Son fotos del
-// local con gente —camareros, clientas, el cocinero— y no de platos: los platos
-// ya los enseña «Lo que más sale», justo debajo. Salen de la fototeca
-// (docs/fotografia.md §La fototeca), a los 1440 px con los que las sirve
-// Instagram. El orden es el de la ronda: la sala con el rótulo de la casa abre.
-import sala from "../assets/portada/sala.jpg";
-import barraClientas from "../assets/portada/barra-clientas.jpg";
-import cocinero from "../assets/portada/cocinero.jpg";
-import barraRotulos from "../assets/portada/barra-rotulos.jpg";
-import sirviendo from "../assets/portada/sirviendo.jpg";
-import rotuloExterior from "../assets/portada/rotulo-exterior.jpg";
+// La serie es la tercera ronda del probador (2026-10-29). La de antes —seis fotos
+// de la casa con gente, puesta el 2026-10-27— no le convencía a Mario,
+// «principalmente por las fotos». Estas ocho no salen en el resto de la home: dos
+// brindis, una clienta, un camarero con un brioche, un vermú con su gilda, una
+// caña tirándose, el rótulo del cristal y vino en la mesa. Salen de la fototeca
+// (docs/fotografia.md §La fototeca) tal cual, a su tamaño de Instagram. El orden
+// es el de la serie.
+//
+// Se enseñan distinto según la pantalla (docs/ochoa-inicio-vivo.md):
+//  · en el móvil, una a una a pantalla completa, con el telón. La foto llena el
+//    alto y se recorta por los lados, así que cada una lleva su encuadre;
+//  · en el ordenador, todas en fila y enteras, en «la tira». Ahí no se recorta
+//    nada y el encuadre no cuenta.
+import brindis from "../assets/portada/brindis.jpg";
+import clienta from "../assets/portada/clienta.jpg";
+import brioche from "../assets/portada/brioche.jpg";
+import vermuGilda from "../assets/portada/vermu-gilda.jpg";
+import brindisBarra from "../assets/portada/brindis-barra.jpg";
+import cana from "../assets/portada/cana.jpg";
+import cristal from "../assets/portada/cristal.jpg";
+import vino from "../assets/portada/vino.jpg";
 
 export const portada: {
   src: ImageMetadata;
   alt: { es: string; en: string };
-  // Solo cuenta en pantallas anchas: en el móvil la portada es vertical y las
-  // fotos se recortan por los lados, nunca por arriba. En el ordenador es al
-  // revés —1440×682 a 1440 px de ancho—, y centradas, al camarero de la barra y
-  // al cocinero se les iba la cara por arriba. Medido el 2026-10-27 sobre el
-  // build. La del camarero sirviendo se deja al centro a propósito: subiéndola
-  // entraba él, pero se iba la clienta, que es la que mira a cámara.
-  position?: string;
+  /** El encuadre en el móvil (`object-position`): lo que se queda cuando el
+   *  recorte se come los lados. Va a lo que cuenta cada foto, no al centro. */
+  encuadre?: string;
+  /** Cuánto se acerca la foto en el móvil, hacia su encuadre (`scale`). */
+  acerca?: number;
+  /** Solo en la tira del ordenador. */
+  soloOrdenador?: boolean;
 }[] = [
   {
-    src: sala,
+    src: brindis,
+    encuadre: "42% 50%",
     alt: {
-      es: "La sala con el rótulo «La tasca que te mereces» y clientes",
-      en: "The dining room under the «La tasca que te mereces» sign, with customers",
+      es: "Brindis con una copa de vino y una caña sobre una mesa con tapas",
+      en: "A toast with a glass of wine and a beer over a table with tapas",
     },
   },
   {
-    src: barraClientas,
-    position: "50% 20%",
+    src: clienta,
+    encuadre: "42% 50%",
     alt: {
-      es: "Camarero sonriendo a dos clientas en la barra",
-      en: "A waiter smiling at two customers at the bar",
+      es: "Una clienta bebiendo en una mesa de mármol",
+      en: "A customer drinking at a marble table",
     },
   },
   {
-    src: cocinero,
-    position: "50% 12%",
+    src: brioche,
+    encuadre: "50% 50%",
     alt: {
-      es: "El cocinero con un cuchillo sobre la cortina roja",
-      en: "The cook holding a knife against the red curtain",
+      es: "Un camarero con el delantal de la casa y un brioche en el plato",
+      en: "A waiter in the house apron, with a brioche on the plate",
     },
   },
   {
-    src: barraRotulos,
+    src: vermuGilda,
+    encuadre: "95% 50%",
     alt: {
-      es: "Camarero en la barra con los rótulos pintados detrás",
-      en: "A waiter at the bar with the hand-painted signs behind him",
+      es: "Un vermú y una gilda sobre el papel de la casa",
+      en: "A vermouth and a gilda on the house paper",
     },
   },
   {
-    src: sirviendo,
+    src: brindisBarra,
+    encuadre: "46% 50%",
     alt: {
-      es: "Camarero sirviendo a una clienta en su mesa",
-      en: "A waiter serving a customer at her table",
+      es: "Brindis con una caña y un vermú",
+      en: "A toast with a beer and a vermouth",
     },
   },
   {
-    src: rotuloExterior,
+    src: cana,
+    encuadre: "15% 50%",
     alt: {
-      es: "El cartel colgante de la fachada",
-      en: "The hanging sign outside",
+      es: "Tirando una caña, con el delantal de la casa",
+      en: "Pulling a beer, in the house apron",
+    },
+  },
+  // El rótulo no cabe en vertical: recortado para el móvil se leía «S OCHO».
+  // Entero, en la tira del ordenador, sí.
+  {
+    src: cristal,
+    soloOrdenador: true,
+    alt: {
+      es: "El rótulo de Tasquita Los Ochoa en el cristal, con la sala detrás",
+      en: "The Tasquita Los Ochoa sign on the glass, with the dining room behind",
+    },
+  },
+  // Pegada a la derecha, en el móvil aún asomaba el servilletero con «HOA»
+  // cortado en el borde izquierdo; acercándola un 15% hacia la copa desaparece
+  // el texto (medido en WebKit a 390×844 a 3×, en el probador).
+  {
+    src: vino,
+    encuadre: "100% 50%",
+    acerca: 1.15,
+    alt: {
+      es: "Sirviendo vino tinto en una mesa de mármol",
+      en: "Pouring red wine at a marble table",
     },
   },
 ];

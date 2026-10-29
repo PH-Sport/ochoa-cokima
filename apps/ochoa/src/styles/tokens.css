@@ -145,6 +145,12 @@
   /* LO QUE MARIO ELIGIÓ EN EL PROBADOR (2026-10-29). El porqué de cada pieza y
      lo que se descartó, en `docs/ochoa-inicio-vivo.md`; las excepciones a las
      reglas, en `docs/movimiento.md`. */
+  /* La tira de la portada en el ordenador: las ocho fotos en fila, pasando de
+     derecha a izquierda sin parar. Es una velocidad, en píxeles por segundo, y
+     no una duración: lo que tarda una vuelta depende de lo que mida la fila, y
+     eso cambia con el alto de la pantalla. Fue 22 en el probador; Mario la pidió
+     «ligeramente» más rápida. */
+  --vel-tira: 28px;
   /* El relieve: la sombra de los rótulos de la barra y del titular cae al lado
      contrario del cursor, y lo sigue acercándose cada fotograma esta fracción
      de lo que le falta. Es la curva del gesto, no una duración: con 0,22 llega

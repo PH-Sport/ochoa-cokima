@@ -3,14 +3,17 @@
 import { Image } from "astro:assets";
 import OpenState from "@tombo/ui/OpenState.astro";
 import { RESTAURANT } from "../site.ts";
-// La portada son seis fotos de la casa con gente, que se relevan con un telón:
-// la nueva entra de derecha a izquierda sobre la anterior. Antes fue una sola
-// foto —el cenital de la mesa, que recortado a pantalla vertical se quedaba en un
-// fragmento de plato; el rótulo del cristal, demasiado plano de cerca; y la
-// fachada—. Mario la cambió el 2026-10-26: no hace falta la foto del local, sino
-// enseñar la casa viva. Eligió el telón entre cinco bocetos (collage, rejilla,
-// escaparate, ronda con fundido y telón) porque tiene carácter de tasca. La serie
-// y el porqué de cada foto, en `../data/portada.ts`.
+// La portada son ocho fotos de Instagram, y se enseñan distinto en cada pantalla
+// (2026-10-29, tercera ronda del probador; el porqué entero en
+// docs/ochoa-inicio-vivo.md):
+//  · En el móvil, el telón que Mario eligió el 2026-10-27 entre cinco bocetos:
+//    una foto a pantalla completa y la siguiente que entra de derecha a izquierda
+//    sobre ella. Siete fotos: el rótulo del cristal no cabe en vertical.
+//  · En el ordenador, «la tira»: las ocho en fila, enteras, pasando despacio de
+//    derecha a izquierda. Con el telón, la portada era una franja de 1440×682 y
+//    de cada foto de Instagram —verticales o cuadradas— se veía entre el 36 y el
+//    47% de su alto, estirada al doble en una pantalla de alta densidad.
+// La serie, sus encuadres y sus textos, en `../data/portada.ts`.
 import { portada } from "../data/portada.ts";
 
 interface Props {
@@ -18,44 +21,58 @@ interface Props {
 }
 const { locale } = Astro.props;
 const es = locale === "es";
+const enMovil = portada.filter((f) => !f.soloOrdenador);
+
+// Lo que mide cada foto en la tira: el alto de la capa del paralaje —la portada
+// del ordenador, `100svh` menos la cabecera y la franja de asomo (218 px desde
+// 861 de ancho), y un 8% más por arriba y por abajo— por su proporción. Es una
+// cuenta aproximada, solo para que el navegador elija el tamaño que pide.
+const enTira = (f: (typeof portada)[number]) =>
+  `calc((100vh - 218px) * ${((1.16 * f.src.width) / f.src.height).toFixed(3)})`;
+const estilo = (f: (typeof portada)[number]) =>
+  [f.encuadre && `--encuadre: ${f.encuadre}`, f.acerca && `--acerca: ${f.acerca}`].filter(Boolean).join("; ") || undefined;
 ---
 
 <header class="hero" id="top" data-paralaje>
   {/* La primera foto es la única con prioridad: es la que se pinta al entrar y
-      la que mide la carga. Las demás entran en la ronda a los 3,5 s como pronto
-      y se piden con prioridad baja para no competir con ella. Sin JavaScript se
-      queda la primera, quieta, que es una portada completa. */}
-  {/* El último ancho es 1600 y no 1440, que es lo que miden las fotos: Vercel
+      la que mide la carga. Las demás se piden con prioridad baja para no
+      competir con ella. Sin JavaScript se queda la primera, quieta, en el móvil;
+      en el ordenador, la fila quieta. */}
+  {/* El último ancho es 1600 y no 1440, que es lo que miden casi todas: Vercel
       solo sirve los anchos de `imagesConfig` y descarta el resto en silencio
       —con 1440 el srcset se quedaba en 1200—, y pedir 1600 de una foto de 1440
       devuelve la foto entera, sin agrandarla. */}
   {/* La serie entera es la capa lejana del paralaje (2026-10-28, «paralaje en
       segundo plano»): al bajar va más lenta que la página. */}
   <div class="pase" data-pase data-vel="-0.25" data-tope="60">
-    {portada.map((foto, i) => (
-      <Image
-        src={foto.src}
-        alt={foto.alt[locale]}
-        widths={[390, 640, 960, 1200, 1600]}
-        sizes="100vw"
-        quality={72}
-        loading={i === 0 ? "eager" : "lazy"}
-        fetchpriority={i === 0 ? "high" : "low"}
-        class:list={["shot", { on: i === 0 }]}
-        style={foto.position ? `object-position: ${foto.position}` : undefined}
-      />
-    ))}
+    <div class="pista" data-pista>
+      {portada.map((foto, i) => (
+        <Image
+          src={foto.src}
+          alt={foto.alt[locale]}
+          widths={[390, 640, 960, 1200, 1600]}
+          sizes={`(max-width: 860px) 100vw, ${enTira(foto)}`}
+          quality={72}
+          loading={i === 0 ? "eager" : "lazy"}
+          fetchpriority={i === 0 ? "high" : "low"}
+          class:list={["shot", { on: i === 0 }]}
+          style={estilo(foto)}
+          data-solo-ordenador={foto.soloOrdenador ? "" : undefined}
+        />
+      ))}
+    </div>
   </div>
   <div class="veil"></div>
   <div class="wrap copy">
     <h1 class="cartel" data-relieve="0.075">{es ? "La tasca que te mereces" : "The tavern you deserve"}</h1>
     <div class="pie">
       <OpenState hours={RESTAURANT.openingHours} locale={locale} />
-      {/* Por qué foto va la ronda. Es un indicador, no un mando, como los turnos
-          de «Lo que más sale»: los puntos medían 10 px, muy por debajo de un dedo,
-          y la portada no se recorre — se mira. */}
+      {/* Por qué foto va el telón del móvil. Es un indicador, no un mando, como los
+          turnos de «Lo que más sale»: los puntos medían 10 px, muy por debajo de
+          un dedo, y la portada no se recorre — se mira. En la tira del ordenador
+          no hay «una foto en curso», y no sale. */}
       <div class="pager" aria-hidden="true" data-pager>
-        {portada.map((_, i) => <span class:list={{ on: i === 0 }}></span>)}
+        {enMovil.map((_, i) => <span class:list={{ on: i === 0 }}></span>)}
       </div>
     </div>
   </div>
@@ -77,30 +94,34 @@ const es = locale === "es";
    * ya había.
    */
   import { congelaAlto } from "@tombo/ui/alto-congelado.ts";
-  import { hastaElProximo, leeDuracion } from "../compas.ts";
+  import { hastaElProximo, leeDuracion, leeNumero } from "../compas.ts";
   import { montaParalaje } from "../paralaje.ts";
 
-  let sueltaAnterior: (() => void) | undefined;
-  let sueltaTelon: (() => void) | null = null;
-  let sueltaParalaje: (() => void) | null = null;
+  const ORDENADOR = matchMedia("(min-width: 861px)");
+  const QUIETO = "(prefers-reduced-motion: reduce)";
 
-  /* El telón. La ronda avanza sola cada `--dur-pase` y, como todo lo que se
-   * mueve solo (regla 6 de `docs/movimiento.md`), se para para siempre al primer
-   * toque, no corre fuera de pantalla ni con la pestaña en segundo plano, y no
-   * arranca si se pide menos movimiento. Cuándo toca cada cambio no lo cuenta
-   * ella: lo pregunta a `compas.ts`, que la mantiene a destiempo del mazo de
-   * «Lo que más sale». */
-  function montaTelon(origen: number) {
+  let sueltaAnterior: (() => void) | undefined;
+  let sueltaPortada: (() => void) | null = null;
+  let sueltaParalaje: (() => void) | null = null;
+  let origen = 0;
+
+  /* EL TELÓN, en el móvil. La ronda avanza sola cada `--dur-pase` y, como todo lo
+   * que se mueve solo (regla 6 de `docs/movimiento.md`), se para para siempre al
+   * primer toque, no corre fuera de pantalla ni con la pestaña en segundo plano,
+   * y no arranca si se pide menos movimiento. Cuándo toca cada cambio no lo
+   * cuenta ella: lo pregunta a `compas.ts`, que la mantiene a destiempo del mazo
+   * de «Lo que más sale». */
+  function montaTelon() {
     const hero = document.querySelector<HTMLElement>(".hero");
-    const fotos = [...document.querySelectorAll<HTMLElement>(".hero [data-pase] > img")];
+    const fotos = [...document.querySelectorAll<HTMLElement>(".hero [data-pista] > img:not([data-solo-ordenador])")];
     const puntos = [...document.querySelectorAll<HTMLElement>(".hero [data-pager] > span")];
     if (!hero || fotos.length < 2) return null;
 
     const abort = new AbortController();
     const { signal } = abort;
-    let actual = 0;
+    let actual = Math.max(0, fotos.findIndex((f) => f.classList.contains("on")));
     let reloj: ReturnType<typeof setTimeout> | null = null;
-    let parado = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let parado = matchMedia(QUIETO).matches;
 
     /* La que llega se pone encima y se descubre; la que se va se queda debajo,
        entera, hasta que la tapa. Las demás, recogidas. */
@@ -160,12 +181,114 @@ const es = locale === "es";
     };
   }
 
+  /* LA TIRA, en el ordenador. Las ocho fotos en fila, cada una entera al alto de
+   * la capa del paralaje y con su proporción —eso lo hace el CSS: la anchura sale
+   * del alto y del `width`/`height` de cada foto—, y la serie dos veces seguida
+   * para que la vuelta no se note: al recorrer exactamente una serie, la copia
+   * está donde estaba la primera. Avanza de derecha a izquierda a `--vel-tira`
+   * píxeles por segundo, lineal y sin parar: una velocidad que cambia se lee como
+   * un fallo, como en la cinta rotulada.
+   * La misma doctrina de todo lo que se mueve solo: se para para siempre al
+   * primer toque en la portada, se pausa con menos de media portada a la vista o
+   * con la pestaña oculta, y con «reducir movimiento» se queda quieta (y sin
+   * copia: no hace falta). La copia la pone este script, así que sin él queda la
+   * fila quieta. */
+  function montaTira() {
+    const hero = document.querySelector<HTMLElement>(".hero");
+    const pista = hero?.querySelector<HTMLElement>("[data-pista]");
+    const fotos = pista ? [...pista.querySelectorAll<HTMLImageElement>(":scope > img")] : [];
+    if (!hero || !pista || !fotos.length) return null;
+    /* Se piden todas ya, con su prioridad baja: la tira las va a enseñar, y una
+       foto perezosa no se pediría hasta asomar por el borde, en hueco. */
+    fotos.forEach((f) => (f.loading = "eager"));
+    if (matchMedia(QUIETO).matches) return null;
+
+    const copias = fotos.map((f) => {
+      const c = f.cloneNode() as HTMLImageElement;
+      c.alt = "";
+      c.setAttribute("aria-hidden", "true");
+      c.removeAttribute("fetchpriority");
+      c.classList.remove("on", "fondo");
+      pista.append(c);
+      return c;
+    });
+    const abort = new AbortController();
+    const { signal } = abort;
+    const vel = leeNumero("--vel-tira");
+    let anim: Animation | null = null;
+    let tramo = 0;
+    let parado = false;
+    let enVista = false;
+
+    /* Lo que hay que recorrer para que la copia ocupe el sitio de la primera: la
+       serie entera con sus juntas, medida en la página y no calculada. */
+    const arma = () => {
+      const nuevo = copias[0].offsetLeft - fotos[0].offsetLeft;
+      if (nuevo <= 0 || Math.abs(nuevo - tramo) < 1) return;
+      const progreso = anim ? (Number(anim.currentTime ?? 0) % ((tramo / vel) * 1000)) / ((tramo / vel) * 1000) : 0;
+      anim?.cancel();
+      tramo = nuevo;
+      const duracion = (tramo / vel) * 1000;
+      anim = pista.animate([{ transform: "translateX(0)" }, { transform: `translateX(${-tramo}px)` }], {
+        duration: duracion,
+        iterations: Infinity,
+        easing: "linear",
+      });
+      anim.currentTime = progreso * duracion;
+      decide();
+    };
+    const decide = () => {
+      if (!anim) return;
+      if (!parado && enVista && !document.hidden) anim.play();
+      else anim.pause();
+    };
+    for (const ev of ["pointerdown", "touchstart"]) {
+      hero.addEventListener(
+        ev,
+        () => {
+          parado = true;
+          decide();
+        },
+        { passive: true, once: true, signal },
+      );
+    }
+    const ojo = new IntersectionObserver(
+      ([e]) => {
+        enVista = e.intersectionRatio >= 0.5;
+        decide();
+      },
+      { threshold: 0.5 },
+    );
+    ojo.observe(hero);
+    document.addEventListener("visibilitychange", decide, { signal });
+    /* La tira mide sus fotos por el alto de la portada: si cambia, cambia lo que
+       hay que recorrer, y se rehace sin perder por dónde iba. */
+    const ojoTam = new ResizeObserver(() => arma());
+    ojoTam.observe(pista);
+    arma();
+
+    return () => {
+      anim?.cancel();
+      ojo.disconnect();
+      ojoTam.disconnect();
+      abort.abort();
+      copias.forEach((c) => c.remove());
+    };
+  }
+
+  const montaPortada = () => {
+    sueltaPortada?.();
+    sueltaPortada = ORDENADOR.matches ? montaTira() : montaTelon();
+  };
+  /* Al cruzar los 861 px se cambia de una a otra. */
+  ORDENADOR.addEventListener("change", montaPortada);
+
   document.addEventListener("astro:page-load", (e) => {
     sueltaAnterior?.();
     const referencia = document.querySelector<HTMLElement>(".hero .alto-ref");
     sueltaAnterior = referencia ? congelaAlto({ referencia, variable: "--alto-portada" }) : undefined;
-    sueltaTelon?.();
-    sueltaTelon = montaTelon(e.timeStamp);
+    origen = e.timeStamp;
+    montaPortada();
     /* El paralaje vive aquí porque la portada es su primera capa y está en las
        dos portadas; recoge también las fotos de fondo de las secciones. */
     sueltaParalaje?.();
@@ -177,10 +300,12 @@ const es = locale === "es";
   .hero {
     position: relative;
     /* svh y no vh: en móvil, vh cuenta con la barra del navegador retraída y la
-       portada se corta por abajo justo donde queremos que asome el primer
-       plato. Además de la cabecera se resta una franja de asomo: sin ella la
-       portada llena la pantalla al píxel y la tira de platos queda invisible
-       hasta que alguien decide bajar. Que asome es el punto entero. */
+       portada se corta por abajo. */
+    /* En el ordenador, además de la cabecera se resta una franja de asomo: sin
+       ella la portada llena la pantalla al píxel y la tira de platos queda
+       invisible hasta que alguien decide bajar. En el móvil, desde el
+       2026-10-29, no: Mario la quiere a pantalla completa bajo la cabecera, y
+       ahí la regla es la de abajo. */
     /* El cálculo se escribe una vez, aquí, y lo leen dos: la portada como
        respaldo y valor del primer pintado, y `.alto-ref` como referencia viva.
        En cuanto el script mide, manda `--alto-portada`, que es ese mismo número
@@ -191,6 +316,11 @@ const es = locale === "es";
     display: flex;
     align-items: flex-end;
     overflow: hidden;
+  }
+  @media (max-width: 860px) {
+    .hero {
+      --alto-calculado: calc(100svh - var(--t-header-h, 62px));
+    }
   }
   /* Fuera del flujo y sin caja visible: no empuja nada ni se ve, solo mide. */
   .alto-ref {
@@ -205,13 +335,20 @@ const es = locale === "es";
   /* Su propio contexto de apilamiento: los `z-index` de las fotos ordenan la
      ronda entre ellas y no pueden subir por encima del velo ni del titular. */
   /* Sobresale un 8% por arriba y por abajo: es el recorrido del paralaje, que
-     la desplaza como mucho 60 px y nunca deja ver el fondo. */
+     la desplaza como mucho 60 px y nunca deja ver el fondo. La tinta de debajo
+     es también la de las juntas de la tira. */
   .pase {
     position: absolute;
     inset: -8% 0;
     isolation: isolate;
     background: var(--ink);
   }
+  .pista {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* ---- El telón, en el móvil ---- */
   /* Recogidas a la derecha mientras esperan su turno. Las capas van por
      `z-index` y no por el orden del HTML: al dar la vuelta, la primera foto
      entraba por debajo de la última y el telón no se veía. */
@@ -233,6 +370,43 @@ const es = locale === "es";
   .shot.fondo {
     z-index: 1;
     clip-path: inset(0);
+  }
+  /* En el móvil la foto llena el alto y se recorta por los lados: cada una va a
+     lo que cuenta (`--encuadre`), y alguna se acerca un poco hacia ahí
+     (`--acerca`). `scale` es una transformación y convive con el `clip-path`
+     del telón. El rótulo del cristal no sale: en vertical se leía «S OCHO». */
+  @media (max-width: 860px) {
+    .shot {
+      object-position: var(--encuadre, 50% 50%);
+      scale: var(--acerca, 1);
+      transform-origin: var(--encuadre, 50% 50%);
+    }
+    .shot[data-solo-ordenador] {
+      display: none;
+    }
+  }
+
+  /* ---- La tira, en el ordenador ---- */
+  /* En fila, con juntas de 3 px de tinta. Cada foto mide el alto de la capa y su
+     ancho sale de su proporción, así que se ve entera: no hay recorte por los
+     lados y el encuadre del móvil no cuenta. */
+  @media (min-width: 861px) {
+    .pista {
+      inset: 0 auto 0 0;
+      display: flex;
+      gap: 3px;
+      will-change: transform;
+    }
+    .pista > :global(img) {
+      position: static;
+      flex: none;
+      width: auto;
+      height: 100%;
+      max-width: none;
+      clip-path: none;
+      transition: none;
+      user-select: none;
+    }
   }
 
   /* La portada es una sola pieza a sangre en todos los anchos, y el titular se
@@ -319,5 +493,12 @@ const es = locale === "es";
   .pager span.on {
     width: 26px;
     background: var(--paper);
+  }
+  /* En la tira no hay una foto en curso que señalar. Va al final porque pesa lo
+     mismo que la regla de arriba, y en un empate gana la última. */
+  @media (min-width: 861px) {
+    .pager {
+      display: none;
+    }
   }
 </style>
