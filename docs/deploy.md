@@ -85,7 +85,11 @@ despliega una vez por push y mira solo el último. El 2026-10-29 un push de diez
 `preview` terminaba en uno de solo `docs/`; el script comparó ese último con el de antes, no vio
 nada de Ochoa y **canceló el despliegue entero**, aunque los nueve anteriores cambiaban la web. No
 dio ningún error: en el panel quedó un despliegue en `CANCELED` y el alias siguió enseñando la
-versión vieja.
+versión vieja. Con el arreglo salió algo más: **Cokima llevaba sin desplegarse en `preview` desde
+el 2026-10-26**, por lo mismo. El push que trajo su rediseño a `preview` (23 commits) acababa en
+uno de solo `docs/` (`4bde458`), y 14 archivos suyos —la entrada con vídeo, su barra, sus estilos
+y el cartel de cookies de `packages/ui`— estaban en la rama y no en la web. El primer push con la versión nueva la construyó
+(su último despliegue bueno era `1d10181`, 41 commits atrás).
 
 Cuatro detalles que no son evidentes y que conviene no «simplificar»:
 

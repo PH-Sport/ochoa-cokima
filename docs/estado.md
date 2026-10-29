@@ -49,7 +49,11 @@ conexión lenta.
 
 **Lo que espera a Mario:**
 
-- **Verlo en su iPhone y en el ordenador**, en el alias de `preview` cuando se suba.
+- **Verlo en su iPhone y en el ordenador**, en el alias de `preview`, donde está desde el
+  2026-10-29. Para que llegara hubo que arreglar el filtro de despliegue, que se saltaba los push
+  de varios commits (`deploy.md` §Evitar que cada push reconstruya las dos webs). El mismo fallo
+  tenía la web de Cokima en `preview` sin actualizar desde el 2026-10-26: su entrada con vídeo
+  estaba en la rama y no en la web. Se desplegó con el arreglo, sin tocar nada de Cokima.
 - **«Conócenos», decidido el 2026-10-29 y por hacer.** La página se centra *«únicamente en la
   experiencia del restaurante»*, así que la sección del equipo se quita. Y sí a usar frases que la
   casa ya ha publicado —la del cubo de madera, las de su Instagram—: *«cuánto menos podamos
