@@ -1,6 +1,6 @@
 # Despliegue en Vercel
 
-> **Estado: vivo** · revisado 2026-09-07
+> **Estado: vivo** · revisado 2026-10-29
 
 > **Estado (2026-07-31): los dos proyectos existen y despliegan.** Cada push a `preview` publica
 > en su alias fijo, que está en `estado.md` §6. Lo que sigue pendiente son los **dominios
@@ -78,17 +78,43 @@ Reconstruye si cambia la propia app, `packages/`, el lockfile o la configuració
 las dos apps dependen de los cuatro paquetes, así que un cambio ahí sí tiene que llegar a las
 dos. Ya no reconstruye nada un cambio en `docs/` ni en la app de la otra marca.
 
-Tres detalles que no son evidentes y que conviene no «simplificar»:
+**Se compara con el último despliegue que salió bien, no con el commit anterior** (desde el
+2026-10-29). Vercel da ese commit en `VERCEL_GIT_PREVIOUS_SHA`, que solo existe durante este
+paso. Hasta ese día se comparaba con `HEAD^`, y eso solo vale si cada push trae un commit: Vercel
+despliega una vez por push y mira solo el último. El 2026-10-29 un push de diez commits a
+`preview` terminaba en uno de solo `docs/`; el script comparó ese último con el de antes, no vio
+nada de Ochoa y **canceló el despliegue entero**, aunque los nueve anteriores cambiaban la web. No
+dio ningún error: en el panel quedó un despliegue en `CANCELED` y el alias siguió enseñando la
+versión vieja.
+
+Cuatro detalles que no son evidentes y que conviene no «simplificar»:
 
 - **El `cd` a la raíz del repo.** El comando corre desde el Root Directory de cada proyecto y las
   rutas de `git diff` se resuelven contra el directorio actual. Sin ese `cd`, la comparación se
   haría sobre rutas que no existen y no detectaría nada — es decir, saltaría siempre.
-- **Las dos salidas de seguridad devuelven 1 (construir).** El clon de Vercel es superficial y
-  puede no traer `HEAD^`; y sin argumento no hay forma de decidir. En la duda, se construye.
+- **No volver a `HEAD^`.** Es lo que trae el ejemplo de la documentación de Vercel, y es justo lo
+  que falló: con varios commits por push se pierden todos menos el último.
+- **Las tres salidas de seguridad devuelven 1 (construir):** sin argumento; sin despliegue
+  anterior en la rama, que es el primero de una rama nueva; y cuando el commit del último
+  despliegue no ha venido en el clon, que es superficial y puede no traerlo si quedó muchos
+  commits atrás. En la duda, se construye.
 - **Requiere «Include source files outside of the Root Directory»** activo en los dos proyectos.
   Ya lo está, o los `workspace:*` no resolverían y no construiría ninguna.
 
-Probado contra cuatro commits reales del historial antes de subirlo:
+La versión con el último despliegue, probada el 2026-10-29 contra commits reales, poniendo a
+mano la variable que da Vercel (con `HEAD` en `7ba3fd5`):
+
+| último despliegue bueno | qué cambió desde entonces | resultado |
+|---|---|---|
+| `a31da59` | el push de los diez commits (Ochoa y `docs/`) | construye Ochoa, salta Cokima |
+| `82fcff5` | solo `docs/` | saltan las dos |
+| ninguno | rama nueva | construye |
+| uno que no vino en el clon | — | construye |
+
+Con la versión de `HEAD^`, el primer caso se saltaba: es el fallo, reproducido.
+
+La primera versión, la de `HEAD^`, se probó el 2026-08-16 contra cuatro commits reales del
+historial antes de subirla:
 
 | commit | qué toca | resultado |
 |---|---|---|
