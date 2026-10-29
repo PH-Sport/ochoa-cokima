@@ -54,9 +54,20 @@ conexión lenta.
   experiencia del restaurante»*, así que la sección del equipo se quita. Y sí a usar frases que la
   casa ya ha publicado —la del cubo de madera, las de su Instagram—: *«cuánto menos podamos
   inventarnos, mejor, al menos, por el momento»*. Lleva fotos que no salen en la home (le gusta
-  mucho la del cubo, `DMf4a_eoWqt-1`). El rediseño se está preparando en el probador; el código de
-  la página sigue como estaba hasta que lo elija. Los datos de la historia siguen sin poder
-  inventarse.
+  mucho la del cubo, `DMf4a_eoWqt-1`). El código de la página sigue como estaba hasta que elija
+  entre las dos maneras que tiene en el probador (versión 5, enlazado desde «Conócenos»):
+  - **«En sus palabras»:** cinco momentos (La mañana, La barra, La ronda, La mesa, El sitio), cada
+    uno con su foto entera y una frase de la casa, alternando de lado; cierra el cubo;
+  - **«Un día en Los Ochoa»:** los mismos momentos como un día, con un reloj quieto que cambia de
+    hora al bajar (9:00, 12:00, 19:00, Noche, 1:00); en el móvil, en una franja bajo la cabecera.
+
+  El titular es suyo: *«Madrid tiene bares… y luego están las tascas, donde la comida acaba siendo
+  la excusa para quedarse»* (Instagram, 2026-05-28). Cada frase sale de la publicación de su propia
+  foto cuando la tiene; lo único escrito aquí son las etiquetas de los momentos, y los horarios son
+  los de `site.ts`. Las fotos: el comedor de «Conservas» (`DKKDXWDiK3x-1`), el desayuno
+  (`DHkzXrsiMmu-1`), la barra del espejo (`DHdb1_hCOls-2`), el aperol (`DPyg6SPCGH5-2`), la mesa
+  rotulada (`DLXrTlcoR2c-1`), el cartel de cerca (`DWUBtsWiBZK-1`) y el cubo. La historia sigue
+  sin poder contarse: no hay datos, y no se inventan.
 - **El vídeo con IA.** La recomendación es el fondo del manifiesto, en lugar de la foto de las
   botellas:
   - va en blanco y negro multiplicado sobre el rojo, que disimula los fallos típicos de la IA;
