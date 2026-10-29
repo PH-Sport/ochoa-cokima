@@ -125,20 +125,21 @@
      como curva `linear()` con 41 puntos de su misma fórmula: no es un parecido,
      es él. Rebota un 0,50%, que no se ve: por eso cabe en la regla 1 con su
      excepción escrita. La duración es lo que tarda en quedarse a menos de una
-     milésima del final. Hoy lo usa la foto que llega al muro de La casa. El
-     menú no: probó a crecer desde su botón y volvió a la persiana
+     milésima del final. Desde el 2026-10-29 no lo usa nada: lo usaba la foto
+     que llegaba al muro de La casa, y el muro lo sustituyó el mosaico vivo,
+     que se recompone con `--ease-telon`. Se queda porque la decisión de Mario
+     sigue en pie: un muelle nuevo sale de aquí, no se escribe a ojo. El menú
+     tampoco lo usa: probó a crecer desde su botón y volvió a la persiana
      (`docs/movimiento.md`, «Qué se mueve hoy»). */
   --ease-muelle: linear(0, 0.0215, 0.0756, 0.15, 0.2352, 0.3243, 0.4125, 0.4966, 0.5745, 0.6449, 0.7074, 0.762, 0.8089, 0.8488, 0.8821, 0.9097, 0.9322, 0.9503, 0.9648, 0.976, 0.9847, 0.9913, 0.9961, 0.9996, 1.002, 1.0035, 1.0045, 1.0049, 1.005, 1.0049, 1.0046, 1.0042, 1.0038, 1.0033, 1.0029, 1.0025, 1.0021, 1.0017, 1.0014, 1.0012, 1);
   --dur-muelle: 590ms;
   /* El cambio de contenido de Mochi: lo que llega lo hace desenfocado y se
-     enfoca mientras se asienta (su `swap`, 12 px). */
+     enfoca mientras se asienta (su `swap`, 12 px). Hoy, la foto nueva del
+     mosaico de La casa. */
   --desenfoque: 12px;
   /* LA HOME VIVA (2026-10-28: «que se sienta viva, no algo plano y estático»).
-     El muro de La casa cambia una foto cada `--dur-muro`, de una en una, así
-     que cada foto se queda tres veces eso. El fondo del manifiesto hace un paneo
-     de ida y vuelta en `--dur-paneo`: tan lento que no se ve moverse, se nota
-     que está vivo. */
-  --dur-muro: 4s;
+     El fondo del manifiesto hace un paneo de ida y vuelta en `--dur-paneo`: tan
+     lento que no se ve moverse, se nota que está vivo. */
   --dur-paneo: 26s;
 
   /* LO QUE MARIO ELIGIÓ EN EL PROBADOR (2026-10-29). El porqué de cada pieza y
@@ -166,6 +167,20 @@
   /* Cada cuánto se mira si una palabra ha quedado tapada al bajar la página:
      si es así, se borra antes de tiempo. */
   --revisa-palabra: 0.65s;
+  /* El mosaico vivo de La casa. Lo que tarda en recomponerse solo —recorre el
+     mosaico entero, así que va con `--ease-telon` (regla 9)— y lo que tarda
+     cuando alguien pulsa una foto, que responde a un dedo y por eso es más
+     corto. */
+  --dur-mosaico: 1.2s;
+  --dur-mosaico-elige: 720ms;
+  /* La pausa entre un cambio y el siguiente, por turnos y sin compás: con lo
+     que tarda el cambio, uno cada 2,5 a 3,3 s, «más o menos cada tres». Y la
+     espera del primero, nada más asomar el mosaico. */
+  --respiros-mosaico: 1.7s 1.3s 2.1s 1.5s 1.9s;
+  --espera-mosaico: 1.1s;
+  /* Con el ratón encima, cada foto se desplaza un poco al contrario dentro de
+     su ventana, y la sigue con esta demora. */
+  --dur-ventana: 900ms;
   /* Lo que dura un plato al frente del mazo de «Lo que más sale» antes de irse
      al fondo. Fue 3,5 s mientras la tira era lo único que se movía solo; con el
      telón encima los dos cambiaban a la vez y la página latía (regla 18), así

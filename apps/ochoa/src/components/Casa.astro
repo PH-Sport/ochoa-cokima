@@ -1,0 +1,287 @@
+---
+// La casa: el local por dentro, en un mosaico vivo de diez fotos (2026-10-29).
+// Sustituye al muro de tres huecos que cambiaba una foto cada 4 s: en el
+// ordenador, Mario lo veía «como si estuviese desordenado», y eligió este mosaico
+// en el probador. Cómo se mueve y por qué, en `../mosaico.ts`; lo que se descartó,
+// en docs/ochoa-inicio-vivo.md.
+//
+// El titular es el de siempre en una línea, «Lo que hay detrás del cristal»: la
+// foto del cristal, que antes iba entre sus dos tramos, es ahora la primera del
+// mosaico y abre en la grande. El párrafo llega por el `slot`, con su cursiva,
+// desde cada home.
+import { getImage } from "astro:assets";
+import { casa } from "../data/casa.ts";
+
+interface Props {
+  locale: "es" | "en";
+}
+const { locale } = Astro.props;
+const es = locale === "es";
+const t = es
+  ? { eyebrow: "La casa", titulo: "Lo que hay detrás del cristal", grupo: "Fotos de la casa", ver: "Verla en grande" }
+  : { eyebrow: "The house", titulo: "What goes on behind the glass", grupo: "Photos of the house", ver: "View it larger" };
+
+// Una foto puede acabar en la ventana grande, que en el móvil es todo el ancho y
+// en el ordenador dos de sus tres columnas, con el 10% de sobra que la cubre. Se
+// pide para ese tamaño aunque empiece pequeña: crecerá. Los anchos son los de
+// `imagesConfig`, porque Vercel descarta en silencio los que no están ahí.
+const SIZES = "(max-width: 860px) 100vw, 66vw";
+const fotos = await Promise.all(
+  casa.map(async (f) => {
+    const img = await getImage({ src: f.src, widths: [390, 640, 960, 1200, 1600], quality: 72 });
+    return {
+      src: img.src,
+      srcset: img.srcSet.attribute,
+      w: f.src.width,
+      h: f.src.height,
+      encuadre: f.encuadre ?? "50% 50%",
+      nombre: f.nombre[locale],
+      alt: f.alt[locale],
+    };
+  }),
+);
+---
+
+<section class="casa">
+  <div class="wrap">
+    <div class="rule"></div>
+    <div class="casa-vivo" data-casa>
+      <div class="texto">
+        <p class="eyebrow">{t.eyebrow}</p>
+        <h2 class="cartel">{t.titulo}</h2>
+        <p class="txt"><slot /></p>
+      </div>
+      {/* Las cuatro primeras van en el marcado, con su foto: son el mosaico quieto
+          que se ve sin JavaScript, y las que abren el vivo. Las otras seis viajan
+          en `data-fotos` y se piden cuando el mosaico se acerca. */}
+      <div class="mosaico" role="group" aria-label={t.grupo} data-fotos={JSON.stringify(fotos)} data-sizes={SIZES} data-ver={t.ver}>
+        {fotos.slice(0, 4).map((f) => (
+          <figure class="tesela">
+            <span class="t-ventana">
+              <span class="t-mueve">
+                <img
+                  src={f.src}
+                  srcset={f.srcset}
+                  sizes={SIZES}
+                  width={f.w}
+                  height={f.h}
+                  alt={f.alt}
+                  loading="lazy"
+                  decoding="async"
+                  class="on"
+                  style={`object-position: ${f.encuadre}`}
+                />
+              </span>
+            </span>
+            <span class="t-nombre" aria-hidden="true">{f.nombre}</span>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { montaMosaico } from "../mosaico.ts";
+
+  /* Como la portada: cada página nueva suelta el mosaico anterior y monta el
+     suyo, si lo tiene. */
+  let suelta: (() => void) | null = null;
+  document.addEventListener("astro:page-load", () => {
+    suelta?.();
+    const raiz = document.querySelector<HTMLElement>("[data-casa]");
+    suelta = raiz ? montaMosaico(raiz) : null;
+  });
+</script>
+
+<style>
+  .casa {
+    padding: clamp(32px, 6vw, 56px) 0 0;
+  }
+  .casa .rule {
+    margin-bottom: clamp(22px, 4vw, 40px);
+  }
+  /* El texto, sobre el mosaico en el móvil y en su primera celda en el
+     ordenador. */
+  .casa-vivo {
+    display: grid;
+    gap: 16px;
+  }
+  .texto {
+    display: grid;
+    gap: 12px;
+    align-content: end;
+  }
+  /* El aire de más sobre la etiqueta es el del probador que eligió Mario. */
+  .texto .eyebrow {
+    margin-top: 26px;
+  }
+  .texto h2 {
+    font-size: var(--fs-h2);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .txt {
+    margin: 0;
+    max-width: 34ch;
+    color: var(--ink-dim);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+  }
+  .txt :global(em) {
+    color: var(--ink);
+  }
+
+  /* ---- Sin JavaScript: una rejilla quieta con las cuatro primeras. ---- */
+  .mosaico {
+    margin: 0 0 6px;
+  }
+  .casa-vivo:not([data-vivo]) .mosaico {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .tesela {
+    margin: 0;
+  }
+  .casa-vivo:not([data-vivo]) .tesela {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border: 2px solid var(--ink);
+    border-radius: var(--r-marco);
+    overflow: hidden;
+    background: var(--paper-3);
+  }
+  .casa-vivo:not([data-vivo]) :is(.t-ventana, .t-mueve) {
+    position: absolute;
+    inset: 0;
+  }
+  .casa-vivo:not([data-vivo]) .t-mueve img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .casa-vivo:not([data-vivo]) .t-nombre {
+    display: none;
+  }
+
+  /* ---- El mosaico vivo ----
+     Cada tesela son tres capas del tamaño del mosaico, y 12 px más por cada lado
+     para que quepa la sombra: la sombra roja, el marco negro y la ventana con la
+     foto. Las tres se recortan con `clip-path` al hueco que les toca y se mueven
+     a la vez. Todas las sombras quedan debajo de todos los marcos, y estos de
+     todas las fotos: las teselas no hacen contexto propio, así que sus capas se
+     ordenan entre sí dentro del mosaico. */
+  .casa-vivo[data-vivo] .mosaico {
+    position: relative;
+    isolation: isolate;
+  }
+  .casa-vivo[data-vivo] .tesela {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .tesela :global(.t-sombra),
+  .tesela :global(.t-borde),
+  .casa-vivo[data-vivo] .t-ventana {
+    position: absolute;
+    inset: -12px;
+  }
+  .tesela :global(.t-sombra) {
+    z-index: 0;
+    background: var(--rojo);
+  }
+  /* `--capa`: 0 la que crece, 1 la que solo se mueve, 2 la que se encoge, que va
+     encima. */
+  .tesela :global(.t-borde) {
+    z-index: calc(1 + 2 * var(--capa, 1));
+    background: var(--ink);
+  }
+  .casa-vivo[data-vivo] .t-ventana {
+    z-index: calc(2 + 2 * var(--capa, 1));
+    overflow: hidden;
+    background: var(--paper-3);
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  /* El foco del teclado: el marco entero se vuelve rojo, en vez de un anillo que
+     el recorte se comería. */
+  .casa-vivo[data-vivo] .t-ventana:focus-visible {
+    outline: none;
+  }
+  .tesela:has(.t-ventana:focus-visible) :global(.t-borde) {
+    background: var(--rojo);
+  }
+  .casa-vivo[data-vivo] .t-mueve {
+    position: absolute;
+    inset: 0;
+    transition: transform var(--dur-ventana) var(--ease);
+  }
+  .casa-vivo[data-vivo] .t-mueve :global(img) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    max-width: none;
+    transform-origin: 0 0;
+    opacity: 0;
+    filter: blur(var(--desenfoque));
+  }
+  .casa-vivo[data-vivo] .t-mueve :global(img.on) {
+    opacity: 1;
+    filter: none;
+  }
+  /* El nombre de la foto grande, como una chapa de la casa. */
+  .t-nombre {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    padding: 3px 8px 2px;
+    border: 2px solid var(--ink);
+    border-radius: var(--r-chapa);
+    background: var(--paper);
+    color: var(--rojo);
+    font-family: var(--display);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 1rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    box-shadow: 2px 2px 0 var(--ink);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .tesela:is(.prota, .encima) .t-nombre {
+    opacity: 1;
+  }
+
+  @media (min-width: 861px) {
+    .casa-vivo:not([data-vivo]) .mosaico {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+    /* El texto se sienta en la primera celda del mosaico: el script le da el
+       ancho de una columna y lo baja hasta apoyarlo en la segunda fila. */
+    .casa-vivo[data-vivo] {
+      display: block;
+      position: relative;
+    }
+    .casa-vivo[data-vivo] .texto {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 4;
+      padding-bottom: 6px;
+    }
+    .t-nombre {
+      font-size: 1.12rem;
+    }
+  }
+  /* En el móvil, las secciones con fotografía respiran casi el doble que el
+     resto (ver la nota de densidad en `pages/index.astro`). */
+  @media (max-width: 860px) {
+    .casa {
+      padding-top: 52px;
+    }
+  }
+</style>

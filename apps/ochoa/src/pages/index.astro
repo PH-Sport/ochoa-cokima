@@ -1,64 +1,17 @@
 ---
 import { getCollection } from "astro:content";
 import { pickFeatured } from "@tombo/content";
-import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import Fondo from "../components/Fondo.astro";
 import Hero from "../components/Hero.astro";
 import Highlights from "../components/Highlights.astro";
 import Ticker from "../components/Ticker.astro";
+import Manifiesto from "../components/Manifiesto.astro";
+import Casa from "../components/Casa.astro";
 import Mapa from "../components/Mapa.astro";
 import Contacto from "../components/Contacto.astro";
-import barra from "../assets/casa/barra.jpg";
-import rotulo from "../assets/casa/rotulo.jpg";
-import vermu from "../assets/casa/vermu.jpg";
-import comedor from "../assets/casa/comedor.jpg";
-import canas from "../assets/casa/canas.jpg";
-import delantal from "../assets/casa/delantal.jpg";
-import cafe from "../assets/casa/cafe.jpg";
-import gafasDeCana from "../assets/casa/gafas-de-cana.jpg";
-import futbol from "../assets/casa/futbol.jpg";
-import bandeja from "../assets/casa/bandeja.jpg";
-import botellas from "../assets/casa/botellas.jpg";
 
 const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data));
-
-// La casa: ya no son rejillas. Las cuatro son fotos reales del local, de la
-// propia web del grupo, así que esta sección se publica.
-//
-// `rotulo` se separa de las otras tres porque no va en el muro: va abrazada por
-// el titular, entre «lo que hay» y «detrás del cristal». La foto es literalmente
-// el cristal rotulado, así que la frase se termina de leer en la imagen en vez
-// de describirla. Es el recurso que nos gustó de la portada de Sibuya —el medio
-// como una línea más del titular, no como fondo— traído al único sitio de la
-// hoja donde no deshace una decisión ya tomada.
-const cristal = {
-  src: rotulo,
-  alt: "Rótulo de Los Ochoa pintado en el cristal, con la terraza al otro lado",
-};
-// El muro está vivo (2026-10-28: «elementos que vayan rotando/cambiando»): cada
-// toma tiene su serie y cambia de foto de una en una, con el fundido con
-// desenfoque de Mochi. La primera de cada serie es la de siempre. Las nuevas son
-// de su Instagram (fototeca, docs/fotografia.md); `pos` encuadra las verticales
-// para que el recorte a 4:3 no se lleve la cara.
-type Toma = { src: ImageMetadata; alt: string; pos?: string };
-const muro: Toma[][] = [
-  [
-    { src: barra, alt: "Barra de Los Ochoa con las botellas y el espejo rotulado a mano: tortilla, gildas, ensaladilla, patatas bravas" },
-    { src: canas, alt: "Camarero tirando cañas con clientes en la barra" },
-    { src: delantal, alt: "Un camarero poniéndose el delantal de la casa", pos: "50% 18%" },
-  ],
-  [
-    { src: vermu, alt: "Vermú con hielo y una banderilla de anchoa y aceituna sobre mármol" },
-    { src: cafe, alt: "Camarera sirviendo la leche en el café", pos: "50% 45%" },
-    { src: gafasDeCana, alt: "Un cliente con la camiseta de Los Ochoa y dos cañas por gafas", pos: "50% 30%" },
-  ],
-  [
-    { src: comedor, alt: "Interior del local: banco corrido rojo, mesas de mármol y el rótulo visto desde dentro" },
-    { src: futbol, alt: "Clientes viendo el fútbol en la barra" },
-    { src: bandeja, alt: "Camarero llevando unas bravas", pos: "50% 30%" },
-  ],
-];
 ---
 
 <Base
@@ -67,6 +20,11 @@ const muro: Toma[][] = [
   locale="es"
   altPath="/en/"
 >
+  {/* LA HOME VIVA (2026-10-28 y 29). Mario pidió que «se sienta viva, no algo
+      plano y estático», y eligió cada pieza en un probador montado sobre la web
+      real: el fondo vivo, la portada (telón en el móvil, tira en el ordenador),
+      el manifiesto rojo con las botellas y el mosaico de La casa. El porqué, y
+      lo que se descartó, en docs/ochoa-inicio-vivo.md. */}
   <Fondo />
   <Hero locale="es" />
 
@@ -77,22 +35,13 @@ const muro: Toma[][] = [
       gastaría entero. Aquí hace de corte entre los platos y el manifiesto. */}
   <Ticker locale="es" />
 
-  {/* El fondo es la pared de botellas de la casa, teñida al rojo como un cartel a
-      dos tintas, que va y viene muy despacio (`--dur-paneo`) y además va más
-      lenta que la página. Es decoración: la cita se lee igual sin ella. */}
-  <section class="manifesto" data-paralaje data-paneo>
-    <div class="fondo-paneo" data-vel="-0.12" data-tope="40" aria-hidden="true">
-      <Image src={botellas} alt="" widths={[640, 960, 1440]} sizes="100vw" quality={70} loading="lazy" class="paneo" />
-    </div>
-    <div class="wrap">
-      <div class="rule"></div>
-      <blockquote>«Aperitivos de esos que se alargan hasta la noche, <strong>como filosofía de vida</strong>.»</blockquote>
-      <p class="sub">
-        Un espacio divertido en plena Castellana donde beberte un buen vermú y acompañarlo de tapas
-        con un toque diferente. El tapeo de toda la vida, con sabores nuevos.
-      </p>
-    </div>
-  </section>
+  <Manifiesto>
+    <blockquote>«Aperitivos de esos que se alargan hasta la noche, <strong>como filosofía de vida</strong>.»</blockquote>
+    <p class="sub">
+      Un espacio divertido en plena Castellana donde beberte un buen vermú y acompañarlo de tapas
+      con un toque diferente. El tapeo de toda la vida, con sabores nuevos.
+    </p>
+  </Manifiesto>
 
   <section class="tasca">
     <div class="wrap"><div class="rule"></div></div>
@@ -120,51 +69,10 @@ const muro: Toma[][] = [
     </div>
   </section>
 
-  <section class="casa">
-    <div class="wrap">
-      <div class="rule"></div>
-      <p class="eyebrow">La casa</p>
-      {/* El titular es un solo h2 partido en dos bloques con la foto en medio:
-          para quien lo escucha sigue siendo una frase seguida, porque la imagen
-          va entre los dos tramos de texto y no dentro de ninguno. */}
-      <h2 class="cartel titular-cristal">
-        <span class="tramo">Lo que hay</span>
-        <Image
-          src={cristal.src}
-          alt={cristal.alt}
-          widths={[390, 640, 960]}
-          sizes="(max-width: 860px) 100vw, 560px"
-          quality={72}
-          loading="lazy"
-          class="cristal-shot"
-        />
-        <span class="tramo">Detrás del cristal</span>
-      </h2>
-      <p class="txt">
-        Barra, mármol y vermú de media tarde. <em>El tapeo que se alarga hasta que alguien mira
-        el reloj</em> y resulta que ya es de noche. Los Ochoa por dentro.
-      </p>
-      <div class="wall" data-muro>
-        {muro.map((serie) => (
-          <div class="toma" data-muro-toma>
-            {serie.map((f, i) => (
-              <Image
-                src={f.src}
-                alt={f.alt}
-                widths={[320, 640, 900]}
-                sizes="(max-width: 860px) 46vw, 33vw"
-                quality={72}
-                loading="lazy"
-                class:list={["casa-shot", { on: i === 0 }]}
-                style={f.pos ? `object-position: ${f.pos}` : undefined}
-                aria-hidden={i === 0 ? undefined : "true"}
-              />
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
+  <Casa locale="es">
+    Barra, mármol y vermú de media tarde. <em>El tapeo que se alarga hasta que alguien mira
+    el reloj</em> y resulta que ya es de noche. Los Ochoa por dentro.
+  </Casa>
 
   <section class="visita" id="visita">
     <div class="wrap">
@@ -199,128 +107,7 @@ const muro: Toma[][] = [
   </section>
 </Base>
 
-<script>
-  /* LA HOME VIVA (2026-10-28, Mario: «que se sienta viva, no algo plano y
-   * estático»). Dos cosas que se mueven solas, con la misma doctrina que el telón
-   * y el mazo (regla 6 de docs/movimiento.md): no corren fuera de pantalla ni con
-   * la pestaña oculta, se paran para siempre al primer toque y con «reducir
-   * movimiento» no arrancan.
-   *  · El muro de La casa cambia una foto cada `--dur-muro`, de una en una: la que
-   *    llega entra desenfocada y un poco grande y se asienta con el muelle de
-   *    Mochi; la que se va se queda debajo, entera, hasta quedar tapada.
-   *  · El fondo del manifiesto hace su paneo solo mientras se ve. */
-  import { leeDuracion } from "../compas.ts";
-
-  let suelta: (() => void) | null = null;
-
-  function montaVida() {
-    const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const abort = new AbortController();
-    const { signal } = abort;
-
-    const manifiesto = document.querySelector<HTMLElement>("[data-paneo]");
-    let ojoPaneo: IntersectionObserver | null = null;
-    if (manifiesto && !quieto) {
-      ojoPaneo = new IntersectionObserver(([e]) => manifiesto.classList.toggle("en-vista", e.isIntersecting));
-      ojoPaneo.observe(manifiesto);
-      manifiesto.addEventListener("pointerdown", () => manifiesto.classList.add("quieto"), { once: true, signal });
-    }
-
-    const muro = document.querySelector<HTMLElement>("[data-muro]");
-    const tomas = muro ? [...muro.querySelectorAll<HTMLElement>("[data-muro-toma]")] : [];
-    let reloj: ReturnType<typeof setTimeout> | null = null;
-    let turno = 0;
-    let parado = quieto;
-    let enVista = false;
-    const pasa = () => {
-      const toma = tomas[turno % tomas.length];
-      turno++;
-      const fotos = [...toma.querySelectorAll<HTMLImageElement>("img")];
-      const i = fotos.findIndex((f) => f.classList.contains("on"));
-      const sig = fotos[(i + 1) % fotos.length];
-      /* Si la siguiente no ha llegado, se salta el turno en vez de enseñar un hueco */
-      if (!sig.complete || sig.naturalWidth === 0) return;
-      fotos.forEach((f) => f.classList.remove("fondo"));
-      fotos[i].classList.replace("on", "fondo");
-      fotos[i].setAttribute("aria-hidden", "true");
-      sig.removeAttribute("aria-hidden");
-      void sig.offsetWidth;
-      sig.classList.add("on");
-    };
-    const pausa = () => {
-      if (reloj) clearTimeout(reloj);
-      reloj = null;
-    };
-    const arranca = () => {
-      if (parado || reloj || !enVista || document.hidden) return;
-      reloj = setTimeout(() => {
-        reloj = null;
-        pasa();
-        arranca();
-      }, leeDuracion("--dur-muro"));
-    };
-    let ojoMuro: IntersectionObserver | null = null;
-    if (muro && tomas.length && !quieto) {
-      ojoMuro = new IntersectionObserver(
-        ([e]) => {
-          enVista = e.intersectionRatio >= 0.3;
-          if (enVista) arranca();
-          else pausa();
-        },
-        { threshold: [0, 0.3] },
-      );
-      ojoMuro.observe(muro);
-      document.addEventListener("visibilitychange", () => (document.hidden ? pausa() : arranca()), { signal });
-      muro.addEventListener(
-        "pointerdown",
-        () => {
-          parado = true;
-          pausa();
-        },
-        { once: true, signal },
-      );
-    }
-
-    return () => {
-      pausa();
-      ojoMuro?.disconnect();
-      ojoPaneo?.disconnect();
-      abort.abort();
-    };
-  }
-
-  document.addEventListener("astro:page-load", () => {
-    suelta?.();
-    suelta = montaVida();
-  });
-</script>
-
 <style>
-  .manifesto {
-    padding: clamp(44px, 7vw, 84px) 0;
-  }
-  .manifesto .rule {
-    margin-bottom: clamp(30px, 5vw, 52px);
-  }
-  blockquote {
-    margin: 0;
-    font-family: var(--display);
-    text-transform: uppercase;
-    letter-spacing: 0.01em;
-    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
-    line-height: 1.32;
-    max-width: 26ch;
-    text-wrap: balance;
-  }
-  blockquote strong {
-    color: var(--rojo);
-  }
-  .sub {
-    font-size: 1.08rem;
-    color: var(--ink-dim);
-    max-width: 56ch;
-    margin: 1.5rem 0 0;
-  }
   .tasca {
     padding: clamp(32px, 6vw, 56px) 0 0;
   }
@@ -363,6 +150,13 @@ const muro: Toma[][] = [
     height: 100%;
     object-fit: cover;
   }
+  /* La mesa es la capa lejana del paralaje dentro de su marco: sobresale un 8%
+     por arriba y por abajo para tener recorrido. */
+  .tasca-photo img {
+    position: relative;
+    top: -8%;
+    height: 116%;
+  }
   .tasca h2 {
     font-size: clamp(2.2rem, 6vw, 3.6rem);
     margin: 0.2rem 0 0;
@@ -375,87 +169,6 @@ const muro: Toma[][] = [
   }
   .txt em {
     color: var(--ink);
-  }
-  /* Cuadrícula de dos por dos, con las cuatro del mismo tamaño y la misma
-     proporción. El mosaico asimétrico que hubo antes hacía justo lo contrario de
-     lo que necesita esta sección: llamaba la atención sobre la composición en vez
-     de sobre las fotos, y con cuatro piezas se leía como descuadrado más que
-     como intencionado. */
-  .casa {
-    padding: clamp(32px, 6vw, 56px) 0 0;
-  }
-  .casa .rule {
-    margin-bottom: clamp(22px, 4vw, 40px);
-  }
-  .casa h2 {
-    font-size: clamp(1.9rem, 5vw, 3rem);
-    margin: 0.2rem 0 0;
-  }
-  /* El titular abraza la foto: los dos tramos de texto y la imagen son un solo
-     bloque, con el mismo interlineado apretado del cartel a cada lado. La foto
-     no lleva la sombra dura roja que sí llevan las del muro —aquí hace de
-     palabra, y una palabra no se realza contra sí misma. */
-  .titular-cristal {
-    display: grid;
-    gap: clamp(10px, 2.5vw, 18px);
-    justify-items: start;
-  }
-  .cristal-shot {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    border: 2px solid var(--ink);
-    border-radius: var(--r-marco);
-  }
-  /* Dos columnas desfasadas: la de la derecha baja un escalón para que la serie
-     no se lea como una tabla. Ni el mosaico de piezas de tamaños distintos —que
-     llamaba la atención sobre la composición— ni la cuadrícula perfecta, que era
-     lo contrario y quedaba rígida. El desfase también hace que se vea siempre
-     media foto empezada, que invita a seguir bajando. */
-  .wall {
-    display: grid;
-    /* `minmax(0, 1fr)` y no `1fr` a secas: un track `1fr` es en realidad
-       `minmax(auto, 1fr)`, y el mínimo automático de una imagen es su tamaño
-       intrínseco —estas declaran 1000px—, así que el track se negaba a bajar de
-       ahí por mucho `width: 100%` que llevara la foto. Medido a 375px, la
-       retícula se iba a 513 y sacaba 138px de scroll lateral a toda la portada.
-       El cero le da permiso al track para encoger. */
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(12px, 2vw, 22px);
-    margin-top: 1.6rem;
-    padding-bottom: clamp(18px, 3vw, 34px);
-    --desfase: clamp(28px, 7vw, 64px);
-  }
-  .wall > :global(*:nth-child(2n)) {
-    margin-top: var(--desfase);
-  }
-  /* Quedan tres piezas desde que el rótulo se fue al titular, y tres en dos
-     columnas dejaban un hueco al final. La última pasa a ancho completo y la
-     sección cierra en plano: no es el mosaico de tamaños arbitrarios que se
-     retiró —ahí el desorden era el recurso—, sino la fila de cierre de una
-     retícula que sigue siendo de dos columnas. Por eso tampoco hace falta ya
-     el relleno del escalón: no hay diente que compensar. */
-  .wall > :global(*:nth-child(3)) {
-    grid-column: 1 / -1;
-    aspect-ratio: 16 / 9;
-  }
-  .casa-shot {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    border: 2px solid var(--ink);
-    border-radius: var(--r-marco);
-  }
-  /* La primera y la última llevan el realce rojo de la casa, en esquinas
-     opuestas: es el mismo recurso del retrato de «la tasca», y remata el
-     escalonado por sus dos extremos. */
-  .wall > :global(*:first-child) {
-    box-shadow: -8px 8px 0 rgba(198, 34, 43, 0.9);
-  }
-  .wall > :global(*:last-child) {
-    box-shadow: 8px 8px 0 rgba(198, 34, 43, 0.9);
   }
 
   .visita {
@@ -524,182 +237,24 @@ const muro: Toma[][] = [
      lateral en esta marca — es justo lo que la separa de Cokima. Va al final
      de la hoja porque comparte especificidad con las reglas de arriba. */
   @media (max-width: 860px) {
-    /* Abajo también: desde que lleva fondo es una banda, y el texto no puede
-       tocar su borde. */
-    .manifesto {
-      padding: 28px 0 40px;
-    }
     .visita {
       padding-top: 28px;
     }
-    /* Las dos secciones que cargan fotografía respiran casi el doble que el
-       resto. La densidad de la hoja se mantiene donde es texto —que es lo que
-       la hace una hoja de bar y no un folleto—, pero una foto pegada a la
-       anterior se lee como error de montaje y no como ritmo. El asomo de la
-       portada y el relleno apretado de la tira de platos siguen intactos: esos
-       dos están medidos para que la primera ficha se vea sin bajar. */
-    .tasca,
-    .casa {
+    /* Las dos secciones que cargan fotografía —esta y La casa, que lo lleva en
+       su componente— respiran casi el doble que el resto. La densidad de la
+       hoja se mantiene donde es texto —que es lo que la hace una hoja de bar y
+       no un folleto—, pero una foto pegada a la anterior se lee como error de
+       montaje y no como ritmo. */
+    .tasca {
       padding-top: 52px;
     }
-    .manifesto .rule,
     .tasca .rule,
     .visita .rule {
       margin-bottom: 20px;
     }
-    .sub,
     .txt {
       font-size: 1rem;
       margin-top: 0.9rem;
-    }
-  }
-
-  /* ---- LA HOME VIVA (2026-10-28) ---- */
-
-  /* El manifiesto, sobre la pared de botellas de la casa teñida al rojo: la foto
-     en grises, multiplicada sobre el rojo, queda como un cartel a dos tintas. El
-     paneo es solo `transform` y va y viene en `--dur-paneo`; el paralaje lo lleva
-     el envoltorio, para que los dos movimientos no se pisen. La cita pasa al
-     papel con el relieve de tinta de los rótulos, y lo que antes iba en rojo va
-     en tinta con el relieve en papel: rojo sobre rojo no se vería. */
-  .manifesto {
-    position: relative;
-    overflow: hidden;
-    isolation: isolate;
-    background: var(--rojo);
-    color: var(--paper);
-  }
-  /* La mezcla va en el envoltorio y no en la foto: el paralaje le pone un
-     `transform`, que lo convierte en su propio grupo de pintado, y una foto que
-     se multiplicara dentro se multiplicaría contra nada (salía gris, sin rojo).
-     Así se multiplica el grupo entero contra el rojo de la sección, que está
-     aislada (`isolation`) para que la mezcla no se salga de ella. */
-  .fondo-paneo {
-    position: absolute;
-    inset: -10% 0;
-    z-index: -1;
-    mix-blend-mode: multiply;
-  }
-  .paneo {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(1) contrast(1.15) brightness(1.05);
-    transform: scale(1.1);
-    animation: paneo var(--dur-paneo) var(--ease-telon) infinite alternate;
-    animation-play-state: paused;
-  }
-  .manifesto:global(.en-vista) .paneo {
-    animation-play-state: running;
-  }
-  .manifesto:global(.quieto) .paneo {
-    animation-play-state: paused;
-  }
-  @keyframes paneo {
-    from {
-      transform: scale(1.1) translate3d(-2.5%, 1%, 0);
-    }
-    to {
-      transform: scale(1.1) translate3d(2.5%, -1%, 0);
-    }
-  }
-  /* La regla global de «reducir movimiento» acorta las animaciones pero no las
-     detiene, y un paneo infinito acortado parpadearía: aquí se quita. */
-  @media (prefers-reduced-motion: reduce) {
-    .paneo {
-      animation: none;
-    }
-  }
-  .manifesto .rule {
-    border-color: var(--paper);
-  }
-  .manifesto blockquote {
-    color: var(--paper);
-    text-shadow: 0.045em 0.05em 0 var(--ink);
-  }
-  .manifesto blockquote strong {
-    color: var(--ink);
-    text-shadow: 0.045em 0.05em 0 var(--paper);
-  }
-  .manifesto .sub {
-    color: rgba(255, 255, 255, 0.92);
-  }
-
-  /* La mesa de La tasca es la capa lejana dentro de su marco: sobresale un 8%
-     por arriba y por abajo para tener recorrido. */
-  .tasca-photo img {
-    position: relative;
-    top: -8%;
-    height: 116%;
-  }
-
-  /* El muro vivo: cada toma es un marco con su serie apilada. La foto que llega
-     entra desenfocada y un poco grande (el cambio de Mochi, `--desenfoque`) y se
-     asienta con su muelle; la que se va se queda debajo, entera, hasta quedar
-     tapada, así que nunca se ve un hueco. Los realces rojos y el desfase de la
-     retícula se los quedan las tomas, que son ahora los hijos del muro. */
-  .toma {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    border: 2px solid var(--ink);
-    border-radius: var(--r-marco);
-    overflow: hidden;
-    background: var(--paper-3);
-  }
-  .toma .casa-shot {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    aspect-ratio: auto;
-    border: 0;
-    border-radius: 0;
-    opacity: 0;
-    filter: blur(var(--desenfoque));
-    transform: scale(1.06);
-  }
-  .toma .casa-shot:global(.on) {
-    z-index: 2;
-    opacity: 1;
-    filter: none;
-    transform: none;
-    transition:
-      opacity var(--dur-in) var(--ease),
-      filter var(--dur-in) var(--ease),
-      transform var(--dur-muelle) var(--ease-muelle);
-  }
-  .toma .casa-shot:global(.fondo) {
-    z-index: 1;
-    opacity: 1;
-    filter: none;
-    transform: none;
-  }
-
-  /* En el ordenador, nada de fotos gigantes (Mario, 2026-10-28: «no me puedes
-     poner una foto tan enorme»). El muro va a tres columnas iguales, con el
-     escalón de la del medio, y el titular de La casa se lee en una fila: «Lo que
-     hay [la foto del cristal] detrás del cristal», con la foto del tamaño de una
-     palabra grande. Entre 861 y 1199 px la fila no cabe: el titular sigue en
-     columna y la foto se queda en 640 px. */
-  @media (min-width: 861px) {
-    .wall {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    .wall > :global(.toma:nth-child(3)) {
-      grid-column: auto;
-      aspect-ratio: 4 / 3;
-    }
-    .cristal-shot {
-      max-width: 640px;
-    }
-  }
-  @media (min-width: 1200px) {
-    .titular-cristal {
-      grid-template-columns: auto minmax(0, 460px) auto;
-      align-items: center;
-      justify-content: start;
-      column-gap: clamp(16px, 2vw, 28px);
     }
   }
 </style>

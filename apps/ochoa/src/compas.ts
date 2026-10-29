@@ -41,6 +41,50 @@ export function leeNumero(token: string): number {
 }
 
 /**
+ * Lee un token de curva (`cubic-bezier(0.45, 0.02, 0.55, 1)`) y la devuelve como
+ * función del avance, de 0 a 1, para lo que se anima desde el script y no desde
+ * el CSS. Es la misma curva que usaría el navegador: misma fórmula, resuelta en
+ * el tiempo con Newton y, si no converge, por bisección. Si el token no es una
+ * `cubic-bezier`, lineal.
+ */
+export function leeCurva(token: string): (x: number) => number {
+  const v = getComputedStyle(document.documentElement).getPropertyValue(token);
+  const n = v.match(/cubic-bezier\(([^)]+)\)/)?.[1].split(",").map(Number);
+  if (!n || n.length !== 4 || n.some((x) => !Number.isFinite(x))) return (x) => x;
+  const [x1, y1, x2, y2] = n;
+  const cx = 3 * x1;
+  const bx = 3 * (x2 - x1) - cx;
+  const ax = 1 - cx - bx;
+  const cy = 3 * y1;
+  const by = 3 * (y2 - y1) - cy;
+  const ay = 1 - cy - by;
+  const sx = (t: number) => ((ax * t + bx) * t + cx) * t;
+  const sy = (t: number) => ((ay * t + by) * t + cy) * t;
+  const dx = (t: number) => (3 * ax * t + 2 * bx) * t + cx;
+  return (x) => {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+    let t = x;
+    for (let i = 0; i < 8; i++) {
+      const e = sx(t) - x;
+      if (Math.abs(e) < 1e-6) return sy(t);
+      const d = dx(t);
+      if (Math.abs(d) < 1e-6) break;
+      t -= e / d;
+    }
+    let lo = 0;
+    let hi = 1;
+    t = x;
+    for (let i = 0; i < 40 && hi - lo > 1e-7; i++) {
+      if (sx(t) < x) lo = t;
+      else hi = t;
+      t = (lo + hi) / 2;
+    }
+    return sy(t);
+  };
+}
+
+/**
  * Milisegundos que faltan para el próximo cambio de una serie que cambia en
  * `primero`, `primero + periodo`, `primero + 2·periodo`… contados desde `origen`.
  *
