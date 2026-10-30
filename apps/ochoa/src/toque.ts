@@ -19,7 +19,7 @@
 //  · si llega `pointerup`, era un toque sobre ella, y se apaga (`toca`).
 // Con el ratón no hay nada que resolver: pulsar ya es tocar.
 //
-// El mazo de «Lo que más sale» hace lo mismo a mano, porque sus gestos de lado
+// El mazo de «Los que destacan» hace lo mismo a mano, porque sus gestos de lado
 // también pasan carta (Highlights.astro).
 
 interface Manos {

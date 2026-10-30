@@ -10,7 +10,7 @@
   { "id": "pin-09", "section": "pinchos", "order": 9, "name": "Baby eels with quail egg", "price": 3.5, "allergens": ["huevo", "pescado"] },
   { "id": "pin-10", "section": "pinchos", "order": 10, "name": "Madrid-style tripe", "price": 4, "allergens": ["sulfitos"] },
   { "id": "pin-11", "section": "pinchos", "order": 11, "name": "Bomba Los Ochoa", "description": "Potato and minced meat croquette.", "price": 3.5 },
-  { "id": "pin-12", "section": "pinchos", "order": 12, "name": "Sobrasada, Brie and honey brioche", "price": 4 },
+  { "id": "pin-12", "section": "pinchos", "order": 12, "name": "Sobrasada, Brie and honey brioche", "price": 4, "featured": true, "image": "brioche-de-sobrasada-brie-y-miel" },
   { "id": "pin-13", "section": "pinchos", "order": 13, "name": "Chicken wings tapa", "price": 3 },
 
   { "id": "pan-01", "section": "con-pan", "order": 1, "name": "Ham and grated tomato on toast", "price": 4.5 },
@@ -23,7 +23,7 @@
   { "id": "pan-08", "section": "con-pan", "order": 8, "name": "Calamari with ham mayonnaise roll", "price": 8.5, "allergens": ["gluten", "moluscos", "huevo"] },
   { "id": "pan-09", "section": "con-pan", "order": 9, "name": "Chorizo in cider roll", "price": 7, "allergens": ["gluten", "sulfitos"] },
   { "id": "pan-10", "section": "con-pan", "order": 10, "name": "Potato and onion omelette roll", "price": 7, "allergens": ["gluten", "huevo"] },
-  { "id": "pan-11", "section": "con-pan", "order": 11, "name": "Cured pork shoulder toastie", "description": "With Idiazabal cheese and truffle.", "price": 9.5, "allergens": ["gluten", "lacteos"] },
+  { "id": "pan-11", "section": "con-pan", "order": 11, "name": "Cured pork shoulder toastie", "description": "With Idiazabal cheese and truffle.", "price": 9.5, "featured": true, "image": "bikini-de-lacon", "allergens": ["gluten", "lacteos"] },
   { "id": "pan-12", "section": "con-pan", "order": 12, "name": "Minutejos toastie with brava sauce", "price": 10 },
 
   { "id": "rac-01", "section": "raciones", "order": 1, "name": "Moorish skewer with potatoes", "price": 4.75, "allergens": ["sulfitos"] },
@@ -45,10 +45,10 @@
   { "id": "rac-17", "section": "raciones", "order": 17, "name": "Nachos with cheese, guacamole and chilli con carne", "price": 12, "allergens": ["lacteos"] },
   { "id": "rac-18", "section": "raciones", "order": 18, "name": "Kentucky-style fried chicken", "description": "With chips and sweet chipotle sauce.", "price": 14, "allergens": ["gluten", "huevo", "lacteos"] },
   { "id": "rac-19", "section": "raciones", "order": 19, "name": "Grandma's Idiazabal fritters", "description": "With piquillo pepper jam.", "price": 14, "allergens": ["gluten", "huevo", "lacteos"] },
-  { "id": "rac-20", "section": "raciones", "order": 20, "name": "Grilled octopus", "description": "With patatas revolconas and txistorra.", "price": 22 },
+  { "id": "rac-20", "section": "raciones", "order": 20, "name": "Grilled octopus", "description": "With patatas revolconas and txistorra.", "price": 22, "featured": true, "image": "pulpo-a-la-plancha" },
   { "id": "rac-21", "section": "raciones", "order": 21, "name": "Oxtail croissant", "description": "With its own jus and Idiazabal cheese.", "price": 17, "featured": true, "image": "croissant-de-rabo-de-toro", "allergens": ["gluten", "lacteos", "sulfitos"] },
   { "id": "rac-22", "section": "raciones", "order": 22, "name": "Bread basket with olive oil", "price": 3, "allergens": ["gluten", "sulfitos"] },
 
-  { "id": "pos-01", "section": "postres", "order": 1, "name": "BRUTAL cheesecake with Idiazabal ice cream", "price": 7, "allergens": ["gluten", "huevo", "lacteos", "soja"] },
+  { "id": "pos-01", "section": "postres", "order": 1, "name": "BRUTAL cheesecake with Idiazabal ice cream", "price": 7, "featured": true, "image": "tarta-de-queso-brutal-con-helado-de-idiazabal", "allergens": ["gluten", "huevo", "lacteos", "soja"] },
   { "id": "pos-02", "section": "postres", "order": 2, "name": "Chocolate coulant", "description": "With dulce de leche ice cream and chocolate soil.", "price": 7, "allergens": ["gluten", "huevo", "lacteos", "soja"] }
 ]

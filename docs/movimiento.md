@@ -40,9 +40,10 @@ salen de aquí:
 | `--dur-mosaico` / `--dur-mosaico-elige` | `1.2s` / `720ms` | Lo que tarda el mosaico de La casa en **recomponerse** solo, y cuando alguien **pulsa** una foto. Los dos con `--ease-telon`: recorren el mosaico entero (regla 9). |
 | `--respiros-mosaico` / `--espera-mosaico` | `1.7s 1.3s …` / `1.1s` | La **pausa** entre un cambio del mosaico y el siguiente, por turnos y sin compás, y la del primero al asomar. Con su propio reloj y no con `compas.ts`: el mosaico no comparte pantalla con la portada ni con el mazo (regla 25). |
 | `--dur-ventana` | `900ms` | Lo que tarda la foto del mosaico en **seguir al ratón** dentro de su ventana. |
-| `--dur-turno` | `5,5s` | Lo que un plato **espera** al frente del mazo antes de irse al fondo. Fue 3,5 s; se alargó el 2026-10-27 para no ir al compás de la portada (regla 25). |
+| `--dur-turno` | `5,5s` | Lo que un plato **espera** al frente del mazo antes de irse al fondo, y desde el 2026-10-30 lo que espera la rueda del ordenador entre una tarjeta y la siguiente. Fue 3,5 s; se alargó el 2026-10-27 para no ir al compás de la portada (regla 25). |
 | `--desfase-turno` | `0,25s` | No es una duración, es la **fase**: cuánto más tarda el primer cambio del mazo. Es lo que impide que coincida con la portada (regla 25). |
 | `--dur-baraja` | `980ms` | Lo que tarda la carta de delante en **salir torciéndose y volver al fondo** del mazo. Dos viajes, así que 1,4 veces `--dur-recogida`, con `--ease-telon`. |
+| `--dur-rueda` | `700ms` | Lo que tarda la rueda de «Los que destacan», en el ordenador, en **correrse una tarjeta**. Unos 220 px a 1440, así que con `--ease-telon` (regla 9); más que `--dur-in` porque no responde a nadie: pasa sola. |
 | `--dur-sube` | `240ms` | Lo que un botón tarda en **recuperar su sitio** tras soltarlo. |
 | `--dur-firma` | `280ms` | Lo que la sombra dura tarda en **despegarse** del rótulo en la entrada. No es entrar: el rótulo ya está ahí, lo que aparece es su relieve. |
 | `--espera-firma` | `700ms` | El **retardo** de la recogida de la entrada, contado desde el arranque —no una duración—. Deja 420ms de rótulo quieto y entero después de la firma. |
@@ -370,7 +371,7 @@ más lejos; Ochoa es una tasca y es seca.
     deja al navegador bajando la cinta desde el principio, compitiendo con el póster, que es el LCP.
 
 25. **Dos movimientos que se ven a la vez no comparten compás, y el desfase solo existe con un
-    reloj común.** En el móvil, la portada (el telón) y «Lo que más sale» (el mazo) están en la
+    reloj común.** En el móvil, la portada (el telón) y «Los que destacan» (el mazo) están en la
     misma pantalla. Con los dos cada 3,5 s y arrancando juntos cambiaban a la vez y la página latía
     —Mario lo vio en el boceto el 2026-10-27—. Se separaron: la portada cada `--dur-pase`, el mazo
     cada `--dur-turno` (5,5 s) y su primer cambio `--desfase-turno` más tarde. Con 3,5 y 5,5 los
@@ -385,10 +386,13 @@ más lejos; Ochoa es una tasca y es seca.
 
     **Con la home viva (2026-10-29), cómo queda cada pieza.** En el móvil, el telón y el mazo
     siguen preguntando a `compas.ts`. En el ordenador, la portada es la tira, que no cambia sino
-    que avanza sin parar, así que no tiene compás con el que coincidir. El mosaico de La casa
-    lleva su propio reloj porque nunca comparte pantalla con la portada ni con el mazo: medido
-    sobre el build, empieza 1.381 px por debajo de «Lo que más sale» a 390 (pantalla de 844) y
-    1.555 por debajo de la portada a 1024. Y su ritmo no es un compás: pausas por turnos de una
+    que avanza sin parar, así que no tiene compás con el que coincidir; la rueda de «Los que
+    destacan» (2026-10-30) pregunta a `compas.ts` igual que el mazo, aunque allí no tenga con qué
+    coincidir. El mosaico de La casa lleva su propio reloj porque nunca comparte pantalla con la
+    portada ni con el mazo: medido sobre el build el 2026-10-30, ya sin la raya del manifiesto,
+    empieza al menos 1.312 px por debajo de «Los que destacan» a 390 (pantalla de 844) y 1.445 por
+    debajo de la portada a 1024 (los mínimos entre Chromium y WebKit; el 2026-10-29 eran 1.381 y
+    1.555). Y su ritmo no es un compás: pausas por turnos de una
     lista (`--respiros-mosaico`). Las palabras del fondo sí pueden salir en la misma pantalla que
     el mazo o el mosaico, pero tampoco llevan compás —sus vidas y sus esperas son listas que no
     casan— y no cambian de golpe: se pintan en 1,7 s y se borran en 1,4.
@@ -470,6 +474,7 @@ más lejos; Ochoa es una tasca y es seca.
 | «Conócenos» (Ochoa) | Al llegar a cada momento, su foto entra con el telón de derecha a izquierda y el texto sube detrás; una sola vez | `clip-path`, `--dur-recogida`, `--ease-telon`; `translateY` y `opacity`, `--dur-in`, escalonado con `--dur-out`; las fotos se piden una pantalla antes (regla 28); nada escondido con «reducir movimiento» |
 | Fondo de la home, de «Conócenos», de La carta y de Reservar (Ochoa) | Las vetas rojas del vermú se mueven sin parar, y en la home y en «Conócenos» las palabras del espejo se pintan en el blanco libre, viven unos segundos y se borran; en La carta y Reservar, solo las vetas | WebGL2 desde `fondo.ts`, en cada fotograma mientras se ve la página (excepción de las reglas 6 y 18); `--vidas-palabra`, `--esperas-palabra`, `--dur-pincel`, `--dur-borrado`; nada con la pestaña oculta; un fotograma quieto con «reducir movimiento». Sin ratón, las vetas van más rojas (0,38 en vez de 0,24), más densas (escala 0,7), un 40 % más deprisa, las enciende la luz que pasea y bajan con la página al 12 % |
 | Barra del ordenador (Ochoa) | El relieve: la sombra de las secciones, del rótulo y del titular de la portada cae al lado contrario del cursor | `text-shadow` desde `relieve.ts` (excepción de la regla 2), `--relieve-suave`; solo con ratón |
+| Rueda de platos (Ochoa, solo ordenador) | «Los que destacan»: seis tarjetas a la vista; cada turno la fila se corre una hacia la derecha, entra por la izquierda la que esperaba fuera y sale la sexta, sin fin | `transform`, `--dur-turno`, `--desfase-turno`, `--dur-rueda`, `--ease-telon`; con `compas.ts`; con media fila a la vista y la pestaña delante; espera con el ratón encima y se para para siempre con un clic, las flechas o un gesto; quieta con «reducir movimiento»; las fotos de fuera se piden al montarla (regla 28) |
 | Mazo de platos (Ochoa, solo móvil) | La de delante sale por la izquierda torciéndose y vuelve al fondo; deslizando a la derecha, la anterior entra por la izquierda por encima, en la mitad del tiempo; el turno se rellena | `transform` + `opacity`, `--dur-turno`, `--desfase-turno`, `--dur-baraja`, `--ease-telon`; `scaleX`; se apaga con un toque o una carta pasada, no al bajar con el dedo encima. En el móvil tumbado no hay mazo: la tira de fichas que se desliza |
 | Portada | El titular se aparta del cartel de cookies | `translateY`, `--dur-out` |
 | Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |

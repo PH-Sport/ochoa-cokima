@@ -17,7 +17,6 @@ import botellas from "../assets/casa/botellas.jpg";
     <Image src={botellas} alt="" widths={[640, 960, 1200, 1600]} sizes="100vw" quality={70} loading="lazy" class="paneo" />
   </div>
   <div class="wrap">
-    <div class="rule"></div>
     <slot />
   </div>
 </section>
@@ -63,10 +62,9 @@ import botellas from "../assets/casa/botellas.jpg";
     background: var(--rojo);
     color: var(--paper);
   }
-  .manifesto .rule {
-    margin-bottom: clamp(30px, 5vw, 52px);
-    border-color: var(--paper);
-  }
+  /* Hasta el 2026-10-30 abría con la doble raya de las secciones, en blanco.
+     Mario la quitó —«no cumple una gran función»—, y el aire que dejaba lo da
+     el relleno de la banda, el mismo arriba que abajo. */
   .manifesto :global(blockquote) {
     margin: 0;
     font-family: var(--display);
@@ -132,13 +130,10 @@ import botellas from "../assets/casa/botellas.jpg";
     }
   }
 
-  /* Abajo también: es una banda, y el texto no puede tocar su borde. */
+  /* Arriba y abajo lo mismo: es una banda, y el texto no puede tocar su borde. */
   @media (max-width: 860px) {
     .manifesto {
-      padding: 28px 0 40px;
-    }
-    .manifesto .rule {
-      margin-bottom: 20px;
+      padding: 40px 0;
     }
     .manifesto :global(.sub) {
       font-size: 1rem;

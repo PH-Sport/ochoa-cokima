@@ -3,11 +3,16 @@ import type { MenuEntry } from "./index.ts";
 /**
  * `order` es correlativo dentro de cada sección, no un índice global: ordenar
  * solo por `order` intercalaría los postres entre los platos salados. Cubre las
- * secciones de las dos cartas — Cokima reparte en `compartir` y `terminar`,
- * Ochoa lo lleva todo en `carta` — y las desconocidas van al final, nunca
- * delante, para que un dato nuevo no se cuele en cabeza sin querer.
+ * secciones de las dos cartas — Cokima reparte en `compartir` y `terminar`, y
+ * Ochoa en `pinchos`, `con-pan`, `raciones` y `postres`, en el orden de su
+ * carta — y las desconocidas van al final, nunca delante, para que un dato
+ * nuevo no se cuele en cabeza sin querer.
+ *
+ * Las de Ochoa faltaban hasta el 2026-10-30 —la lista decía que lo llevaba todo
+ * en `carta`—, y mientras sus seis destacados eran raciones no se notó. Al
+ * destacar la tarta de queso, el único postre conocido se ponía delante de todo.
  */
-const SECTION_ORDER = ["compartir", "terminar", "carta", "postres"];
+const SECTION_ORDER = ["compartir", "terminar", "carta", "pinchos", "con-pan", "raciones", "postres"];
 
 const rank = (section: string) => {
   const i = SECTION_ORDER.indexOf(section);

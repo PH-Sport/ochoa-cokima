@@ -1,5 +1,5 @@
-// El compás común de la portada: la foto del telón y la carta del mazo de «Lo que
-// más sale» se mueven solas y, en el móvil, a la vez en la misma pantalla.
+// El compás común de la portada: la foto del telón y la carta del mazo de «Los que
+// destacan» se mueven solas y, en el móvil, a la vez en la misma pantalla.
 //
 // POR QUÉ UN RELOJ COMÚN. Con los dos cada 3,5 s y arrancando juntos cambiaban al
 // mismo tiempo y la página latía (regla 18 de docs/movimiento.md). Mario lo vio en

@@ -1,6 +1,6 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-10-30 · Ochoa tiene foto en sus seis destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, portada y casa
+> **Estado: vivo** · revisado 2026-10-30 · Ochoa tiene foto en sus diez destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, portada y casa
 
 ## Estado
 
@@ -124,6 +124,10 @@ copiar de ahí.
 | Ochoa | Croissant de rabo de toro | ✅ `C_lHe3MtsXM-1` (sep. 2024), la única que hay; el texto lo nombra. Ya no hace falta `LosOchoa-7` |
 | Ochoa | Ración de croquetas de jamón Joselito | ✅ `DLua8GqoiNn-1` (jul. 2025): la huevera, a 1440. Sustituye a `LosOchoa-2`, de 2021 y a 1000 |
 | Ochoa | Ensaladilla rusa casera | ✅ `DMSamLoo0l1-1` (jul. 2025): se ven el atún, el polvo de jamón y la yema |
+| Ochoa | Brioche de sobrasada, Brie y miel | ✅ `Degkd45I31h-1` (oct. 2026), desde el 2026-10-30 como las tres siguientes: en la mano, con la caña detrás; el texto lo nombra. Vertical (1440 × 1920), y en la ficha apaisada del móvil el brioche sigue entero |
+| Ochoa | Bikini de lacón | ✅ `DEr4EREtm0N-1` (ene. 2025): abierto con las dos manos y el queso estirándose, sobre la cortina roja. De las cuatro que hay, la que aguanta el recorte apaisado del móvil: en `DAQdoMDtO9h-1` se perdía la parte de arriba |
+| Ochoa | Pulpo a la plancha | ✅ `Dd02u7EIpSm-1` (sep. 2026): sobre las revolconas, con la cortina detrás; el texto cuenta que vuelve a la carta |
+| Ochoa | Tarta de queso BRUTAL con helado de Idiazábal | ✅ `DeKBZtIoDva-1` (oct. 2026): la porción con su bola de helado; el texto dice que tiene «su sitio asegurado» en la carta |
 
 **Una foto solo se asigna a un plato cuando hay certeza de que es ese plato.** Las seis de Ochoa
 la tienen porque el texto de la publicación nombra el plato. Además, se ve lo que dice la carta.
@@ -272,6 +276,9 @@ en el artifact privado de Mario https://claude.ai/artifact/Y9xkL8LhfVpZtRgHsnjjA
   foto, ni siquiera con el reparto delegado:** las fotos de plato solo se ven en la tira de
   destacados, y esa tira se titula «Lo que más sale». Marcar un plato porque tiene foto sería
   afirmar algo sobre sus ventas que nadie ha dicho. Lo decide Mario con el restaurante.
+  **El 2026-10-30 Mario cambió el título a «Los que destacan»** —*«no queremos confundir al
+  cliente con algo que puede no ser objetivo»*— y pidió cuatro platos más. Entraron justo los
+  cuatro de Ochoa de esta lista (tabla de fotos de plato), elegidos por el agente.
 - **Ochoa no recibió ninguna foto en ese primer reparto.** Lo cambió la recogida con sesión.
 
 **Lo que dio la recogida con sesión de Ochoa** (120 publicaciones con foto desde 2024; las 193
@@ -281,7 +288,7 @@ años):
 - **172 fotos:** 114 de platos, 12 del local, 12 de gente (equipo y clientes), 15 de bebida y
   ambiente, y 19 piezas gráficas descartadas.
 - **Los seis destacados tienen foto con el plato nombrado en el texto**, y están puestos (tabla
-  de arriba).
+  de arriba). Desde el 2026-10-30 son diez, con la misma regla.
 - **Del local y de gente hay material de verdad:** el camarero en la barra con los rótulos
   pintados, la sala con «La tasca que te mereces» y clientes, el comedor con «Conservas», el
   cocinero, Guille poniéndose el delantal, clientes viendo el fútbol. Seis de ellas fueron la

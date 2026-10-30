@@ -30,6 +30,17 @@ describe("pickFeatured", () => {
     expect(out.map((d) => d.name)).toEqual(["primero", "segundo", "postre"]);
   });
 
+  it("las secciones de Ochoa siguen el orden de su carta, con el postre al final", () => {
+    const out = pickFeatured([
+      entry({ name: "tarta", section: "postres", order: 1, featured: true }),
+      entry({ name: "pulpo", section: "raciones", order: 20, featured: true }),
+      entry({ name: "croquetas", section: "raciones", order: 2, featured: true }),
+      entry({ name: "bikini", section: "con-pan", order: 11, featured: true }),
+      entry({ name: "brioche", section: "pinchos", order: 12, featured: true }),
+    ]);
+    expect(out.map((d) => d.name)).toEqual(["brioche", "bikini", "croquetas", "pulpo", "tarta"]);
+  });
+
   it("una seccion desconocida va al final, no al principio", () => {
     const out = pickFeatured([
       entry({ name: "rara", section: "bebidas", order: 1, featured: true }),

@@ -69,16 +69,21 @@ const VETAS = {
  *  rozaba un texto: con la caja de cada pieza no se escapa nada. Del mosaico de
  *  La casa cuenta solo su caja: sus teselas miden el mosaico entero y sus fotos
  *  se salen de la ventana que se ve (las recorta un `clip-path`), así que
- *  contaban como si taparan el blanco de alrededor. */
+ *  contaban como si taparan el blanco de alrededor. Lo mismo con la tira de
+ *  «Los que destacan»: en la rueda del ordenador hay tarjetas esperando fuera
+ *  de la vista, recortadas por la tira, que no tapan nada. */
 const TAPA =
-  "#tombo-consent, .nav, .hero, .cinta, .manifesto, footer, :is(.highlights, .tasca, .casa, .visita, .conocenos) :is(img, figure, a, button, .btn, .rule, .mosaico, .strip, .mapa, .turnos, h1, h2, h3, h4, p, li, dt, dd, address, blockquote, .eyebrow):not(.mosaico *)";
+  "#tombo-consent, .nav, .hero, .cinta, .manifesto, footer, :is(.highlights, .tasca, .casa, .visita, .conocenos) :is(img, figure, a, button, .btn, .rule, .mosaico, .strip, .mapa, .turnos, h1, h2, h3, h4, p, li, dt, dd, address, blockquote, .eyebrow):not(.mosaico *, .strip *)";
 /** El texto que se protege: detrás de él el fondo baja al 28%. En La carta va
  *  cada tabla entera y no cada plato: el sombreador recibe 16 cajas, las más
  *  grandes, y con una por plato se quedarían platos sin proteger. El recuadro
  *  de Reservar no hace falta: es opaco. Ni La carta ni Reservar están en `TAPA`
- *  porque allí no salen palabras. */
+ *  porque allí no salen palabras. De «Los que destacan» va la tira entera, por
+ *  lo mismo y porque en la rueda del ordenador hay tarjetas esperando fuera de
+ *  la vista: con una caja por tarjeta, el fondo bajaría también en los márgenes,
+ *  detrás de nada. Lo de dentro de la tira se salta solo (`mideTexto`). */
 const TEXTO =
-  ":is(.highlights, .tasca, .casa, .visita, .conocenos) :is(h1, h2, h3, h4, p, li, dt, dd, address, figcaption, blockquote, .btn, .eyebrow), :is(.carta, .reservar) :is(h1, h2, p, table, dl, .eyebrow)";
+  ":is(.highlights, .tasca, .casa, .visita, .conocenos) :is(h1, h2, h3, h4, p, li, dt, dd, address, figcaption, blockquote, .btn, .eyebrow), .highlights .strip, :is(.carta, .reservar) :is(h1, h2, p, table, dl, .eyebrow)";
 
 const VS = `#version 300 es
 void main() {

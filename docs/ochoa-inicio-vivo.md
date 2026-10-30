@@ -260,6 +260,87 @@ botellas, que es un fondo, enseña una franja cada vez más estrecha en las pant
 en WebKit, solo a 861 px de ancho, la home da un aviso «ResizeObserver loop» en cada carga, que
 ya daba antes de estos cambios; no se ha buscado de qué observador sale.
 
+### 3.7 «Los que destacan» y el manifiesto (2026-10-30)
+
+Mario lo pidió el 2026-10-30 mirando `preview`: *«añadir 4 platos más a "Lo que más sale", además
+de cambiar el nombre por "Los que destacan", no queremos confundir al cliente con algo que puede no
+ser objetivo»*; que en el ordenador las tarjetas *«mantendrán su mismo tamaño, solo que ahora irán
+rotando constantemente hacia la derecha, similar a lo que teníamos antes en móvil»*; y quitar la
+doble raya blanca de arriba del manifiesto, que *«no cumple una gran función»*.
+
+**El nombre:** «Los que destacan», y en inglés «Standouts». El de antes afirmaba unas ventas que
+nadie ha medido, y `fotografia.md` lo tenía escrito como motivo para no destacar un plato por tener
+foto. Con el nombre nuevo ese motivo desaparece.
+
+**Los cuatro platos:** brioche de sobrasada, Brie y miel; bikini de lacón; pulpo a la plancha; y
+tarta de queso BRUTAL con helado de Idiazábal. Son justo los que la revisión de la fototeca había
+señalado como platos de la carta con foto clara y nombrados en su publicación; hay uno de cada
+sección de la carta (pinchos, con pan, raciones y postres), para que no sean diez raciones; y
+ninguna de sus fotos sale en otro sitio de la web, que es lo que Mario reprochó a «Conócenos». Las
+publicaciones y por qué esas fotos, en `fotografia.md` (tabla de fotos de plato). **Los eligió el
+agente, no Mario:** cambiarlos es cambiar `featured` e `image` en las dos cartas.
+
+**Van en el orden de la carta**, y para eso se tocó `pickFeatured` (`packages/content`): su lista
+de secciones no conocía las de Ochoa, que caían al final como desconocidas, así que el único postre
+conocido se habría puesto el primero. La primera carta del mazo es ahora el brioche.
+
+**La rueda del ordenador.** Seis tarjetas a la vista, del mismo ancho que cuando los seis platos
+llenaban la fila. Cada `--dur-turno` (5,5 s, con el compás de `compas.ts`) la fila se corre una
+tarjeta hacia la derecha en `--dur-rueda` (700 ms, `--ease-telon`): entra por la izquierda la que
+esperaba fuera y sale por la derecha la sexta, sin fin. Tres decisiones del agente que Mario no ha
+confirmado:
+
+- **A turnos y no corriendo.** Lo que «teníamos antes en móvil» era la tira que pasaba sola un
+  plato por turno, hasta el 2026-10-27. Y justo encima corre sin parar la tira de la portada: dos
+  cosas pasando a la vez y al mismo paso no se distinguen.
+- **«Hacia la derecha», al pie de la letra:** las tarjetas viajan hacia la derecha. La tira del
+  móvil de antes las llevaba hacia la izquierda; si era eso lo que quería, es cambiar `sola` de
+  `"derecha"` a `"izquierda"` en la rueda (`Highlights.astro`).
+- **Espera con el ratón encima**, y sigue al irse: con ratón se lee con el puntero sobre lo que se
+  lee. Un clic, las flechas o un gesto la paran para siempre (regla 6), como al mazo.
+
+Cómo está hecha: las tarjetas comparten la celda de una rejilla y cada una va a su `--sitio` con un
+`transform`; la que da la vuelta salta de un extremo al otro sin transición, siempre fuera de la
+vista. La tira va dentro de una ventana con el margen de la página (`.wrap`), que solo cuenta en el
+ordenador. Lo que costó o podía costar:
+
+- **En WebKit, con el paso en `%` de la tarjeta, la sexta quedaba 1,7 px corta del botón «Ver la
+  carta» a 1440**, y en Chromium no. Cuadra con que WebKit redondee el ancho de la tarjeta al
+  resolver el `%` (cinco pasos de un tercio de píxel). El paso va ahora en `cqw`, unidades de la
+  tira, y el desvío es 0 en los dos motores.
+- **Las tarjetas de fuera, recortadas, no se descargarían hasta entrar** (regla 28): se piden todas
+  al montar la rueda.
+- **El fondo habría contado las tarjetas de fuera** como texto que proteger y como sitio ocupado,
+  en los márgenes. Ahora toma la tira entera como una caja, como hace con las tablas de La carta
+  (§3.2). El efecto no se midió; en las capturas, las palabras siguen saliendo en el blanco de
+  encima de la fila y nunca encima de una tarjeta.
+
+**El manifiesto** ya no abre con la doble raya. El aire que dejaba lo da el relleno de la banda, el
+mismo arriba que abajo: 84 px a 1440 y 40 en el móvil, donde antes eran 28 más la raya y su margen.
+
+**Y a 320 px**, «Los que destacan» —171 px, 12 más que el título de antes— empujaba el botón 7 px
+fuera de la pantalla. Por debajo de 340, el título baja a 1,4 rem: mide lo que medía el de antes.
+
+**Medido sobre el build**, en Chromium y en WebKit:
+
+- a 1440, seis tarjetas enteras a la vista, la primera a plomo con el título y la última con el
+  botón; igual a 1024, 1280, 1920 y 2560, sin scroll lateral;
+- un turno: la tarjeta que entra va de una posición fuera, a la izquierda, a la primera en unos
+  700 ms; la sexta sale por la derecha; la que da la vuelta no cruza la fila. Después, a la vista:
+  tarta, brioche, bikini, croquetas, huevos rotos y ensaladilla;
+- con el ratón encima 7 s, quieta; al quitarlo, sigue en su turno siguiente (unos 3 s después);
+  las flechas la mueven una tarjeta a cada lado y luego se queda quieta; tras un clic, quieta 8 s;
+  con «reducir movimiento», quieta;
+- las diez fotos descargadas al montar; sin JavaScript, la tira de siempre, con seis a la vista y
+  el resto deslizándose;
+- en el móvil, el mazo con diez cartas y diez marcas, y el título en una línea de 320 a 430 de
+  ancho en los dos idiomas, sin scroll lateral;
+- el manifiesto sin raya, con 84 / 84 px a 1440 y 40 / 40 en el móvil;
+- sin errores de JavaScript.
+
+**Sin medir:** en un iPhone de verdad, con un ratón o un panel táctil de verdad, y deslizar con el
+dedo en una pantalla táctil de más de 860 px, como una tableta tumbada.
+
 ---
 
 ## 4. Lo que se propuso y se descartó
@@ -386,9 +467,10 @@ original (en local no existe el optimizador de Vercel). Ordenador con Chromium a
   portada a la vista, 0; tras un clic en la portada, 0, también después de bajar y volver; con
   «reducir movimiento», ninguna animación. Con la pestaña oculta recorre entre 0,5 y 6,5 px en
   1,5 s, que es lo que tarda en hacerse efectiva la pausa (de 20 a 230 ms).
-- **Regla 25:** el mosaico empieza al menos 1.381 px por debajo de «Lo que más sale» en el móvil
-  (pantalla de 844) y 1.555 por debajo de la portada en el ordenador: nunca comparte pantalla con
-  el telón ni con el mazo, y por eso lleva su propio reloj.
+- **Regla 25:** el mosaico empieza al menos 1.312 px por debajo de «Los que destacan» en el móvil
+  (pantalla de 844) y 1.445 por debajo de la portada en el ordenador: nunca comparte pantalla con
+  el telón ni con el mazo, y por eso lleva su propio reloj. Medido de nuevo el 2026-10-30, ya sin
+  la raya del manifiesto; el 2026-10-29 eran 1.381 y 1.555.
 - **Sin scroll lateral** en las once rutas de la web a 390, 1024 y 1440, recorriendo cada página de
   arriba abajo, y en las dos homes y la carta a 861 y 860. **Sin errores de JavaScript**, también
   navegando con el router de la home a la carta y de vuelta. El único error es el de siempre en
@@ -447,3 +529,5 @@ Lo que espera a Mario está en `estado.md` §0. Lo que toca a este documento:
    Se dejó en `tokens.css` porque la decisión de Mario sigue en pie; si no vuelve a hacer falta, se
    quita con su excepción de la regla 1.
 3. **Las seis fotos de la portada anterior** siguen en `src/assets/portada/` sin uso (`fotografia.md`).
+4. **Que Mario vea la rueda de «Los que destacan» en el ordenador** y confirme el sentido y el
+   ritmo, y los cuatro platos nuevos (§3.7).

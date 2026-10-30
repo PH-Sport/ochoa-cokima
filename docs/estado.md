@@ -77,6 +77,18 @@ se leería como un plato más. Detrás del texto baja al 28 %, como en la home, 
 donde la carta ocupa casi todo el ancho, se nota sobre todo alrededor del título y entre
 secciones. El cómo y lo medido, en `ochoa-inicio-vivo.md` §3.2.
 
+**«Lo que más sale» se llama, desde el 2026-10-30, «Los que destacan»** («Standouts» en inglés), y
+tiene diez platos en vez de seis. Mario lo pidió así: *«no queremos confundir al cliente con algo
+que puede no ser objetivo»*; nadie ha medido qué se vende más. Los cuatro nuevos —brioche de
+sobrasada, bikini de lacón, pulpo a la plancha y tarta de queso— los eligió el agente: uno de cada
+sección de la carta, con foto de su Instagram que nombra el plato y que no sale en ningún otro sitio
+de la web. Van en el orden de la carta, así que el primero es ahora el brioche. **En el ordenador
+la fila gira:** seis tarjetas del mismo tamaño que antes y, cada 5,5 s, se corre una hacia la
+derecha, sin fin; espera con el ratón encima y se para para siempre con un clic o las flechas. En
+el móvil sigue el mazo, con diez cartas. **El manifiesto ya no abre con la doble raya blanca**,
+también a petición suya, y la cita sube a su hueco. El porqué, lo que eligió el agente y lo medido,
+en `ochoa-inicio-vivo.md` §3.7.
+
 **Lo que espera a Mario:**
 
 - **Probar la imagen nueva compartiendo el enlace de `preview` en WhatsApp.** Si sale la de antes,
@@ -89,6 +101,9 @@ secciones. El cómo y lo medido, en `ochoa-inicio-vivo.md` §3.2.
   estaba en la rama y no en la web. Se desplegó con el arreglo, sin tocar nada de Cokima.
 - **Ver en su iPhone el mármol de La carta y Reservar** y decir si detrás de la carta se nota lo
   justo (arriba).
+- **Ver la rueda de «Los que destacan» en el ordenador** y decir si el sentido —las tarjetas viajan
+  hacia la derecha— y el ritmo son los que pedía, y si los cuatro platos nuevos le valen
+  (`ochoa-inicio-vivo.md` §3.7).
 - **Decir si «Dónde estamos» pasa a ser una página.** Hoy el enlace del menú lleva a la sección de
   la home (`#visita`, o `/#visita` desde las demás páginas). Mario preguntó el 2026-10-30 si dejarlo
   así o hacer *«una página simple, pero dedicada»*, con alguna foto o *«un pie de texto

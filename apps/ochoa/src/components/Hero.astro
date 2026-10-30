@@ -79,7 +79,7 @@ const estilo = (f: (typeof portada)[number]) => (f.encuadre ? `--encuadre: ${f.e
     <div class="pie">
       <OpenState hours={RESTAURANT.openingHours} locale={locale} />
       {/* Por qué foto va el telón del móvil. Es un indicador, no un mando, como los
-          turnos de «Lo que más sale»: los puntos medían 10 px, muy por debajo de
+          turnos de «Los que destacan»: los puntos medían 10 px, muy por debajo de
           un dedo, y la portada no se recorre — se mira. En la tira del ordenador
           no hay «una foto en curso», y no sale. */}
       <div class="pager" aria-hidden="true" data-pager>
@@ -179,7 +179,7 @@ const estilo = (f: (typeof portada)[number]) => (f.encuadre ? `--encuadre: ${f.e
    * primer toque, no corre fuera de pantalla ni con la pestaña en segundo plano,
    * y no arranca si se pide menos movimiento. Cuándo toca cada cambio no lo
    * cuenta ella: lo pregunta a `compas.ts`, que la mantiene a destiempo del mazo
-   * de «Lo que más sale». */
+   * de «Los que destacan». */
   function montaTelon() {
     const hero = document.querySelector<HTMLElement>(".hero");
     const fotos = [...document.querySelectorAll<HTMLElement>(".hero [data-pista] > img:not([data-solo-ordenador])")];
@@ -617,8 +617,8 @@ const estilo = (f: (typeof portada)[number]) => (f.encuadre ? `--encuadre: ${f.e
     align-items: center;
     gap: 6px;
   }
-  /* El punto de la foto en curso se estira a barra, como los turnos de «Lo que
-     más sale». */
+  /* El punto de la foto en curso se estira a barra, como los turnos de «Los que
+     destacan». */
   .pager span {
     width: 10px;
     height: 10px;
