@@ -115,6 +115,19 @@ más lejos; Ochoa es una tasca y es seca.
    quieto y solo lo repite al bajar o al cambiar el tamaño, y al salir de la home suelta la GPU.
    Lo que cuesta en un móvil modesto **no está medido**; si se nota, la palanca es la densidad
    a la que pinta (`MAX_DPR` y `ESCALA`).
+
+   **Qué es tocar (2026-10-29).** Un toque o un gesto sobre la pieza; **no el dedo que baja la
+   página pasando por encima**. La portada, el mazo y el manifiesto se apagaban con
+   `pointerdown`, que en un móvil llega en cuanto el dedo se apoya, también para bajar, y desde
+   que la portada del móvil ocupa la pantalla entera, el primer gesto de cualquiera la apagaba
+   antes de la segunda foto. Mario lo vio en su iPhone —*«se quedan paradas y no se mueven»*— y
+   se reprodujo en el simulador de iOS; en el ordenador no pasaba, porque la rueda no pulsa nada.
+   Ahora, con el dedo apoyado la pieza espera; si el navegador se queda el gesto para desplazar
+   la página (`pointercancel`), sigue; y solo se apaga si el dedo se suelta sobre ella
+   (`pointerup`). Con el ratón, pulsar ya es tocar. Está en `apps/ochoa/src/toque.ts`; el mazo
+   hace lo mismo a mano, porque sus gestos de lado pasan carta. **Se comprueba con un dedo de
+   verdad** —el simulador de iOS, o el gesto táctil de desplazamiento de Chromium
+   (`metodo.md` §2.7)—: `page.mouse` no desplaza la página y no reproduce la trampa.
 7. **La respuesta al dedo no sale de `:active`.** En Safari de iOS ese estado no se aplica de
    forma fiable sin un listener táctil en la página. Va por `pointerdown`/`pointerup` desde el
    script del layout, marcando las piezas con `data-tacto`; `:active` se queda de respaldo para
@@ -423,6 +436,21 @@ más lejos; Ochoa es una tasca y es seca.
     tirones, van a tirones juntas. Lo que puede adelantarse sin destapar nada —el fundido de la
     foto que entra— se queda en CSS. **Se comprueba con capturas a mitad del cambio, con carga
     en la página, no leyendo `getComputedStyle`.**
+28. **Lo que espera tapado por un `clip-path` no se descarga solo en Chromium.** Las fotos del
+    telón esperan recogidas con `clip-path: inset(0 0 0 100%)`, y con `loading="lazy"` Chromium
+    no las pedía nunca: tras recorrer la home entera en un móvil, 1 de 7 descargadas, y el telón
+    no pasaba de la primera, se tocara o no. Quitándole el recorte a una, llegaba. WebKit las
+    pide igual, y por eso en el iPhone no se veía (medido el 2026-10-29). **Lo que una animación
+    va a destapar se pide a mano antes de destaparlo:** el telón, un turno antes
+    (`loading = "eager"`); la tira ya las pedía todas al montarse.
+29. **Lo que le sobra a una capa se mide en la página, no se deduce del CSS.** El paralaje de la
+    mesa de La tasca llevaba un tope fijo de 22 px, y en un móvil a la foto le sobraban 15: a más
+    de 200 px del centro de la pantalla asomaba el fondo dentro del marco (6,5 px). Y calcular lo
+    que sobra con el CSS —`top: -8%; height: 116%`, centrada— destapaba 1,5 px en el iPhone:
+    WebKit resuelve ese `height` contra la caja con el borde de un marco con `aspect-ratio`, y el
+    `top` contra la de dentro, así que allí sobran 15,5 px por arriba y 20 por abajo (Chromium:
+    15,5 y 15,5). `paralaje.ts` mide lo que sobra por cada lado, sin el desplazamiento puesto, al
+    montar y cada vez que la sección cambia de tamaño.
 
 ## Qué se mueve hoy
 
@@ -434,14 +462,14 @@ más lejos; Ochoa es una tasca y es seca.
 | Enlaces del menú | Color al pasar por encima (y la brasa, en Cokima) | `color`/`box-shadow`, `--dur-out` |
 | Botones, fichas de contacto y mapa | Se hunden al tocar y recuperan al soltar | `data-tacto`, `--dur-sube` |
 | Cinta rotulada (Ochoa) | Recorre en bucle | `translateX`, `--dur-cinta` |
-| Portada en el móvil (Ochoa) | El telón: cada foto entra de derecha a izquierda sobre la anterior | `clip-path`, `--dur-pase`, `--dur-recogida`, `--ease-telon`; con `compas.ts` |
-| Portada en el ordenador (Ochoa) | La tira: las ocho fotos en fila, enteras, pasan de derecha a izquierda sin parar; la serie va dos veces para que la vuelta no se note | `translateX` con la Web Animations API, lineal, a `--vel-tira`; con media portada a la vista y la pestaña delante; se para al primer toque; quieta con «reducir movimiento» |
-| Paralaje (Ochoa) | Tres fondos van más lentos que la página: la portada un 25% (tope 60 px), las botellas del manifiesto un 12% (tope 40) y la foto de La tasca un 8% dentro de su marco (tope 22) | `transform` desde `apps/ochoa/src/paralaje.ts`; nada con «reducir movimiento» |
-| Manifiesto (Ochoa, en los dos idiomas) | La pared de botellas, en blanco y negro y multiplicada sobre el rojo, va y viene de lado | `transform`, `--dur-paneo`, `--ease-telon`; solo a la vista, se para al primer toque; nada con «reducir movimiento» |
-| Mosaico de La casa (Ochoa) | Cada 2,5 a 3,3 s la tesela grande se encoge y una vecina crece en su hueco con una foto nueva, que llega desenfocada; con el ratón encima, cada foto se desplaza un poco en su ventana | `clip-path` + `transform` desde `mosaico.ts`, en el mismo fotograma (regla 27), con `--dur-mosaico`, `--respiros-mosaico` y `--ease-telon`; `opacity` + `filter` en CSS; con un 30% a la vista y la pestaña delante; se para con el ratón encima y para siempre al pulsar una foto; nada con «reducir movimiento» |
-| Fondo de la home (Ochoa) | Las vetas rojas del vermú se mueven sin parar, y las palabras del espejo se pintan en el blanco libre, viven unos segundos y se borran | WebGL2 desde `fondo.ts`, en cada fotograma mientras se ve la página (excepción de las reglas 6 y 18); `--vidas-palabra`, `--esperas-palabra`, `--dur-pincel`, `--dur-borrado`; nada con la pestaña oculta; un fotograma quieto con «reducir movimiento» |
+| Portada en el móvil (Ochoa) | El telón: cada foto entra de derecha a izquierda sobre la anterior | `clip-path`, `--dur-pase`, `--dur-recogida`, `--ease-telon`; con `compas.ts`; se para con un toque, no al bajar con el dedo encima (`toque.ts`); cada foto se pide un turno antes (regla 28) |
+| Portada en el ordenador y en el móvil tumbado (Ochoa) | La tira: las ocho fotos en fila, enteras, pasan de derecha a izquierda sin parar; la serie va dos veces para que la vuelta no se note | `translateX` con la Web Animations API, lineal, a `--vel-tira`; con media portada a la vista y la pestaña delante; se para con un toque; quieta con «reducir movimiento» |
+| Paralaje (Ochoa) | Tres fondos van más lentos que la página: la portada un 25% (tope 60 px), las botellas del manifiesto un 12% (tope 40) y la foto de La tasca un 8% dentro de su marco (tope 22) | `transform` desde `apps/ochoa/src/paralaje.ts`; nada con «reducir movimiento». Sin ratón, la de La tasca va al 12 % y frena suave antes de su borde; con el ratón encima se asoma como las de La casa (`translate`, `--dur-ventana`). Ninguna pasa nunca de lo que le sobra por cada lado, medido (regla 29) |
+| Manifiesto (Ochoa, en los dos idiomas) | La pared de botellas, en blanco y negro y multiplicada sobre el rojo, va y viene de lado | `transform`, `--dur-paneo`, `--ease-telon`; solo a la vista, se para con un toque (no al bajar con el dedo encima); nada con «reducir movimiento» |
+| Mosaico de La casa (Ochoa) | Cada 2,5 a 3,3 s la tesela grande se encoge y una vecina crece en su hueco con una foto nueva, que llega desenfocada; con el ratón encima, cada foto se desplaza un poco en su ventana | `clip-path` + `transform` desde `mosaico.ts`, en el mismo fotograma (regla 27), con `--dur-mosaico`, `--respiros-mosaico` y `--ease-telon`; `opacity` + `filter` en CSS; con un 30% a la vista y la pestaña delante; se para con el ratón encima y para siempre al pulsar una foto; nada con «reducir movimiento». Sin ratón, cada foto se desplaza en su ventana al bajar, al 12 % y hasta 24 px, sin destapar el fondo ni a medio cambio |
+| Fondo de la home (Ochoa) | Las vetas rojas del vermú se mueven sin parar, y las palabras del espejo se pintan en el blanco libre, viven unos segundos y se borran | WebGL2 desde `fondo.ts`, en cada fotograma mientras se ve la página (excepción de las reglas 6 y 18); `--vidas-palabra`, `--esperas-palabra`, `--dur-pincel`, `--dur-borrado`; nada con la pestaña oculta; un fotograma quieto con «reducir movimiento». Sin ratón, las vetas van más rojas (0,38 en vez de 0,24), más densas (escala 0,7), un 40 % más deprisa, las enciende la luz que pasea y bajan con la página al 12 % |
 | Barra del ordenador (Ochoa) | El relieve: la sombra de las secciones, del rótulo y del titular de la portada cae al lado contrario del cursor | `text-shadow` desde `relieve.ts` (excepción de la regla 2), `--relieve-suave`; solo con ratón |
-| Mazo de platos (Ochoa, solo móvil) | La de delante sale por la izquierda torciéndose y vuelve al fondo; deslizando a la derecha, la anterior entra por la izquierda por encima, en la mitad del tiempo; el turno se rellena | `transform` + `opacity`, `--dur-turno`, `--desfase-turno`, `--dur-baraja`, `--ease-telon`; `scaleX` |
+| Mazo de platos (Ochoa, solo móvil) | La de delante sale por la izquierda torciéndose y vuelve al fondo; deslizando a la derecha, la anterior entra por la izquierda por encima, en la mitad del tiempo; el turno se rellena | `transform` + `opacity`, `--dur-turno`, `--desfase-turno`, `--dur-baraja`, `--ease-telon`; `scaleX`; se apaga con un toque o una carta pasada, no al bajar con el dedo encima. En el móvil tumbado no hay mazo: la tira de fichas que se desliza |
 | Portada | El titular se aparta del cartel de cookies | `translateY`, `--dur-out` |
 | Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |
 | Entrada (Cokima) | Una chispa baja por un riel, avisando de que hay más | `stroke-dashoffset`, 3,2s |

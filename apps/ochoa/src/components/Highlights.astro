@@ -59,8 +59,8 @@ const priceLabel = (price: MenuEntry["price"]) => {
           <Image
             src={image}
             alt={dish.name}
-            widths={[320, 640, 960]}
-            sizes="(max-width: 860px) 68vw, 280px"
+            widths={[320, 640, 960, 1200]}
+            sizes="(max-width: 860px) 90vw, 15vw"
             quality={72}
             loading="lazy"
             class="shot"
@@ -108,7 +108,11 @@ const priceLabel = (price: MenuEntry["price"]) => {
    */
   import { hastaElProximo, leeDuracion } from "../compas.ts";
 
-  const MOVIL = "(max-width: 860px)";
+  /* El mazo es para el móvil en vertical, o en uno lo bastante alto: tumbado y
+     bajo, la carta, con su foto en proporción, no cabe en la pantalla (a 844×390
+     medía 542 px de alto), y la tira de siempre, que se desliza, enseña dos
+     fichas y media. Es la misma condición que la del telón de la portada. */
+  const MOVIL = "(max-width: 860px) and (orientation: portrait), (max-width: 860px) and (min-height: 501px)";
   /* Lo que tiene que recorrer el dedo para que cuente como pasar de carta y no
      como un toque que tiembla. */
   const UMBRAL = 30;
@@ -205,11 +209,18 @@ const priceLabel = (price: MenuEntry["price"]) => {
       pausa();
     };
 
+    /* Qué cuenta como tocarlo, como en `toque.ts`: con el dedo apoyado el mazo
+       espera; si el navegador se queda el gesto para bajar la página
+       (`pointercancel`), sigue; y si llega a soltarse sobre él —un toque o una
+       carta pasada de lado, que `pan-y` le deja entera—, se apaga para siempre.
+       Con `pointerdown` se apagaba también al bajar con el dedo encima, que en el
+       móvil es casi siempre. Con el ratón, pulsar ya es tocar. */
     let x0: number | null = null;
     mazo.addEventListener(
       "pointerdown",
       (e) => {
-        para();
+        if (e.pointerType === "mouse") para();
+        else pausa();
         x0 = e.clientX;
       },
       { signal },
@@ -220,12 +231,20 @@ const priceLabel = (price: MenuEntry["price"]) => {
         if (x0 === null) return;
         const dx = e.clientX - x0;
         x0 = null;
+        para();
         if (dx < -UMBRAL) siguiente();
         else if (dx > UMBRAL) anterior();
       },
       { signal },
     );
-    mazo.addEventListener("pointercancel", () => (x0 = null), { signal });
+    mazo.addEventListener(
+      "pointercancel",
+      () => {
+        x0 = null;
+        decide();
+      },
+      { signal },
+    );
     /* Con el teclado, las flechas hacen lo que el dedo. */
     mazo.addEventListener(
       "keydown",
@@ -333,7 +352,7 @@ const priceLabel = (price: MenuEntry["price"]) => {
        que sin él la sombra se cortaba en seco por debajo y su esquina de abajo
        a la derecha aparecía en pico. Los cuatro píxeles que mide la sombra,
        más un poco de holgura. */
-    padding: 0 5vw 10px;
+    padding: 0 max(5vw, env(safe-area-inset-right, 0px)) 10px max(5vw, env(safe-area-inset-left, 0px));
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
@@ -343,7 +362,8 @@ const priceLabel = (price: MenuEntry["price"]) => {
        veinte píxeles para cuadrar la ficha y se comía el margen. El
        `scroll-padding` le dice dónde está de verdad el borde, y la tira arranca
        a plomo con el titular y con el resto de la hoja. */
-    scroll-padding-inline: 5vw;
+    /* Con el mismo margen que `.wrap`, que libra la isla del móvil tumbado. */
+    scroll-padding-inline: max(5vw, env(safe-area-inset-left, 0px)) max(5vw, env(safe-area-inset-right, 0px));
   }
   .strip::-webkit-scrollbar {
     display: none;
@@ -371,9 +391,17 @@ const priceLabel = (price: MenuEntry["price"]) => {
     align-items: flex-start;
     min-height: 132px;
   }
+  /* La foto va en proporción y no a un alto fijo (2026-10-29). Con 190 px fijos,
+     la ficha se ensanchaba con la pantalla y la foto se quedaba en una franja:
+     de un plato cuadrado se veía el 58 % del alto en un iPhone, el 26–35 % en un
+     plegable abierto o una tableta en vertical y el 38 % en una pantalla de
+     3440. En proporción se ve lo mismo en todas: 16:10 en el móvil, que es
+     prácticamente el alto que tenía en un iPhone, y el plato entero en la fila
+     del ordenador. */
   .shot {
     width: 100%;
-    height: 190px;
+    height: auto;
+    aspect-ratio: 16 / 10;
     object-fit: cover;
   }
   .body {
@@ -566,8 +594,17 @@ const priceLabel = (price: MenuEntry["price"]) => {
       flex: 1 1 0;
       max-width: none;
     }
+    .shot {
+      aspect-ratio: 1;
+    }
     /* En una sola fila se ven los seis platos a la vez: no hay turno que
        indicar ni tira que recorrer. */
+    .turnos {
+      display: none;
+    }
+  }
+  /* Tumbado y bajo no hay mazo (ver el script), y sin mazo no hay turno. */
+  @media (orientation: landscape) and (max-height: 500px) {
     .turnos {
       display: none;
     }

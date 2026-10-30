@@ -26,6 +26,7 @@
 // marcado es el mismo, y el modo vivo lo enciende `data-vivo`.
 
 import { leeCurva, leeDuracion, leeDuraciones } from "./compas.ts";
+import { enSuVentana } from "./paralaje.ts";
 
 type Celda = [columna: number, fila: number];
 type Foto = {
@@ -93,6 +94,10 @@ const E = 12;
 const BASE = 1000;
 /** Lo más que se desplaza la foto con el ratón encima, en píxeles. */
 const ASOMA = { x: 10, y: 8 };
+/** Sin ratón, cada foto se desplaza en su ventana al bajar la página, más
+ *  despacio que ella (`enSuVentana`, en `paralaje.ts`): a esta velocidad, y como
+ *  mucho este tope en píxeles. La velocidad es la de la mesa de La tasca. */
+const BAJANDO = { vel: -0.12, tope: 24 };
 
 const limita = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 /** Todas las maneras de repartir las cuatro teselas entre los cuatro huecos. */
@@ -137,6 +142,7 @@ export function montaMosaico(raiz: HTMLElement): (() => void) | null {
 
   const reducido = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const ancho = matchMedia("(min-width: 861px)");
+  const sinRaton = matchMedia("(hover: none)");
   const MUEVE = leeDuracion("--dur-mosaico");
   const ELIGE = leeDuracion("--dur-mosaico-elige");
   const RESPIROS = leeDuraciones("--respiros-mosaico");
@@ -297,6 +303,9 @@ export function montaMosaico(raiz: HTMLElement): (() => void) | null {
         activas.delete(p);
       }
     }
+    /* Sin ratón, lo que sobra en cada ventana cambia con ella: se recoloca la foto
+       en el mismo fotograma, o a medio cambio asomaría el fondo. */
+    if (sinRaton.matches) alBajar();
     if (activas.size) fotograma = requestAnimationFrame(avanza);
   };
   /** Lleva una pieza a su destino con el paso dado; sin duración, de golpe. Si
@@ -502,6 +511,7 @@ export function montaMosaico(raiz: HTMLElement): (() => void) | null {
     if (actual >= lista.length) actual = 0;
     const rects = lista[actual].map(rectDe);
     teselas.forEach((t) => ponRect(t, rects[t.hueco], quieto));
+    alBajar(true);
   };
 
   /* Arranque: el modo vivo encendido, y el cristal en la grande, como estaba. */
@@ -632,6 +642,55 @@ export function montaMosaico(raiz: HTMLElement): (() => void) | null {
     },
     { passive: true, signal },
   );
+  /* SIN RATÓN, CON LA PÁGINA (2026-10-29). En el iPhone no hay cursor que seguir,
+     y Mario pidió el mismo efecto «que reaccione al scroll, no al dedo»: al bajar,
+     cada foto va más despacio que su tesela, como la mesa de La tasca. Lo que le
+     sobra se mide en lo que se ve ahora mismo —la ventana y la foto a medio
+     cambio, y las dos fotos si están relevándose—, así que nunca asoma el fondo
+     de la tesela. Lo que se desplaza es la misma capa que con el ratón. */
+  let arribaEnPagina = 0;
+  function alBajar(medir = false) {
+    if (reducido || !sinRaton.matches || !geo) return;
+    if (medir) arribaEnPagina = mosaico.getBoundingClientRect().top + scrollY;
+    const arriba = arribaEnPagina - scrollY;
+    const centro = document.documentElement.clientHeight / 2;
+    for (const t of teselas) {
+      const h = huecoVisto(t);
+      let sobraArriba = Infinity;
+      let sobraAbajo = Infinity;
+      for (const img of t.imgs) {
+        const v = piezaDe.get(img)?.vista;
+        const f = fotoDe.get(img);
+        if (!v || !f || !img.classList.contains("on")) continue;
+        sobraArriba = Math.min(sobraArriba, E + h.y + 2 - v[1]);
+        sobraAbajo = Math.min(sobraAbajo, v[1] + ((BASE * f.h) / f.w) * v[2] - (E + h.y + h.h - 2));
+      }
+      if (!Number.isFinite(sobraArriba)) continue;
+      const dist = arriba + h.y + h.h / 2 - centro;
+      const sobra = dist * BAJANDO.vel < 0 ? sobraAbajo : sobraArriba;
+      const d = enSuVentana(dist, BAJANDO.vel, limita(sobra - 1, 0, BAJANDO.tope));
+      t.mueve.style.transform = `translate(0px, ${d.toFixed(1)}px)`;
+    }
+  }
+  let pedidoBajar = 0;
+  const pideBajar = () => {
+    if (!pedidoBajar)
+      pedidoBajar = requestAnimationFrame(() => {
+        pedidoBajar = 0;
+        alBajar(true);
+      });
+  };
+  addEventListener("scroll", pideBajar, { passive: true, signal });
+  addEventListener("resize", pideBajar, { signal });
+  sinRaton.addEventListener(
+    "change",
+    () => {
+      teselas.forEach((t) => (t.mueve.style.transform = ""));
+      pideBajar();
+    },
+    { signal },
+  );
+  alBajar(true);
   teselas.forEach((t, i) => {
     const elige = () => {
       parado = true;
@@ -657,6 +716,7 @@ export function montaMosaico(raiz: HTMLElement): (() => void) | null {
     relojes.clear();
     if (pendiente) cancelAnimationFrame(pendiente);
     if (fotograma) cancelAnimationFrame(fotograma);
+    if (pedidoBajar) cancelAnimationFrame(pedidoBajar);
     ojoTam.disconnect();
     ojoVista.disconnect();
     ojoCerca.disconnect();

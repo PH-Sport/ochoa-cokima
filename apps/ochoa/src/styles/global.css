@@ -107,7 +107,12 @@ img {
 .wrap {
   max-width: var(--maxw);
   margin: 0 auto;
-  padding: 0 5vw;
+  /* Con el móvil tumbado, la isla de la cámara y las esquinas redondas caen
+     dentro de la página (`viewport-fit=cover`, en Base.astro), y el 5vw no
+     llegaba a librarlas: en un iPhone 17 tumbado, la isla tapaba el borde de
+     la «L» del titular y del rótulo (visto en el simulador el 2026-10-29). El
+     margen no baja nunca de lo que tapan; en vertical eso es 0 y manda el 5vw. */
+  padding: 0 max(5vw, env(safe-area-inset-right, 0px)) 0 max(5vw, env(safe-area-inset-left, 0px));
   position: relative;
   z-index: 1;
 }

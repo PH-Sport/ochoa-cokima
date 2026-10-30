@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-10-29 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-10-30 · **el punto de entrada del repo**
 
-- **Corte:** 2026-10-29
+- **Corte:** 2026-10-30
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
   nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
   de decidir: `feat/inicio-vivo`, que entró entera en `preview` el 2026-10-29, y
@@ -47,11 +47,29 @@ cambia con el cursor; las palabras, solo en Yellowtail. **Sin medir:** en un iPh
 —sobre todo lo que cuesta el fondo en la GPU de un móvil modesto—, con un ratón de verdad y en una
 conexión lenta.
 
+**Mario la vio en su iPhone esa misma noche, y se ajustó** (el porqué y las cifras, en
+`ochoa-inicio-vivo.md` §3.4, §3.6 y §6):
+
+- **La portada y «Lo que más sale» se quedaban parados en el móvil:** se apagaban con el primer
+  dedo que bajaba la página. Ahora solo los apaga un toque de verdad (regla 6 de `movimiento.md`).
+  En los Android, además, la portada no pasaba nunca de la primera foto (regla 28).
+- **El paralaje de La casa y de La tasca también en el móvil**, al bajar y no con el dedo; en el
+  ordenador, la foto de La tasca se asoma con el ratón como las de La casa.
+- **El vermú del fondo, más visible y algo más vivo en el móvil.** En el ordenador, igual.
+- **Las pantallas:** el móvil tumbado —portada a pantalla completa con la tira, titular entero,
+  margen que libra la isla de la cámara—, las fotos de los platos en proporción, el encuadre del
+  vino y de la caña calculado para cada pantalla para que ninguna letra salga partida, y la tira
+  en tableta vertical. Lo que se dejó como está, con su motivo, en §3.6 de ese documento.
+
+Medido sobre el build en el simulador de iOS y en Chromium y WebKit, en 26 tamaños de pantalla.
+**Falta que lo vea Mario en su iPhone**, y un plegable de verdad no se ha probado: solo sus tamaños.
+
 **Lo que espera a Mario:**
 
-- **Verlo en su iPhone y en el ordenador**, en el alias de `preview`, donde está desde el
-  2026-10-29. Para que llegara hubo que arreglar el filtro de despliegue, que se saltaba los push
-  de varios commits (`deploy.md` §Evitar que cada push reconstruya las dos webs). El mismo fallo
+- **Ver en su iPhone los ajustes de esa noche**, en el alias de `preview` desde el 2026-10-30, y
+  decir si el vermú del móvil se nota lo justo. La home viva está ahí desde el 2026-10-29; para
+  que llegara hubo que arreglar el filtro de despliegue, que se saltaba los push de varios commits
+  (`deploy.md` §Evitar que cada push reconstruya las dos webs). El mismo fallo
   tenía la web de Cokima en `preview` sin actualizar desde el 2026-10-26: su entrada con vídeo
   estaba en la rama y no en la web. Se desplegó con el arreglo, sin tocar nada de Cokima.
 - **«Conócenos», decidido el 2026-10-29 y por hacer.** La página se centra *«únicamente en la

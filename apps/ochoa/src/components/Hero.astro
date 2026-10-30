@@ -13,6 +13,9 @@ import { RESTAURANT } from "../site.ts";
 //    derecha a izquierda. Con el telón, la portada era una franja de 1440×682 y
 //    de cada foto de Instagram —verticales o cuadradas— se veía entre el 36 y el
 //    47% de su alto, estirada al doble en una pantalla de alta densidad.
+//  · En un móvil tumbado (bajo y apaisado), también la tira, a pantalla completa
+//    bajo la cabecera: el telón enseñaba la mitad del alto de cada foto y el
+//    titular no cabía (2026-10-29).
 // La serie, sus encuadres y sus textos, en `../data/portada.ts`.
 import { portada } from "../data/portada.ts";
 
@@ -27,10 +30,16 @@ const enMovil = portada.filter((f) => !f.soloOrdenador);
 // del ordenador, `100svh` menos la cabecera y la franja de asomo (218 px desde
 // 861 de ancho), y un 8% más por arriba y por abajo— por su proporción. Es una
 // cuenta aproximada, solo para que el navegador elija el tamaño que pide.
-const enTira = (f: (typeof portada)[number]) =>
-  `calc((100vh - 218px) * ${((1.16 * f.src.width) / f.src.height).toFixed(3)})`;
-const estilo = (f: (typeof portada)[number]) =>
-  [f.encuadre && `--encuadre: ${f.encuadre}`, f.acerca && `--acerca: ${f.acerca}`].filter(Boolean).join("; ") || undefined;
+const proporcion = (f: (typeof portada)[number]) => ((1.16 * f.src.width) / f.src.height).toFixed(3);
+const enTira = (f: (typeof portada)[number]) => `calc((100vh - 218px) * ${proporcion(f)})`;
+// En una pantalla baja —un móvil apaisado— la tira ocupa la pantalla bajo la
+// cabecera, sin la franja de asomo (ver el CSS).
+const enTiraBaja = (f: (typeof portada)[number]) => `calc((100vh - 62px) * ${proporcion(f)})`;
+// Los mismos casos que el CSS: el telón en el móvil en vertical (o en uno alto),
+// la tira en el resto.
+const tamanos = (f: (typeof portada)[number]) =>
+  `(max-width: 860px) and (orientation: portrait) 100vw, (max-width: 860px) and (min-height: 501px) 100vw, (max-height: 500px) ${enTiraBaja(f)}, ${enTira(f)}`;
+const estilo = (f: (typeof portada)[number]) => (f.encuadre ? `--encuadre: ${f.encuadre}` : undefined);
 ---
 
 <header class="hero" id="top" data-paralaje>
@@ -51,13 +60,15 @@ const estilo = (f: (typeof portada)[number]) =>
           src={foto.src}
           alt={foto.alt[locale]}
           widths={[390, 640, 960, 1200, 1600]}
-          sizes={`(max-width: 860px) 100vw, ${enTira(foto)}`}
+          sizes={tamanos(foto)}
           quality={72}
           loading={i === 0 ? "eager" : "lazy"}
           fetchpriority={i === 0 ? "high" : "low"}
           class:list={["shot", { on: i === 0 }]}
           style={estilo(foto)}
           data-solo-ordenador={foto.soloOrdenador ? "" : undefined}
+          data-foco={foto.foco?.join(" ")}
+          data-letrero={foto.letrero && `${foto.letrero.de} ${foto.letrero.a} ${foto.letrero.prefiere}`}
         />
       ))}
     </div>
@@ -96,9 +107,67 @@ const estilo = (f: (typeof portada)[number]) =>
   import { congelaAlto } from "@tombo/ui/alto-congelado.ts";
   import { hastaElProximo, leeDuracion, leeNumero } from "../compas.ts";
   import { montaParalaje } from "../paralaje.ts";
+  import { alTocar } from "../toque.ts";
 
-  const ORDENADOR = matchMedia("(min-width: 861px)");
+  /* La tira en el ordenador y también en una pantalla baja y apaisada —un móvil
+     tumbado—, donde el telón enseñaba la mitad del alto de cada foto. Es la
+     misma condición que el CSS. */
+  const EN_TIRA = matchMedia("(min-width: 861px), (orientation: landscape) and (max-height: 500px)");
   const QUIETO = "(prefers-reduced-motion: reduce)";
+  /* El encuadre de cada pantalla: el aire que se deja a los lados de un letrero
+     (en fracciones del ancho de la foto) y lo más que se acerca una foto para
+     dejarlo fuera. */
+  const AIRE_LETRERO = 0.015;
+  const ACERCA_MAX = 1.6;
+
+  /* EL ENCUADRE DE CADA PANTALLA (2026-10-29). Un encuadre fijo vale para la
+   * pantalla en la que se midió: el del vino se calculó a 390×844, y en otras
+   * anchuras el borde volvía a partir las letras del servilletero. La foto que
+   * dice qué tiene que verse (`foco`) y qué letrero no puede salir partido
+   * (`letrero`, en `data/portada.ts`) se encuadra para la caja que haya: de los
+   * sitios donde se ve el foco entero y el letrero entero o fuera —lo que
+   * prefiera—, el más cercano a su encuadre de siempre; si no hay ninguno, se
+   * acerca la foto de un 1 % en un 1 % hasta `ACERCA_MAX`; si ni así, lo que no
+   * prefería, sin acercar; y si tampoco, el encuadre de siempre.
+   * Todo en fracciones del ancho de la foto: con la foto cubriendo la caja por
+   * el alto, se ve una ventana de ancho `w0` (a escala 1), y con `object-position`
+   * y `transform-origin` en `px` y escala `s` empieza en `px · (1 − w0/s)`. */
+  function buscaEncuadre(w0: number, px: number, foco?: number[], letrero?: [number, number, string]) {
+    if (w0 >= 1) return { px, s: 1 };
+    const sitios = (w: number, opcion: string | null): [number, number][] => {
+      let [a, b] = [0, 1 - w];
+      if (foco) [a, b] = [Math.max(a, foco[1] - w), Math.min(b, foco[0])];
+      if (a > b + 1e-9) return [];
+      if (!letrero || !opcion) return [[a, b]];
+      const [t0, t1] = letrero;
+      const corta = (x: number, y: number): [number, number][] => {
+        const [c, d] = [Math.max(a, x), Math.min(b, y)];
+        return c <= d + 1e-9 ? [[c, d]] : [];
+      };
+      return opcion === "dentro"
+        ? corta(t1 + AIRE_LETRERO - w, t0 - AIRE_LETRERO)
+        : [...corta(-Infinity, t0 - AIRE_LETRERO - w), ...corta(t1 + AIRE_LETRERO, Infinity)];
+    };
+    const mejor = (w: number, opcion: string | null) => {
+      const quiere = px * (1 - w);
+      let mejorL: number | null = null;
+      for (const [a, b] of sitios(w, opcion)) {
+        const L = Math.min(b, Math.max(a, quiere));
+        if (mejorL === null || Math.abs(L - quiere) < Math.abs(mejorL - quiere)) mejorL = L;
+      }
+      return mejorL;
+    };
+    const prefiere = letrero ? letrero[2] : null;
+    for (let s = 1; s <= ACERCA_MAX + 1e-9; s += 0.01) {
+      const L = mejor(w0 / s, prefiere);
+      if (L !== null) return { px: L / (1 - w0 / s), s };
+    }
+    if (letrero) {
+      const L = mejor(w0, prefiere === "dentro" ? "fuera" : "dentro");
+      if (L !== null) return { px: L / (1 - w0), s: 1 };
+    }
+    return { px, s: 1 };
+  }
 
   let sueltaAnterior: (() => void) | undefined;
   let sueltaPortada: (() => void) | null = null;
@@ -123,6 +192,45 @@ const estilo = (f: (typeof portada)[number]) =>
     let reloj: ReturnType<typeof setTimeout> | null = null;
     let parado = matchMedia(QUIETO).matches;
 
+    /* Cada foto se pide un turno antes de salir. Con la carga perezosa sola,
+       Chromium —el de los Android— no pedía nunca las que esperan recogidas: un
+       `clip-path` que las tapa enteras le basta para darlas por invisibles, y el
+       telón no pasaba de la primera. Medido el 2026-10-29: tras recorrer la home
+       entera, 1 de 7 fotos; quitándole el recorte a una, llegaba. WebKit sí las
+       pide, y por eso en el iPhone no se veía. Una por delante y no las siete de
+       golpe: el móvil no paga las que no llegue a ver. */
+    const pideSiguiente = () => {
+      const f = fotos[(actual + 1) % fotos.length] as HTMLImageElement;
+      if (f.loading !== "eager") f.loading = "eager";
+    };
+    if (!parado) pideSiguiente();
+
+    /* Las fotos con foco o letrero, encuadradas para esta caja (`buscaEncuadre`),
+       y otra vez cada vez que cambia de tamaño. */
+    const pase = hero.querySelector<HTMLElement>("[data-pase]");
+    /* El encuadre de siempre se guarda la primera vez: al volver de la tira —un
+       móvil que se tumba y se endereza— el de la página ya es el calculado. */
+    const deSiempre = new Map(
+      fotos.map((f) => [f, (f.dataset.encuadreBase ??= f.style.getPropertyValue("--encuadre").trim() || "50% 50%")]),
+    );
+    const encuadra = () => {
+      if (!pase || !pase.clientHeight) return;
+      const caja = pase.clientWidth / pase.clientHeight;
+      for (const f of fotos) {
+        const foco = f.dataset.foco?.split(" ").map(Number);
+        const l = f.dataset.letrero?.split(" ");
+        if (!foco && !l) continue;
+        const [x, y = "50%"] = deSiempre.get(f)!.split(/\s+/);
+        const w0 = caja / (Number(f.getAttribute("width")) / Number(f.getAttribute("height")));
+        const { px, s } = buscaEncuadre(w0, parseFloat(x) / 100, foco, l && [Number(l[0]), Number(l[1]), l[2]]);
+        f.style.setProperty("--encuadre", `${(px * 100).toFixed(2)}% ${y}`);
+        f.style.setProperty("--acerca", s.toFixed(2));
+      }
+    };
+    const ojoCaja = new ResizeObserver(encuadra);
+    if (pase) ojoCaja.observe(pase);
+    encuadra();
+
     /* La que llega se pone encima y se descubre; la que se va se queda debajo,
        entera, hasta que la tapa. Las demás, recogidas. */
     const pasa = () => {
@@ -137,6 +245,7 @@ const estilo = (f: (typeof portada)[number]) =>
       void fotos[actual].offsetWidth;
       fotos[actual].classList.add("on");
       puntos.forEach((p, i) => p.classList.toggle("on", i === actual));
+      pideSiguiente();
     };
 
     const pausa = () => {
@@ -157,11 +266,11 @@ const estilo = (f: (typeof portada)[number]) =>
       pausa();
     };
 
-    for (const ev of ["pointerdown", "touchstart"]) {
-      hero.addEventListener(ev, para, { passive: true, once: true, signal });
-    }
     let enVista = false;
     const decide = () => (enVista && !document.hidden ? arranca() : pausa());
+    /* Bajar la página con el dedo encima no cuenta como tocarla (`toque.ts`): la
+       portada llena la pantalla, y se apagaba con el primer gesto de cualquiera. */
+    alTocar(hero, { toca: para, apoya: pausa, suelta: decide }, signal);
     const ojo = new IntersectionObserver(
       ([e]) => {
         /* La proporción y no `isIntersecting`: esa es cierta en cuanto asoma un
@@ -177,6 +286,7 @@ const estilo = (f: (typeof portada)[number]) =>
     return () => {
       pausa();
       ojo.disconnect();
+      ojoCaja.disconnect();
       abort.abort();
     };
   }
@@ -242,16 +352,18 @@ const estilo = (f: (typeof portada)[number]) =>
       if (!parado && enVista && !document.hidden) anim.play();
       else anim.pause();
     };
-    for (const ev of ["pointerdown", "touchstart"]) {
-      hero.addEventListener(
-        ev,
-        () => {
+    alTocar(
+      hero,
+      {
+        toca: () => {
           parado = true;
           decide();
         },
-        { passive: true, once: true, signal },
-      );
-    }
+        apoya: () => anim?.pause(),
+        suelta: () => decide(),
+      },
+      signal,
+    );
     const ojo = new IntersectionObserver(
       ([e]) => {
         enVista = e.intersectionRatio >= 0.5;
@@ -278,10 +390,10 @@ const estilo = (f: (typeof portada)[number]) =>
 
   const montaPortada = () => {
     sueltaPortada?.();
-    sueltaPortada = ORDENADOR.matches ? montaTira() : montaTelon();
+    sueltaPortada = EN_TIRA.matches ? montaTira() : montaTelon();
   };
-  /* Al cruzar los 861 px se cambia de una a otra. */
-  ORDENADOR.addEventListener("change", montaPortada);
+  /* Al cruzar los 861 px, o al tumbar el móvil, se cambia de una a otra. */
+  EN_TIRA.addEventListener("change", montaPortada);
 
   document.addEventListener("astro:page-load", (e) => {
     sueltaAnterior?.();
@@ -320,6 +432,26 @@ const estilo = (f: (typeof portada)[number]) =>
   @media (max-width: 860px) {
     .hero {
       --alto-calculado: calc(100svh - var(--t-header-h, 62px));
+    }
+  }
+  /* Una tableta en vertical: la tira medía casi toda la pantalla de alto, y cada
+     foto cuadrada salía más ancha que la pantalla (1332 px en una de 1024: nunca
+     se veía entera). Como mucho, tres cuartos del ancho; en una pantalla
+     apaisada no llega a mandar nunca (2026-10-29). */
+  @media (min-width: 861px) and (orientation: portrait) {
+    .hero {
+      --alto-calculado: min(calc(100svh - var(--t-header-h, 62px) - clamp(128px, 18vw, 156px)), 75vw);
+    }
+  }
+  /* Una pantalla baja —un móvil apaisado, una ventana muy baja— no tiene sitio
+     para la franja de asomo ni para el mínimo de 420 px: con él, en un móvil
+     apaisado de 390 de alto la portada medía 420 bajo una cabecera de 62, del
+     titular se veía el 80 % y de «Abierto ahora», nada (medido el 2026-10-29).
+     Aquí ocupa la pantalla bajo la cabecera, como en el móvil en vertical. */
+  @media (max-height: 500px) {
+    .hero {
+      --alto-calculado: calc(100svh - var(--t-header-h, 62px));
+      min-height: 0;
     }
   }
   /* Fuera del flujo y sin caja visible: no empuja nada ni se ve, solo mide. */
@@ -373,9 +505,11 @@ const estilo = (f: (typeof portada)[number]) =>
   }
   /* En el móvil la foto llena el alto y se recorta por los lados: cada una va a
      lo que cuenta (`--encuadre`), y alguna se acerca un poco hacia ahí
-     (`--acerca`). `scale` es una transformación y convive con el `clip-path`
-     del telón. El rótulo del cristal no sale: en vertical se leía «S OCHO». */
-  @media (max-width: 860px) {
+     (`--acerca`, que pone el script). `scale` es una transformación y convive
+     con el `clip-path` del telón. El rótulo del cristal no sale: en vertical se
+     leía «S OCHO». El telón es para el móvil en vertical, o en uno lo bastante
+     alto; tumbado y bajo, va la tira (ver más abajo). */
+  @media (max-width: 860px) and (orientation: portrait), (max-width: 860px) and (min-height: 501px) {
     .shot {
       object-position: var(--encuadre, 50% 50%);
       scale: var(--acerca, 1);
@@ -389,8 +523,10 @@ const estilo = (f: (typeof portada)[number]) =>
   /* ---- La tira, en el ordenador ---- */
   /* En fila, con juntas de 3 px de tinta. Cada foto mide el alto de la capa y su
      ancho sale de su proporción, así que se ve entera: no hay recorte por los
-     lados y el encuadre del móvil no cuenta. */
-  @media (min-width: 861px) {
+     lados y el encuadre del móvil no cuenta. También en un móvil tumbado: ahí el
+     telón enseñaba entre el 37 y el 50 % del alto de cada foto, y la tira las
+     enseña enteras (2026-10-29). */
+  @media (min-width: 861px), (orientation: landscape) and (max-height: 500px) {
     .pista {
       inset: 0 auto 0 0;
       display: flex;
@@ -496,9 +632,17 @@ const estilo = (f: (typeof portada)[number]) =>
   }
   /* En la tira no hay una foto en curso que señalar. Va al final porque pesa lo
      mismo que la regla de arriba, y en un empate gana la última. */
-  @media (min-width: 861px) {
+  @media (min-width: 861px), (orientation: landscape) and (max-height: 500px) {
     .pager {
       display: none;
+    }
+  }
+  /* En una pantalla baja el titular se mide también por el alto: a 11,5 vw, en
+     un móvil apaisado de 844 de ancho, medía 97 px y sus dos líneas se comían la
+     portada. */
+  @media (max-height: 500px) {
+    .hero h1 {
+      font-size: min(clamp(2.6rem, 11.5vw, 6rem), 15svh);
     }
   }
 </style>

@@ -48,6 +48,17 @@ const FACTORES = [1, 0.82, 0.68];
 const CANDIDATOS = 70;
 /** El segundo del vermú que se pinta, quieto, con «reducir movimiento». */
 const QUIETO = 30;
+/** Las vetas del vermú. En el ordenador, como las eligió Mario. Sin ratón
+ *  (2026-10-29, Mario en su iPhone: «apenas se percibe», y no tiene cursor al
+ *  que responder) van algo más rojas y algo más deprisa, la luz que pasea las
+ *  enciende como las enciende allí el cursor —con esta presencia, que el cursor
+ *  tiene entera—, y la red baja con la página una fracción de lo que se baja: un
+ *  plano lejano, como las fotos del paralaje. Las palabras no: van fijas a la
+ *  pantalla, y el porqué está en `nace`. */
+const VETAS = {
+  raton: { opacidad: 0.24, vel: 1, escala: 1, luz: 0, arrastre: 0 },
+  tacto: { opacidad: 0.38, vel: 1.4, escala: 0.7, luz: 0.5, arrastre: 0.12 },
+};
 
 /** Lo que tapa el lienzo: los bloques opacos enteros y, dentro de las secciones
  *  blancas, cada texto, foto, botón, filete y el mapa. El resto es blanco libre.
@@ -76,6 +87,7 @@ uniform vec3 uMouse;    // cursor en px CSS (origen abajo a la izquierda) y pres
 uniform vec3 uLuz;      // la luz de las palabras: el cursor o la que pasea, y su fuerza
 uniform vec3 uRojo;     // --rojo
 uniform vec3 uTinta;    // --ink
+uniform vec4 uVeta;     // las vetas: opacidad, velocidad, cuánto han bajado con la página (px CSS) y escala
 uniform int uN;
 uniform vec4 uA[4];     // centro y media caja de cada palabra, px CSS
 uniform vec4 uB[4];     // su sitio en el atlas (u0, v0 arriba, u1, v1 abajo)
@@ -133,12 +145,14 @@ void main() {
   vec4 acc = vec4(0.0);
   // El vermú. En blanco, la red entera se ve como una neblina rosa: solo se dejan
   // las venas con luz, más finas que en PHSPORT, y queda como el mármol en rojo.
-  vec2 r = vec2(p.x + p.y, p.x - p.y) * 0.70710678;
+  vec2 pv = p - vec2(0.0, uVeta.z);
+  vec2 r = vec2(pv.x + pv.y, pv.x - pv.y) * 0.70710678;
   float m = uMouse.z * cerca(p, uMouse.xy, 240.0);
-  float k1 = caustic(r / (460.0 - m * 120.0), uTime * 0.06 + 23.0);
-  float k2 = caustic(r / 290.0 + 0.37, uTime * 0.045 + 11.0);
+  float tv = uTime * uVeta.y;
+  float k1 = caustic(r / ((460.0 - m * 120.0) * uVeta.w), tv * 0.06 + 23.0);
+  float k2 = caustic(r / (290.0 * uVeta.w) + 0.37, tv * 0.045 + 11.0);
   float k = k1 * 0.7 + k2 * 0.3;
-  sobre(acc, uRojo, smoothstep(0.14, 1.0, k) * (0.24 + m * 0.2));
+  sobre(acc, uRojo, smoothstep(0.14, 1.0, k) * (uVeta.x + m * 0.2));
   // Las palabras, encima.
   float brillo = uLuz.z * cerca(p, uLuz.xy, 250.0);
   for (int i = 0; i < 4; i++) {
@@ -221,13 +235,14 @@ export function montaFondo(): (() => void) | null {
   gl.useProgram(prog);
   gl.bindVertexArray(gl.createVertexArray());
   const U = Object.fromEntries(
-    ["uPx", "uTime", "uMouse", "uLuz", "uRojo", "uTinta", "uN", "uA", "uB", "uC", "uD", "uG", "uGuarda", "uAtlas"].map((n) => [n, gl.getUniformLocation(prog, n)]),
+    ["uPx", "uTime", "uMouse", "uLuz", "uRojo", "uTinta", "uVeta", "uN", "uA", "uB", "uC", "uD", "uG", "uGuarda", "uAtlas"].map((n) => [n, gl.getUniformLocation(prog, n)]),
   );
   gl.uniform1i(U.uAtlas, 0);
   gl.uniform3f(U.uRojo, ...color("--rojo"));
   gl.uniform3f(U.uTinta, ...color("--ink"));
 
   const reducido = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const sinRaton = matchMedia("(hover: none)");
   const VIDAS = leeDuraciones("--vidas-palabra");
   const ESPERAS = leeDuraciones("--esperas-palabra");
   const PINCEL = leeDuracion("--dur-pincel");
@@ -470,12 +485,16 @@ export function montaFondo(): (() => void) | null {
     const mx = reducido ? raton.tx : raton.x;
     const my = reducido ? raton.ty : raton.y;
     const mz = reducido ? raton.tz : raton.z;
-    gl.uniform3f(U.uMouse, mx, H - my, mz);
     /* La luz de las palabras: el cursor si lo hay; si no, una que pasea despacio y
        sin compás (los periodos no casan entre sí). */
     const lx = W * (0.5 + 0.34 * Math.sin(t * 0.043) + 0.1 * Math.sin(t * 0.017 + 1.3));
     const ly = H * (0.5 + 0.3 * Math.cos(t * 0.031) + 0.12 * Math.sin(t * 0.023 + 0.4));
     gl.uniform3f(U.uLuz, lx + (mx - lx) * mz, H - (ly + (my - ly) * mz), 0.7 + 0.3 * mz);
+    /* Las vetas: sin ratón, las enciende la luz que pasea, y bajan con la página. */
+    const veta = sinRaton.matches ? VETAS.tacto : VETAS.raton;
+    if (veta.luz) gl.uniform3f(U.uMouse, lx, H - ly, veta.luz);
+    else gl.uniform3f(U.uMouse, mx, H - my, mz);
+    gl.uniform4f(U.uVeta, veta.opacidad, veta.vel, reducido ? 0 : scrollY * veta.arrastre, veta.escala);
     let n = 0;
     if (medidas.length) {
       if (!reducido) revisa(ahora);

@@ -47,7 +47,7 @@ const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data
     <div class="wrap"><div class="rule"></div></div>
     <div class="wrap tasca-grid">
       <div class="tasca-photo" data-paralaje>
-        <img src="/images/mesa.jpg" alt="Mesa de mármol con varios platos de la carta servidos para compartir" width="1920" height="1080" loading="lazy" data-vel="-0.08" data-tope="22" />
+        <img src="/images/mesa.jpg" alt="Mesa de mármol con varios platos de la carta servidos para compartir" width="1920" height="1080" loading="lazy" data-vel="-0.08" data-vel-tacto="-0.12" data-tope="22" data-ventana />
       </div>
       <div>
         <p class="eyebrow">La tasca</p>
@@ -151,11 +151,18 @@ const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data
     object-fit: cover;
   }
   /* La mesa es la capa lejana del paralaje dentro de su marco: sobresale un 8%
-     por arriba y por abajo para tener recorrido. */
+     por arriba y por abajo para tener recorrido. Y un 4% por cada lado, que es
+     por donde se asoma con el ratón encima (`data-ventana`, en `paralaje.ts`).
+     En reposo se ve exactamente lo mismo que antes: la foto ya medía ese ancho y
+     lo recortaba su propia caja. */
   .tasca-photo img {
     position: relative;
     top: -8%;
+    left: -4%;
+    width: 108%;
+    max-width: none;
     height: 116%;
+    transition: translate var(--dur-ventana) var(--ease);
   }
   .tasca h2 {
     font-size: clamp(2.2rem, 6vw, 3.6rem);

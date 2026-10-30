@@ -217,6 +217,13 @@ const fotos = await Promise.all(
     inset: 0;
     transition: transform var(--dur-ventana) var(--ease);
   }
+  /* Sin ratón, esta capa va con la página fotograma a fotograma (`mosaico.ts`), y
+     la transición la dejaría siempre por detrás de lo que se ha bajado. */
+  @media (hover: none) {
+    .casa-vivo[data-vivo] .t-mueve {
+      transition: none;
+    }
+  }
   .casa-vivo[data-vivo] .t-mueve :global(img) {
     position: absolute;
     left: 0;

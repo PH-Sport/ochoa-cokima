@@ -6,8 +6,9 @@
 - **Ramas:** `preview`. Antes se probó en `feat/inicio-paralaje` (parada el 2026-10-28) y en
   `feat/inicio-vivo`, que entró entera en `preview` el 2026-10-29 con un avance directo. Lo que
   hay encima se eligió en un probador fuera del repositorio, en tres rondas.
-- **Estado:** construido en las dos homes, la española y la inglesa, y medido sobre el build. Sin
-  ver en un iPhone ni con un ratón de verdad.
+- **Estado:** construido en las dos homes, la española y la inglesa, y medido sobre el build.
+  Mario lo vio en su iPhone el 2026-10-29 y pidió ajustes, hechos ese día y medidos en el
+  simulador de iOS y en los dos motores (§3.6 y §6); falta que los vea él.
 
 Este documento explica **por qué** la home de Ochoa es como es desde el 2026-10-29 y por qué se
 descartó casi todo lo que se propuso antes. Si vas a tocar la barra del ordenador, el fondo, la
@@ -113,6 +114,15 @@ cambiar de tamaño, y las palabras salen ya pintadas, sin pincel. **Con la pesta
 pinta nada, y **al salir de la página** se suelta el contexto de WebGL antes de que el router cambie
 de página.
 
+**Sin ratón, el vermú va más fuerte** (2026-10-29). En su iPhone, Mario lo veía *«apenas»*: sin
+cursor que lo encienda, a la escala del ordenador cabía menos de una celda de la red en la
+pantalla, y casi todo el blanco tiene texto delante que lo baja al 28 %. Pidió *«un poquito más de
+intensidad al color y al movimiento»*. En una pantalla sin ratón las vetas van a 0,38 de opacidad
+en vez de 0,24 y a 0,7 de escala —más vetas en la pantalla—, un 40 % más deprisa; la luz que pasea,
+que ya encendía las palabras, las enciende como el cursor en el ordenador (con media presencia); y
+la red baja con la página al 12 %, como un plano lejano. Las palabras no: siguen fijas a la
+pantalla. En el ordenador no cambia nada (`VETAS` en `fondo.ts`).
+
 **Yellowtail se sirve desde la web**, como Anton y Archivo: `public/fonts/yellowtail-400.woff2`, el
 subconjunto latino de Google Fonts (18 KB), y solo la pide el lienzo. **Su licencia es la Apache
 2.0, no la OFL** que se daba por hecho: está en `apache/yellowtail` del repositorio google/fonts.
@@ -142,6 +152,13 @@ tiene el ratón enseña su nombre. Al pulsar una —o con Intro o Espacio— se 
 no se mueve sola (regla 6). Solo corre con el 30 % a la vista y la pestaña delante. Sin JavaScript
 queda una rejilla quieta con las cuatro primeras.
 
+**Sin ratón, la ventana va con la página** (2026-10-29). Mario pidió el efecto del cursor también
+en el móvil, *«pero únicamente que reaccione al scroll, no al dedo»*: al bajar, cada foto se
+desplaza en su ventana más despacio que su tesela —al 12 %, hasta 24 px, frenando suave antes de
+su borde—. Lo que sobra se mide en lo que se ve, también a medio cambio, así que nunca asoma el
+fondo de la tesela. **La foto de La tasca hace lo mismo**: sin ratón, al bajar; con el ratón
+encima, en el ordenador, se asoma como las de La casa (`data-ventana` en `paralaje.ts`).
+
 ### 3.4 La portada: el telón en el móvil, la tira en el ordenador
 
 `components/Hero.astro` y `data/portada.ts`. Ocho fotos de Instagram que no salen en el resto de la
@@ -163,6 +180,22 @@ Las ocho fotos son los mismos elementos en las dos pantallas: el CSS las apila p
 pone en fila para la tira, y la copia de la serie la añade el script. Sin JavaScript, en el
 ordenador queda la fila quieta.
 
+**Desde el 2026-10-29, además:**
+
+- **Bajar con el dedo encima no la apaga.** Se apagaba con `pointerdown`, que en el móvil es el
+  primer gesto de cualquiera, y Mario la veía parada. Ahora solo la apaga un toque de verdad
+  (regla 6 de `movimiento.md`, `toque.ts`); lo mismo el mazo de «Lo que más sale» y el manifiesto.
+- **Cada foto se pide un turno antes.** En Chromium —los Android— las que esperan tapadas no se
+  descargaban nunca, y el telón no pasaba de la primera (regla 28).
+- **El encuadre se calcula para cada pantalla** en las fotos que dicen qué tiene que verse
+  (`foco`) y qué letrero no puede salir partido (`letrero`), en `data/portada.ts`: la del vino y
+  la de la caña. Con un encuadre fijo, medido a 390×844, el borde partía las letras del
+  servilletero en otras pantallas («OCHOA» a 320 y 375 de ancho, «HOA» a 412×800). Ahora, en los
+  móviles las letras quedan fuera, acercando la foto entre 1,02 y 1,54 veces; en los plegables y
+  las tabletas, donde haría falta más, salen enteras. Lo que cuenta en la del vino es el vino
+  cayendo en la copa, no el servilletero, que Mario vio en primer plano.
+- **En un móvil tumbado va la tira**, a pantalla completa bajo la cabecera (§3.6).
+
 ### 3.5 Lo que se quedó de la rama, y el inglés
 
 De `feat/inicio-vivo` siguen **el paralaje de los tres fondos** (`paralaje.ts`), **el manifiesto
@@ -173,6 +206,41 @@ cortina**. Se sustituyeron el muro de La casa y el telón de la portada en el or
 **La home inglesa es igual** desde el 2026-10-29: mismas piezas, con el texto inglés que ya había y
 las etiquetas del mosaico traducidas tal cual. El `estado.md` del 2026-10-28 dejaba la igualación
 para cuando Mario diera el visto bueno, y pedir esto en `preview` lo era.
+
+### 3.6 Las pantallas
+
+El 2026-10-29 Mario pidió asegurarse de que la web es *«completamente responsive»*, con los
+plegables *«en formato pasaporte»* en mente. Se recorrió en 30 tamaños con Chromium y 17 con WebKit
+—móviles de 320 a 440 de ancho, los tamaños que se esperan de los plegables cerrados y abiertos,
+móviles tumbados, tabletas y pantallas de hasta 3440—, midiendo desbordamientos, textos y qué parte
+de cada foto se ve. Del iPhone plegable solo hay filtraciones, así que se cubrió el rango y no un
+aparato. Lo que se cambió:
+
+- **Móvil tumbado.** La portada medía más que la pantalla —el mínimo de 420 px bajo una cabecera de
+  62, en 390 de alto— y del titular se veía el 80 % y de «Abierto ahora», nada. En una pantalla
+  baja ahora ocupa la pantalla bajo la cabecera, el titular se mide también por el alto y, si
+  además está tumbada, va la tira en vez del telón, que enseñaba la mitad del alto de cada foto.
+  «Lo que más sale» va en la tira de fichas que se desliza: una carta del mazo no cabía.
+- **La isla de la cámara.** Con el móvil tumbado tapaba el borde del rótulo y del titular. El margen
+  lateral de toda la web ya no baja de lo que tapan la isla y las esquinas (`.wrap` en
+  `global.css`).
+- **Las fotos de «Lo que más sale» van en proporción**, no a 190 px de alto: de un plato cuadrado
+  se veía el 58 % en un iPhone y el 26–35 % en un plegable abierto o una tableta en vertical. Ahora,
+  el 63 % en todos los móviles (16:10, casi el alto de antes en un iPhone) y el plato entero en la
+  fila del ordenador.
+- **Tableta en vertical.** En la tira, cada foto salía más ancha que la pantalla (1332 px en una de
+  1024): nunca se veía entera. La portada mide como mucho tres cuartos del ancho.
+- **La mesa de La tasca** dejaba ver el fondo dentro de su marco en los móviles (regla 29).
+
+**Lo que se dejó como está, a sabiendas:** en el telón del móvil se ve entre el 36 y el 58 % del
+ancho de cada foto cuadrada, porque llena la pantalla a lo alto, que es lo que pidió Mario; cada
+foto lleva su encuadre, y la del vino y la de la caña, el que se calcula. El cartel de cookies
+ocupa un cuarto de la pantalla en un móvil tumbado mientras no se decide. Con el móvil tumbado, el
+menú deja seis de sus diez opciones bajo el borde, alcanzables desplazándolo. La foto de las
+botellas, que es un fondo, enseña una franja cada vez más estrecha en las pantallas muy anchas (el
+10 % del alto a 3440). A 861 px, en inglés, «Homemade» sobresale 2 px de su caja sin cortarse. Y
+en WebKit, solo a 861 px de ancho, la home da un aviso «ResizeObserver loop» en cada carga, que
+ya daba antes de estos cambios; no se ha buscado de qué observador sale.
 
 ---
 
@@ -260,6 +328,11 @@ la foto entera sin agrandarla. Las fotos nuevas piden siempre anchos de la lista
 **La mezcla del manifiesto salía gris** porque el paralaje aislaba la foto del rojo: la regla 26 de
 `movimiento.md`, de la rama `feat/inicio-vivo`.
 
+**Tres más del 2026-10-29, ya reglas en `movimiento.md`:** tocar no es bajar con el dedo encima
+(regla 6), Chromium no descarga lo que espera tapado por un `clip-path` (28), y lo que le sobra a
+una capa se mide en la página, porque WebKit no lo resuelve como Chromium (29). Las tres se vieron
+en un motor y no en el otro.
+
 ---
 
 ## 6. Lo medido
@@ -303,6 +376,29 @@ original (en local no existe el optimizador de Vercel). Ordenador con Chromium a
   navegando con el router de la home a la carta y de vuelta. El único error es el de siempre en
   local: el motor de reservas devuelve 403 a una plantilla en `http://localhost`.
 
+**Del 2026-10-29, tras verlo Mario en su iPhone** (build local; simulador de iOS con un iPhone 17,
+y Playwright con Chromium y WebKit):
+
+- **Al bajar con el dedo:** en el simulador, la portada y el mazo siguen pasando después de bajar
+  con el dedo encima, y una carta tocada se queda quieta. En Chromium, con el gesto táctil de
+  desplazamiento de CDP, el dedo da `pointerdown` y `pointercancel` y el mazo sigue en tres
+  pasadas; el manifiesto sigue al bajar y se para con un toque. Antes, en el simulador, la portada
+  se quedaba en la misma foto para siempre.
+- **El telón sin tocar:** un cambio cada 3,5 s en los dos motores, y en Chromium llegan las siete
+  fotos (antes, 1 de 7).
+- **La mesa de La tasca:** ningún píxel de fondo en 19 a 21 posiciones por tamaño, en los dos
+  motores (antes, 6,5 px a 390); sin ratón se mueve ±14,5 px a 390 en Chromium y de −19,4 a 14,5
+  en WebKit; con el ratón en las esquinas, ±9,6 y ±7,7 px.
+- **El mosaico sin ratón:** cada foto, hasta 24 px al bajar, sin un píxel de fondo, tampoco
+  muestreando 4 s de cambios.
+- **El vermú en el móvil:** el rojo que añade al blanco, en una franja de La casa a 390×844, sube
+  un 36 % (de 0,58 a 0,79 de media).
+- **Las pantallas:** en 26 tamaños con Chromium y 11 con WebKit, el titular y «Abierto ahora» se
+  ven enteros al entrar, también tumbado y con el cartel de cookies; las letras del vino y de la
+  caña no salen partidas en ninguno; de un plato se ve el 62–63 % en el móvil y el 100 % en el
+  ordenador; a 1024×1366, la foto más ancha de la tira mide 891 px. **Sin scroll lateral** en 7
+  rutas, en 11 tamaños con Chromium y 7 con WebKit, recorridas enteras.
+
 **Sin medir:** en un iPhone de verdad (el gasto del lienzo en la GPU, el desenfoque y la barra del
 navegador), con un ratón de verdad, en una conexión lenta, y el peso real de las fotos servidas por
 Vercel.
@@ -324,8 +420,11 @@ Vercel.
 
 Lo que espera a Mario está en `estado.md` §0. Lo que toca a este documento:
 
-1. **Verlo en un iPhone y con un ratón.** Sobre todo lo que cuesta el lienzo en un móvil modesto:
-   si se nota, la primera palanca es la densidad (`MAX_DPR` y `ESCALA` en `fondo.ts`).
+1. **Que Mario vea en su iPhone los ajustes del 2026-10-29** —el telón y el mazo al bajar, las
+   fotos de La casa y de La tasca al bajar, el vermú— y diga si el vermú se nota lo justo (la
+   palanca es `VETAS` en `fondo.ts`). Lo que cuesta el lienzo en un móvil modesto sigue sin medir:
+   si se nota, la primera palanca es la densidad (`MAX_DPR` y `ESCALA`). Ningún plegable real se
+   ha probado, solo sus tamaños.
 2. **El muelle de Mochi (`--ease-muelle`) no lo usa nada** desde que el mosaico sustituyó al muro.
    Se dejó en `tokens.css` porque la decisión de Mario sigue en pie; si no vuelve a hacer falta, se
    quita con su excepción de la regla 1.

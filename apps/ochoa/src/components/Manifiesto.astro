@@ -26,6 +26,8 @@ import botellas from "../assets/casa/botellas.jpg";
   /* El paneo solo corre mientras se ve la banda, y se para para siempre al
    * primer toque (regla 6 de docs/movimiento.md). Con «reducir movimiento» no
    * arranca. */
+  import { alTocar } from "../toque.ts";
+
   let suelta: (() => void) | null = null;
 
   function montaPaneo() {
@@ -34,7 +36,9 @@ import botellas from "../assets/casa/botellas.jpg";
     const abort = new AbortController();
     const ojo = new IntersectionObserver(([e]) => manifiesto.classList.toggle("en-vista", e.isIntersecting));
     ojo.observe(manifiesto);
-    manifiesto.addEventListener("pointerdown", () => manifiesto.classList.add("quieto"), { once: true, signal: abort.signal });
+    /* Un toque de verdad, no el dedo que baja la página pasando por encima
+       (`toque.ts`): con `pointerdown` se apagaba al bajar. */
+    alTocar(manifiesto, { toca: () => manifiesto.classList.add("quieto") }, abort.signal);
     return () => {
       ojo.disconnect();
       abort.abort();

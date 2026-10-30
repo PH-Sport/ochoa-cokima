@@ -1,6 +1,6 @@
 # Método: cómo se decide y cómo se verifica
 
-> **Estado: vivo** · revisado 2026-09-07
+> **Estado: vivo** · revisado 2026-10-29
 
 **Las dos técnicas que este repo ya ha pagado caras.** Decidir lo visual enseñando variantes en
 vez de describirlas, y sostener toda afirmación sobre cómo se ve la web en una medición hecha en
@@ -189,6 +189,27 @@ porque nadie vuelve a mirar ahí. Vale igual para lo que no se ha podido medir: 
 medido, no se rellena con una impresión.
 
 ---
+
+### 2.7 El simulador de iOS, y el dedo que baja la página
+
+**En el Mac hay simulador de iOS** (Xcode, con iPhone 17, 17e, Air, 18 Pro y 18 Pro Max y varios
+iPad; ningún plegable). Su Safari es el WebKit del iPhone con sus gestos de verdad, y llega al
+build servido en local en `http://localhost:<puerto>`, sin tocar Vercel. Se arranca con
+`xcrun simctl boot <id>` y se le abre la página; los toques y deslizamientos se le mandan desde
+el agente. Con él se reprodujo el 2026-10-29 lo que Mario veía en su iPhone y en Chromium de
+escritorio no salía: la portada se apagaba al bajar con el dedo encima (`movimiento.md`, regla 6).
+
+Tres cosas que despistan: **girarlo recarga la pestaña**, así que lo que se cronometra después
+empieza de cero; **cada página abierta desde fuera es una pestaña nueva**, y las de detrás llevan
+los relojes frenados; y **la GPU es la del Mac**, así que lo que cuesta el fondo en un iPhone no
+se mide aquí.
+
+**El dedo que baja la página no se imita con `page.mouse`**, que no desplaza nada, ni con
+`touchscreen.tap`, que es un toque. En Chromium, el gesto táctil de desplazamiento de verdad se
+pide por CDP —`Input.synthesizeScrollGesture` con `gestureSourceType: "touch"`— y da lo mismo que
+un dedo: `pointerdown` y, al empezar a bajar, `pointercancel`. Así se comprobó el arreglo en los
+dos motores, junto con el simulador. **Una prueba de «se para al tocar» que no incluye bajar con
+el dedo encima no prueba nada en un móvil.**
 
 ## 3. El entorno de trabajo, y sus averías conocidas
 

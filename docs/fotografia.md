@@ -83,13 +83,17 @@ y cada foto se recorta por los lados, así que lleva su `encuadre` (`object-posi
 `portada.ts`, hacia lo que cuenta y no al centro: `brindis` y `clienta` `42% 50%`, `brioche`
 `50% 50%`, `vermu-gilda` `95% 50%`, `brindis-barra` `46% 50%`, `cana` `15% 50%` y `vino`
 `100% 50%`. **El rótulo del cristal no sale en el móvil:** en vertical se leía «S OCHO». **La del
-vino va además acercada un 15 % hacia la copa** (`acerca: 1.15`, con `scale` desde su encuadre):
-pegada a la derecha aún asomaba el servilletero con «HOA» cortado en el borde izquierdo, y con el
-15 % desaparece el texto (medido en el probador en WebKit a 390×844 a 3×). En el ordenador la tira
+vino y la de la caña llevan, desde el 2026-10-29, un encuadre que se calcula para cada pantalla**:
+dicen qué tiene que verse (`foco`) y qué letrero no puede salir partido (`letrero`) —las letras
+del servilletero en la del vino, el logotipo del delantal en la de la caña—, y el telón las coloca
+y, si hace falta, las acerca hasta 1,6 veces para dejar el letrero fuera; si haría falta más, lo
+deja entero. El 15 % fijo de antes, medido solo a 390×844, partía las letras del servilletero en
+otros anchos («OCHOA» a 320 y 375, «HOA» a 412×800). El cómo, en `ochoa-inicio-vivo.md` §3.4. En
+el ordenador la tira
 las enseña enteras, a su proporción y al alto de la portada, y el encuadre no cuenta: medido a
 1440×900 y densidad 2, se ve todo el ancho y el 86 % del alto de cada una, a entre 0,88 y 1,10×
 (con el telón a todo lo ancho, el 36-47 % del alto, a 1,98×). **Al cambiar o añadir una foto, mirar
-las dos pantallas.**
+las dos pantallas, y si lleva letras que el recorte pueda partir, darle su `letrero`.**
 
 ### Fotos de plato
 

@@ -29,8 +29,14 @@ export const portada: {
   /** El encuadre en el móvil (`object-position`): lo que se queda cuando el
    *  recorte se come los lados. Va a lo que cuenta cada foto, no al centro. */
   encuadre?: string;
-  /** Cuánto se acerca la foto en el móvil, hacia su encuadre (`scale`). */
-  acerca?: number;
+  /** Lo que tiene que verse siempre en el móvil, de izquierda a derecha, en
+   *  fracciones del ancho de la foto. Con él, el telón calcula el encuadre para
+   *  cada pantalla en vez de fiarse de uno fijo (`Hero.astro`). */
+  foco?: [number, number];
+  /** Un letrero que no puede salir partido —o entero, o fuera—, en fracciones
+   *  del ancho, y cuál de las dos se prefiere. Para dejarlo fuera, el telón
+   *  acerca la foto lo que haga falta, hasta un tope. */
+  letrero?: { de: number; a: number; prefiere: "fuera" | "dentro" };
   /** Solo en la tira del ordenador. */
   soloOrdenador?: boolean;
 }[] = [
@@ -74,9 +80,14 @@ export const portada: {
       en: "A toast with a beer and a vermouth",
     },
   },
+  // El logotipo del delantal salía partido en alguna pantalla de plegable (a
+  // 690×830 el borde caía en mitad de las letras). La caña y la mano siempre;
+  // el logotipo, mejor fuera.
   {
     src: cana,
     encuadre: "15% 50%",
+    foco: [0.15, 0.42],
+    letrero: { de: 0.76, a: 0.93, prefiere: "fuera" },
     alt: {
       es: "Tirando una caña, con el delantal de la casa",
       en: "Pulling a beer, in the house apron",
@@ -92,13 +103,19 @@ export const portada: {
       en: "The Tasquita Los Ochoa sign on the glass, with the dining room behind",
     },
   },
-  // Pegada a la derecha, en el móvil aún asomaba el servilletero con «HOA»
-  // cortado en el borde izquierdo; acercándola un 15% hacia la copa desaparece
-  // el texto (medido en WebKit a 390×844 a 3×, en el probador).
+  // Lo que cuenta es el vino cayendo en la copa, y no el servilletero, que en la
+  // primera versión ocupaba el primer plano (Mario, 2026-10-29). Con un encuadre
+  // fijo —pegada a la derecha y acercada un 15%, medido solo a 390×844— el
+  // borde volvía a partir sus letras en otras pantallas: «OCHOA» a 320 y 375 de
+  // ancho, «HOA» a 412×800. Ahora el telón deja las letras fuera acercándola lo
+  // que haga falta y, si haría falta demasiado —pantallas anchas, plegables—, las
+  // deja enteras. Medidas sobre el original con una regla de décimas: letras de
+  // 0,46 a 0,63; la copa y el chorro, de 0,66 a 0,90.
   {
     src: vino,
     encuadre: "100% 50%",
-    acerca: 1.15,
+    foco: [0.66, 0.9],
+    letrero: { de: 0.46, a: 0.63, prefiere: "fuera" },
     alt: {
       es: "Sirviendo vino tinto en una mesa de mármol",
       en: "Pouring red wine at a marble table",
