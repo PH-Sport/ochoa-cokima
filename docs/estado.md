@@ -4,9 +4,9 @@
 
 - **Corte:** 2026-10-30
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
-  nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
-  de decidir: `feat/inicio-vivo`, que entró entera en `preview` el 2026-10-29, y
-  `feat/inicio-paralaje`, parada. Si se borran lo decide Mario (§0)
+  nada nuevo aún) · y `feat/inicio-paralaje`, la rama de prueba que pidió Mario para ver el Inicio
+  en paralaje en la web antes de decidir, parada. Si se borra lo decide él; la otra rama de
+  prueba, `feat/inicio-vivo`, ya se borró (§0)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
 - **Hay una sola versión de este documento**, la de `preview`. Hasta el 2026-10-26 hubo dos —la de
   `tmp/entrada-cokima`, que era la buena, y la de `preview`—; se juntaron ese día (§1).
@@ -166,8 +166,13 @@ secciones. El cómo y lo medido, en `ochoa-inicio-vivo.md` §3.2.
   Instagram («nuestro menú del día») y lo cuenta `.impeccable.md`, pero no está en la carta. La
   investigación dice que a mediodía es lo primero que se compara
   (`archivo/2026-10-28-ochoa-inicio-direcciones.md` §2).
-- **Las ramas de prueba:** si `feat/inicio-paralaje` se borra, y si `feat/inicio-vivo` sigue
-  haciendo falta, ahora que está entera dentro de `preview`.
+- **Si se borra `feat/inicio-paralaje`**, la rama de prueba del Inicio en paralaje, parada por
+  Mario el 2026-10-28 (el porqué, en `ochoa-inicio-vivo.md` §1). No está vacía: sus dos commits
+  (`47a3000` y `795eb07`) no están en `preview`, y borrarla los pierde. El 2026-10-30 Mario pidió
+  borrar las ramas vacías que solo eran ruido, y se borró `feat/inicio-vivo`, en local y en
+  GitHub: estaba entera dentro de `preview` desde el 2026-10-29. Esta no lo está: Mario preguntó
+  qué lleva —el Inicio de prueba con los platos recortados y, en el ordenador, un collage de tres
+  fotos— y, de momento, sigue.
 
 **Ochoa, 2026-10-27: la portada es un telón de seis fotos y «Lo que más sale» es un mazo en el
 móvil.** Mario lo eligió en dos bocetos. La portada deja la fachada y pasa a seis fotos de la casa

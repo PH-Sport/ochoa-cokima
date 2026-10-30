@@ -43,7 +43,8 @@ son las ramas de prueba para ver una propuesta en la web antes de decidir (`esta
 
 - `https://ochoa-git-feat-inicio-vivo-rodz-dev.vercel.app` — la home viva como quedó en la rama.
   Desde el 2026-10-29 está entera en `preview`, con lo que Mario eligió en el probador encima
-  (`ochoa-inicio-vivo.md`): para ver lo vigente, el alias de `preview`.
+  (`ochoa-inicio-vivo.md`): para ver lo vigente, el alias de `preview`. La rama se borró el
+  2026-10-30, pero el alias sigue asignado a su último despliegue (API de Vercel, ese día).
 - `https://ochoa-git-feat-inicio-paralaje-rodz-dev.vercel.app` — el Inicio en paralaje, parado
   ese mismo día.
 
