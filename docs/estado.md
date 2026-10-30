@@ -74,31 +74,38 @@ como foto del local para los buscadores. El porqué, cómo está hecha y lo desc
 
 - **Probar la imagen nueva compartiendo el enlace de `preview` en WhatsApp.** Si sale la de antes,
   añadir `?v=2` al final del enlace: WhatsApp recuerda la vista previa de lo ya compartido.
-
 - **Ver en su iPhone los ajustes de esa noche**, en el alias de `preview` desde el 2026-10-30, y
   decir si el vermú del móvil se nota lo justo. La home viva está ahí desde el 2026-10-29; para
   que llegara hubo que arreglar el filtro de despliegue, que se saltaba los push de varios commits
   (`deploy.md` §Evitar que cada push reconstruya las dos webs). El mismo fallo
   tenía la web de Cokima en `preview` sin actualizar desde el 2026-10-26: su entrada con vídeo
   estaba en la rama y no en la web. Se desplegó con el arreglo, sin tocar nada de Cokima.
-- **«Conócenos», decidido el 2026-10-29 y por hacer.** La página se centra *«únicamente en la
-  experiencia del restaurante»*, así que la sección del equipo se quita. Y sí a usar frases que la
-  casa ya ha publicado —la del cubo de madera, las de su Instagram—: *«cuánto menos podamos
-  inventarnos, mejor, al menos, por el momento»*. Lleva fotos que no salen en la home (le gusta
-  mucho la del cubo, `DMf4a_eoWqt-1`). El código de la página sigue como estaba hasta que elija
-  entre las dos maneras que tiene en el probador (versión 5, enlazado desde «Conócenos»):
-  - **«En sus palabras»:** cinco momentos (La mañana, La barra, La ronda, La mesa, El sitio), cada
-    uno con su foto entera y una frase de la casa, alternando de lado; cierra el cubo;
-  - **«Un día en Los Ochoa»:** los mismos momentos como un día, con un reloj quieto que cambia de
-    hora al bajar (9:00, 12:00, 19:00, Noche, 1:00); en el móvil, en una franja bajo la cabecera.
+- **Revisar «Conócenos» en `preview` y pedir cambios sobre ella.** Está ahí desde el 2026-10-30
+  porque Mario quiso verla con el resto de la web en vez de elegir en el probador: *«sobre ello voy
+  viendo posibles cambios»*. Es «En sus palabras», la manera que el probador enseñaba de entrada
+  (versión 5): cinco momentos —La mañana, La barra, La ronda, La mesa, El sitio—, cada uno con su
+  foto entera y una frase de la casa, alternando de lado, y cierra el cubo de madera. Cada foto
+  entra con el telón al llegar a ella, y lleva el fondo vivo de la home, como en el probador. La
+  otra manera, «Un día en Los Ochoa» —los mismos momentos como un día, con un reloj quieto que
+  cambia de hora al bajar—, sigue solo en el probador. Sigue con `noindex` (`EN_OBRAS`, en
+  `conocenos.ts`) hasta que Mario la dé por buena.
 
-  El titular es suyo: *«Madrid tiene bares… y luego están las tascas, donde la comida acaba siendo
-  la excusa para quedarse»* (Instagram, 2026-05-28). Cada frase sale de la publicación de su propia
-  foto cuando la tiene; lo único escrito aquí son las etiquetas de los momentos, y los horarios son
-  los de `site.ts`. Las fotos: el comedor de «Conservas» (`DKKDXWDiK3x-1`), el desayuno
-  (`DHkzXrsiMmu-1`), la barra del espejo (`DHdb1_hCOls-2`), el aperol (`DPyg6SPCGH5-2`), la mesa
-  rotulada (`DLXrTlcoR2c-1`), el cartel de cerca (`DWUBtsWiBZK-1`) y el cubo. La historia sigue
-  sin poder contarse: no hay datos, y no se inventan.
+  Lo decidido el 2026-10-29: la página va *«únicamente»* de la experiencia del restaurante, sin el
+  equipo, y con frases que la casa ya ha publicado —la del cubo, las de su Instagram—: *«cuánto
+  menos podamos inventarnos, mejor, al menos, por el momento»*. El titular es suyo: *«Madrid tiene
+  bares… y luego están las tascas, donde la comida acaba siendo la excusa para quedarse»*
+  (Instagram, 2026-05-28). Cada frase sale de la publicación de su propia foto cuando la tiene; lo
+  único escrito aquí son las etiquetas de los momentos y las notas de horario, que salen de
+  `site.ts`: si el horario cambia, el build se para en `Conocenos.astro` hasta que se corrijan.
+  **En inglés, las frases son traducción nuestra, sin revisar por Mario.** Las fotos, copiadas de la
+  fototeca tal cual: el comedor de «Conservas» (`DKKDXWDiK3x-1`), el desayuno (`DHkzXrsiMmu-1`), la
+  barra del espejo (`DHdb1_hCOls-2`), el aperol (`DPyg6SPCGH5-2`), la mesa rotulada
+  (`DLXrTlcoR2c-1`), el cartel de cerca (`DWUBtsWiBZK-1`) y el cubo (`DMf4a_eoWqt-1`). La historia
+  sigue sin poder contarse: no hay datos, y no se inventan.
+
+  Medido sobre el build, en Chromium a 360, 390, 768, 1280 y 1440 de ancho y en WebKit a 390 y
+  1440: sin scroll lateral ni errores, las siete fotos descargadas y las siete entradas hechas al
+  bajar, en los dos idiomas; con «reducir movimiento», nada escondido. Sin mirar en un iPhone.
 - **El vídeo con IA.** La recomendación es el fondo del manifiesto, en lugar de la foto de las
   botellas:
   - va en blanco y negro multiplicado sobre el rojo, que disimula los fallos típicos de la IA;
@@ -472,10 +479,10 @@ de fusión, sin tocar nada más.
 **su §8 —los tres errores de método— vale más que el arreglo**. La receta portable, para
 cualquier web con `<ClientRouter />`, en `receta-barra-ios-astro.md`.
 
-**«Conócenos» de Ochoa (2026-08-04)** está montada y navegable en los dos idiomas, pero su cuerpo
-son cuatro rejillas de texto que dicen qué falta contar. Lleva `noindex` y fuera del sitemap; **el
+**«Conócenos» de Ochoa (2026-08-04)** nació montada y navegable en los dos idiomas, con el cuerpo
+en cuatro rejillas de texto que decían qué faltaba contar. Lleva `noindex` y fuera del sitemap; **el
 interruptor es `EN_OBRAS` en `apps/ochoa/src/conocenos.ts`, y ponerlo en `false` es el único
-paso**. Sigue esperando material.
+paso**. Desde el 2026-10-30 tiene su cuerpo, en revisión (§0).
 
 **Los despliegues cruzados (2026-08-16).** Cada push reconstruía las dos webs. Resuelto con un
 `ignoreCommand` por app; detalle y pruebas en `deploy.md`. Confirmado en real: al subir la rama de

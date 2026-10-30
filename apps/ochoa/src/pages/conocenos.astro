@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import Conocenos from "../components/Conocenos.astro";
+import Fondo from "../components/Fondo.astro";
 import { EN_OBRAS } from "../conocenos.ts";
 import { RESTAURANT } from "../site.ts";
 
@@ -24,11 +25,12 @@ const jsonLd = {
 
 <Base
   title="Conócenos · Tasquita Los Ochoa"
-  description="Quiénes somos: la historia de Tasquita Los Ochoa, la tasca de toda la vida en el Paseo de la Castellana, su cocina y la gente que está detrás de la barra."
+  description="Madrid tiene bares… y luego están las tascas, donde la comida acaba siendo la excusa para quedarse. Tasquita Los Ochoa, en el Paseo de la Castellana, contada con sus propias palabras."
   locale="es"
   altPath="/en/about"
   noindex={EN_OBRAS}
 >
+  <Fondo />
   <Conocenos locale="es" />
   {!EN_OBRAS && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />}
 </Base>

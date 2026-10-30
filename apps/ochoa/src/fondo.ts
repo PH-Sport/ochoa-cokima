@@ -68,10 +68,10 @@ const VETAS = {
  *  se salen de la ventana que se ve (las recorta un `clip-path`), así que
  *  contaban como si taparan el blanco de alrededor. */
 const TAPA =
-  "#tombo-consent, .nav, .hero, .cinta, .manifesto, footer, :is(.highlights, .tasca, .casa, .visita) :is(img, figure, a, button, .btn, .rule, .mosaico, .strip, .mapa, .turnos, h1, h2, h3, h4, p, li, dt, dd, address, blockquote, .eyebrow):not(.mosaico *)";
+  "#tombo-consent, .nav, .hero, .cinta, .manifesto, footer, :is(.highlights, .tasca, .casa, .visita, .conocenos) :is(img, figure, a, button, .btn, .rule, .mosaico, .strip, .mapa, .turnos, h1, h2, h3, h4, p, li, dt, dd, address, blockquote, .eyebrow):not(.mosaico *)";
 /** El texto que se protege: detrás de él el fondo baja al 28%. */
 const TEXTO =
-  ":is(.highlights, .tasca, .casa, .visita) :is(h1, h2, h3, h4, p, li, dt, dd, address, figcaption, blockquote, .btn, .eyebrow)";
+  ":is(.highlights, .tasca, .casa, .visita, .conocenos) :is(h1, h2, h3, h4, p, li, dt, dd, address, figcaption, blockquote, .btn, .eyebrow)";
 
 const VS = `#version 300 es
 void main() {

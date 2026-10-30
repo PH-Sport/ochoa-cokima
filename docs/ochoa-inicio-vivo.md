@@ -1,6 +1,6 @@
 # Ochoa: el Inicio vivo
 
-> **Estado: vivo** · en `preview` desde el 2026-10-29 · revisado 2026-10-29
+> **Estado: vivo** · en `preview` desde el 2026-10-29 · revisado 2026-10-30
 
 - **Abierto:** 2026-10-28 · **En `preview`:** 2026-10-29
 - **Ramas:** `preview`. Antes se probó en `feat/inicio-paralaje` (parada el 2026-10-28) y en
@@ -93,7 +93,8 @@ abierto cuando la ventana pasa de 861 px, se cierra: el botón que lo cierra ya 
 
 ### 3.2 El fondo vivo: «Vermú y palabras»
 
-`components/Fondo.astro` y `fondo.ts`, solo en la home, en los dos idiomas. Un lienzo fijo detrás
+`components/Fondo.astro` y `fondo.ts`, en la home y, desde el 2026-10-30, en «Conócenos», como en
+el probador; en los dos idiomas. Un lienzo fijo detrás
 de toda la página, dibujado en directo con WebGL2 —la manera que pidió Mario, la de PHSPORT—. Se ve
 porque las secciones blancas no tienen fondo propio; los bloques opacos (portada, cinta,
 manifiesto, pie, fotos) lo tapan. Dos capas a la vez:

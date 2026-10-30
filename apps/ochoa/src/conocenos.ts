@@ -1,15 +1,15 @@
 /**
  * ¿«Conócenos» sigue en obras?
  *
- * La página está montada y navegable, pero su cuerpo son huecos a la espera de
- * la historia real del restaurante. Mientras eso siga así **no puede llegar a
- * los buscadores**: una página de marca vacía compite con la home por las
- * mismas palabras y sale perdiendo, que es justo lo contrario de para lo que se
- * hizo. Con esta bandera en `true` lleva `noindex, follow` y se queda fuera del
- * sitemap (ver `astro.config.mjs`).
+ * Desde el 2026-10-30 tiene su cuerpo —la casa contada con sus propias frases—,
+ * pero Mario lo está revisando en `preview` para pedir cambios. Hasta que lo dé
+ * por bueno **no puede llegar a los buscadores**: una página de marca a medias
+ * compite con la home por las mismas palabras y sale perdiendo. Con esta
+ * bandera en `true` lleva `noindex, follow` y se queda fuera del sitemap (ver
+ * `astro.config.mjs`).
  *
- * **Ponerlo en `false` es el único paso que queda** cuando el texto esté
- * escrito: de ahí salen a la vez el indexado, la entrada en el sitemap y el
+ * **Ponerlo en `false` es el único paso que queda** cuando Mario la dé por
+ * buena: de ahí salen a la vez el indexado, la entrada en el sitemap y el
  * JSON-LD `AboutPage`. No hay nada más que tocar.
  */
 export const EN_OBRAS = true;
