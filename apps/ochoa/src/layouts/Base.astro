@@ -86,7 +86,9 @@ const guionEntrada = `
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin />
-    <Seo title={title} description={description} locale={locale} altPath={altSeoPath ?? undefined} restaurant={RESTAURANT} ogImage="/images/hero.jpg" noindex={noindex} />
+    {/* Al compartir el enlace, el cartel que eligió Mario; a los buscadores, la
+        fachada (fotografia.md §Nota técnica). */}
+    <Seo title={title} description={description} locale={locale} altPath={altSeoPath ?? undefined} restaurant={RESTAURANT} ogImage="/images/compartir.jpg" schemaImage="/images/hero.jpg" noindex={noindex} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     {/* La entrada, decidida antes de que se pinte nada. Va después del preload
         de las fuentes para no retrasarlo: el rótulo de la plancha es Anton, y

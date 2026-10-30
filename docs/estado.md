@@ -64,7 +64,16 @@ conexión lenta.
 Medido sobre el build en el simulador de iOS y en Chromium y WebKit, en 26 tamaños de pantalla.
 **Falta que lo vea Mario en su iPhone**, y un plegable de verdad no se ha probado: solo sus tamaños.
 
+**La imagen al compartir el enlace es, desde el 2026-10-30, un cartel y no una foto:** «Los Ochoa»
+en blanco sobre el rojo de la casa, con el mármol del fondo en blanco, como el toldo. Mario la eligió
+entre tres y pidió las vetas *«un poquiiiito»* más blancas. La fachada, que era la de antes, se queda
+como foto del local para los buscadores. El porqué, cómo está hecha y lo descartado, en
+`fotografia.md` §Nota técnica.
+
 **Lo que espera a Mario:**
+
+- **Probar la imagen nueva compartiendo el enlace de `preview` en WhatsApp.** Si sale la de antes,
+  añadir `?v=2` al final del enlace: WhatsApp recuerda la vista previa de lo ya compartido.
 
 - **Ver en su iPhone los ajustes de esa noche**, en el alias de `preview` desde el 2026-10-30, y
   decir si el vermú del móvil se nota lo justo. La home viva está ahí desde el 2026-10-29; para

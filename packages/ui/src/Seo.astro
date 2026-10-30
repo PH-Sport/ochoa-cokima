@@ -13,6 +13,10 @@ interface Props {
   altPath?: string;
   restaurant: RestaurantInfo;
   ogImage?: string;
+  /** La foto del local para los buscadores (el `image` del JSON-LD). Sin ella
+   *  vale la de compartir. Va aparte porque la de compartir puede ser un
+   *  cartel, y a un buscador se le enseña el sitio. */
+  schemaImage?: string;
   /** Página que existe pero todavía no debe indexarse: la que está montada con
    *  huecos de contenido a la espera de material. `follow` y no `nofollow`
    *  porque los enlaces que salen de ella —a la carta, a reservas— sí valen;
@@ -20,7 +24,7 @@ interface Props {
   noindex?: boolean;
 }
 
-const { title, description, locale, altPath, restaurant, ogImage, noindex = false } = Astro.props;
+const { title, description, locale, altPath, restaurant, ogImage, schemaImage = ogImage, noindex = false } = Astro.props;
 const site = Astro.site ?? new URL("http://localhost:4321");
 const canonical = new URL(Astro.url.pathname, site);
 const alternate = altPath ? new URL(altPath, site) : null;
@@ -44,7 +48,7 @@ const jsonLd = {
   openingHours: restaurant.openingHours,
   url: canonical.href,
   ...(restaurant.instagram ? { sameAs: [restaurant.instagram] } : {}),
-  ...(ogImage ? { image: new URL(ogImage, site).href } : {}),
+  ...(schemaImage ? { image: new URL(schemaImage, site).href } : {}),
 };
 ---
 

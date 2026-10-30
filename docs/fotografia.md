@@ -1,6 +1,6 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-10-29 · Ochoa tiene foto en sus seis destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, portada y casa
+> **Estado: vivo** · revisado 2026-10-30 · Ochoa tiene foto en sus seis destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, portada y casa
 
 ## Estado
 
@@ -76,7 +76,7 @@ mayor resolución disponible.
 | Destino | Qué buscamos |
 |---|---|
 | `apps/cokima/src/assets/hero.jpg` | ✅ **`DepAPTwNTvJ-1`, puesta el 2026-10-26**: la sartén en llamas en el fogón (cuadrada, 1440), con su copia a 1200 en `public/images/` para las redes. Sustituye a la burrata de 2021. Es la misma foto que el pase de «la casa», pero **en pantalla no se repite: la portada con foto (`Hero.astro`) quedó huérfana al entrar el rediseño en `preview` el 2026-10-26**, y la cabecera es el vídeo. Esta foto solo se ve al compartir el enlace. Mientras la portada vieja estuvo puesta, a 390px el tramo rojo del titular caía sobre el fuego y se leía mal; con la burrata pasaba lo mismo o peor (titular blanco sobre la burrata blanca), y otras dos fotos oscuras tampoco lo resolvían. Era el velo de esa portada, no la foto. **Si `Hero.astro` vuelve a usarse, revisar eso antes.** |
-| `apps/ochoa/src/assets/portada/*.jpg` | ✅ **Desde el 2026-10-29, ocho fotos de Instagram que no salen en el resto de la home** (la serie, sus encuadres y sus textos, en `src/data/portada.ts`; en el móvil, telón; en el ordenador, la tira, `ochoa-inicio-vivo.md`). En orden: `brindis.jpg` (`DMsOEbToHc4-1`, brindis con vino y caña), `clienta.jpg` (`DPeYU5ziIo6-2`), `brioche.jpg` (`C66BbqHtC1M-1`, el camarero con un brioche; la única a 2060 px), `vermu-gilda.jpg` (`DHQbxoKiBLd-1`), `brindis-barra.jpg` (`DPyg6SPCGH5-3`, caña y vermú), `cana.jpg` (`DLAgINkIMFS-1`, tirando una caña), `cristal.jpg` (`C2Pz8szNUrq-10`, el rótulo del cristal) y `vino.jpg` (`DNF9_F0IzXV-1`). Copiadas de la fototeca tal cual, a su tamaño de Instagram. Mario las eligió en la tercera ronda del probador: la serie anterior no le convencía, *«principalmente por las fotos»*. Fuera de la elección, con su motivo: las de Navidad, que caducan; la de la camiseta del Madrid, que es de un equipo; y la del guante de Spiderman, que es más de Cokima. **Las seis de antes salen de la portada y sus archivos se quedan sin uso, sin borrar:** `sala.jpg` (`DHdb1_hCOls-1`), `barra-clientas.jpg` (`DQe2dPqiJwV-1`), `cocinero.jpg` (`DQB1FAiCKup-1`), `barra-rotulos.jpg` (`DV_ZtJHCPRQ-1`), `sirviendo.jpg` (`DPeYU5ziIo6-1`) y `rotulo-exterior.jpg` (`DPyg6SPCGH5-1`); fueron la portada del 2026-10-27 al 29. La fachada (`hero.jpg`, `LosOchoa-5`) tampoco se ve en la portada desde el 2026-10-27; **sigue siendo la imagen al compartir el enlace** (§Nota técnica), y el archivo de `src/assets/hero.jpg` sigue sin uso y sin borrar. |
+| `apps/ochoa/src/assets/portada/*.jpg` | ✅ **Desde el 2026-10-29, ocho fotos de Instagram que no salen en el resto de la home** (la serie, sus encuadres y sus textos, en `src/data/portada.ts`; en el móvil, telón; en el ordenador, la tira, `ochoa-inicio-vivo.md`). En orden: `brindis.jpg` (`DMsOEbToHc4-1`, brindis con vino y caña), `clienta.jpg` (`DPeYU5ziIo6-2`), `brioche.jpg` (`C66BbqHtC1M-1`, el camarero con un brioche; la única a 2060 px), `vermu-gilda.jpg` (`DHQbxoKiBLd-1`), `brindis-barra.jpg` (`DPyg6SPCGH5-3`, caña y vermú), `cana.jpg` (`DLAgINkIMFS-1`, tirando una caña), `cristal.jpg` (`C2Pz8szNUrq-10`, el rótulo del cristal) y `vino.jpg` (`DNF9_F0IzXV-1`). Copiadas de la fototeca tal cual, a su tamaño de Instagram. Mario las eligió en la tercera ronda del probador: la serie anterior no le convencía, *«principalmente por las fotos»*. Fuera de la elección, con su motivo: las de Navidad, que caducan; la de la camiseta del Madrid, que es de un equipo; y la del guante de Spiderman, que es más de Cokima. **Las seis de antes salen de la portada y sus archivos se quedan sin uso, sin borrar:** `sala.jpg` (`DHdb1_hCOls-1`), `barra-clientas.jpg` (`DQe2dPqiJwV-1`), `cocinero.jpg` (`DQB1FAiCKup-1`), `barra-rotulos.jpg` (`DV_ZtJHCPRQ-1`), `sirviendo.jpg` (`DPeYU5ziIo6-1`) y `rotulo-exterior.jpg` (`DPyg6SPCGH5-1`); fueron la portada del 2026-10-27 al 29. La fachada (`hero.jpg`, `LosOchoa-5`) tampoco se ve en la portada desde el 2026-10-27, y **desde el 2026-10-30 ya no es la imagen al compartir el enlace**: se queda como foto del local para los buscadores (§Nota técnica). El archivo de `src/assets/hero.jpg` sigue sin uso y sin borrar. |
 
 **El encuadre de la portada de Ochoa solo cuenta en el móvil.** Ahí la portada llena la pantalla
 y cada foto se recorta por los lados, así que lleva su `encuadre` (`object-position`) en
@@ -325,9 +325,25 @@ Las fotos de portada viven duplicadas a propósito: en `src/assets/` las procesa
 `public/images/` se sirven tal cual como `og:image` de las redes sociales, que necesita una URL
 estable. Al sustituir una portada hay que cambiar **las dos copias**.
 
-En Ochoa el `og:image` apunta a `/images/hero.jpg` —la fachada—. Se eligió para que la vista
-previa en redes fuera la misma imagen que ve quien entra, y **desde el 2026-10-27 ya no lo es**: la
-portada abrió con la sala y, desde el 2026-10-29, abre con un brindis. Se dejó así a propósito, sin
-decidir: la fachada dice qué sitio es mejor que cualquiera de las fotos de la portada en una
-miniatura. Si Mario prefiere otra, es copiarla a `public/images/` y cambiar la ruta en `Base.astro`.
+**En Ochoa, desde el 2026-10-30, la imagen al compartir el enlace es un cartel y no una foto:**
+`/images/compartir.jpg`, «Los Ochoa» en blanco sobre el rojo de la casa, con el mármol del fondo en
+blanco, como el toldo. Hasta entonces era la fachada (`/images/hero.jpg`), elegida para que la vista
+previa fuera lo primero que ve quien entra; dejó de serlo cuando la portada pasó a fotos de
+Instagram, y Mario pidió una imagen propia para WhatsApp, *«jugando con los colores, el efecto de
+mármol, la fuente de letra»*. Se le enseñaron tres: el titular de la portada sobre el mármol blanco,
+este toldo y el nombre con las palabras de la barra alrededor. Eligió el toldo, con las vetas *«un
+poquiiiito»* más blancas. **La fachada sigue siendo la foto del local para los buscadores:** el
+`image` del JSON-LD sale de `schemaImage` y no de `ogImage` (`Seo.astro`), porque a un buscador se
+le enseña el sitio y no un cartel. Cokima no pasa `schemaImage` y sigue con una sola imagen.
+
+**Cómo está hecha, para rehacerla.** 1200×630, que es lo que WhatsApp enseña en grande, en JPEG de
+calidad 86: 59 KB (para WhatsApp se suelen recomendar menos de 300; la fachada pesa 428). Fondo
+`--rojo`. Las vetas son las del vermú de `fondo.ts`, solo la red y sin palabras, quietas en el
+segundo 30, en blanco, a opacidad 0,34 (0,26 en la primera prueba) y escala 0,8. «Los Ochoa» va en
+Anton a 238 px, en blanco, con la sombra dura de `.cartel` (0,045 em y 0,05 em, `--ink`); «Tasquita»
+y «Madrid», en Archivo 700 al 84 % de ancho, a 36 px y con 0,34 em de espaciado, y un filete de
+110×3 px a cada lado de «Madrid». Se pintó con Chromium a densidad 1 desde un HTML de una sola vez
+que no está en el repo: con estos números se rehace. No lleva texto que traducir, así que es la
+misma en los dos idiomas. WhatsApp recuerda la vista previa de un enlace ya compartido (sabido, no
+comprobado aquí): para ver la nueva en uno que ya se mandó, añadirle `?v=2`.
 `/images/mesa.jpg` es el cenital de la mesa, que sirve la sección «la tasca».
