@@ -2,6 +2,7 @@
 import Base from "../layouts/Base.astro";
 import BookingEmbed from "@tombo/ui/BookingEmbed.astro";
 import { COVER_SLUG } from "../site.ts";
+import Fondo from "../components/Fondo.astro";
 
 // La piel de la casa para el motor de CoverManager (ver pages/covermanager.css.ts).
 // En local no se aplica: el motor es https y no carga una hoja de http://localhost.
@@ -14,6 +15,7 @@ const coverTemplate = new URL("/covermanager.css", Astro.site).href;
   locale="es"
   altPath="/en/reservations"
 >
+  <Fondo palabras={false} />
   <section class="reservar">
     <div class="wrap">
       <div class="grid">

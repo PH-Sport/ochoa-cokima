@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import MenuBoard from "../../components/MenuBoard.astro";
+import Fondo from "../../components/Fondo.astro";
 
 const all = (await getCollection("menu-en")).map((e) => e.data);
 ---
@@ -12,6 +13,7 @@ const all = (await getCollection("menu-en")).map((e) => e.data);
   locale="en"
   altPath="/carta"
 >
+  <Fondo palabras={false} />
   <section class="carta">
     <div class="wrap">
       <p class="eyebrow">Tasquita · Madriz</p>

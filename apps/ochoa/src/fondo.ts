@@ -13,6 +13,9 @@
 //    borran. Nunca más de tres a la vez (dos en el móvil). La luz es el cursor,
 //    como en El relieve; sin ratón, pasea sola. Y la luz del vermú las enciende.
 //
+// Va en la home y en «Conócenos» y, desde el 2026-10-30, en La carta y Reservar
+// solo con las vetas (`data-fondo="vetas"`; el porqué, en `Fondo.astro`).
+//
 // Las secciones blancas de la home son transparentes y dejan ver el lienzo; los
 // bloques opacos —portada, cinta, manifiesto, pie, fotos— lo tapan. Lo que se
 // probó y se descartó por el camino, en docs/ochoa-inicio-vivo.md. Es movimiento
@@ -69,9 +72,13 @@ const VETAS = {
  *  contaban como si taparan el blanco de alrededor. */
 const TAPA =
   "#tombo-consent, .nav, .hero, .cinta, .manifesto, footer, :is(.highlights, .tasca, .casa, .visita, .conocenos) :is(img, figure, a, button, .btn, .rule, .mosaico, .strip, .mapa, .turnos, h1, h2, h3, h4, p, li, dt, dd, address, blockquote, .eyebrow):not(.mosaico *)";
-/** El texto que se protege: detrás de él el fondo baja al 28%. */
+/** El texto que se protege: detrás de él el fondo baja al 28%. En La carta va
+ *  cada tabla entera y no cada plato: el sombreador recibe 16 cajas, las más
+ *  grandes, y con una por plato se quedarían platos sin proteger. El recuadro
+ *  de Reservar no hace falta: es opaco. Ni La carta ni Reservar están en `TAPA`
+ *  porque allí no salen palabras. */
 const TEXTO =
-  ":is(.highlights, .tasca, .casa, .visita, .conocenos) :is(h1, h2, h3, h4, p, li, dt, dd, address, figcaption, blockquote, .btn, .eyebrow)";
+  ":is(.highlights, .tasca, .casa, .visita, .conocenos) :is(h1, h2, h3, h4, p, li, dt, dd, address, figcaption, blockquote, .btn, .eyebrow), :is(.carta, .reservar) :is(h1, h2, p, table, dl, .eyebrow)";
 
 const VS = `#version 300 es
 void main() {
@@ -585,15 +592,17 @@ export function montaFondo(): (() => void) | null {
   ajusta();
   /* Las palabras esperan a su letra, y solo salen en ella: si Yellowtail no
      llega, el vermú sigue solo en vez de pintarlas con otra. Mientras tanto no se
-     espera a nada: el vermú arranca ya. */
-  document.fonts
-    .load(FUENTE)
-    .then(() => {
-      if (!vivo || !document.fonts.check(FUENTE)) return;
-      construyeAtlas();
-      pide();
-    })
-    .catch(() => {});
+     espera a nada: el vermú arranca ya. Sin atlas no nace ninguna, y así quedan
+     solo las vetas donde el lienzo lo pide (`data-fondo="vetas"`). */
+  if (lienzo.dataset.fondo !== "vetas")
+    document.fonts
+      .load(FUENTE)
+      .then(() => {
+        if (!vivo || !document.fonts.check(FUENTE)) return;
+        construyeAtlas();
+        pide();
+      })
+      .catch(() => {});
 
   return () => {
     vivo = false;

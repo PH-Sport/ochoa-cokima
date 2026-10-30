@@ -70,6 +70,13 @@ entre tres y pidió las vetas *«un poquiiiito»* más blancas. La fachada, que 
 como foto del local para los buscadores. El porqué, cómo está hecha y lo descartado, en
 `fotografia.md` §Nota técnica.
 
+**La carta y Reservar llevan, desde el 2026-10-30, el mármol de la home**, en los dos idiomas:
+Mario lo pidió así, *«añádele el efecto de mármol rojo a las páginas de La Carta y Reservar»*. Solo
+las vetas, sin las palabras del espejo: una palabra de la carta pintada junto a la carta de verdad
+se leería como un plato más. Detrás del texto baja al 28 %, como en la home, así que en el móvil,
+donde la carta ocupa casi todo el ancho, se nota sobre todo alrededor del título y entre
+secciones. El cómo y lo medido, en `ochoa-inicio-vivo.md` §3.2.
+
 **Lo que espera a Mario:**
 
 - **Probar la imagen nueva compartiendo el enlace de `preview` en WhatsApp.** Si sale la de antes,
@@ -80,10 +87,50 @@ como foto del local para los buscadores. El porqué, cómo está hecha y lo desc
   (`deploy.md` §Evitar que cada push reconstruya las dos webs). El mismo fallo
   tenía la web de Cokima en `preview` sin actualizar desde el 2026-10-26: su entrada con vídeo
   estaba en la rama y no en la web. Se desplegó con el arreglo, sin tocar nada de Cokima.
-- **Revisar «Conócenos» en `preview` y pedir cambios sobre ella.** Está ahí desde el 2026-10-30
-  porque Mario quiso verla con el resto de la web en vez de elegir en el probador: *«sobre ello voy
-  viendo posibles cambios»*. Es «En sus palabras», la manera que el probador enseñaba de entrada
-  (versión 5): cinco momentos —La mañana, La barra, La ronda, La mesa, El sitio—, cada uno con su
+- **Ver en su iPhone el mármol de La carta y Reservar** y decir si detrás de la carta se nota lo
+  justo (arriba).
+- **Decir si «Dónde estamos» pasa a ser una página.** Hoy el enlace del menú lleva a la sección de
+  la home (`#visita`, o `/#visita` desde las demás páginas). Mario preguntó el 2026-10-30 si dejarlo
+  así o hacer *«una página simple, pero dedicada»*, con alguna foto o *«un pie de texto
+  sencillito»*. Se le recomendó la página: es el único enlace del menú que no lleva a una página, y
+  en el móvil despista (se cierra la cortina, carga la home entera y baja sola); quien la busca
+  suele estar en la calle con el móvil, y una página con la dirección, el horario, el mapa y «Cómo
+  llegar» pesa mucho menos que la home; y tendría enlace propio para Instagram o WhatsApp. Llevaría
+  lo mismo que la sección de la home, sacado de los mismos datos, más la fachada y, de pie, *«Los
+  Ochoa te espera»* (Instagram, 2026-05-28). **La única foto de la fachada (`hero.jpg`,
+  `LosOchoa-5`) es de 2021:** sale alguien con mascarilla y la pizarra del desayuno con el precio de
+  entonces. Hay que pedirle una actual al restaurante; mientras tanto vale el cartel colgante de
+  cerca (`DWUBtsWiBZK-1`, de 2026). La sección de la home se queda como está.
+- **Decir si se montan en el probador las tres maneras nuevas de «Conócenos».** La que hay en
+  `preview` (abajo) la vio Mario el mismo 2026-10-30 y pidió darle una vuelta: *«hay algunas fotos
+  en Conócenos que vuelve a repetirse, o que directamente son muy parecidas al resto»* —solo le
+  convencen la tostada y el dado—; en el ordenador la ve *«algo vacía y plana»*, en el móvil
+  *«demasiado "vertical"»*, y sin *«la misma "vida"»* que el resto. Las tres cosas, medidas sobre el
+  build: cuatro de las siete fotos son casi gemelas de otras de la home (el comedor, la barra, el
+  aperol —de la misma sesión que el brindis de la portada— y el cartel, que repite el rótulo del
+  cristal); en el móvil la página mide 5,8 pantallas a 390×844, y la home entera 4,8; en el
+  ordenador, 6,1 pantallas a 1440×900, y cada momento ocupa 0,8 de pantalla para una foto y una
+  frase.
+
+  La propuesta, que espera su respuesta: contar la casa por **sus rituales**, que la home no
+  enseña. El desayuno (`DHkzXrsiMmu-1`), la tortilla con su caña (`DL5NAUeIv4v-1`), mojar pan
+  (`DQe2dPqiJwV-2`), el pan y el aceite (`DHGMm3iipxs-1`), los tercios en hielo (`DcQn2lFIH4h-1`) y
+  el dado (`DMf4a_eoWqt-1`), con tres de reserva: el bocata de calamares (`DBLrwVVtRR0-1`), la
+  vitrina con su pizarra (`C2Pz8szNUrq-4`) y el café en la barra (`DKq4fpCC4jt-1`). Ninguna sale en
+  el resto de la web, y cada una trae frase en su propia publicación. La gilda en la mano
+  (`DY4YiorCGi8-4`) es la foto de la publicación del titular, pero se queda fuera: la home ya tiene
+  dos gildas. De estructura se recomienda **«La pizarra»**: los rituales en lista, con letra de
+  rótulo, y al lado la foto del que se lee, que cambia con el telón. En el móvil la foto se queda
+  arriba y cambia al bajar (se calculan unas tres pantallas, sin medir); en el ordenador cambia al
+  pasar el ratón, se mueve con el cursor y pasa sola si no se toca nada. Se parece al gesto de «El
+  espejo» (`archivo/2026-10-28-ochoa-inicio-direcciones.md`), que era para la carta de la home. Para
+  comparar, **«El mosaico»** —el de La casa con los rituales: le gusta, pero repite una pieza de la
+  home— y **«La tira»** —los rituales pasando solos, como la portada del ordenador: la más corta,
+  pero obliga a leer frases en movimiento—. Se eligen viéndolas en el móvil (`metodo.md` §1).
+
+  Lo que hay hoy en `preview`, desde el 2026-10-30, porque Mario quiso verla con el resto de la web
+  en vez de elegir en el probador: *«sobre ello voy viendo posibles cambios»*. Es «En sus
+  palabras», la manera que el probador enseñaba de entrada (versión 5): cinco momentos —La mañana, La barra, La ronda, La mesa, El sitio—, cada uno con su
   foto entera y una frase de la casa, alternando de lado, y cierra el cubo de madera. Cada foto
   entra con el telón al llegar a ella, y lleva el fondo vivo de la home, como en el probador. La
   otra manera, «Un día en Los Ochoa» —los mismos momentos como un día, con un reloj quieto que

@@ -94,7 +94,8 @@ abierto cuando la ventana pasa de 861 px, se cierra: el botón que lo cierra ya 
 ### 3.2 El fondo vivo: «Vermú y palabras»
 
 `components/Fondo.astro` y `fondo.ts`, en la home y, desde el 2026-10-30, en «Conócenos», como en
-el probador; en los dos idiomas. Un lienzo fijo detrás
+el probador; en los dos idiomas. Desde ese mismo día, también en La carta y Reservar, solo con las
+vetas (abajo). Un lienzo fijo detrás
 de toda la página, dibujado en directo con WebGL2 —la manera que pidió Mario, la de PHSPORT—. Se ve
 porque las secciones blancas no tienen fondo propio; los bloques opacos (portada, cinta,
 manifiesto, pie, fotos) lo tapan. Dos capas a la vez:
@@ -114,6 +115,22 @@ dentro (§5). **Con «reducir movimiento»**, un fotograma quieto que solo se re
 cambiar de tamaño, y las palabras salen ya pintadas, sin pincel. **Con la pestaña oculta** no se
 pinta nada, y **al salir de la página** se suelta el contexto de WebGL antes de que el router cambie
 de página.
+
+**En La carta y Reservar, solo las vetas** (2026-10-30). Mario pidió ahí *«el efecto de mármol
+rojo»*. Las palabras no van, porque una palabra de la carta pintada junto a la carta de verdad se
+leería como un plato más: el lienzo lleva `data-fondo="vetas"`, y sin atlas no nace ninguna (ni se
+pide Yellowtail). Detrás de la carta se protege cada tabla entera y no cada plato: el sombreador
+recibe 16 cajas, las más grandes, y con una por plato se quedaban platos sin proteger. Por eso en
+el móvil, donde la carta ocupa casi todo el ancho, el mármol se nota sobre todo alrededor del
+título y entre secciones, y detrás de los platos baja al 28 %, como detrás de los textos de la home.
+Subirlo ahí costaría contraste a las descripciones grises. El recuadro de Reservar es opaco y no
+hace falta protegerlo. Medido sobre el build, en Chromium a 390 y 1440 de ancho (las cuatro
+páginas) y en WebKit (La carta a 390, Reservar a 1440): el lienzo, montado en las cuatro y sin
+palabras, y Yellowtail sin pedir, cuando en la home sí se pide; el tinte rojo medio de los píxeles
+claros, detrás de las tablas, entre 0,75 y 1,17, y fuera, entre 1,5 y 3,3; sin scroll lateral ni
+errores, salvo el `403` del motor de CoverManager, que no se deja cargar en el navegador de pruebas.
+Pasando de la home a La carta con el router y volviendo, cada página monta su lienzo; con «reducir
+movimiento», un fotograma quieto. Sin mirar en un iPhone.
 
 **Sin ratón, el vermú va más fuerte** (2026-10-29). En su iPhone, Mario lo veía *«apenas»*: sin
 cursor que lo encienda, a la escala del ordenador cabía menos de una celda de la red en la

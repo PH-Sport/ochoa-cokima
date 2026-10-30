@@ -2,14 +2,23 @@
 // El fondo vivo de la home, «Vermú y palabras» (2026-10-29): un lienzo fijo
 // detrás de toda la página, dibujado en directo. Qué pinta y por qué, en
 // `../fondo.ts`; lo que se probó y se descartó, en docs/ochoa-inicio-vivo.md.
-// En la home y en «Conócenos», en los dos idiomas: el resto de páginas son para
-// leer la carta o reservar, y ahí no se le pide a nadie que mire el fondo.
-// «Conócenos» lo lleva desde el 2026-10-30 porque así se diseñó en el probador:
-// es la otra página que cuenta la casa en vez de servir para algo.
+// En la home y en «Conócenos», en los dos idiomas. «Conócenos» lo lleva desde el
+// 2026-10-30 porque así se diseñó en el probador: es la otra página que cuenta la
+// casa en vez de servir para algo.
+// Desde el mismo día, también La carta y Reservar, porque Mario lo pidió ahí
+// («añádele el efecto de mármol rojo»), pero solo con las vetas: son páginas para
+// leer la carta o reservar, y una palabra suelta de la carta pintada junto a la
+// carta de verdad se leería como un plato más.
+
+interface Props {
+  /** Las palabras del espejo. Sin ellas quedan solo las vetas del vermú. */
+  palabras?: boolean;
+}
+const { palabras = true } = Astro.props;
 ---
 
 {/* Decoración pura: no dice nada que no diga la página. */}
-<canvas class="fondo-vivo" data-fondo aria-hidden="true"></canvas>
+<canvas class="fondo-vivo" data-fondo={palabras ? "" : "vetas"} aria-hidden="true"></canvas>
 
 <script>
   import { montaFondo } from "../fondo.ts";
