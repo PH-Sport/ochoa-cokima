@@ -1,6 +1,6 @@
 # Recursos: identificadores, accesos y material
 
-> **Estado: vivo** · revisado 2026-10-29
+> **Estado: vivo** · revisado 2026-10-31
 
 **Lo que cuesta recuperar y no se deduce del código.** URLs, slugs, IDs de proyecto y dónde vive
 el material que entrega Mario. Todo lo de aquí está verificado; cada bloque dice cuándo y cómo.
@@ -47,6 +47,11 @@ son las ramas de prueba para ver una propuesta en la web antes de decidir (`esta
   2026-10-30, pero el alias sigue asignado a su último despliegue (API de Vercel, ese día).
 - `https://ochoa-git-feat-inicio-paralaje-rodz-dev.vercel.app` — el Inicio en paralaje, parado
   ese mismo día.
+- `https://cokima-git-feat-cokima-brasa-rodz-dev.vercel.app/brasa/` — el boceto Brasa de Cokima
+  como página suelta, solo unas horas del 2026-10-31: ese mismo día Brasa pasó a ser la web de
+  Cokima en `preview` (`cokima-el-rediseno.md` §3). Para ver lo vigente, el alias de `preview`, que
+  admite enlaces directos a cada sección: `#carta`, `#carta-1`, `#carta-2`, `#carta-3`,
+  `#nosotros` y `#visitanos`.
 
 **Notas de operación:**
 

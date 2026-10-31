@@ -1,221 +1,188 @@
 ---
+// La home de Cokima es Brasa desde el 2026-10-31: el boceto que eligió Mario, en una sola página
+// con cuatro secciones (docs/cokima-el-rediseno.md §3). No usa Base.astro: aquel es el marco de la
+// web anterior —su cabecera, su pie, su cartel de cookies y el router de transiciones—, y Brasa
+// trae su propia barra y cambia de sección sin recargar. Las legales siguen con Base.
+import "../styles/tokens.css";
+import "../styles/brasa.css";
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
-import { pickFeatured } from "@tombo/content";
-import Base from "../layouts/Base.astro";
-import Entrada from "../components/Entrada.astro";
-import Highlights from "../components/Highlights.astro";
-import { casa } from "../data/casa.ts";
+import Seo from "@tombo/ui/Seo.astro";
+import { RESTAURANT } from "../site.ts";
+import poster from "../assets/entrada-poster.jpg";
 
-const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data));
+// El vídeo de la entrada, detrás de la portada (Mario, 2026-10-31: «a modo provisional»). Se busca
+// con import.meta.glob por lo mismo que en Entrada.astro, que explica la trampa: la existencia la
+// resuelve el bundler, no el sistema de ficheros. Dos cortes: el vertical y, en el ordenador, el
+// ancho, que elige brasa.js al arrancar.
+const cintas = import.meta.glob<string>("../assets/video/entrada{,-ancho}.{mp4,webm}", {
+  eager: true,
+  query: "?url",
+  import: "default",
+});
+const url = (nombre: string, ext: string) =>
+  Object.entries(cintas).find(([ruta]) => ruta.endsWith(`/${nombre}.${ext}`))?.[1];
+const mp4 = url("entrada", "mp4");
+const webm = url("entrada", "webm");
+const mp4Ancho = url("entrada-ancho", "mp4");
+const webmAncho = url("entrada-ancho", "webm");
+
+// La carta entra en la página como datos, y la pinta brasa.js según la manera elegida.
+const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
+  id,
+  section: data.section,
+  name: data.name,
+  description: data.description ?? null,
+  price: data.price,
+  featured: data.featured ?? null,
+}));
 ---
 
-<Base
-  title="Cokima — Kitchen Madness · Restaurante en Madrid"
-  description="Una explosión de sabor en Andrés Mellado 21, Madrid. Cocina para compartir: de la receta madrileña de siempre a la más exótica. Reserva tu mesa."
-  locale="es"
-  altPath="/en/"
->
-  <Entrada locale="es" />
-
-  <Highlights dishes={featured} locale="es" href="/carta" />
-
-  <section class="manifesto">
-    <div class="wrap">
-      <p class="quote">«Nos gusta mezclar, probar, mancharnos.»</p>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    {/* Los dos metas del esquema oscuro, por lo mismo que en Base.astro; el tono es el --ground. */}
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0e0907" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/bricolage-400.woff2" as="font" type="font/woff2" crossorigin />
+    {/* La Cormorant viene de Google Fonts, como en el boceto. Antes de producción se sirve desde
+        la web, como la Bricolage: pedirla a Google le pasa la IP de cada visita. */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,300;1,400&display=swap" />
+    <Seo
+      title="Cokima — Kitchen Madness · Restaurante en Madrid"
+      description="Una explosión de sabor en Andrés Mellado 21, Madrid. Cocina para compartir: de la receta madrileña de siempre a la más exótica. Reserva tu mesa."
+      locale="es"
+      restaurant={RESTAURANT}
+      ogImage="/images/hero.jpg"
+    />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+  </head>
+  <body>
+    {/* El vídeo va antes que el fondo y fuera de <main>: así el fuego se pinta ENCIMA del vídeo
+        y el texto encima de los dos. El póster manda mientras no hay cinta —con «reducir
+        movimiento», con ahorro de datos o si el iPhone no deja reproducir—. Sin `autoplay`: la
+        arranca brasa.js, que es quien sabe qué ha pedido quien mira (regla 20 de movimiento.md). */}
+    <div class="cine" aria-hidden="true">
+      <Image src={poster} alt="" widths={[420, 720, 1080, 1440]} sizes="100vw" quality={74} loading="eager" fetchpriority="high" />
+      {(mp4 || webm) && (
+        <video
+          muted
+          loop
+          playsinline
+          preload="none"
+          tabindex="-1"
+          disablepictureinpicture
+          disableremoteplayback
+          data-ancho-webm={webmAncho}
+          data-ancho-mp4={mp4Ancho}
+        >
+          {webm && <source src={webm} type="video/webm" />}
+          {mp4 && <source src={mp4} type="video/mp4" />}
+        </video>
+      )}
     </div>
-  </section>
+    <canvas class="fondo" aria-hidden="true"></canvas>
 
-  <section class="casa">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">La casa</p>
-        <h2>Donde se mezcla y se mancha</h2>
-      </div>
-      <p class="casa-txt">
-        El pase en plena faena, la sala a media luz y el producto crudo antes de que le pase
-        nada. Cokima por dentro, con la mecha encendida.
-      </p>
-      <div class="wall">
-        {casa.map((c) => (
-          <Image
-            src={c.src}
-            alt={c.alt.es}
-            widths={[320, 640, 900]}
-            sizes="(max-width: 860px) 46vw, 33vw"
-            quality={72}
-            loading="lazy"
-            class="casa-shot"
-            style={c.position ? `object-position: ${c.position}` : undefined}
-          />
-        ))}
-      </div>
-    </div>
-  </section>
+    <header class="barra oculta">
+      <a class="marca" href="#inicio" data-ir="inicio">Cokima</a>
+      <nav class="secciones" aria-label="Secciones">
+        <a href="#inicio" data-ir="inicio">Inicio</a><a href="#carta" data-ir="carta">La carta</a><a href="#nosotros" data-ir="nosotros">Nosotros</a><a href="#visitanos" data-ir="visitanos">Visítanos</a>
+      </nav>
+      <a class="pill solid peq" href="https://www.covermanager.com/reservation/module_restaurant/restaurante-cokima/spanish" target="_blank" rel="noopener">Reservar</a>
+    </header>
 
-  <section class="visita" id="visita">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">Dónde estamos</p>
-        <h2>Chamberí, Madrid</h2>
-      </div>
-      <div class="visit-grid">
-        <dl class="info">
-          <div class="block"><dt>Dirección</dt><dd>C. de Andrés Mellado, 21<small>28015 Madrid</small></dd></div>
-          <div class="block"><dt>Teléfono</dt><dd><a href="tel:+34915989401">915 98 94 01</a></dd></div>
-          <div class="block"><dt>Horario</dt><dd>Lunes a domingo · 9:00 – 00:00<small>Cocina 13:00–16:00 y 19:30–23:30</small></dd></div>
-          <div class="block"><dt>Instagram</dt><dd><a href="https://instagram.com/cokimamadrid">@cokimamadrid</a></dd></div>
-        </dl>
-        <div class="mapbox" role="img" aria-label="Mapa orientativo: Andrés Mellado 21, Madrid">
-          <div class="pin"><i class="dot"></i><span>Andrés Mellado 21</span></div>
-          <span class="ph">Mapa · pendiente de integrar</span>
+    <nav class="pestanas oculta" aria-label="Secciones">
+      <a href="#inicio" data-ir="inicio">Inicio</a><a href="#carta" data-ir="carta">La carta</a><a href="#nosotros" data-ir="nosotros">Nosotros</a><a href="#visitanos" data-ir="visitanos">Visítanos</a>
+    </nav>
+
+    <main>
+      <!-- ===== Inicio ===== -->
+      <section class="vista" data-vista="inicio">
+        <div class="portada">
+          <h1><span class="nombre">Cokima</span><span class="sub">Kitchen Madness</span></h1>
+          <div class="acc"><a class="pill" href="#carta" data-ir="carta">Ver carta</a><a class="pill solid" href="https://www.covermanager.com/reservation/module_restaurant/restaurante-cokima/spanish" target="_blank" rel="noopener">Reservar</a></div>
         </div>
-      </div>
-    </div>
-  </section>
-</Base>
+        <div class="wrap sigue">
+          <p class="etq rv">Kitchen Madness · Argüelles</p>
+          <p class="lema rv" style="margin-top:14px">Buen producto. Malas intenciones.</p>
+          <p class="estado rv" data-estado></p>
+          <div class="puertas">
+            <a class="puerta rv" href="#carta" data-ir="carta"><img src="/images/katsu.jpg" alt="" width="880" height="1100"><span class="txt"><span class="etq">La carta</span><span class="t">Para compartir y desfasar.</span></span></a>
+            <a class="puerta rv" href="#nosotros" data-ir="nosotros"><img src="/images/martin.jpg" alt="" width="825" height="1100" style="object-position:50% 20%"><span class="txt"><span class="etq">Nosotros</span><span class="t">Trabajo serio. Cocina canalla.</span></span></a>
+            <a class="puerta rv" href="#visitanos" data-ir="visitanos"><img src="/images/puerta.jpg" alt="" width="1400" height="1400"><span class="txt"><span class="etq">Visítanos</span><span class="t">Andrés Mellado, 21.</span></span></a>
+          </div>
+          <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><span>+34 915 98 94 01</span><span>Lunes a domingo, 9:00–00:00</span></footer>
+        </div>
+      </section>
 
-<style>
-  .manifesto {
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    padding: clamp(44px, 7vw, 88px) 0;
-  }
-  .quote {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: clamp(1.55rem, 3.6vw, 2.6rem);
-    line-height: 1.3;
-    max-width: 24ch;
-    margin: 0;
-    text-wrap: balance;
-  }
-  /* Cuadrícula de dos por dos, con las cuatro del mismo tamaño y la misma
-     proporción. El mosaico asimétrico que hubo antes llamaba la atención sobre
-     la composición en vez de sobre las fotos, y con cuatro piezas se leía como
-     descuadrado más que como intencionado. */
-  .casa {
-    padding: clamp(52px, 8vw, 96px) 0 0;
-  }
-  .casa-txt {
-    color: var(--bone-dim);
-    max-width: 56ch;
-    margin: 1rem 0 0;
-  }
-  /* Dos columnas desfasadas: la de la derecha baja un escalón para que la serie
-     no se lea como una tabla. Ni el mosaico de piezas de tamaños distintos —que
-     llamaba la atención sobre la composición— ni la cuadrícula perfecta, que era
-     lo contrario y quedaba rígida. */
-  .wall {
-    display: grid;
-    /* `minmax(0, 1fr)` y no `1fr` a secas: un track `1fr` es en realidad
-       `minmax(auto, 1fr)`, y el mínimo automático de una imagen es su tamaño
-       intrínseco, así que el track se niega a bajar de ahí por mucho
-       `width: 100%` que lleve la foto. En Ochoa eso sacaba 138px de scroll
-       lateral a toda la portada. Con las fotos de verdad dentro (2026-10-26),
-       el cero es lo que mantiene la retícula en su sitio. */
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(12px, 2vw, 22px);
-    margin-top: 1.6rem;
-    padding-bottom: var(--desfase);
-    --desfase: clamp(28px, 7vw, 64px);
-  }
-  .wall > :global(*:nth-child(2n)) {
-    margin-top: var(--desfase);
-  }
-  /* Mismo radio que el recuadro del mapa: en Cokima las piezas no llevan marco
-     ni sombra, que son recursos de la otra casa. */
-  .casa-shot {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    border-radius: 8px;
-  }
+      <!-- ===== La carta ===== -->
+      <section class="vista" data-vista="carta" hidden>
+        <div class="wrap cab-vista">
+          <p class="etq">La carta</p>
+          <h2 class="tit">Para compartir y desfasar.</h2>
+          <div class="boceto" role="group" aria-label="Boceto: cómo enseñar los platos con foto">
+            <span class="q">Boceto · los platos con foto</span>
+            <div class="ops"><button type="button" data-modo="1" aria-pressed="true">1 · Portadilla</button><button type="button" data-modo="2" aria-pressed="false">2 · Al tocar</button><button type="button" data-modo="3" aria-pressed="false">3 · Pareja</button></div>
+            <p class="nota" data-nota></p>
+          </div>
+        </div>
+        <nav class="chips" aria-label="Partes de la carta"><div class="wrap"><a href="#p-compartir" data-a="compartir">Compartir es vivir</a><a href="#p-terminar" data-a="terminar">Para terminar o no…</a><a href="#p-postres" data-a="postres">Los postres</a></div></nav>
+        <div id="carta-cuerpo"></div>
+        <div class="wrap"><footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><span>+34 915 98 94 01</span></footer></div>
+      </section>
 
-  .visita {
-    padding: clamp(52px, 8vw, 96px) 0 0;
-  }
-  .visit-grid {
-    display: grid;
-    /* Mismo cero que en `.wall`: aquí la columna de la derecha acabará siendo un
-       mapa embebido, que es contenido con tamaño propio. */
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(28px, 5vw, 56px);
-    align-items: stretch;
-    margin-top: 2rem;
-  }
-  @media (max-width: 820px) {
-    .visit-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  .info {
-    margin: 0;
-  }
-  .block {
-    padding: 20px 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .block dt {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 1.02rem;
-    color: var(--ember);
-    margin: 0 0 0.45rem;
-  }
-  .block dd {
-    margin: 0;
-    font-size: 1.1rem;
-  }
-  .block dd small {
-    display: block;
-    color: var(--bone-dim);
-    font-size: 0.9rem;
-    margin-top: 0.3rem;
-  }
-  .mapbox {
-    position: relative;
-    border: 1px solid var(--ground-3);
-    border-radius: 8px;
-    overflow: hidden;
-    min-height: 280px;
-    background:
-      radial-gradient(circle at 62% 42%, rgba(237, 28, 36, 0.16), transparent 45%),
-      repeating-linear-gradient(0deg, rgba(243, 234, 221, 0.05) 0 1px, transparent 1px 46px),
-      repeating-linear-gradient(90deg, rgba(243, 234, 221, 0.05) 0 1px, transparent 1px 46px),
-      var(--ground-2);
-  }
-  .pin {
-    position: absolute;
-    left: 62%;
-    top: 42%;
-    transform: translate(-50%, -100%);
-    text-align: center;
-  }
-  .dot {
-    display: block;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--vermilion);
-    margin: 0 auto;
-    box-shadow: 0 0 0 6px rgba(237, 28, 36, 0.22), 0 0 16px 3px var(--ember);
-  }
-  .pin span {
-    font-size: 0.82rem;
-    background: rgba(21, 15, 12, 0.7);
-    padding: 4px 10px;
-    border-radius: 3px;
-    margin-top: 8px;
-    display: inline-block;
-  }
-  .ph {
-    position: absolute;
-    left: 16px;
-    bottom: 12px;
-    font-size: 0.82rem;
-    color: var(--bone-faint);
-  }
-</style>
+      <!-- ===== Nosotros ===== -->
+      <section class="vista" data-vista="nosotros" hidden>
+        <div class="wrap cab-vista">
+          <p class="etq">Nosotros</p>
+          <h2 class="tit">Nacimos en Argüelles con una misión.</h2>
+          <p class="voz">Romper las reglas, jugar con los sabores… y demostrar que la cocina, también puede ser una bomba.</p>
+        </div>
+        <div class="wrap">
+          <article class="relato rv"><figure><img src="/images/bomba.jpg" alt="El mural de la bomba sobre las mesas" width="1400" height="1400" style="aspect-ratio:1"></figure>
+            <div class="txt"><p class="etq">La cocina</p><p class="tit">Aquí no cocinamos para que se vea bonito…</p><p class="voz">Cocinamos para que deje huella.</p></div></article>
+          <article class="relato der rv"><figure><img src="/images/martin.jpg" alt="Martín, del equipo de cocina" width="825" height="1100"></figure>
+            <div class="txt"><p class="etq">Martín, en la cocina</p><p class="tit">Trabajo serio. Cocina canalla.</p><p class="voz">Más cuchillo. Más producto.</p></div></article>
+          <article class="relato rv"><figure><img src="/images/neon.jpg" alt="El neón «Orgasm, at the first bite» sobre la pared de fotos" width="1400" height="1283" style="aspect-ratio:1"></figure>
+            <div class="txt"><p class="etq">La sala</p><p class="tit">Perseguimos una sensación muy concreta.</p><p class="voz">Ese <i>Orgasm at firstbite</i> del que habla nuestra pared.</p></div></article>
+          <article class="relato der rv"><figure><img src="/images/sala.jpg" alt="Dos personas ríen en una mesa de la sala" width="880" height="1100"></figure>
+            <div class="txt"><p class="etq">Quien te lo sirve</p><p class="tit">El plato es importante, pero quien te lo sirve también.</p><p class="voz">En Cokima no solo servimos comida… Servimos momentos. Sonrisas. Y el deseo de volver.</p></div></article>
+          <article class="relato rv"><figure><img src="/images/manos.jpg" alt="Un cliente muerde un bocado con las manos" width="880" height="1100"></figure>
+            <div class="txt"><p class="etq">Compartir es vivir</p><p class="tit">Hay platos que no necesitan cubiertos.</p><p class="voz">Solo ganas. Buen rollo. Y alguien con quien compartir.</p></div></article>
+          <article class="relato der rv"><figure><div class="par"><img src="/images/tarta.jpg" alt="Una mujer se come la tarta de queso" width="1100" height="1100"><img src="/images/vacio.jpg" alt="El plato vacío" width="1100" height="1100"></div></figure>
+            <div class="txt" style="margin-top:28px"><p class="etq">Lo que dicen</p><p class="tit">La mejor crítica nunca ha necesitado palabras.</p><p class="voz">Solo un plato vacío.</p><p class="hueco">Hueco: reseñas reales de clientes. Falta el material.</p></div></article>
+          <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><span>+34 915 98 94 01</span></footer>
+        </div>
+      </section>
+
+      <!-- ===== Visítanos ===== -->
+      <section class="vista" data-vista="visitanos" hidden>
+        <div class="wrap cab-vista">
+          <p class="etq">Visítanos</p>
+          <h2 class="tit">Si alguna vez has cruzado esta puerta, ya sabes por qué siempre apetece volver.</h2>
+          <p class="voz">Y si todavía no lo has hecho, te estamos esperando.</p>
+        </div>
+        <div class="wrap visita">
+          <img src="/images/puerta.jpg" alt="El rótulo de Cokima en la entrada" width="1400" height="1400">
+          <dl class="datos">
+            <div><dt>Dónde</dt><dd>Calle de Andrés Mellado, 21</dd><dd>28015 Madrid · Argüelles</dd>
+              <dd><a class="enlace" href="https://www.google.com/maps/search/?api=1&amp;query=Calle%20de%20Andr%C3%A9s%20Mellado%2021%2C%2028015%20Madrid" target="_blank" rel="noopener">Cómo llegar ↗</a></dd></div>
+            <div><dt>Cuándo</dt><dd>Lunes a domingo, 9:00–00:00</dd><dd>Cocina 13:00–16:00 y 19:30–23:30</dd><dd class="estado" data-estado></dd></div>
+            <div><dt>Teléfono</dt><dd>+34 915 98 94 01</dd></div>
+            <div><dt>Reservas</dt><dd><a class="pill solid" href="https://www.covermanager.com/reservation/module_restaurant/restaurante-cokima/spanish" target="_blank" rel="noopener" style="margin-top:4px">Reservar mesa</a></dd></div>
+          </dl>
+        </div>
+        <div class="wrap"><footer class="pie"><a href="/aviso-legal">Aviso legal</a><a href="/privacidad">Privacidad</a><a href="/cookies">Cookies</a></footer></div>
+      </section>
+    </main>
+
+    <script type="application/json" id="carta-datos" set:html={JSON.stringify(carta)} />
+    <script>
+      import "../brasa.js";
+    </script>
+  </body>
+</html>

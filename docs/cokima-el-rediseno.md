@@ -1,11 +1,13 @@
 # Cokima: el rediseño
 
-> **Estado: vivo** · el rediseño está en curso · revisado 2026-10-26
+> **Estado: vivo** · el rediseño está en curso · revisado 2026-10-31
 
-- **Abierto:** 2026-08-14 · **Última tanda:** 2026-08-17
+- **Abierto:** 2026-08-14 · **Última tanda:** 2026-10-31
 - **Rama:** `preview` desde el 2026-10-26, cuando Mario pidió trabajar solo en ella. Antes vivió en
   `tmp/entrada-cokima`
-- **Estado:** la landing está construida. Lo que va debajo, sin decidir.
+- **Estado:** **desde el 2026-10-31 la web de Cokima en `preview` es Brasa** (§3), y se itera
+  sobre ella con Mario. La entrada de §4 —el vídeo, el nombre y los dos botones— sigue como
+  portada de Brasa; lo de debajo es nuevo. Falta que Mario elija la manera de la carta.
 
 Este documento explica **por qué** Cokima se está rehaciendo y por qué se ha descartado casi todo
 lo que se propuso antes de llegar aquí. Si vas a seguir el trabajo, léelo entero antes de tocar
@@ -96,12 +98,118 @@ tenía sentido conservar, porque es lógica y no forma.
 > `50dfedae-4f66-4bbf-a0d6-2e445a633109`. Móvil del esqueleto 2:
 > `23d1ffdc-443e-44ad-8414-254363c7d0e1`.
 
+### Lo de debajo de la entrada, en bocetos (2026-10-30 y 31)
+
+Del 2026-10-30 al 31 se buscó qué va debajo de la entrada con bocetos en Artifacts privados de
+Mario, sin tocar el repo. Lo que se pedía: algo más premium, mezclar comida, local y gente como
+en Ochoa pero sin copiar su concepto, y conservar las frases reales de @cokimamadrid. Cada ronda,
+con el motivo de Mario:
+
+1. ***La mecha*** — rechazada: *«No me termina de convencer…»*. Su rama se borró a petición suya.
+2. **Tres variantes** —*Hasta el fondo*, *La barra*, *Cocina y sala*—, rechazadas.
+3. ***Cokima a presión*** (https://claude.ai/artifact/EDYTpts7iT6FaQX4okEKtA): fotos que estallan
+   en esquirlas con WebGL. Rechazada el 2026-10-30: *«demasiado como un "mírame"»*, *«cargante»*.
+   La explosión no cuadra con sus fotos —cocina exótica, misterio, *«un haz de fuego»*—, y tras
+   la portada eran platos y más platos.
+4. ***Cokima en penumbra*** (https://claude.ai/artifact/Rb6UGWDjJ6APjAjqgFekA5): desplazamiento
+   normal, un haz de luz de fuego fijo a media pantalla, y comida, cocina, sala y gente
+   intercalados. Rechazada: *«Sigue sin convencerme…»*.
+5. **Desde ahí, bocetos de tres en tres y sin pulir.** Tanda 1: *Sobremesa*, editorial claro de
+   revista (https://claude.ai/artifact/RSVWQxraCZxyQrovZ6CwtD); *Comanda*, tiques de cocina sobre
+   negro (https://claude.ai/artifact/AXcon6x9xtWQhiFLcmZ376); *Bocado*, bloques de color pop
+   (https://claude.ai/artifact/8RhzVirkLHKFZXukJtCPhZ). Rechazada entera el 2026-10-31:
+   *«Ninguno me tira demasiado. Mantén una estética limpia, no me interesa tener "extravagancias"
+   en pantalla»*. Pidió modo oscuro, degradados suaves que se fundan, movimiento vivo *«como una
+   respiración de fondo»* y *«un fondo animado como de brasas»*.
+6. **Tanda 2**, las tres oscuras y con brasas que respiran: *Rescoldo*, un lecho de brasas en
+   WebGL al pie y una columna centrada con fotos en óvalo
+   (https://claude.ai/artifact/JjvCDf9rKDxsEmVwNXMwHF); *Aliento*, solo luz difusa que cambia de
+   color por bloque, fotos a sangre que se disuelven y Cormorant Garamond
+   (https://claude.ai/artifact/Ad3BWyz1KMB34nTiQN4ruc); *Pavesas*, calima y chispas que suben, con
+   capítulos numerados (https://claude.ai/artifact/JDHQMDh5j9cD4sujoNKFUQ). **Veredicto del
+   2026-10-31:** se queda con **el fuego de Rescoldo** y **la Bricolage fina de sus títulos**
+   —la misma de la web, a 200 en vez de 800—, *«no me refiero a que me quedo con el formato como
+   tal»*. Echa en falta **un menú por secciones** *«antes que tener una single page eterna»*. De
+   Aliento le gusta cómo se enseñan los platos —la foto a sangre que se disuelve en el negro, la
+   frase en cursiva, el plato y el precio debajo—, pero **en La carta, no en Inicio**, y *«sin
+   realmente quitar protagonismo a otros que no se muestren foto»*.
+7. **Tanda 3**, un solo boceto: **Brasa**, lo de abajo.
+
+### Brasa, el boceto que le gusta (2026-10-31)
+
+https://claude.ai/artifact/SF9FyZdGNHJEDPbnwJjFCP. Mario: *«Me gusta más este diseño, lo veo
+mejor»*. Primero pidió verlo en línea en una rama aparte, y se subió como página suelta a
+`feat/cokima-brasa`, en `/brasa/`. Al verlo allí, encima de la web anterior, pidió el mismo día
+lo contrario: *«Puesto que quiero comenzar a iterar sobre esta variante, haz la rama "preview"
+exclusiva para esta nueva versión»*. **Desde el 2026-10-31 Brasa es la web de Cokima en
+`preview`**, y `feat/cokima-brasa` sobra (si se borra lo decide él).
+
+- **El fuego de Rescoldo de fondo:** sube en la portada del Inicio y baja al pie en las demás
+  secciones. WebGL a 0,6 de resolución y a 30 fotogramas por segundo como mucho, y **transparente
+  donde no hay fuego**: sobre el suelo se ve igual que el opaco del boceto, porque su negro era el
+  mismo `--ground`, y en la portada deja ver el vídeo. Mario lo pidió *«ligeramente»* más rápido:
+  va a 1,25 veces el ritmo del boceto (`VELOCIDAD` en `brasa.js`). Tiene su excepción a la regla 6
+  en `movimiento.md`.
+- **Títulos en Bricolage 200, y la voz en Cormorant Garamond cursiva.**
+- **Cuatro secciones: Inicio, La carta, Nosotros y Visítanos**, con nombres provisionales. Barra
+  arriba en el ordenador; en el móvil, pestañas abajo, al alcance del pulgar. No es la cortina,
+  que es de Ochoa.
+- **La portada del Inicio sigue la regla de §4:** el nombre y los dos botones, sin menú, que
+  aparece al bajar. Con dos cosas que pidió Mario al verla: **«Kitchen Madness» bajo el nombre**,
+  en la cursiva de la voz —*«le da algo más de dinamismo a la portada»*—, y **el vídeo de la
+  entrada detrás**, *«a modo provisional»*, *«ligeramente oscurecido y haciéndole una transición más
+  oscura aún en la parte inferior, para que el fuego animado quede por encima del vídeo»*. El
+  vídeo va fuera de `<main>` y antes del lienzo del fuego, que se pinta encima; lo arranca el
+  script como en `Entrada.astro` (reglas 6 y 20 de `movimiento.md`).
+- **El Inicio es corto:** la frase de la casa, si la cocina está abierta ahora (con su horario) y
+  tres puertas a las otras secciones.
+- **La carta tiene siempre los 21 platos en la misma lista**, con tres maneras de enseñar los
+  ocho que tienen foto, conmutables en el boceto: 1 *Portadilla*, una foto por parte de la carta;
+  2 *Al tocar*, un punto en los que tienen foto, que la despliegan al tocarlos, y en el ordenador
+  un lateral fijo que sigue al ratón; 3 *Pareja*, dos imprescindibles arriba. **Mario aún no ha
+  elegido.** El tartar, sin foto, lleva su frase publicada en lugar de una foto.
+- **Todas las frases son de @cokimamadrid.** El hueco de reseñas sigue sin material.
+
+**Cómo entró en la web, y lo que se dejó a propósito para después:**
+
+- **Es el boceto pasado tal cual**, no reescrito en componentes: la página es
+  `apps/cokima/src/pages/index.astro`, sus estilos `src/styles/brasa.css` y su código
+  `src/brasa.js`. Así se puede iterar con Mario sobre lo mismo que vio. Lo que sí cambió: la carta
+  llega del build (`menu-es.json`, en un JSON dentro de la página), y colores, letras, curva y
+  duraciones salen de `tokens.css`, como manda `movimiento.md`. Los tokens del fondo, la brasa y
+  la línea pasaron a ser los de Brasa; la curva es la `--ease` de siempre, no la del boceto.
+- **No usa `Base.astro`**, que es el marco de la web anterior: su cabecera, su pie, su router de
+  transiciones y **el cartel de cookies con la medición detrás**. En la home no hay hoy ni cartel
+  ni medición, y antes de producción tienen que volver. Tampoco carga `global.css`: declara su
+  letra y su apagado de movimiento en `brasa.css`.
+- **Las páginas de la web anterior dejan de publicarse:** `/carta`, `/reservas` y la versión
+  inglesa. Sus direcciones llevan a la sección que las sustituye (`redirects` de
+  `astro.config.mjs`), y la home inglesa a la española, desde `src/pages/en/index.astro` porque la
+  regla de redirección no casa con la barra final de `/en/`. **Brasa no tiene inglés todavía.**
+- **Las legales siguen igual**, con `Base.astro` y su aspecto anterior. Brasa enlaza a ellas
+  desde el pie de Visítanos.
+- **La Cormorant viene de Google Fonts**, como en el boceto. Antes de producción se sirve desde la
+  web, como la Bricolage: pedirla a Google le pasa la IP de cada visita.
+- **Las fotos** están en `public/images/`, sin pasar por la optimización de Astro, al tamaño del
+  boceto (de 62 a 258 KB). Salen de la fototeca de @cokimamadrid, reducidas para el boceto; **no
+  quedó apuntado de qué publicación es cada una**, y ya no coinciden con sus originales.
+- **El estado de la cocina** lleva su horario escrito en `brasa.js` (13:00–16:00 y 19:30–23:30),
+  el mismo de `recursos.md` §4, todavía sin confirmar por el restaurante. `OpenState` no sirve aquí:
+  calcula el horario del local, no el de la cocina.
+- **La barra de boceto de La carta se queda** hasta que Mario elija una de las tres maneras.
+
 ---
 
 ## 4. La landing, y por qué cada cosa está donde está
 
 `apps/cokima/src/components/Entrada.astro`. Sustituye al `Hero` heredado. La pantalla entera es el
 plato, el nombre en el medio, dos botones abajo, y **nada más**.
+
+> **Desde el 2026-10-31 `Entrada.astro` no se usa:** la portada es la de Brasa (§3), que hereda
+> esta regla —el nombre con «Kitchen Madness» debajo, los dos botones y nada más, con el menú al
+> bajar— y el vídeo, ahora detrás del fuego. Lo de esta sección sigue explicando el porqué de esa
+> portada; el cartel de cookies y la altura congelada de los apartados siguientes son de
+> `Entrada.astro` y Brasa no los tiene todavía.
 
 ### Lo que NO está, y es deliberado
 
@@ -347,12 +455,12 @@ API (`list_deployments` → `state: READY`), no martilleando la URL.
 
 ## 6. Por dónde seguir
 
-1. **Qué va debajo de la entrada.** Es la decisión grande y está sin tomar. Hoy debajo sigue la
-   portada vieja (`Highlights`, manifiesto, casa, visita), que es exactamente el esqueleto de
-   Ochoa que se quería tirar. **Es lo siguiente que hay que hablar con Mario**, y él ya dijo
-   «enseguida vamos con lo que ocurre al scrollear».
-2. **Decidir si el rótulo del centro se queda al bajar.** En cuanto aparece el «Cokima» de la
-   barra, están los dos a la vez.
+1. **Iterar Brasa con Mario** (§3), que es la web en `preview` desde el 2026-10-31. Lo primero que
+   espera: que elija una de las tres maneras de la carta. Y antes de producción, lo que §3 deja
+   apartado a propósito: el cartel de cookies y la medición, la Cormorant servida desde la web, el
+   inglés y las legales con el aspecto nuevo.
+2. ~~Decidir si el rótulo del centro se queda al bajar.~~ En Brasa la barra solo aparece pasada
+   la portada, así que los dos «Cokima» no coinciden.
 3. ~~El vídeo~~ **puesto el 2026-08-17** (§4), pero **el que hay es provisional y Mario lo dijo
    expresamente**: lo pasó para ver cómo quedaba. **El pulido al 100% se hace cuando llegue el
    definitivo**, y hasta entonces no merece la pena gastar en ello. Lo que queda para ese día,
@@ -366,7 +474,10 @@ API (`list_deployments` → `state: READY`), no martilleando la URL.
    - **Repasar el encuadre y el grado** con `scripts/video-entrada.sh`: los dos están calibrados
      para ESTE material, y el script explica cómo rehacerlos.
 4. **`Hero.astro` y `Embers.astro` quedan huérfanos** a propósito. No se borran hasta que el
-   rediseño cierre.
+   rediseño cierre. **Desde el 2026-10-31 también** `Entrada.astro`, `Highlights.astro`,
+   `MenuDeck.astro`, `AllergenFilter.astro`, `data/casa.ts`, `data/dish-images.ts` y la colección
+   `menu-en`, que eran de las páginas que dejaron de publicarse. `Nav.astro`, `Footer.astro` y
+   `Base.astro` siguen vivos: los usan las legales.
 5. **El `hreflang` de las tres legales de Cokima** sigue roto: declaran que su versión inglesa es
    la home inglesa. El arreglo es `altSeoPath={null}` y su `Base.astro` necesita la prop, igual
    que se hizo en Ochoa el 31 de julio. No se ha tocado porque queda fuera de este hilo.
@@ -376,5 +487,9 @@ API (`list_deployments` → `state: READY`), no martilleando la URL.
 
 - Que Cokima y Ochoa compartan estructura. Ese fue el problema entero.
 - La píldora en los controles de Cokima. Está fundada en la decisión contraria de Ochoa.
-- Poner cosas en la landing. Solo el nombre y los dos botones.
+- Poner cosas en la landing. Solo el nombre —con «Kitchen Madness» debajo, que pidió Mario el
+  2026-10-31— y los dos botones.
 - El ratoncito de scroll y la flecha que rebota.
+- Las fotos que estallan, las secuencias de pantallas como historias y las «extravagancias» en
+  pantalla (§3, *Cokima a presión* y la tanda 1).
+- Una sola página eterna: Mario pidió menú por secciones (§3, tanda 2).

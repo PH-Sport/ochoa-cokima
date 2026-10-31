@@ -1,0 +1,275 @@
+// Brasa: las secciones, La carta con sus tres maneras, el estado de la cocina y el fondo de brasas.
+// Es el código del boceto que eligió Mario el 2026-10-31, pasado tal cual (docs/cokima-el-rediseno.md §3).
+// La carta llega del build, de menu-es.json, en el JSON de #carta-datos: no hay copia aquí.
+(() => {
+  const MENU = JSON.parse(document.getElementById("carta-datos").textContent);
+  // La duración del fundido de salida es la de tokens.css: el cambio de sección espera a que acabe.
+  const DUR_OUT = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dur-out")) || 180;
+  const POR_ID = Object.fromEntries(MENU.map((d) => [d.id, d]));
+  const fmt = (p) => (Number.isInteger(p) ? p + " €" : p.toFixed(2).replace(".", ",") + " €");
+  // Los platos con foto en la fototeca, y la frase que la casa ha publicado de cada uno.
+  const FOTOS = {
+    "compartir-01": { img: "croquetas", w: 825, h: 1100, alt: "Una croqueta con su velo de papada", frase: "Han pasado por casi todas nuestras cartas. Y siguen aquí" },
+    "compartir-04": { img: "gyozas", w: 1100, h: 1100, alt: "Gyozas de langostino con salsa de chorizo", frase: "Compartir es vivir." },
+    "compartir-06": { img: "dumpling", w: 880, h: 1100, alt: "Dumpling de chipirones", frase: "Madrid cabe en un dumpling." },
+    "compartir-10": { img: "tacos", w: 1100, h: 1100, alt: "Una mano sostiene un taco de gambón", frase: null },
+    "terminar-02": { img: "katsu", w: 880, h: 1100, alt: "Katsu sando con patatas", frase: "Hay dos tipos de clientes en Cokima." },
+    "terminar-04": { img: "arroz", w: 720, h: 1280, alt: "Arroz meloso de carabinero", frase: "Este plato cambia el ritmo de la mesa…" },
+    "postres-01": { img: "tarta", w: 1100, h: 1100, alt: "Una mujer se come la tarta de queso", frase: "La mejor crítica nunca ha necesitado palabras." },
+    "postres-02": { img: "torrija", w: 880, h: 1100, alt: "La torrija servida bajo el neón", frase: "Un postre que no se comparte, se saborea lento." },
+  };
+  // Platos sin foto que también tienen frase propia publicada: llevan la voz en vez de la foto.
+  const VOCES = { "terminar-05": "Hay platos que entran en carta. Y otros que se agarran a ella." };
+  const PARTES = [["compartir", "Compartir es vivir"], ["terminar", "Para terminar o no…"], ["postres", "Y por fin, los postres"]];
+  const NOTAS = {
+    1: "Cada parte de la carta se abre con uno de sus platos en foto. Debajo, todos en la misma lista, ese también: la foto ilustra la parte, no corona al plato.",
+    2: "Todos los platos iguales. Los que tienen foto llevan un punto y la enseñan al tocarlos; en el ordenador, al pasar el ratón, en el lado derecho.",
+    3: "Dos imprescindibles en foto al principio (en el móvil se pasan con el dedo) y, debajo, la carta entera igual para todos, ellos incluidos.",
+  };
+
+  const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  const foto = (id, etiqueta) => {
+    const d = POR_ID[id], f = FOTOS[id];
+    const fig = el("figure", "pf");
+    const img = el("img"); img.src = `/images/${f.img}.jpg`; img.alt = f.alt; img.width = f.w; img.height = f.h; img.loading = "lazy";
+    const cap = el("figcaption", "wrap");
+    if (etiqueta) cap.append(el("p", "etq", etiqueta));
+    cap.append(el("p", "vg", f.frase || d.description));
+    const ln = el("p", "linea"); ln.append(el("span", null, d.name), el("b", null, fmt(d.price))); cap.append(ln);
+    if (f.frase && d.description) cap.append(el("p", "d", d.description));
+    fig.append(img, cap); return fig;
+  };
+  const fila = (d, conPunto) => {
+    const li = el("li", "pl"); li.dataset.id = d.id;
+    const ln = el("span", "ln"), n = el("span", null, d.name);
+    if (d.featured) n.append(el("span", "imp", "Imprescindible"));
+    if (conPunto) { const p = el("span", "punto"); p.setAttribute("aria-label", "con foto"); n.append(p); }
+    ln.append(n, el("b", null, fmt(d.price))); li.append(ln);
+    if (d.description) li.append(el("span", "d", d.description));
+    if (VOCES[d.id]) li.append(el("span", "vl", VOCES[d.id]));
+    return li;
+  };
+  const lista = (sec, opts = {}) => {
+    const ul = el("ul");
+    MENU.filter((d) => d.section === sec).forEach((d) => {
+      const li = fila(d, opts.puntos && FOTOS[d.id]);
+      if (opts.puntos && FOTOS[d.id]) {
+        li.classList.add("con-foto"); li.tabIndex = 0; li.setAttribute("role", "button"); li.setAttribute("aria-expanded", "false");
+      }
+      ul.append(li);
+    });
+    return ul;
+  };
+
+  const cuerpo = document.getElementById("carta-cuerpo");
+  const PORTADILLAS = { compartir: "compartir-04", terminar: "terminar-04", postres: "postres-02" };
+  let modo = 1;
+  const pintarCarta = (m) => {
+    modo = m; cuerpo.replaceChildren(); cuerpo.className = "modo-" + m;
+    document.querySelectorAll(".boceto button").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.modo === m)));
+    document.querySelector("[data-nota]").textContent = NOTAS[m];
+    if (m === 3) {
+      const w = el("div", "wrap"); w.style.paddingTop = "34px"; w.append(el("p", "etq", "Imprescindibles")); cuerpo.append(w);
+      const par = el("div", "pareja wrap"); par.style.paddingLeft = par.style.paddingRight = "0";
+      par.append(foto("compartir-04"), foto("terminar-02")); cuerpo.append(par);
+    }
+    let raiz = cuerpo, escenario = null;
+    if (m === 2) {
+      const w = el("div", "wrap cuerpo-2"); const col = el("div");
+      const ley = el("p", "leyenda"); ley.append(el("span", "punto"), document.createTextNode(matchMedia("(min-width:900px)").matches ? "Con foto: pasa el ratón por encima." : "Con foto: tócalo para verla."));
+      col.append(ley); escenario = el("div", "escenario"); w.append(col, escenario); cuerpo.append(w); raiz = col;
+    }
+    PARTES.forEach(([sec, t]) => {
+      const s = el("section", "parte"); s.id = "p-" + sec; s.dataset.parte = sec;
+      if (m === 1) {
+        const w = el("div", "wrap"); w.append(el("h3", "sec", t)); s.append(w);
+        const pid = PORTADILLAS[sec];
+        const p = foto(pid, POR_ID[pid].featured ? "Imprescindible" : null); p.classList.add("portadilla"); s.append(p);
+        const l = el("div", "wrap lista"); l.append(lista(sec)); s.append(l);
+      } else if (m === 2) {
+        s.append(el("h3", "sec", t)); const l = el("div", "lista"); l.append(lista(sec, { puntos: true })); s.append(l);
+      } else {
+        const w = el("div", "wrap lista"); w.append(el("h3", "sec", t), lista(sec)); s.append(w);
+      }
+      raiz.append(s);
+    });
+    if (m === 2) {
+      const activar = (li, desplegar) => {
+        if (matchMedia("(min-width:900px)").matches) {
+          cuerpo.querySelectorAll(".con-foto.activo").forEach((x) => x.classList.remove("activo"));
+          li.classList.add("activo"); escenario.replaceChildren(foto(li.dataset.id)); return;
+        }
+        if (!desplegar) return;
+        const abierto = li.querySelector(".despliegue");
+        cuerpo.querySelectorAll(".despliegue").forEach((x) => { x.parentElement.setAttribute("aria-expanded", "false"); x.remove(); });
+        if (abierto) return;
+        const dsp = el("div", "despliegue"); dsp.append(foto(li.dataset.id)); li.append(dsp); li.setAttribute("aria-expanded", "true");
+      };
+      cuerpo.querySelectorAll(".con-foto").forEach((li) => {
+        li.addEventListener("mouseenter", () => activar(li, false));
+        li.addEventListener("click", (e) => { if (!e.target.closest(".despliegue")) activar(li, true); });
+        li.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activar(li, true); } });
+      });
+      const primero = cuerpo.querySelector('.con-foto[data-id="compartir-04"]');
+      if (matchMedia("(min-width:900px)").matches) activar(primero, false);
+    }
+  };
+  document.querySelectorAll(".boceto button").forEach((b) => b.addEventListener("click", () => { pintarCarta(+b.dataset.modo); try { history.replaceState(null, "", "#carta-" + b.dataset.modo); } catch (e) {} }));
+  document.querySelectorAll(".chips a").forEach((a) => a.addEventListener("click", (e) => {
+    e.preventDefault(); document.getElementById("p-" + a.dataset.a)?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  }));
+
+  // Estado de la cocina, a la hora de Madrid. Horario real: cocina 13:00–16:00 y 19:30–23:30, todos los días.
+  const estado = () => {
+    const [h, m] = new Intl.DateTimeFormat("es-ES", { timeZone: "Europe/Madrid", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()).split(":").map(Number);
+    const t = h * 60 + m;
+    let txt, abierta = false;
+    if (t >= 780 && t < 960) { txt = "Cocina abierta ahora, hasta las 16:00"; abierta = true; }
+    else if (t >= 1170 && t < 1410) { txt = "Cocina abierta ahora, hasta las 23:30"; abierta = true; }
+    else if (t < 780) txt = "La cocina abre hoy a las 13:00";
+    else if (t < 1170) txt = "La cocina vuelve a las 19:30";
+    else txt = "La cocina abre mañana a las 13:00";
+    document.querySelectorAll("[data-estado]").forEach((e) => { e.textContent = txt; e.classList.toggle("abierta", abierta); });
+  };
+  estado(); setInterval(estado, 60000);
+
+  // Secciones: una a la vista cada vez, con un fundido corto al cambiar.
+  const vistas = Object.fromEntries([...document.querySelectorAll(".vista")].map((v) => [v.dataset.vista, v]));
+  const barra = document.querySelector(".barra"), pestanas = document.querySelector(".pestanas");
+  let actual = "inicio";
+  const marcar = () => document.querySelectorAll(".secciones [data-ir], .pestanas [data-ir]").forEach((a) => {
+    if (a.dataset.ir === actual) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+  const revelar = () => {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+    vistas[actual].querySelectorAll(".rv:not(.in)").forEach((x) => io.observe(x));
+  };
+  // El vídeo de la portada vive fuera de <main> para quedar debajo del fuego, así que no se esconde
+  // con la sección: se esconde aquí, y al esconderlo su observador lo pausa.
+  const cine = document.querySelector(".cine");
+  const ir = (destino, instantaneo) => {
+    let v = destino, m = null;
+    if (/^carta-[123]$/.test(v)) { m = +v.slice(6); v = "carta"; }
+    if (!vistas[v]) v = "inicio";
+    if (m) pintarCarta(m);
+    try { history.replaceState(null, "", "#" + (m ? "carta-" + m : v)); } catch (e) {}
+    if (v === actual) { scrollTo(0, 0); return; }
+    const sale = vistas[actual], entra = vistas[v];
+    actual = v; marcar();
+    const cambiar = () => {
+      sale.hidden = true; sale.classList.remove("saliendo");
+      if (cine) cine.hidden = v !== "inicio";
+      entra.classList.add("entrando"); entra.hidden = false; scrollTo(0, 0);
+      requestAnimationFrame(() => requestAnimationFrame(() => entra.classList.remove("entrando")));
+      revelar(); alScroll();
+    };
+    if (instantaneo) cambiar(); else { sale.classList.add("saliendo"); setTimeout(cambiar, DUR_OUT); }
+  };
+  document.addEventListener("click", (e) => { const a = e.target.closest("[data-ir]"); if (!a) return; e.preventDefault(); ir(a.dataset.ir); });
+
+  const chips = [...document.querySelectorAll(".chips a")], accPortada = document.querySelector(".portada .acc");
+  const alScroll = () => {
+    const portada = actual === "inicio" && scrollY < innerHeight * 0.6;
+    barra.classList.toggle("oculta", portada); pestanas.classList.toggle("oculta", portada);
+    accPortada.classList.toggle("oculta", !portada);
+    if (actual === "carta") {
+      let on = "compartir";
+      document.querySelectorAll(".parte").forEach((p) => { if (p.getBoundingClientRect().top < innerHeight * 0.35) on = p.dataset.parte; });
+      if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) on = "postres";
+      chips.forEach((c) => c.classList.toggle("on", c.dataset.a === on));
+    }
+  };
+  addEventListener("scroll", alScroll, { passive: true });
+
+  pintarCarta(1);
+  const inicial = (location.hash || "").slice(1);
+  if (inicial && inicial !== "inicio") ir(inicial, true); else { marcar(); revelar(); alScroll(); }
+
+  // La cinta de la portada. Como en Entrada.astro: sin `autoplay` y con `preload="none"`, la arranca
+  // esto, y no la arranca con «reducir movimiento» ni con ahorro de datos (regla 20 de
+  // movimiento.md); entonces se queda el póster. Se carga la primera vez que se ve —quien entra por
+  // #carta no la descarga— y se pausa fuera de la vista y con la pestaña oculta (regla 6). En el
+  // ordenador, el corte ancho.
+  const cinta = cine?.querySelector("video");
+  if (cinta && !matchMedia("(prefers-reduced-motion: reduce)").matches && navigator.connection?.saveData !== true) {
+    let cargada = false;
+    new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) { cinta.pause(); return; }
+      if (!cargada) {
+        cargada = true;
+        if (matchMedia("(min-width: 900px)").matches) {
+          cinta.querySelectorAll("source").forEach((f) => {
+            const ancha = f.type === "video/webm" ? cinta.dataset.anchoWebm : cinta.dataset.anchoMp4;
+            if (ancha) f.src = ancha;
+          });
+        }
+        cinta.load();
+      }
+      // En un iPhone con ahorro de energía, play() se rechaza: no es un error, se queda el póster.
+      cinta.play().then(() => cinta.classList.add("puesta"), () => {});
+    }).observe(cinta);
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") cinta.pause(); });
+  }
+
+  // Fondo: el lecho de brasas de Rescoldo, en WebGL a poca resolución y a 30 fps. En la portada del
+  // Inicio sube; en el resto se recoge al pie. Es transparente donde no hay fuego: sobre el suelo se
+  // ve igual que opaco, porque el negro de antes era el mismo --ground, y en la portada deja ver el
+  // vídeo debajo. La regla 6 de movimiento.md tiene su excepción escrita para este fondo.
+  const cv = document.querySelector(".fondo");
+  const gl = cv.getContext("webgl", { antialias: false, alpha: true, premultipliedAlpha: true });
+  if (!gl) return;
+  const VS = "attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}";
+  const FS = `precision mediump float;
+uniform vec2 r;uniform float t,s,bed;
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+  return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
+float ridge(vec2 p){float v=0.,a=.55;for(int i=0;i<3;i++){float k=1.-abs(n(p)*2.-1.);v+=a*k*k*k;p=p*2.1+vec2(3.1,1.7);a*=.5;}return v;}
+vec3 ramp(float x){x=clamp(x,0.,1.2);
+  vec3 c=mix(vec3(0.),vec3(.30,.035,.012),smoothstep(0.,.3,x));
+  c=mix(c,vec3(.82,.2,.035),smoothstep(.28,.68,x));
+  c=mix(c,vec3(1.,.52,.16),smoothstep(.62,.95,x));
+  return mix(c,vec3(1.,.78,.48),smoothstep(.95,1.2,x));}
+void main(){
+  vec2 uv=gl_FragCoord.xy/r;
+  float k=min(r.x,r.y);
+  vec2 p=gl_FragCoord.xy/k*2.4+vec2(0.,s*.00035);
+  vec2 q=vec2(fbm(p*.7+vec2(0.,t*.018)),fbm(p*.7+vec2(5.2,1.3)-vec2(t*.012,0.)));
+  float f=fbm(p+1.8*q);
+  float veta=pow(ridge(p*1.35+q*2.),2.2);
+  float ph=n(p*.45+7.)*6.2832;
+  float resp=.62+.38*sin(t*.85+ph);
+  float lecho=smoothstep(bed,0.,uv.y);
+  float calor=(veta*.95+smoothstep(.5,.82,f)*.55)*resp*lecho;
+  calor*=(.82+.18*sin(t*.5))*1.08;
+  vec3 col=ramp(calor);
+  col+=vec3(.16,.045,.015)*lecho*lecho*(.55+.45*resp)*.75;
+  gl_FragColor=vec4(col,clamp(max(col.r,max(col.g,col.b)),0.,1.));
+}`;
+  const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
+  const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr); gl.useProgram(pr);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr, "a"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const U = {}; ["r", "t", "s", "bed"].forEach((u) => (U[u] = gl.getUniformLocation(pr, u)));
+  cv.classList.add("viva");
+  const ESCALA = 0.6;
+  // El ritmo del fuego: 1 es el del boceto. Mario lo pidió «ligeramente» más rápido el 2026-10-31.
+  const VELOCIDAD = 1.25;
+  const size = () => { cv.width = Math.round(innerWidth * ESCALA); cv.height = Math.round(innerHeight * ESCALA); gl.viewport(0, 0, cv.width, cv.height); };
+  // Cambiar el tamaño del lienzo lo borra: con «reducir movimiento», que no repinta solo, se fuerza
+  // un fotograma nuevo, o el fuego desaparecería hasta el siguiente cambio de sección.
+  addEventListener("resize", () => { size(); last = -1e3; }); size();
+  const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let bed = actual === "inicio" ? 0.54 : 0.3, last = -1e3;
+  const frame = (ms) => {
+    requestAnimationFrame(frame);
+    if (ms - last < 32 || (quieto && last > 0 && Math.abs(bed - objetivo()) < 0.002)) return; last = ms;
+    bed += (objetivo() - bed) * (quieto ? 1 : 0.04);
+    gl.uniform2f(U.r, cv.width, cv.height); gl.uniform1f(U.t, quieto ? 20 : (ms / 1000) * VELOCIDAD); gl.uniform1f(U.s, scrollY); gl.uniform1f(U.bed, bed);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  };
+  const objetivo = () => (actual === "inicio" ? (scrollY < innerHeight * 0.5 ? 0.54 : 0.34) : 0.3);
+  requestAnimationFrame(frame);
+})();

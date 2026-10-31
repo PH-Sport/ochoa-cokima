@@ -96,6 +96,9 @@ más lejos; Ochoa es una tasca y es seca.
    *cómo* se mueve algo que va a estar ahí de todas formas; no vale cuando la pieza **solo
    existe para moverse**. Esas no se atenúan: no se pintan, y eso hay que decidirlo antes del
    primer pintado, en el script. Ver `intro.ts`.
+   **Brasa, la home de Cokima desde el 2026-10-31, no carga `global.css`** —es el de la web
+   anterior— y lleva su propio apagado en `brasa.css`. Si Brasa pasa a componentes, el apagado
+   vuelve a vivir en un sitio.
 6. **Nada que se mueva solo sigue moviéndose después de que alguien lo toque.** El mazo de
    platos avanza solo hasta el primer gesto y ahí se apaga para siempre: quien desliza ha dicho
    que prefiere conducir. Y no corre mientras no se la ve, ni con la pestaña en segundo plano.
@@ -116,6 +119,17 @@ más lejos; Ochoa es una tasca y es seca.
    quieto y solo lo repite al bajar o al cambiar el tamaño, y al salir de la home suelta la GPU.
    Lo que cuesta en un móvil modesto **no está medido**; si se nota, la palanca es la densidad
    a la que pinta (`MAX_DPR` y `ESCALA`).
+
+   **Excepción, decidida por Mario el 2026-10-31: el fuego de Brasa** (`apps/cokima/src/brasa.js`).
+   Lo eligió él de entre los bocetos —*«me quedo con el fuego de "Rescoldo"»*— y lo pidió
+   *«ligeramente»* más rápido al verlo en la web. Es el mismo caso que el de Ochoa: un lienzo de
+   WebGL detrás de toda la página, que no se para al tocar. Cumple con la pestaña oculta (no pinta:
+   va con `requestAnimationFrame`) y con «reducir movimiento» (un fotograma quieto, que solo se
+   repite al cambiar de altura el lecho o de tamaño la ventana). Pinta a 0,6 de resolución y a 30
+   fotogramas por segundo como mucho, y **no suelta la GPU**: Brasa es una sola página y el fondo
+   está en todas sus secciones. Lo que cuesta en un móvil modesto **no está medido**; las palancas
+   son `ESCALA` y el tope de fotogramas. El vídeo de su portada sí sigue la regla: se pausa fuera
+   de la vista, con la pestaña oculta y en las otras secciones, y la regla 20 tal cual.
 
    **Qué es tocar (2026-10-29).** Un toque o un gesto sobre la pieza; **no el dedo que baja la
    página pasando por encima**. La portada, el mazo y el manifiesto se apagaban con

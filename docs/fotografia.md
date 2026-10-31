@@ -1,8 +1,16 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-10-30 · Ochoa tiene foto en sus diez destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, portada y casa
+> **Estado: vivo** · revisado 2026-10-31 · Ochoa tiene foto en sus diez destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las quince de Brasa
 
 ## Estado
+
+**Cokima, desde el 2026-10-31: la web es Brasa** (`cokima-el-rediseno.md` §3), y lo que este
+documento cuenta de su portada con foto, sus destacados y su casa es de la web anterior, que ya no
+se publica. Brasa usa quince fotos de la fototeca de @cokimamadrid, en `apps/cokima/public/images/`
+—arroz, bomba, croquetas, dumpling, gyozas, katsu, manos, martin, neon, puerta, sala, tacos,
+tarta, torrija y vacio—, reducidas para el boceto y sin pasar por la optimización de Astro. **No
+quedó apuntado de qué publicación sale cada una**, y ya no coinciden con sus originales. Detrás de
+su portada va el vídeo de la entrada, con su póster.
 
 **Desde el 2026-08-14, Cokima tiene mejor material que Ochoa.** Aparecieron **diecinueve fotos
 suyas** en la misma web vieja del grupo, que nadie había mirado, y Mario aportó **seis más del

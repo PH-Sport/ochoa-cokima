@@ -1,12 +1,14 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-10-30 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-10-31 · **el punto de entrada del repo**
 
-- **Corte:** 2026-10-30
+- **Corte:** 2026-10-31
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
-  nada nuevo aún) · y `feat/inicio-paralaje`, la rama de prueba que pidió Mario para ver el Inicio
-  en paralaje en la web antes de decidir, parada. Si se borra lo decide él; la otra rama de
-  prueba, `feat/inicio-vivo`, ya se borró (§0)
+  nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
+  de decidir, que no se fusionan: `feat/inicio-paralaje`, el Inicio de Ochoa en paralaje, parada,
+  y `feat/cokima-brasa`, el boceto Brasa como página suelta, que sobra desde que Brasa está en
+  `preview` (§0). Si se borran lo decide él; la otra rama de prueba, `feat/inicio-vivo`, ya se
+  borró (§0)
 - **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
 - **Hay una sola versión de este documento**, la de `preview`. Hasta el 2026-10-26 hubo dos —la de
   `tmp/entrada-cokima`, que era la buena, y la de `preview`—; se juntaron ese día (§1).
@@ -14,6 +16,27 @@
 ---
 
 ## 0. Por dónde seguir
+
+**Cokima, 2026-10-31: la web en `preview` es «Brasa», y se itera sobre ella.** Es la séptima
+ronda de bocetos en Artifacts —el porqué de cada rechazo y lo que Mario eligió de cada una, en
+`cokima-el-rediseno.md` §3—. De Brasa dijo *«Me gusta más este diseño, lo veo mejor»*, y al verla
+en línea pidió *«la rama "preview" exclusiva para esta nueva versión»*. Oscura, con el fuego de
+brasas de fondo, títulos en la Bricolage fina, menú por secciones (Inicio, La carta, Nosotros,
+Visítanos) en una sola página y, en La carta, tres maneras de enseñar los platos con foto sin
+quitarle sitio a los que no la tienen, que se cambian en una barra de boceto hasta que elija. Ese
+mismo día pidió tres retoques, ya puestos: el fuego un poco más rápido, «Kitchen Madness» bajo el
+nombre de la portada y el vídeo de la entrada detrás, oscurecido, con el fuego encima.
+
+Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
+dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las
+legales siguen con su aspecto de antes. **Antes de producción falta lo que se dejó a propósito**:
+el cartel de cookies y la medición, que en la home no están; la Cormorant servida desde la web y
+no desde Google; el inglés; y las legales con el aspecto nuevo. La lista y el porqué, en
+`cokima-el-rediseno.md` §3.
+
+Medido sobre el build, en WebKit a 390 y a 1440: el recorrido entero sin errores ni scroll
+lateral, las dos letras cargadas, y el vídeo arrancando en la portada, en pausa al bajar y en las
+otras secciones, y sin descargarse con «reducir movimiento». Sin mirar en un iPhone.
 
 **Ochoa, 2026-10-29: la home viva está en `preview`.** Mario la fue eligiendo en tres rondas de un
 probador montado sobre la web real, y está en las dos homes, la española y la inglesa. **El porqué
@@ -91,6 +114,9 @@ en `ochoa-inicio-vivo.md` §3.7.
 
 **Lo que espera a Mario:**
 
+- **Seguir con los retoques de Brasa**, en el alias de Cokima de `preview`, y decir cuál de las
+  tres maneras de La carta —Portadilla, Al tocar o Pareja— y si los nombres de las secciones valen
+  (`cokima-el-rediseno.md` §3). Y si se borra `feat/cokima-brasa`, que ya sobra.
 - **Probar la imagen nueva compartiendo el enlace de `preview` en WhatsApp.** Si sale la de antes,
   añadir `?v=2` al final del enlace: WhatsApp recuerda la vista previa de lo ya compartido.
 - **Ver en su iPhone los ajustes de esa noche**, en el alias de `preview` desde el 2026-10-30, y

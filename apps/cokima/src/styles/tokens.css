@@ -1,21 +1,32 @@
-/* Tokens de marca Cokima — mundo oscuro "mecha encendida" (boceto v3). */
+/* Tokens de marca Cokima — mundo oscuro "mecha encendida" (boceto v3).
+   Desde el 2026-10-31 la web es Brasa (docs/cokima-el-rediseno.md §3), y el fondo, la brasa y
+   la línea son los suyos: un negro más hondo (antes #150f0c), una brasa más clara (antes
+   #ff7a18) y la línea un punto más visible (antes 0.12). Lo demás es de la web anterior, que
+   siguen usando las páginas legales. */
 :root {
   color-scheme: dark;
 
-  --ground: #150f0c;
+  --ground: #0e0907;
   --ground-2: #1e1611;
   --ground-3: #271c16;
   --bone: #f3eadd;
   --bone-dim: #a99c8c;
   --bone-faint: #6c6055;
+  /* El hueso de Brasa a dos intensidades, para el texto secundario y el terciario, y el panel
+     translúcido de las pestañas y los atajos de la carta. */
+  --bone-2: rgba(243, 234, 221, 0.72);
+  --bone-3: rgba(243, 234, 221, 0.48);
+  --panel: rgba(14, 9, 7, 0.86);
   --vermilion: #ed1c24;
   --vermilion-2: #ff3b33;
-  --ember: #ff7a18;
-  --line: rgba(243, 234, 221, 0.12);
+  --ember: #ff9a52;
+  --line: rgba(243, 234, 221, 0.14);
   --maxw: 1180px;
 
   --sans: "Bricolage Grotesque", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --serif: Georgia, "Times New Roman", serif;
+  /* La voz de Brasa: las frases de la casa y las descripciones de la carta, en cursiva. */
+  --voz: "Cormorant Garamond", Georgia, "Times New Roman", serif;
 
   /* Mapeo a las variables neutras de @tombo/ui */
   --t-text: var(--bone);
@@ -69,6 +80,8 @@
   --dur-out: 180ms;
   --shift: 18px;
   --stagger: 65ms; /* escalón entre hermanos en cascada */
+  /* Lo que aparece al bajar en Brasa: lento a propósito, como sube una brasa. */
+  --dur-revela: 1100ms;
 
   --t-heading-font: var(--serif);
   --t-menu-title-size: 1.6rem;
