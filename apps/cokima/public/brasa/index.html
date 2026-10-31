@@ -1,0 +1,538 @@
+<!doctype html>
+<!-- Boceto Brasa, no es la web. Vive solo en la rama feat/cokima-brasa para que Mario lo vea en
+     línea; no se fusiona en preview. Es la misma pieza que su Artifact. El porqué, en
+     docs/cokima-el-rediseno.md §3, en preview. -->
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<style>:root{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Cokima, brasa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,300;1,400&display=swap">
+<style>
+@font-face{font-family:"Bricolage Grotesque";src:url("/fonts/bricolage-400.woff2") format("woff2");font-weight:200 800;font-display:swap}
+/* Boceto 7 · Brasa. Lo que Mario eligió de la tanda 2: el lecho de brasas de Rescoldo y la
+   Bricolage fina en los títulos. La web deja de ser una sola página: Inicio, La carta, Nosotros y
+   Visítanos, con menú. En la carta, los platos con foto se enseñan como en Aliento, y hay tres
+   maneras de hacerlo sin quitarle sitio a los que no la tienen; se cambian desde la barra de boceto. */
+:root{
+  --ground:#0e0907;--bone:#f3eadd;--bone-2:rgba(243,234,221,.72);--bone-3:rgba(243,234,221,.48);
+  --ember:#ff9a52;--line:rgba(243,234,221,.14);--panel:rgba(14,9,7,.86);
+  --sans:"Bricolage Grotesque",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --voz:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --gl:max(20px,env(safe-area-inset-left,0px));--gr:max(20px,env(safe-area-inset-right,0px));
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+  --barra:60px;
+  --ease:cubic-bezier(.2,.7,.2,1);
+  color-scheme:dark;
+}
+html,body{margin:0;background:var(--ground);color:var(--bone)}
+body{font:300 17px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:calc(92px + var(--sb))}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+.fondo{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block;
+  background:radial-gradient(120% 60% at 50% 110%,#5a1606 0%,#2a0b05 40%,var(--ground) 75%)}
+main{position:relative;z-index:1}
+.wrap{padding-left:var(--gl);padding-right:var(--gr);max-width:1160px;margin-left:auto;margin-right:auto}
+.etq{margin:0;font:500 .66rem/1.2 var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--ember)}
+.tit{margin:12px 0 0;font:200 clamp(2.3rem,9.4vw,4.4rem)/1.02 var(--sans);letter-spacing:-.02em;text-wrap:balance}
+.voz{margin:14px 0 0;max-width:32ch;font:italic 400 clamp(1.2rem,4.6vw,1.5rem)/1.4 var(--voz);color:var(--bone-2);text-wrap:pretty}
+.pill{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 24px;border-radius:999px;font:500 .92rem/1 var(--sans);text-decoration:none;color:var(--bone);border:1px solid rgba(243,234,221,.32);background:rgba(14,9,7,.55);cursor:pointer}
+.pill.solid{background:var(--bone);color:#1a110c;border-color:var(--bone)}
+.pill.peq{min-height:38px;padding:0 18px;font-size:.86rem}
+.hueco{margin:18px 0 0;max-width:36ch;padding:10px 14px;border:1px dashed rgba(243,234,221,.3);border-radius:10px;font:400 .8rem/1.4 var(--sans);color:var(--bone-3)}
+
+/* Barra de arriba: la marca, las secciones (ordenador) y Reservar */
+.barra{position:fixed;left:0;right:0;top:0;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  height:var(--barra);padding:var(--st) var(--gr) 0 var(--gl);
+  background:linear-gradient(to bottom,rgba(14,9,7,.92) 0%,rgba(14,9,7,.7) 60%,rgba(14,9,7,0) 100%);
+  transition:opacity .45s var(--ease),transform .45s var(--ease)}
+.marca{font:300 1.45rem/1 var(--sans);letter-spacing:-.01em;text-decoration:none}
+.secciones{display:none;gap:30px}
+.secciones a,.pestanas a{text-decoration:none;position:relative}
+.secciones a{font:400 .94rem/1 var(--sans);color:var(--bone-2);padding:8px 0}
+.secciones a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ember);transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease)}
+.secciones a[aria-current="page"]{color:var(--bone)}
+.secciones a[aria-current="page"]::after{transform:scaleX(1)}
+/* Abajo en el móvil: las cuatro secciones al alcance del pulgar */
+.pestanas{position:fixed;left:50%;bottom:calc(14px + var(--sb));z-index:6;display:flex;gap:2px;padding:5px;border-radius:999px;
+  background:var(--panel);border:1px solid var(--line);transform:translateX(-50%);
+  transition:opacity .45s var(--ease),transform .45s var(--ease)}
+.pestanas a{font:500 .82rem/1 var(--sans);color:var(--bone-2);padding:12px 14px;border-radius:999px;white-space:nowrap}
+.pestanas a[aria-current="page"]{color:var(--bone);background:rgba(243,234,221,.1)}
+.oculta{opacity:0;pointer-events:none}
+.barra.oculta{transform:translateY(-10px)}
+.pestanas.oculta{transform:translate(-50%,12px)}
+
+.vista{transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.vista.saliendo{opacity:0;transition-duration:.2s}
+.vista.entrando{opacity:0;transform:translateY(10px);transition:none}
+.cab-vista{padding-top:calc(var(--barra) + var(--st) + clamp(36px,8vh,90px))}
+
+/* ===== Inicio ===== */
+.portada{position:relative;min-height:100svh;display:grid;place-items:center;box-sizing:border-box;padding-bottom:12svh}
+.portada h1{margin:0;font:200 clamp(4.6rem,22vw,13rem)/.86 var(--sans);letter-spacing:-.03em;text-align:center}
+.portada .acc{position:absolute;left:var(--gl);right:var(--gr);bottom:calc(28px + var(--sb));display:flex;gap:10px;justify-content:center;transition:opacity .45s var(--ease)}
+.portada .acc .pill{flex:0 1 170px}
+/* Cuando sale el menú, los dos botones de la portada se van: no hay dos «Reservar» a la vez */
+.portada .acc.oculta{opacity:0;pointer-events:none}
+.sigue{padding-block:clamp(40px,10vh,110px) 40px}
+.lema{margin:0;font:200 clamp(2.4rem,10vw,5rem)/1.02 var(--sans);letter-spacing:-.025em;text-wrap:balance}
+.estado{display:inline-flex;align-items:center;gap:10px;margin:22px 0 0;font:400 .9rem/1.3 var(--sans);color:var(--bone-2)}
+.estado::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--bone-3)}
+.estado.abierta::before{background:var(--ember);box-shadow:0 0 12px 2px rgba(255,120,40,.55)}
+.puertas{display:grid;gap:34px;margin-top:clamp(50px,9vh,90px)}
+.puerta{display:block;text-decoration:none}
+.puerta img{width:100%;aspect-ratio:4/3;object-fit:cover;
+  -webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent 100%);mask-image:linear-gradient(to bottom,#000 55%,transparent 100%)}
+.puerta .txt{margin-top:-14%;position:relative}
+.puerta .t{display:block;margin-top:8px;font:200 clamp(1.7rem,6.6vw,2.2rem)/1.08 var(--sans);letter-spacing:-.015em}
+.puerta .t::after{content:" →";color:var(--ember);font-weight:300}
+
+/* ===== La carta ===== */
+.boceto{margin-top:28px;padding:12px 14px;border:1px dashed rgba(255,154,82,.55);border-radius:14px;display:grid;gap:10px;max-width:640px}
+.boceto .q{font:600 .62rem/1.2 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--ember)}
+.boceto .ops{display:flex;flex-wrap:wrap;gap:6px}
+.boceto button{font:500 .84rem/1 var(--sans);color:var(--bone-2);background:transparent;border:1px solid var(--line);border-radius:999px;padding:9px 13px;cursor:pointer}
+.boceto button[aria-pressed="true"]{color:#1a110c;background:var(--bone);border-color:var(--bone)}
+.boceto .nota{margin:0;font:400 .84rem/1.45 var(--sans);color:var(--bone-2)}
+.chips{position:sticky;top:calc(var(--barra) + var(--st));z-index:4;margin-top:30px;background:var(--panel);border-block:1px solid var(--line)}
+.chips .wrap{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-block:10px}
+.chips a{flex:none;font:500 .82rem/1 var(--sans);color:var(--bone-2);text-decoration:none;padding:9px 13px;border-radius:999px;border:1px solid transparent}
+.chips a.on{color:var(--bone);border-color:var(--line);background:rgba(243,234,221,.07)}
+.parte{scroll-margin-top:calc(var(--barra) + var(--st) + 70px);padding-top:clamp(40px,8vh,80px)}
+.parte>.wrap>h3,.parte h3.sec{margin:0;font:200 clamp(1.9rem,7vw,2.8rem)/1.05 var(--sans);letter-spacing:-.02em}
+.lista ul{max-width:760px}
+/* La última parte llega arriba aunque la carta se acabe: si no, el atajo de los postres se queda corto */
+.parte:last-of-type{min-height:calc(100svh - var(--barra) - 140px)}
+.lista ul{list-style:none;margin:16px 0 0;padding:0}
+.pl{padding:16px 0;border-bottom:1px solid var(--line)}
+.pl .ln{display:flex;justify-content:space-between;gap:16px;align-items:baseline;font:400 1.02rem/1.35 var(--sans)}
+.pl .ln b{font-weight:500;color:var(--ember);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pl .d{display:block;margin-top:4px;font:italic 400 1.04rem/1.4 var(--voz);color:var(--bone-3)}
+.pl .vl{display:block;margin-top:8px;font:italic 400 1.18rem/1.35 var(--voz);color:var(--bone-2)}
+.imp{display:inline-block;margin-left:8px;font:600 .54rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--ember);border:1px solid rgba(255,154,82,.5);border-radius:999px;padding:3px 6px;vertical-align:2px;white-space:nowrap}
+
+/* El plato en foto, como en Aliento: la foto a sangre se disuelve y el texto se apoya en lo disuelto */
+.pf{margin:0;position:relative}
+.pf img{width:100%;aspect-ratio:4/5;object-fit:cover;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 16%,#000 58%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0%,#000 16%,#000 58%,transparent 100%)}
+.pf figcaption{position:relative;margin-top:-36%}
+.pf .vg{margin:10px 0 0;font:italic 300 clamp(2rem,8.6vw,3.3rem)/1.04 var(--voz);text-wrap:balance}
+.pf .linea{display:flex;justify-content:space-between;gap:14px;align-items:baseline;max-width:440px;margin:18px 0 0;padding-top:12px;border-top:1px solid var(--line);font:500 .95rem/1.3 var(--sans)}
+.pf .linea b{color:var(--ember);font-weight:500;white-space:nowrap}
+.pf .d{margin:8px 0 0;max-width:30ch;font:400 1.08rem/1.45 var(--voz);color:var(--bone-2)}
+/* 1 · Portadilla */
+.portadilla{margin-top:6px}
+/* 2 · Al tocar */
+.leyenda{margin:14px 0 0;font:400 .84rem/1.4 var(--sans);color:var(--bone-3)}
+.punto{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ember);margin:0 2px 0 8px;vertical-align:2px;box-shadow:0 0 8px rgba(255,120,40,.6)}
+.leyenda .punto{margin:0 6px 0 0}
+.con-foto{cursor:pointer}
+.con-foto:focus-visible{outline:1px solid var(--ember);outline-offset:4px;border-radius:4px}
+.despliegue{margin:14px calc(-1 * var(--gl)) 0}
+.despliegue .pf img{aspect-ratio:1}
+.despliegue .pf figcaption{margin-top:-24%;padding-left:var(--gl);padding-right:var(--gr)}
+.despliegue .pf{animation:entra .7s var(--ease)}
+@keyframes entra{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.escenario{display:none}
+/* 3 · Pareja */
+.pareja{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin-top:18px}
+.pareja .pf{flex:0 0 86%;scroll-snap-align:start}
+.pareja .pf figcaption{padding-left:var(--gl);padding-right:8px}
+.pareja .pf .vg{font-size:clamp(1.7rem,7vw,2.6rem)}
+
+/* ===== Nosotros ===== */
+.relato{display:grid;margin-top:clamp(70px,13vh,150px)}
+.relato img{width:100%;aspect-ratio:4/5;object-fit:cover;
+  -webkit-mask-image:linear-gradient(to bottom,#000 50%,transparent 100%);mask-image:linear-gradient(to bottom,#000 50%,transparent 100%)}
+.relato .txt{position:relative;margin-top:-26%}
+.relato .tit{font-size:clamp(2rem,8.4vw,3.4rem)}
+.par{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.par img{aspect-ratio:1}
+
+/* ===== Visítanos ===== */
+.visita{display:grid;gap:34px;margin-top:40px}
+.visita img{width:100%;aspect-ratio:4/3;object-fit:cover;
+  -webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent 100%);mask-image:linear-gradient(to bottom,#000 55%,transparent 100%)}
+.datos{display:grid;gap:26px;margin:0}
+.datos dt{font:500 .64rem/1.2 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--ember);margin-bottom:6px}
+.datos dd{margin:0;font:300 1.12rem/1.5 var(--sans)}
+.datos dd+dd{margin-top:4px}
+.datos .enlace{display:inline-block;margin-top:8px;font:500 .9rem/1 var(--sans);color:var(--ember);text-decoration:none;border-bottom:1px solid rgba(255,154,82,.4);padding-bottom:3px}
+.datos .estado{margin-top:10px}
+.pie{margin-top:clamp(80px,14vh,140px);padding-block:22px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px 22px;font:400 .8rem/1.4 var(--sans);color:var(--bone-3)}
+
+.rv{opacity:0;transform:translateY(22px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv,.vista,.vista.entrando{opacity:1;transform:none;transition:none}.despliegue .pf{animation:none}}
+
+@media (min-width:900px){
+  body{padding-bottom:0}
+  .pestanas{display:none}
+  .secciones{display:flex}
+  .barra{--barra:72px}
+  :root{--barra:72px}
+  .puertas{grid-template-columns:repeat(3,1fr);gap:28px}
+  .puerta .t{font-size:1.9rem}
+  .pf img{aspect-ratio:16/11;
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 16%,#000 58%,transparent 100%),linear-gradient(to right,transparent 0%,#000 14%,#000 86%,transparent 100%);
+    -webkit-mask-composite:source-in;
+    mask-image:linear-gradient(to bottom,transparent 0%,#000 16%,#000 58%,transparent 100%),linear-gradient(to right,transparent 0%,#000 14%,#000 86%,transparent 100%);
+    mask-composite:intersect}
+  .pf figcaption{margin-top:-24%;padding-left:8%}
+  .portadilla{max-width:1160px;margin-left:auto;margin-right:auto}
+  .portadilla figcaption{padding-left:0}
+  .modo-2 .cuerpo-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start}
+  .modo-2 .escenario{display:block;position:sticky;top:calc(var(--barra) + 80px)}
+  .modo-2 .escenario .pf img{aspect-ratio:4/5;max-height:72vh;width:auto;margin:0 auto}
+  .modo-2 .escenario .pf figcaption{margin-top:-30%;padding-left:6%}
+  .modo-2 .despliegue{display:none}
+  .modo-2 .con-foto.activo .ln span:first-child{color:var(--ember)}
+  .pareja{display:grid;grid-template-columns:1fr 1fr;gap:20px;overflow:visible}
+  .pareja .pf img{aspect-ratio:4/5}
+  .pareja .pf figcaption{margin-top:-34%;padding-left:10%}
+  .relato{grid-template-columns:repeat(12,1fr);align-items:center}
+  .relato figure{grid-column:1/7;grid-row:1;margin:0}
+  .relato .txt{grid-column:7/12;grid-row:1;margin-top:0}
+  .relato.der figure{grid-column:7/13}
+  .relato.der .txt{grid-column:2/7}
+  .relato img{-webkit-mask-image:radial-gradient(closest-side,#000 60%,transparent 100%);mask-image:radial-gradient(closest-side,#000 60%,transparent 100%)}
+  .visita{grid-template-columns:7fr 5fr;gap:56px;align-items:center}
+}
+</style>
+</head><body>
+
+<canvas class="fondo" aria-hidden="true"></canvas>
+
+<header class="barra oculta">
+  <a class="marca" href="#inicio" data-ir="inicio">Cokima</a>
+  <nav class="secciones" aria-label="Secciones">
+    <a href="#inicio" data-ir="inicio">Inicio</a><a href="#carta" data-ir="carta">La carta</a><a href="#nosotros" data-ir="nosotros">Nosotros</a><a href="#visitanos" data-ir="visitanos">Visítanos</a>
+  </nav>
+  <a class="pill solid peq" href="https://www.covermanager.com/reservation/module_restaurant/restaurante-cokima/spanish" target="_blank" rel="noopener">Reservar</a>
+</header>
+
+<nav class="pestanas oculta" aria-label="Secciones">
+  <a href="#inicio" data-ir="inicio">Inicio</a><a href="#carta" data-ir="carta">La carta</a><a href="#nosotros" data-ir="nosotros">Nosotros</a><a href="#visitanos" data-ir="visitanos">Visítanos</a>
+</nav>
+
+<main>
+  <!-- ===== Inicio ===== -->
+  <section class="vista" data-vista="inicio">
+    <div class="portada">
+      <h1>Cokima</h1>
+      <div class="acc"><a class="pill" href="#carta" data-ir="carta">Ver carta</a><a class="pill solid" href="https://www.covermanager.com/reservation/module_restaurant/restaurante-cokima/spanish" target="_blank" rel="noopener">Reservar</a></div>
+    </div>
+    <div class="wrap sigue">
+      <p class="etq rv">Kitchen Madness · Argüelles</p>
+      <p class="lema rv" style="margin-top:14px">Buen producto. Malas intenciones.</p>
+      <p class="estado rv" data-estado></p>
+      <div class="puertas">
+        <a class="puerta rv" href="#carta" data-ir="carta"><img src="/brasa/img/katsu.jpg" alt="" width="880" height="1100"><span class="txt"><span class="etq">La carta</span><span class="t">Para compartir y desfasar.</span></span></a>
+        <a class="puerta rv" href="#nosotros" data-ir="nosotros"><img src="/brasa/img/martin.jpg" alt="" width="825" height="1100" style="object-position:50% 20%"><span class="txt"><span class="etq">Nosotros</span><span class="t">Trabajo serio. Cocina canalla.</span></span></a>
+        <a class="puerta rv" href="#visitanos" data-ir="visitanos"><img src="/brasa/img/puerta.jpg" alt="" width="1400" height="1400"><span class="txt"><span class="etq">Visítanos</span><span class="t">Andrés Mellado, 21.</span></span></a>
+      </div>
+      <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><span>+34 915 98 94 01</span><span>Lunes a domingo, 9:00–00:00</span></footer>
+    </div>
+  </section>
+
+  <!-- ===== La carta ===== -->
+  <section class="vista" data-vista="carta" hidden>
+    <div class="wrap cab-vista">
+      <p class="etq">La carta</p>
+      <h2 class="tit">Para compartir y desfasar.</h2>
+      <div class="boceto" role="group" aria-label="Boceto: cómo enseñar los platos con foto">
+        <span class="q">Boceto · los platos con foto</span>
+        <div class="ops"><button type="button" data-modo="1" aria-pressed="true">1 · Portadilla</button><button type="button" data-modo="2" aria-pressed="false">2 · Al tocar</button><button type="button" data-modo="3" aria-pressed="false">3 · Pareja</button></div>
+        <p class="nota" data-nota></p>
+      </div>
+    </div>
+    <nav class="chips" aria-label="Partes de la carta"><div class="wrap"><a href="#p-compartir" data-a="compartir">Compartir es vivir</a><a href="#p-terminar" data-a="terminar">Para terminar o no…</a><a href="#p-postres" data-a="postres">Los postres</a></div></nav>
+    <div id="carta-cuerpo"></div>
+    <div class="wrap"><footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><span>+34 915 98 94 01</span></footer></div>
+  </section>
+
+  <!-- ===== Nosotros ===== -->
+  <section class="vista" data-vista="nosotros" hidden>
+    <div class="wrap cab-vista">
+      <p class="etq">Nosotros</p>
+      <h2 class="tit">Nacimos en Argüelles con una misión.</h2>
+      <p class="voz">Romper las reglas, jugar con los sabores… y demostrar que la cocina, también puede ser una bomba.</p>
+    </div>
+    <div class="wrap">
+      <article class="relato rv"><figure><img src="/brasa/img/bomba.jpg" alt="El mural de la bomba sobre las mesas" width="1400" height="1400" style="aspect-ratio:1"></figure>
+        <div class="txt"><p class="etq">La cocina</p><p class="tit">Aquí no cocinamos para que se vea bonito…</p><p class="voz">Cocinamos para que deje huella.</p></div></article>
+      <article class="relato der rv"><figure><img src="/brasa/img/martin.jpg" alt="Martín, del equipo de cocina" width="825" height="1100"></figure>
+        <div class="txt"><p class="etq">Martín, en la cocina</p><p class="tit">Trabajo serio. Cocina canalla.</p><p class="voz">Más cuchillo. Más producto.</p></div></article>
+      <article class="relato rv"><figure><img src="/brasa/img/neon.jpg" alt="El neón «Orgasm, at the first bite» sobre la pared de fotos" width="1400" height="1283" style="aspect-ratio:1"></figure>
+        <div class="txt"><p class="etq">La sala</p><p class="tit">Perseguimos una sensación muy concreta.</p><p class="voz">Ese <i>Orgasm at firstbite</i> del que habla nuestra pared.</p></div></article>
+      <article class="relato der rv"><figure><img src="/brasa/img/sala.jpg" alt="Dos personas ríen en una mesa de la sala" width="880" height="1100"></figure>
+        <div class="txt"><p class="etq">Quien te lo sirve</p><p class="tit">El plato es importante, pero quien te lo sirve también.</p><p class="voz">En Cokima no solo servimos comida… Servimos momentos. Sonrisas. Y el deseo de volver.</p></div></article>
+      <article class="relato rv"><figure><img src="/brasa/img/manos.jpg" alt="Un cliente muerde un bocado con las manos" width="880" height="1100"></figure>
+        <div class="txt"><p class="etq">Compartir es vivir</p><p class="tit">Hay platos que no necesitan cubiertos.</p><p class="voz">Solo ganas. Buen rollo. Y alguien con quien compartir.</p></div></article>
+      <article class="relato der rv"><figure><div class="par"><img src="/brasa/img/tarta.jpg" alt="Una mujer se come la tarta de queso" width="1100" height="1100"><img src="/brasa/img/vacio.jpg" alt="El plato vacío" width="1100" height="1100"></div></figure>
+        <div class="txt" style="margin-top:28px"><p class="etq">Lo que dicen</p><p class="tit">La mejor crítica nunca ha necesitado palabras.</p><p class="voz">Solo un plato vacío.</p><p class="hueco">Hueco: reseñas reales de clientes. Falta el material.</p></div></article>
+      <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><span>+34 915 98 94 01</span></footer>
+    </div>
+  </section>
+
+  <!-- ===== Visítanos ===== -->
+  <section class="vista" data-vista="visitanos" hidden>
+    <div class="wrap cab-vista">
+      <p class="etq">Visítanos</p>
+      <h2 class="tit">Si alguna vez has cruzado esta puerta, ya sabes por qué siempre apetece volver.</h2>
+      <p class="voz">Y si todavía no lo has hecho, te estamos esperando.</p>
+    </div>
+    <div class="wrap visita">
+      <img src="/brasa/img/puerta.jpg" alt="El rótulo de Cokima en la entrada" width="1400" height="1400">
+      <dl class="datos">
+        <div><dt>Dónde</dt><dd>Calle de Andrés Mellado, 21</dd><dd>28015 Madrid · Argüelles</dd>
+          <dd><a class="enlace" href="https://www.google.com/maps/search/?api=1&amp;query=Calle%20de%20Andr%C3%A9s%20Mellado%2021%2C%2028015%20Madrid" target="_blank" rel="noopener">Cómo llegar ↗</a></dd></div>
+        <div><dt>Cuándo</dt><dd>Lunes a domingo, 9:00–00:00</dd><dd>Cocina 13:00–16:00 y 19:30–23:30</dd><dd class="estado" data-estado></dd></div>
+        <div><dt>Teléfono</dt><dd>+34 915 98 94 01</dd></div>
+        <div><dt>Reservas</dt><dd><a class="pill solid" href="https://www.covermanager.com/reservation/module_restaurant/restaurante-cokima/spanish" target="_blank" rel="noopener" style="margin-top:4px">Reservar mesa</a></dd></div>
+      </dl>
+    </div>
+    <div class="wrap"><footer class="pie"><span>Aviso legal</span><span>Privacidad</span><span>Cookies</span></footer></div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const MENU = [{"id": "compartir-01", "section": "compartir", "name": "Croquetas de jamón Joselito", "description": "Con velo de papada ibérica.", "price": 3, "featured": null}, {"id": "compartir-02", "section": "compartir", "name": "Bao de panceta melosa", "description": "Mayonesa de hierbabuena y furikake.", "price": 8, "featured": null}, {"id": "compartir-03", "section": "compartir", "name": "Gilda de pastrami casero", "description": "Encurtidos con salsa de oliva Kalamata.", "price": 7, "featured": null}, {"id": "compartir-04", "section": "compartir", "name": "Gyozas de langostino", "description": "Con salsa de chorizo ibérico de Extremadura.", "price": 14, "featured": true}, {"id": "compartir-05", "section": "compartir", "name": "Tomate rosa ecológico", "description": "Con pesto rojo, pesto verde y AOVE.", "price": 12, "featured": null}, {"id": "compartir-06", "section": "compartir", "name": "Dumpling de chipirones estofados", "description": "Con alioli de tinta.", "price": 14, "featured": null}, {"id": "compartir-07", "section": "compartir", "name": "Tataki de atún", "description": "Gel de guisante y cremoso de ají amarillo.", "price": 18, "featured": true}, {"id": "compartir-08", "section": "compartir", "name": "Ceviche de corvina", "description": "Leche de tigre de maracuyá y quinoa.", "price": 16, "featured": null}, {"id": "compartir-09", "section": "compartir", "name": "Soft shell crab crujiente", "description": "Con coliflor en texturas.", "price": 15, "featured": null}, {"id": "compartir-10", "section": "compartir", "name": "Tacos del gobernador de gambón", "description": "Con ñora y queso Oaxaca.", "price": 14, "featured": true}, {"id": "compartir-11", "section": "compartir", "name": "Alcachofas con salsa de calabaza", "description": "Tomate cherry y papada ibérica.", "price": 16, "featured": null}, {"id": "compartir-12", "section": "compartir", "name": "Los minutejos de Cokima", "description": "Chips de oreja de cerdo crujiente con milhojas de patata y salsa brava.", "price": 12, "featured": null}, {"id": "terminar-01", "section": "terminar", "name": "Huevos rotos con patata crujiente y pulpo a la brasa", "description": "Salsa huancaína ahumada y aceite de pimentón.", "price": 24, "featured": null}, {"id": "terminar-02", "section": "terminar", "name": "Katsu sando de solomillo de ternera", "description": "Con queso gorgonzola y demiglace de trufa.", "price": 22, "featured": true}, {"id": "terminar-03", "section": "terminar", "name": "Wonton de carrillera", "description": "Mole mexicano, yema curada y mayonesa de achiote.", "price": 22, "featured": null}, {"id": "terminar-04", "section": "terminar", "name": "Arroz meloso de carabinero a la brasa", "description": "Con alioli de perejil.", "price": 30, "featured": true}, {"id": "terminar-05", "section": "terminar", "name": "Steak tartar de picaña madurada", "description": "Sobre tuétano, con emulsión de su grasa.", "price": 24, "featured": null}, {"id": "terminar-06", "section": "terminar", "name": "Canelones de costilla de cerdo", "description": "Con su demi-glace, bechamel de coco y queso provolone.", "price": 20, "featured": null}, {"id": "terminar-07", "section": "terminar", "name": "Fideuá de boletus, foie y seta enoki a la brasa", "description": null, "price": 20, "featured": null}, {"id": "postres-01", "section": "postres", "name": "Tarta de queso BRUTAL", "description": "Con helado de Idiazabal y toffee salado.", "price": 7.5, "featured": null}, {"id": "postres-02", "section": "postres", "name": "Tremenda torrija", "description": "Con corazón de dulce de leche y caramelo.", "price": 8.5, "featured": null}];
+  const POR_ID = Object.fromEntries(MENU.map((d) => [d.id, d]));
+  const fmt = (p) => (Number.isInteger(p) ? p + " €" : p.toFixed(2).replace(".", ",") + " €");
+  // Los platos con foto en la fototeca, y la frase que la casa ha publicado de cada uno.
+  const FOTOS = {
+    "compartir-01": { img: "croquetas", w: 825, h: 1100, alt: "Una croqueta con su velo de papada", frase: "Han pasado por casi todas nuestras cartas. Y siguen aquí" },
+    "compartir-04": { img: "gyozas", w: 1100, h: 1100, alt: "Gyozas de langostino con salsa de chorizo", frase: "Compartir es vivir." },
+    "compartir-06": { img: "dumpling", w: 880, h: 1100, alt: "Dumpling de chipirones", frase: "Madrid cabe en un dumpling." },
+    "compartir-10": { img: "tacos", w: 1100, h: 1100, alt: "Una mano sostiene un taco de gambón", frase: null },
+    "terminar-02": { img: "katsu", w: 880, h: 1100, alt: "Katsu sando con patatas", frase: "Hay dos tipos de clientes en Cokima." },
+    "terminar-04": { img: "arroz", w: 720, h: 1280, alt: "Arroz meloso de carabinero", frase: "Este plato cambia el ritmo de la mesa…" },
+    "postres-01": { img: "tarta", w: 1100, h: 1100, alt: "Una mujer se come la tarta de queso", frase: "La mejor crítica nunca ha necesitado palabras." },
+    "postres-02": { img: "torrija", w: 880, h: 1100, alt: "La torrija servida bajo el neón", frase: "Un postre que no se comparte, se saborea lento." },
+  };
+  // Platos sin foto que también tienen frase propia publicada: llevan la voz en vez de la foto.
+  const VOCES = { "terminar-05": "Hay platos que entran en carta. Y otros que se agarran a ella." };
+  const PARTES = [["compartir", "Compartir es vivir"], ["terminar", "Para terminar o no…"], ["postres", "Y por fin, los postres"]];
+  const NOTAS = {
+    1: "Cada parte de la carta se abre con uno de sus platos en foto. Debajo, todos en la misma lista, ese también: la foto ilustra la parte, no corona al plato.",
+    2: "Todos los platos iguales. Los que tienen foto llevan un punto y la enseñan al tocarlos; en el ordenador, al pasar el ratón, en el lado derecho.",
+    3: "Dos imprescindibles en foto al principio (en el móvil se pasan con el dedo) y, debajo, la carta entera igual para todos, ellos incluidos.",
+  };
+
+  const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  const foto = (id, etiqueta) => {
+    const d = POR_ID[id], f = FOTOS[id];
+    const fig = el("figure", "pf");
+    const img = el("img"); img.src = `/brasa/img/${f.img}.jpg`; img.alt = f.alt; img.width = f.w; img.height = f.h; img.loading = "lazy";
+    const cap = el("figcaption", "wrap");
+    if (etiqueta) cap.append(el("p", "etq", etiqueta));
+    cap.append(el("p", "vg", f.frase || d.description));
+    const ln = el("p", "linea"); ln.append(el("span", null, d.name), el("b", null, fmt(d.price))); cap.append(ln);
+    if (f.frase && d.description) cap.append(el("p", "d", d.description));
+    fig.append(img, cap); return fig;
+  };
+  const fila = (d, conPunto) => {
+    const li = el("li", "pl"); li.dataset.id = d.id;
+    const ln = el("span", "ln"), n = el("span", null, d.name);
+    if (d.featured) n.append(el("span", "imp", "Imprescindible"));
+    if (conPunto) { const p = el("span", "punto"); p.setAttribute("aria-label", "con foto"); n.append(p); }
+    ln.append(n, el("b", null, fmt(d.price))); li.append(ln);
+    if (d.description) li.append(el("span", "d", d.description));
+    if (VOCES[d.id]) li.append(el("span", "vl", VOCES[d.id]));
+    return li;
+  };
+  const lista = (sec, opts = {}) => {
+    const ul = el("ul");
+    MENU.filter((d) => d.section === sec).forEach((d) => {
+      const li = fila(d, opts.puntos && FOTOS[d.id]);
+      if (opts.puntos && FOTOS[d.id]) {
+        li.classList.add("con-foto"); li.tabIndex = 0; li.setAttribute("role", "button"); li.setAttribute("aria-expanded", "false");
+      }
+      ul.append(li);
+    });
+    return ul;
+  };
+
+  const cuerpo = document.getElementById("carta-cuerpo");
+  const PORTADILLAS = { compartir: "compartir-04", terminar: "terminar-04", postres: "postres-02" };
+  let modo = 1;
+  const pintarCarta = (m) => {
+    modo = m; cuerpo.replaceChildren(); cuerpo.className = "modo-" + m;
+    document.querySelectorAll(".boceto button").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.modo === m)));
+    document.querySelector("[data-nota]").textContent = NOTAS[m];
+    if (m === 3) {
+      const w = el("div", "wrap"); w.style.paddingTop = "34px"; w.append(el("p", "etq", "Imprescindibles")); cuerpo.append(w);
+      const par = el("div", "pareja wrap"); par.style.paddingLeft = par.style.paddingRight = "0";
+      par.append(foto("compartir-04"), foto("terminar-02")); cuerpo.append(par);
+    }
+    let raiz = cuerpo, escenario = null;
+    if (m === 2) {
+      const w = el("div", "wrap cuerpo-2"); const col = el("div");
+      const ley = el("p", "leyenda"); ley.append(el("span", "punto"), document.createTextNode(matchMedia("(min-width:900px)").matches ? "Con foto: pasa el ratón por encima." : "Con foto: tócalo para verla."));
+      col.append(ley); escenario = el("div", "escenario"); w.append(col, escenario); cuerpo.append(w); raiz = col;
+    }
+    PARTES.forEach(([sec, t]) => {
+      const s = el("section", "parte"); s.id = "p-" + sec; s.dataset.parte = sec;
+      if (m === 1) {
+        const w = el("div", "wrap"); w.append(el("h3", "sec", t)); s.append(w);
+        const pid = PORTADILLAS[sec];
+        const p = foto(pid, POR_ID[pid].featured ? "Imprescindible" : null); p.classList.add("portadilla"); s.append(p);
+        const l = el("div", "wrap lista"); l.append(lista(sec)); s.append(l);
+      } else if (m === 2) {
+        s.append(el("h3", "sec", t)); const l = el("div", "lista"); l.append(lista(sec, { puntos: true })); s.append(l);
+      } else {
+        const w = el("div", "wrap lista"); w.append(el("h3", "sec", t), lista(sec)); s.append(w);
+      }
+      raiz.append(s);
+    });
+    if (m === 2) {
+      const activar = (li, desplegar) => {
+        if (matchMedia("(min-width:900px)").matches) {
+          cuerpo.querySelectorAll(".con-foto.activo").forEach((x) => x.classList.remove("activo"));
+          li.classList.add("activo"); escenario.replaceChildren(foto(li.dataset.id)); return;
+        }
+        if (!desplegar) return;
+        const abierto = li.querySelector(".despliegue");
+        cuerpo.querySelectorAll(".despliegue").forEach((x) => { x.parentElement.setAttribute("aria-expanded", "false"); x.remove(); });
+        if (abierto) return;
+        const dsp = el("div", "despliegue"); dsp.append(foto(li.dataset.id)); li.append(dsp); li.setAttribute("aria-expanded", "true");
+      };
+      cuerpo.querySelectorAll(".con-foto").forEach((li) => {
+        li.addEventListener("mouseenter", () => activar(li, false));
+        li.addEventListener("click", (e) => { if (!e.target.closest(".despliegue")) activar(li, true); });
+        li.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activar(li, true); } });
+      });
+      const primero = cuerpo.querySelector('.con-foto[data-id="compartir-04"]');
+      if (matchMedia("(min-width:900px)").matches) activar(primero, false);
+    }
+  };
+  document.querySelectorAll(".boceto button").forEach((b) => b.addEventListener("click", () => { pintarCarta(+b.dataset.modo); try { history.replaceState(null, "", "#carta-" + b.dataset.modo); } catch (e) {} }));
+  document.querySelectorAll(".chips a").forEach((a) => a.addEventListener("click", (e) => {
+    e.preventDefault(); document.getElementById("p-" + a.dataset.a)?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  }));
+
+  // Estado de la cocina, a la hora de Madrid. Horario real: cocina 13:00–16:00 y 19:30–23:30, todos los días.
+  const estado = () => {
+    const [h, m] = new Intl.DateTimeFormat("es-ES", { timeZone: "Europe/Madrid", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()).split(":").map(Number);
+    const t = h * 60 + m;
+    let txt, abierta = false;
+    if (t >= 780 && t < 960) { txt = "Cocina abierta ahora, hasta las 16:00"; abierta = true; }
+    else if (t >= 1170 && t < 1410) { txt = "Cocina abierta ahora, hasta las 23:30"; abierta = true; }
+    else if (t < 780) txt = "La cocina abre hoy a las 13:00";
+    else if (t < 1170) txt = "La cocina vuelve a las 19:30";
+    else txt = "La cocina abre mañana a las 13:00";
+    document.querySelectorAll("[data-estado]").forEach((e) => { e.textContent = txt; e.classList.toggle("abierta", abierta); });
+  };
+  estado(); setInterval(estado, 60000);
+
+  // Secciones: una a la vista cada vez, con un fundido corto al cambiar.
+  const vistas = Object.fromEntries([...document.querySelectorAll(".vista")].map((v) => [v.dataset.vista, v]));
+  const barra = document.querySelector(".barra"), pestanas = document.querySelector(".pestanas");
+  let actual = "inicio";
+  const marcar = () => document.querySelectorAll(".secciones [data-ir], .pestanas [data-ir]").forEach((a) => {
+    if (a.dataset.ir === actual) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+  const revelar = () => {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+    vistas[actual].querySelectorAll(".rv:not(.in)").forEach((x) => io.observe(x));
+  };
+  const ir = (destino, instantaneo) => {
+    let v = destino, m = null;
+    if (/^carta-[123]$/.test(v)) { m = +v.slice(6); v = "carta"; }
+    if (!vistas[v]) v = "inicio";
+    if (m) pintarCarta(m);
+    try { history.replaceState(null, "", "#" + (m ? "carta-" + m : v)); } catch (e) {}
+    if (v === actual) { scrollTo(0, 0); return; }
+    const sale = vistas[actual], entra = vistas[v];
+    actual = v; marcar();
+    const cambiar = () => {
+      sale.hidden = true; sale.classList.remove("saliendo");
+      entra.classList.add("entrando"); entra.hidden = false; scrollTo(0, 0);
+      requestAnimationFrame(() => requestAnimationFrame(() => entra.classList.remove("entrando")));
+      revelar(); alScroll();
+    };
+    if (instantaneo) cambiar(); else { sale.classList.add("saliendo"); setTimeout(cambiar, 200); }
+  };
+  document.addEventListener("click", (e) => { const a = e.target.closest("[data-ir]"); if (!a) return; e.preventDefault(); ir(a.dataset.ir); });
+
+  const chips = [...document.querySelectorAll(".chips a")], accPortada = document.querySelector(".portada .acc");
+  const alScroll = () => {
+    const portada = actual === "inicio" && scrollY < innerHeight * 0.6;
+    barra.classList.toggle("oculta", portada); pestanas.classList.toggle("oculta", portada);
+    accPortada.classList.toggle("oculta", !portada);
+    if (actual === "carta") {
+      let on = "compartir";
+      document.querySelectorAll(".parte").forEach((p) => { if (p.getBoundingClientRect().top < innerHeight * 0.35) on = p.dataset.parte; });
+      if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) on = "postres";
+      chips.forEach((c) => c.classList.toggle("on", c.dataset.a === on));
+    }
+  };
+  addEventListener("scroll", alScroll, { passive: true });
+
+  pintarCarta(1);
+  const inicial = (location.hash || "").slice(1);
+  if (inicial && inicial !== "inicio") ir(inicial, true); else { marcar(); revelar(); alScroll(); }
+
+  // Fondo: el lecho de brasas de Rescoldo, en WebGL a poca resolución y a 30 fps. En la portada del
+  // Inicio sube; en el resto se recoge al pie.
+  const cv = document.querySelector(".fondo");
+  const gl = cv.getContext("webgl", { antialias: false, alpha: false, premultipliedAlpha: false });
+  if (!gl) return;
+  const VS = "attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}";
+  const FS = `precision mediump float;
+uniform vec2 r;uniform float t,s,bed;
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+  return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
+float ridge(vec2 p){float v=0.,a=.55;for(int i=0;i<3;i++){float k=1.-abs(n(p)*2.-1.);v+=a*k*k*k;p=p*2.1+vec2(3.1,1.7);a*=.5;}return v;}
+vec3 ramp(float x){x=clamp(x,0.,1.2);
+  vec3 c=mix(vec3(0.),vec3(.30,.035,.012),smoothstep(0.,.3,x));
+  c=mix(c,vec3(.82,.2,.035),smoothstep(.28,.68,x));
+  c=mix(c,vec3(1.,.52,.16),smoothstep(.62,.95,x));
+  return mix(c,vec3(1.,.78,.48),smoothstep(.95,1.2,x));}
+void main(){
+  vec2 uv=gl_FragCoord.xy/r;
+  float k=min(r.x,r.y);
+  vec2 p=gl_FragCoord.xy/k*2.4+vec2(0.,s*.00035);
+  vec2 q=vec2(fbm(p*.7+vec2(0.,t*.018)),fbm(p*.7+vec2(5.2,1.3)-vec2(t*.012,0.)));
+  float f=fbm(p+1.8*q);
+  float veta=pow(ridge(p*1.35+q*2.),2.2);
+  float ph=n(p*.45+7.)*6.2832;
+  float resp=.62+.38*sin(t*.85+ph);
+  float lecho=smoothstep(bed,0.,uv.y);
+  float calor=(veta*.95+smoothstep(.5,.82,f)*.55)*resp*lecho;
+  calor*=(.82+.18*sin(t*.5))*1.08;
+  vec3 col=vec3(.055,.035,.027)+ramp(calor);
+  col+=vec3(.16,.045,.015)*lecho*lecho*(.55+.45*resp)*.75;
+  gl_FragColor=vec4(col,1.);
+}`;
+  const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
+  const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr); gl.useProgram(pr);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr, "a"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const U = {}; ["r", "t", "s", "bed"].forEach((u) => (U[u] = gl.getUniformLocation(pr, u)));
+  const ESCALA = 0.6;
+  const size = () => { cv.width = Math.round(innerWidth * ESCALA); cv.height = Math.round(innerHeight * ESCALA); gl.viewport(0, 0, cv.width, cv.height); };
+  addEventListener("resize", size); size();
+  const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let bed = actual === "inicio" ? 0.54 : 0.3, last = -1e3;
+  const frame = (ms) => {
+    requestAnimationFrame(frame);
+    if (ms - last < 32 || (quieto && last > 0 && Math.abs(bed - objetivo()) < 0.002)) return; last = ms;
+    bed += (objetivo() - bed) * (quieto ? 1 : 0.04);
+    gl.uniform2f(U.r, cv.width, cv.height); gl.uniform1f(U.t, quieto ? 20 : ms / 1000); gl.uniform1f(U.s, scrollY); gl.uniform1f(U.bed, bed);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  };
+  const objetivo = () => (actual === "inicio" ? (scrollY < innerHeight * 0.5 ? 0.54 : 0.34) : 0.3);
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body></html>
