@@ -197,6 +197,11 @@ exclusiva para esta nueva versión»*. **Desde el 2026-10-31 Brasa es la web de 
   el mismo de `recursos.md` §4, todavía sin confirmar por el restaurante. `OpenState` no sirve aquí:
   calcula el horario del local, no el de la cocina.
 - **La barra de boceto de La carta se queda** hasta que Mario elija una de las tres maneras.
+- **Trampa, sin error:** los `widths` de un `<Image>` tienen que estar entre los `sizes` de
+  `imagesConfig` en `astro.config.mjs`. Si no, el `srcset` sale con **un solo tamaño, 1600 px**, y
+  el móvil se lo descarga entero; pedir otro ancho a Vercel da 400. Pasaba con los anchos que
+  traía `Entrada.astro` (420, 720, 1080 y 1440), copiados al póster de Brasa; el póster va ahora
+  con 480, 780, 1200 y 1600. `Entrada.astro` ya no se usa y se queda como estaba.
 
 ---
 
