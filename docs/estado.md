@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-10-31 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-11-01 · **el punto de entrada del repo**
 
-- **Corte:** 2026-10-31
+- **Corte:** 2026-11-01
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
   nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
   de decidir, que no se fusionan: `feat/inicio-paralaje`, el Inicio de Ochoa en paralaje, parada,
@@ -25,7 +25,8 @@ brasas de fondo, títulos en la Bricolage fina, menú por secciones (Inicio, La 
 Visítanos) en una sola página y, en La carta, tres maneras de enseñar los platos con foto sin
 quitarle sitio a los que no la tienen, que se cambian en una barra de boceto hasta que elija. Ese
 mismo día pidió tres retoques, ya puestos: el fuego un poco más rápido, «Kitchen Madness» bajo el
-nombre de la portada y el vídeo de la entrada detrás, oscurecido, con el fuego encima.
+nombre de la portada y el vídeo de la entrada detrás, oscurecido, con el fuego encima. El
+2026-11-01, «Kitchen Madness» pasó de la cursiva a la letra de los textos, en mayúsculas pequeñas.
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las

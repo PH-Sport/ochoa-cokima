@@ -70,9 +70,11 @@ main{position:relative;z-index:1}
 .portada{position:relative;min-height:100svh;display:grid;place-items:center;box-sizing:border-box;padding-bottom:12svh}
 .portada h1{margin:0;display:grid;justify-items:center;gap:clamp(8px,1.6vw,16px);text-align:center;font-weight:inherit}
 .portada h1 .nombre{font:200 clamp(4.6rem,22vw,13rem)/.86 var(--sans);letter-spacing:-.03em}
-/* «Kitchen Madness» bajo el nombre (Mario, 2026-10-31): la cursiva de la voz contra la palo seco
-   fina del nombre, que es lo que le da el movimiento. */
-.portada h1 .sub{font:italic 300 clamp(1.6rem,6.4vw,2.8rem)/1 var(--voz);color:var(--bone-2)}
+/* «Kitchen Madness» bajo el nombre (Mario, 2026-10-31). Primero fue en la cursiva de la voz; al
+   verlo lo pidió en la letra de los textos, en mayúsculas y pequeño (2026-11-01). Va espaciado
+   como las etiquetas de la página, y el margen negativo devuelve el espacio que la última letra
+   deja a su derecha: sin él, la línea se ve corrida a la izquierda bajo el nombre. */
+.portada h1 .sub{font:500 clamp(.72rem,2.4vw,.95rem)/1 var(--sans);letter-spacing:.32em;margin-right:-.32em;text-transform:uppercase;color:var(--bone-2)}
 .portada .acc{position:absolute;left:var(--gl);right:var(--gr);bottom:calc(28px + var(--sb));display:flex;gap:10px;justify-content:center;transition:opacity var(--dur-in) var(--ease)}
 .portada .acc .pill{flex:0 1 170px}
 /* Cuando sale el menú, los dos botones de la portada se van: no hay dos «Reservar» a la vez */

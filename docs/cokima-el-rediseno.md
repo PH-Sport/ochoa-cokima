@@ -1,6 +1,6 @@
 # Cokima: el rediseño
 
-> **Estado: vivo** · el rediseño está en curso · revisado 2026-10-31
+> **Estado: vivo** · el rediseño está en curso · revisado 2026-11-01
 
 - **Abierto:** 2026-08-14 · **Última tanda:** 2026-10-31
 - **Rama:** `preview` desde el 2026-10-26, cuando Mario pidió trabajar solo en ella. Antes vivió en
@@ -155,12 +155,16 @@ exclusiva para esta nueva versión»*. **Desde el 2026-10-31 Brasa es la web de 
   arriba en el ordenador; en el móvil, pestañas abajo, al alcance del pulgar. No es la cortina,
   que es de Ochoa.
 - **La portada del Inicio sigue la regla de §4:** el nombre y los dos botones, sin menú, que
-  aparece al bajar. Con dos cosas que pidió Mario al verla: **«Kitchen Madness» bajo el nombre**,
-  en la cursiva de la voz —*«le da algo más de dinamismo a la portada»*—, y **el vídeo de la
+  aparece al bajar. Con dos cosas que pidió Mario al verla: **«Kitchen Madness» bajo el nombre**
+  —*«le da algo más de dinamismo a la portada»*—, y **el vídeo de la
   entrada detrás**, *«a modo provisional»*, *«ligeramente oscurecido y haciéndole una transición más
   oscura aún en la parte inferior, para que el fuego animado quede por encima del vídeo»*. El
   vídeo va fuera de `<main>` y antes del lienzo del fuego, que se pinta encima; lo arranca el
   script como en `Entrada.astro` (reglas 6 y 20 de `movimiento.md`).
+  «Kitchen Madness» entró en la cursiva de la voz y al día siguiente, el 2026-11-01, Mario lo
+  pidió *«con la letra normal que usamos para los textos, no usaría la letra clásica curva […]
+  en mayúsculas, pero con un tamaño de letra pequeño»*: va en Bricolage 500, espaciado como las
+  etiquetas de la página, a 11,5 px en el móvil y 15 en el ordenador.
 - **El Inicio es corto:** la frase de la casa, si la cocina está abierta ahora (con su horario) y
   tres puertas a las otras secciones.
 - **La carta tiene siempre los 21 platos en la misma lista**, con tres maneras de enseñar los
