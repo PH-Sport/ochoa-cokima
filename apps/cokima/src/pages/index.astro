@@ -92,12 +92,12 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
       <nav class="secciones" aria-label="Secciones">
         <a href="#inicio" data-ir="inicio">Inicio</a><a href="#carta" data-ir="carta">La carta</a><a href="#nosotros" data-ir="nosotros">Nosotros</a><a href="#visitanos" data-ir="visitanos">Visítanos</a>
       </nav>
-      <button type="button" class="desp" aria-expanded="false" aria-controls="lista-secciones"><span data-actual>Inicio</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.2 6 8l4-3.8" /></svg></button>
+      <button type="button" class="desp" aria-expanded="false" aria-controls="desplegable-secciones"><span data-actual>Inicio</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.2 6 8l4-3.8" /></svg></button>
       <a class="pill solid peq" href="https://www.covermanager.com/reservation/module_restaurant/restaurante-cokima/spanish" target="_blank" rel="noopener">Reservar</a>
     </header>
 
     <div class="velo" aria-hidden="true"></div>
-    <nav class="lista" id="lista-secciones" aria-label="Secciones">
+    <nav class="desplegable" id="desplegable-secciones" aria-label="Secciones">
       <a href="#inicio" data-ir="inicio">Inicio</a><a href="#carta" data-ir="carta">La carta</a><a href="#nosotros" data-ir="nosotros">Nosotros</a><a href="#visitanos" data-ir="visitanos">Visítanos</a>
     </nav>
 
@@ -114,7 +114,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
           <p class="estado rv" data-estado></p>
           <div class="puertas">
             <a class="puerta rv" href="#carta" data-ir="carta"><img src="/images/katsu.jpg" alt="" width="880" height="1100"><span class="txt"><span class="etq">La carta</span><span class="t">Para compartir y desfasar.</span></span></a>
-            <a class="puerta rv" href="#nosotros" data-ir="nosotros"><img src="/images/martin.jpg" alt="" width="825" height="1100" style="object-position:50% 20%"><span class="txt"><span class="etq">Nosotros</span><span class="t">Trabajo serio. Cocina canalla.</span></span></a>
+            <a class="puerta rv" href="#nosotros" data-ir="nosotros"><img src="/images/sala-entera.jpg" alt="" width="1400" height="931"><span class="txt"><span class="etq">Nosotros</span><span class="t">Trabajo serio. Cocina canalla.</span></span></a>
             <a class="puerta rv" href="#visitanos" data-ir="visitanos"><img src="/images/puerta.jpg" alt="" width="1400" height="1400"><span class="txt"><span class="etq">Visítanos</span><span class="t">Andrés Mellado, 21.</span></span></a>
           </div>
           <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><span>+34 915 98 94 01</span><span>Lunes a domingo, 9:00–00:00</span></footer>
@@ -126,11 +126,6 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
         <div class="wrap cab-vista">
           <p class="etq">La carta</p>
           <h2 class="tit">Para compartir y desfasar.</h2>
-          <div class="boceto" role="group" aria-label="Boceto: cómo enseñar los platos con foto">
-            <span class="q">Boceto · los platos con foto</span>
-            <div class="ops"><button type="button" data-modo="1" aria-pressed="true">1 · Portadilla</button><button type="button" data-modo="2" aria-pressed="false">2 · Al tocar</button><button type="button" data-modo="3" aria-pressed="false">3 · Pareja</button></div>
-            <p class="nota" data-nota></p>
-          </div>
         </div>
         <nav class="chips" aria-label="Partes de la carta"><div class="wrap"><a href="#p-compartir" data-a="compartir">Compartir es vivir</a><a href="#p-terminar" data-a="terminar">Para terminar o no…</a><a href="#p-postres" data-a="postres">Los postres</a></div></nav>
         <div id="carta-cuerpo"></div>

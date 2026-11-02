@@ -1,4 +1,4 @@
-// Brasa: las secciones, La carta con sus tres maneras, el estado de la cocina y el fondo de brasas.
+// Brasa: las secciones, La carta con la foto de cada parte, el estado de la cocina y el fondo de brasas.
 // Es el código del boceto que eligió Mario el 2026-10-31, pasado tal cual (docs/cokima-el-rediseno.md §3).
 // La carta llega del build, de menu-es.json, en el JSON de #carta-datos: no hay copia aquí.
 (() => {
@@ -23,11 +23,6 @@
   // Platos sin foto que también tienen frase propia publicada: llevan la voz en vez de la foto.
   const VOCES = { "terminar-05": "Hay platos que entran en carta. Y otros que se agarran a ella." };
   const PARTES = [["compartir", "Compartir es vivir"], ["terminar", "Para terminar o no…"], ["postres", "Y por fin, los postres"]];
-  const NOTAS = {
-    1: "Cada parte de la carta se abre con uno de sus platos en foto. Debajo, todos en la misma lista, ese también: la foto ilustra la parte, no corona al plato.",
-    2: "Todos los platos iguales. Los que tienen foto llevan un punto y la enseñan al tocarlos; en el ordenador, al pasar el ratón, en el lado derecho.",
-    3: "Dos imprescindibles en foto al principio (en el móvil se pasan con el dedo) y, debajo, la carta entera igual para todos, ellos incluidos.",
-  };
 
   const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
   const foto = (id, etiqueta) => {
@@ -41,82 +36,36 @@
     if (f.frase && d.description) cap.append(el("p", "d", d.description));
     fig.append(img, cap); return fig;
   };
-  const fila = (d, conPunto) => {
+  const fila = (d) => {
     const li = el("li", "pl"); li.dataset.id = d.id;
     const ln = el("span", "ln"), n = el("span", null, d.name);
     if (d.featured) n.append(el("span", "imp", "Imprescindible"));
-    if (conPunto) { const p = el("span", "punto"); p.setAttribute("aria-label", "con foto"); n.append(p); }
     ln.append(n, el("b", null, fmt(d.price))); li.append(ln);
     if (d.description) li.append(el("span", "d", d.description));
     if (VOCES[d.id]) li.append(el("span", "vl", VOCES[d.id]));
     return li;
   };
-  const lista = (sec, opts = {}) => {
+  const lista = (sec) => {
     const ul = el("ul");
-    MENU.filter((d) => d.section === sec).forEach((d) => {
-      const li = fila(d, opts.puntos && FOTOS[d.id]);
-      if (opts.puntos && FOTOS[d.id]) {
-        li.classList.add("con-foto"); li.tabIndex = 0; li.setAttribute("role", "button"); li.setAttribute("aria-expanded", "false");
-      }
-      ul.append(li);
-    });
+    MENU.filter((d) => d.section === sec).forEach((d) => ul.append(fila(d)));
     return ul;
   };
 
   const cuerpo = document.getElementById("carta-cuerpo");
+  // Cada parte de la carta se abre con uno de sus platos en foto y, debajo, todos en la misma lista,
+  // ese también: la foto ilustra la parte, no corona al plato. Mario la eligió entre tres maneras el
+  // 2026-11-02 (docs/cokima-el-rediseno.md §3); FOTOS guarda la foto y la frase de los ocho con foto.
   const PORTADILLAS = { compartir: "compartir-04", terminar: "terminar-04", postres: "postres-02" };
-  let modo = 1;
-  const pintarCarta = (m) => {
-    modo = m; cuerpo.replaceChildren(); cuerpo.className = "modo-" + m;
-    document.querySelectorAll(".boceto button").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.modo === m)));
-    document.querySelector("[data-nota]").textContent = NOTAS[m];
-    if (m === 3) {
-      const w = el("div", "wrap"); w.style.paddingTop = "34px"; w.append(el("p", "etq", "Imprescindibles")); cuerpo.append(w);
-      const par = el("div", "pareja wrap"); par.style.paddingLeft = par.style.paddingRight = "0";
-      par.append(foto("compartir-04"), foto("terminar-02")); cuerpo.append(par);
-    }
-    let raiz = cuerpo, escenario = null;
-    if (m === 2) {
-      const w = el("div", "wrap cuerpo-2"); const col = el("div");
-      const ley = el("p", "leyenda"); ley.append(el("span", "punto"), document.createTextNode(matchMedia("(min-width:900px)").matches ? "Con foto: pasa el ratón por encima." : "Con foto: tócalo para verla."));
-      col.append(ley); escenario = el("div", "escenario"); w.append(col, escenario); cuerpo.append(w); raiz = col;
-    }
+  const pintarCarta = () => {
     PARTES.forEach(([sec, t]) => {
       const s = el("section", "parte"); s.id = "p-" + sec; s.dataset.parte = sec;
-      if (m === 1) {
-        const w = el("div", "wrap"); w.append(el("h3", "sec", t)); s.append(w);
-        const pid = PORTADILLAS[sec];
-        const p = foto(pid, POR_ID[pid].featured ? "Imprescindible" : null); p.classList.add("portadilla"); s.append(p);
-        const l = el("div", "wrap lista"); l.append(lista(sec)); s.append(l);
-      } else if (m === 2) {
-        s.append(el("h3", "sec", t)); const l = el("div", "lista"); l.append(lista(sec, { puntos: true })); s.append(l);
-      } else {
-        const w = el("div", "wrap lista"); w.append(el("h3", "sec", t), lista(sec)); s.append(w);
-      }
-      raiz.append(s);
+      const w = el("div", "wrap"); w.append(el("h3", "sec", t)); s.append(w);
+      const pid = PORTADILLAS[sec];
+      const p = foto(pid, POR_ID[pid].featured ? "Imprescindible" : null); p.classList.add("portadilla"); s.append(p);
+      const l = el("div", "wrap lista"); l.append(lista(sec)); s.append(l);
+      cuerpo.append(s);
     });
-    if (m === 2) {
-      const activar = (li, desplegar) => {
-        if (matchMedia("(min-width:900px)").matches) {
-          cuerpo.querySelectorAll(".con-foto.activo").forEach((x) => x.classList.remove("activo"));
-          li.classList.add("activo"); escenario.replaceChildren(foto(li.dataset.id)); return;
-        }
-        if (!desplegar) return;
-        const abierto = li.querySelector(".despliegue");
-        cuerpo.querySelectorAll(".despliegue").forEach((x) => { x.parentElement.setAttribute("aria-expanded", "false"); x.remove(); });
-        if (abierto) return;
-        const dsp = el("div", "despliegue"); dsp.append(foto(li.dataset.id)); li.append(dsp); li.setAttribute("aria-expanded", "true");
-      };
-      cuerpo.querySelectorAll(".con-foto").forEach((li) => {
-        li.addEventListener("mouseenter", () => activar(li, false));
-        li.addEventListener("click", (e) => { if (!e.target.closest(".despliegue")) activar(li, true); });
-        li.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activar(li, true); } });
-      });
-      const primero = cuerpo.querySelector('.con-foto[data-id="compartir-04"]');
-      if (matchMedia("(min-width:900px)").matches) activar(primero, false);
-    }
   };
-  document.querySelectorAll(".boceto button").forEach((b) => b.addEventListener("click", () => { pintarCarta(+b.dataset.modo); try { history.replaceState(null, "", "#carta-" + b.dataset.modo); } catch (e) {} }));
   document.querySelectorAll(".chips a").forEach((a) => a.addEventListener("click", (e) => {
     e.preventDefault(); document.getElementById("p-" + a.dataset.a)?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }));
@@ -141,10 +90,10 @@
   let actual = "inicio";
   // Marca la sección en las del ordenador y en la lista del móvil, y pone su nombre en el desplegable.
   const marcar = () => {
-    document.querySelectorAll(".secciones [data-ir], .lista [data-ir]").forEach((a) => {
+    document.querySelectorAll(".secciones [data-ir], .desplegable [data-ir]").forEach((a) => {
       if (a.dataset.ir === actual) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
     });
-    const nombre = document.querySelector(`.lista [data-ir="${actual}"]`)?.textContent || "";
+    const nombre = document.querySelector(`.desplegable [data-ir="${actual}"]`)?.textContent || "";
     desp.querySelector("[data-actual]").textContent = nombre;
     desp.setAttribute("aria-label", `Secciones. Estás en ${nombre}`);
   };
@@ -156,11 +105,10 @@
   // con la sección: se esconde aquí, y al esconderlo su observador lo pausa.
   const cine = document.querySelector(".cine");
   const ir = (destino, instantaneo) => {
-    let v = destino, m = null;
-    if (/^carta-[123]$/.test(v)) { m = +v.slice(6); v = "carta"; }
+    // Las direcciones de cuando La carta tenía tres maneras (#carta-1, -2 y -3) llevan a La carta.
+    let v = /^carta-[123]$/.test(destino) ? "carta" : destino;
     if (!vistas[v]) v = "inicio";
-    if (m) pintarCarta(m);
-    try { history.replaceState(null, "", "#" + (m ? "carta-" + m : v)); } catch (e) {}
+    try { history.replaceState(null, "", "#" + v); } catch (e) {}
     if (v === actual) { scrollTo(0, 0); return; }
     const sale = vistas[actual], entra = vistas[v];
     actual = v; marcar();
@@ -292,7 +240,7 @@
   };
   addEventListener("scroll", () => { alScroll(true); if (abierto() && Math.abs(scrollY - yMenu) > 8) menu(false); }, { passive: true });
 
-  pintarCarta(1);
+  pintarCarta();
   const inicial = (location.hash || "").slice(1);
   if (inicial && inicial !== "inicio") ir(inicial, true); else { marcar(); revelar(); alScroll(); }
 

@@ -1,6 +1,6 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-10-31 · Ochoa tiene foto en sus diez destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las quince de Brasa
+> **Estado: vivo** · revisado 2026-11-02 · Ochoa tiene foto en sus diez destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las de Brasa (dieciséis desde el 2026-11-02)
 
 ## Estado
 
@@ -9,8 +9,10 @@ documento cuenta de su portada con foto, sus destacados y su casa es de la web a
 se publica. Brasa usa quince fotos de la fototeca de @cokimamadrid, en `apps/cokima/public/images/`
 —arroz, bomba, croquetas, dumpling, gyozas, katsu, manos, martin, neon, puerta, sala, tacos,
 tarta, torrija y vacio—, reducidas para el boceto y sin pasar por la optimización de Astro. **No
-quedó apuntado de qué publicación sale cada una**, y ya no coinciden con sus originales. Detrás de
-su portada va el vídeo de la entrada, con su póster.
+quedó apuntado de qué publicación sale cada una**, y ya no coinciden con sus originales. Desde el
+2026-11-02 hay una dieciséis, `sala-entera.jpg`, que sí lo tiene: es *Cokima 5*, la sala entera de
+las seis del local de Mario (abajo), en sRGB y a 1400 px, en la puerta de Nosotros del Inicio. Detrás
+de su portada va el vídeo de la entrada, con su póster.
 
 **Desde el 2026-08-14, Cokima tiene mejor material que Ochoa.** Aparecieron **diecinueve fotos
 suyas** en la misma web vieja del grupo, que nadie había mirado, y Mario aportó **seis más del
@@ -42,7 +44,8 @@ Instagram** (§La fototeca), no de este material. **Las seis del local de Mario 
 cuenta en ese reparto**, porque se hizo desde `preview` antes de juntarla con la rama del rediseño,
 que era la única que sabía de ellas. **Para la sala, `Cokima 5` —la sala entera, con el neón, el
 mural de *Madness* y las sillas ocre— encaja mejor que la mesa puesta que se usó**; está marcada
-como candidata en el catálogo y espera a Mario.
+como candidata en el catálogo y espera a Mario. **Desde el 2026-11-02 está en Brasa**, como
+`sala-entera.jpg`, en la puerta de Nosotros del Inicio (`cokima-el-rediseno.md` §3).
 
 En `para-el-video/` (en su iCloud y en `fototeca/icloud/cokima/`) hay cinco elegidas para el vídeo de la entrada,
 **todas sin manos a la vista**: los generadores de vídeo deforman dedos y en un plano cerrado de

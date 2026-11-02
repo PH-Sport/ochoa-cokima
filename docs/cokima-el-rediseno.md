@@ -205,11 +205,13 @@ exclusiva para esta nueva versión»*. **Desde el 2026-10-31 Brasa es la web de 
   botón «Menú» con cortina, que es de Ochoa.
 - **El Inicio es corto:** la frase de la casa, si la cocina está abierta ahora (con su horario) y
   tres puertas a las otras secciones.
-- **La carta tiene siempre los 21 platos en la misma lista**, con tres maneras de enseñar los
-  ocho que tienen foto, conmutables en el boceto: 1 *Portadilla*, una foto por parte de la carta;
-  2 *Al tocar*, un punto en los que tienen foto, que la despliegan al tocarlos, y en el ordenador
-  un lateral fijo que sigue al ratón; 3 *Pareja*, dos imprescindibles arriba. **Mario aún no ha
-  elegido.** El tartar, sin foto, lleva su frase publicada en lugar de una foto.
+- **La carta tiene siempre los 21 platos en la misma lista, y cada parte se abre con uno de sus
+  platos en foto** (*Portadilla*). Hubo tres maneras conmutables en una barra de boceto, y Mario
+  eligió esta el 2026-11-02: *«me quedo con la foto que presenta la sección, con el resto de platos
+  abajo»*. Las otras dos salieron del código con la barra: *Al tocar*, un punto en los que tienen
+  foto que la desplegaban al tocarlos, con un lateral fijo que seguía al ratón en el ordenador; y
+  *Pareja*, dos imprescindibles en foto arriba. Las direcciones `#carta-1`, `-2` y `-3` llevan a
+  La carta. El tartar, sin foto, lleva su frase publicada en lugar de una foto.
 - **Todas las frases son de @cokimamadrid.** El hueco de reseñas sigue sin material.
 
 **Cómo entró en la web, y lo que se dejó a propósito para después:**
@@ -234,11 +236,23 @@ exclusiva para esta nueva versión»*. **Desde el 2026-10-31 Brasa es la web de 
   web, como la Bricolage: pedirla a Google le pasa la IP de cada visita.
 - **Las fotos** están en `public/images/`, sin pasar por la optimización de Astro, al tamaño del
   boceto (de 62 a 258 KB). Salen de la fototeca de @cokimamadrid, reducidas para el boceto; **no
-  quedó apuntado de qué publicación es cada una**, y ya no coinciden con sus originales.
+  quedó apuntado de qué publicación es cada una**, y ya no coinciden con sus originales. La
+  dieciséis sí lo tiene: `sala-entera.jpg` es *Cokima 5*, una de las seis del local que trajo Mario
+  (`fototeca/icloud/cokima/`), pasada a sRGB y a 1400 px (206 KB). Es la puerta de Nosotros del
+  Inicio desde el 2026-11-02, cuando Mario pidió *«Quítame la foto de Nosotros y cámbiamela por
+  otra»*: era Martín, que en el ordenador quedaba en un primer plano de su cara. Martín sigue dentro
+  de Nosotros.
 - **El estado de la cocina** lleva su horario escrito en `brasa.js` (13:00–16:00 y 19:30–23:30),
   el mismo de `recursos.md` §4, todavía sin confirmar por el restaurante. `OpenState` no sirve aquí:
   calcula el horario del local, no el de la cocina.
-- **La barra de boceto de La carta se queda** hasta que Mario elija una de las tres maneras.
+- **Trampa, sin error: `brasa.css` es una sola hoja sin ámbito, y un nombre de clase nuevo puede
+  estar cogido.** El desplegable del móvil se llamó primero `.lista`, que ya era la de los platos
+  de La carta, así que sus reglas —`position: fixed`, `visibility: hidden` y, en el ordenador,
+  `display: none`— dejaron La carta sin un solo plato a la vista, solo con las fotos. Se publicó
+  así en `preview` el 2026-11-02 y se arregló en la tanda siguiente; ahora es `.desplegable`. Las
+  pruebas del desplegable miraban el desplegable y no lo vieron. **Antes de estrenar un nombre de
+  clase se busca en `brasa.css`, `brasa.js` e `index.astro`**, y lo que cambia la barra se
+  comprueba también en La carta.
 - **Trampa, sin error:** los `widths` de un `<Image>` tienen que estar entre los `sizes` de
   `imagesConfig` en `astro.config.mjs`. Si no, el `srcset` sale con **un solo tamaño, 1600 px**, y
   el móvil se lo descarga entero; pedir otro ancho a Vercel da 400. Pasaba con los anchos que
