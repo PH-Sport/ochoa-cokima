@@ -203,9 +203,10 @@ exclusiva para esta nueva versión»*. **Desde el 2026-10-31 Brasa es la web de 
   *abajo, plana*, de lado a lado y solo texto, porque sigue tapando abajo y en el iPhone se estira
   bajo la rayita de inicio; y la píldora, que es la que no le gustaba. Ninguna de las tres era un
   botón «Menú» con cortina, que es de Ochoa.
-- **El Inicio va por bloques desde el 2026-11-02**, cada uno con una cosa de Cokima y el adelanto de
-  una sección (más abajo, «La dirección de Brasa»). Hasta entonces era corto: la frase de Instagram,
-  el estado de la cocina y tres accesos directos a las otras secciones.
+- **El Inicio son cinco paneles desde el 2026-11-02**, cada uno con una cosa de Cokima y el adelanto
+  de una sección (más abajo, «La dirección de Brasa»). Ese mismo día fue antes cinco bloques uno
+  debajo de otro, y hasta entonces era corto: la frase de Instagram, el estado de la cocina y tres
+  accesos directos a las otras secciones.
 - **La carta tiene siempre los 21 platos en la misma lista, y cada parte se abre con uno de sus
   platos en foto** (*Portadilla*). Hubo tres maneras conmutables en una barra de boceto, y Mario
   eligió esta el 2026-11-02: *«me quedo con la foto que presenta la sección, con el resto de platos
@@ -322,7 +323,7 @@ también es la de esa web —*«mandanga de la buena»*, carne de animales que *
 - **Del Ochoa, la idea de que el Inicio adelante cada sección; ni sus piezas ni su orden** (§1, §7).
 - **Nada inventado.** Los textos son de la web del grupo y de @cokimamadrid.
 
-**Montado en `preview` el 2026-11-02**, en cuanto Mario dijo *«Vamos a probarlo»*: los cinco
+**Primero se montó por bloques en `preview`**, en cuanto Mario dijo *«Vamos a probarlo»*: los cinco
 bloques en `index.astro`; los imprescindibles los pinta `brasa.js` desde la carta y `FOTOS`, con una
 foto pequeña por plato en el móvil y, en el ordenador, una grande al lado que cambia al pasar el
 ratón. Las tres fotos de producto —atún rojo, picaña madurada y tomates— son de @cokimamadrid
@@ -345,6 +346,29 @@ tocarlos; 3 *Índice*, el índice en grande a un lado y un escenario que cambia 
 móvil, una fila de botones y el escenario se pasa con el dedo)—. Lo que se mueve solo se para para
 siempre al tocarlo (regla 6). El mosaico es el más cercano al collage de Ochoa por idea, no por
 forma: aquel cambia solo de forma; este se queda quieto y crece al tocarlo.
+
+**Eligió los paneles:** *«Me quedo con la de paneles. Aplícala en preview a ver qué tal queda»*. Están
+en `preview` desde el 2026-11-02: en el ordenador, cinco columnas a todo lo ancho —la abierta pesa
+6,5 veces lo que una cerrada— que van pasando solas cada `--dur-paneles` (6,5 s) mientras se ven y
+se paran para siempre al tocar una (regla 6); en el móvil, cinco bandas que se abren al tocarlas y no
+pasan solas, porque cambiarían lo que estás leyendo. **No están hechos como en la maqueta**, que
+animaba el ancho y el alto: eso recalcula la página en cada fotograma, y la regla 2 de
+`movimiento.md` lo prohíbe. Aquí los cinco paneles ocupan la zona entera, uno encima de otro, y cada
+uno se deja ver por su franja con `clip-path`; su foto, del tamaño del panel abierto, se centra en la
+franja con `transform`, y `brasa.js` lo reparte todo en el mismo fotograma (regla 27), con
+`--ease-viaje` y `--dur-viaje`. De paso, en el móvil la zona mide siempre lo mismo —lo que pide el
+texto más largo, abierto, más las cuatro bandas— y **la página no salta al abrir uno**, cosa que en
+la maqueta sí pasaba. Dos detalles que costaron una vuelta: el texto de un panel cerrado lleva
+`visibility: hidden`, porque si no el toque cae en sus botones invisibles (pasó en la maqueta); y la
+recolocación va un fotograma después del aviso de `ResizeObserver`, porque en el móvil cambia el alto
+de la zona y dentro del aviso lo vuelve a disparar («ResizeObserver loop completed…»).
+Medido sobre el build, en WebKit y Chromium a 1440, 1280×720, 1920, 390 y 320: bajo el centro de
+cada franja está su panel —el reparto y el toque, a la vez—; el texto de cada panel abierto cabe
+entero, también en la pantalla baja (el de la carta, con 20 px de sobra a 1280×720); tocar uno lo
+abre; en el ordenador, a los 7,5 s se ha abierto el siguiente y, tras tocar uno, 8 s después sigue
+ese; en el móvil no pasan solos y el pie no se mueve al abrir otro; con «reducir movimiento», ni
+pasan solos ni se animan; al volver al Inicio desde otra sección, todo en su sitio; sin errores ni
+scroll lateral. Sin mirar en un iPhone.
 
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se

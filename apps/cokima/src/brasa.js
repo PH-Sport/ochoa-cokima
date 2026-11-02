@@ -242,33 +242,88 @@
 
   pintarCarta();
 
-  // El Inicio adelanta La carta con sus imprescindibles: los mismos platos y precios de la carta, y la
-  // foto y la frase de FOTOS. En el móvil cada uno lleva su foto en pequeño; en el ordenador hay una
-  // grande al lado que cambia al pasar el ratón. El que no tiene foto —el tataki— deja la de antes.
-  const destacados = document.querySelector("[data-destacados]");
-  if (destacados) {
-    const ul = el("ul"), marco = el("div", "foto");
+  // El Inicio: los cinco paneles (2026-11-02). Ninguno cambia de tamaño —recalcularía la página en cada
+  // fotograma (regla 2)—: los cinco ocupan la zona entera y cada uno se deja ver por su franja,
+  // recortado con clip-path; su foto, su rótulo y su texto se colocan con transform. Al abrir otro, las
+  // franjas se reparten en el mismo requestAnimationFrame (regla 27), con --ease-viaje y --dur-viaje.
+  // En el ordenador van pasando solos mientras se ven, hasta que alguien toca uno (regla 6); en el
+  // móvil, no: un panel que se abre solo cambia lo que estás leyendo.
+  const paneles = document.querySelector("[data-paneles]");
+  if (paneles) {
+    // Los imprescindibles: los mismos platos y precios de la carta.
+    const ulDest = paneles.querySelector("[data-destacados]");
     MENU.filter((d) => d.featured).forEach((d) => {
-      const f = FOTOS[d.id], li = el("li"); li.dataset.id = d.id;
-      if (f) {
-        const m = el("img", "mini"); m.src = `/images/${f.img}.jpg`; m.alt = ""; m.width = f.w; m.height = f.h; m.loading = "lazy"; li.append(m);
-        const fig = el("figure"), im = el("img"); fig.dataset.id = d.id;
-        im.src = `/images/${f.img}.jpg`; im.alt = f.alt; im.width = f.w; im.height = f.h; im.loading = "lazy"; fig.append(im);
-        if (f.frase) fig.append(el("figcaption", null, f.frase));
-        marco.append(fig);
-      } else li.append(el("span", "mini"));
-      li.append(el("span", "n", d.name), el("b", "p", fmt(d.price)));
-      if (d.description) li.append(el("span", "d", d.description));
-      ul.append(li);
+      const li = el("li"), n = el("span", null, d.name);
+      if (d.description) n.append(el("small", null, d.description));
+      li.append(n, el("b", null, fmt(d.price))); ulDest.append(li);
     });
-    destacados.append(ul, marco);
-    const activar = (li) => {
-      ul.querySelectorAll("li").forEach((x) => x.classList.toggle("on", x === li));
-      if (marco.querySelector(`figure[data-id="${li.dataset.id}"]`)) marco.querySelectorAll("figure").forEach((x) => x.classList.toggle("on", x.dataset.id === li.dataset.id));
+    const ps = [...paneles.querySelectorAll("[data-panel]")], N = ps.length;
+    const ancho = matchMedia("(min-width: 900px)"), sinMov = matchMedia("(prefers-reduced-motion: reduce)");
+    // Lo que pesa el abierto frente a uno cerrado, el hueco entre franjas y el alto de una banda del móvil.
+    const PESO = 6.5, HUECO = 8, BANDA = 68;
+    let abiertoP = 0, franjas = null, animP = 0, tocado = false, visibleP = false, relojP = 0, ultAncho = 0, tam = 0;
+    // Dónde va cada franja con el panel i abierto: [inicio, tamaño] a lo largo del eje que toca.
+    const reparto = (i) => {
+      const total = ancho.matches ? paneles.clientWidth : paneles.clientHeight;
+      const cerrado = ancho.matches ? (total - HUECO * (N - 1)) / (PESO + N - 1) : BANDA;
+      const grande = ancho.matches ? cerrado * PESO : total - (BANDA + HUECO) * (N - 1);
+      let a = 0;
+      return ps.map((_, j) => { const t = j === i ? grande : cerrado, f = [a, t]; a += t + HUECO; return f; });
     };
-    ul.querySelectorAll("li").forEach((li) => li.addEventListener("mouseenter", () => activar(li)));
-    activar(ul.querySelector("li"));
+    const f1 = (v) => v.toFixed(1);
+    const pintarP = (F) => {
+      franjas = F;
+      const h = ancho.matches, total = h ? paneles.clientWidth : paneles.clientHeight;
+      ps.forEach((p, j) => {
+        const [a, t] = F[j], resto = total - a - t, c = a + t / 2;
+        p.style.clipPath = h ? `inset(0 ${f1(resto)}px 0 ${f1(a)}px round 4px)` : `inset(${f1(a)}px 0 ${f1(resto)}px 0 round 4px)`;
+        p.querySelector(".pan-foto").style.transform = h ? `translateX(${f1(c - tam / 2)}px)` : `translateY(${f1(c - tam / 2)}px)`;
+        p.querySelector(".pan-rotulo").style.transform = h ? `translateX(${f1(c)}px) translateX(-50%) rotate(180deg)` : `translateY(${f1(c)}px) translateY(-50%)`;
+        p.querySelector(".pan-cont").style.transform = h ? `translateX(${f1(a)}px)` : `translateY(${f1(a)}px)`;
+      });
+    };
+    const abrirP = (i, animar) => {
+      abiertoP = i;
+      ps.forEach((p, j) => { p.classList.toggle("abierto", j === i); p.querySelector(".pan-abrir").setAttribute("aria-expanded", String(j === i)); });
+      cancelAnimationFrame(animP);
+      const destino = reparto(i), dur = leeMs("--dur-viaje"), curva = leeCurva("--ease-viaje");
+      if (!animar || !franjas || sinMov.matches || !(dur > 0) || !curva) { pintarP(destino); return; }
+      const desde = franjas, t0 = performance.now();
+      const paso = (ahora) => {
+        const p = Math.min(1, Math.max(0, (ahora - t0) / dur)), e = curva(p);
+        pintarP(destino.map(([a, t], j) => [desde[j][0] + (a - desde[j][0]) * e, desde[j][1] + (t - desde[j][1]) * e]));
+        if (p < 1) animP = requestAnimationFrame(paso);
+      };
+      paso(t0);
+    };
+    // En el móvil la zona mide lo que pide el texto más largo, abierto, más las otras cuatro bandas;
+    // en el ordenador, lo que dice brasa.css. Y el panel abierto, lo que queda.
+    const recolocar = () => {
+      if (!paneles.clientWidth) return;
+      if (ancho.matches) paneles.style.removeProperty("--alto-paneles");
+      else {
+        const texto = Math.max(...ps.map((p) => { const k = [...p.querySelector(".pan-cont").children]; return k[k.length - 1].getBoundingClientRect().bottom - k[0].getBoundingClientRect().top; }));
+        paneles.style.setProperty("--alto-paneles", Math.round(Math.max(460, texto + 64) + (BANDA + HUECO) * (N - 1)) + "px");
+      }
+      const F = reparto(abiertoP);
+      tam = Math.max(...F.map((f) => f[1])); paneles.style.setProperty("--tam-abierto", tam + "px");
+      cancelAnimationFrame(animP); pintarP(F);
+    };
+    // Se recoloca un fotograma después: en el móvil recolocar cambia el alto de la zona, y hacerlo dentro
+    // del aviso de ResizeObserver lo vuelve a disparar en el mismo fotograma («loop completed…»).
+    new ResizeObserver(() => requestAnimationFrame(() => { const w = paneles.clientWidth; if (w && w !== ultAncho) { ultAncho = w; recolocar(); } })).observe(paneles);
+    document.fonts?.ready.then(recolocar);
+    const programa = () => {
+      clearTimeout(relojP);
+      if (tocado || !visibleP || document.hidden || !ancho.matches || sinMov.matches) return;
+      relojP = setTimeout(() => { abrirP((abiertoP + 1) % N, true); programa(); }, leeMs("--dur-paneles"));
+    };
+    new IntersectionObserver(([e]) => { visibleP = e.intersectionRatio >= 0.4; programa(); }, { threshold: [0, 0.4, 1] }).observe(paneles);
+    document.addEventListener("visibilitychange", programa);
+    ps.forEach((p, j) => p.querySelector(".pan-abrir").addEventListener("click", () => { tocado = true; clearTimeout(relojP); abrirP(j, true); }));
+    abrirP(0, false);
   }
+
   const inicial = (location.hash || "").slice(1);
   if (inicial && inicial !== "inicio") ir(inicial, true); else { marcar(); revelar(); alScroll(); }
 

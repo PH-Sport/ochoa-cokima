@@ -48,7 +48,12 @@ con sazón* entera, con su motivo escrito allí. Con una web de referencia que t
 que el Inicio cuente por bloques qué es Cokima y adelante cada sección, con los textos de la web
 del Grupo Tombo. **Está montado en `preview`:** la frase de la casa, el producto con tres fotos, los
 imprescindibles de la carta, y las muestras de Nosotros y Visítanos, cada una con su enlace.
-Medido sobre el build en WebKit y Chromium a 1440, 390 y 320; sin mirar en un iPhone.
+Medido sobre el build en WebKit y Chromium a 1440, 390 y 320; sin mirar en un iPhone. **No le
+convenció**, y de tres maneras de presentarlo en una maqueta eligió **los paneles**: desde esa misma
+tarde el Inicio son cinco paneles a todo lo ancho en el ordenador, que pasan solos hasta que tocas
+uno, y cinco bandas que se abren al tocarlas en el móvil. Hechos con recortes y no cambiando de
+tamaño, por la regla 2 de `movimiento.md`, y medidos en cinco tamaños de pantalla y los dos motores
+(`cokima-el-rediseno.md` §3).
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las
@@ -156,10 +161,10 @@ en `ochoa-inicio-vivo.md` §3.7.
 
 - **Seguir con los retoques de Brasa**, en el alias de Cokima de `preview`, y decir si los
   nombres de las secciones valen (`cokima-el-rediseno.md` §3). Y si se borra `feat/cokima-brasa`, que ya sobra.
-- **Elegir cómo se presenta el Inicio de Brasa.** El de `preview`, por bloques, no le convenció;
-  el contenido se queda y hay tres maneras de presentarlo en una maqueta —paneles, mosaico e
-  índice—: https://claude.ai/artifact/VM1QDA4nP7nzN9NFVjZpPm (`cokima-el-rediseno.md` §3, «La
-  dirección de Brasa»). Después vienen Nosotros y Visítanos, sobre la misma dirección.
+- **Ver los paneles del Inicio en su móvil y en el ordenador** y seguir iterando sobre ellos
+  (`cokima-el-rediseno.md` §3, «La dirección de Brasa»). Salieron de una maqueta de tres maneras:
+  https://claude.ai/artifact/VM1QDA4nP7nzN9NFVjZpPm. Después vienen Nosotros y Visítanos, sobre la
+  misma dirección.
 - **Contar de dónde viene Cokima:** quién está detrás y desde cuándo. Es lo que le falta a Nosotros
   para tener historia y no solo concepto; ni el repo ni la web del grupo lo dicen.
 - **Ver en su móvil el desplegable de secciones y el viaje de «Reservar»**, y seguir iterando

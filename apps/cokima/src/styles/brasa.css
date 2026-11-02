@@ -105,39 +105,43 @@ main{position:relative;z-index:1}
 .portada .acc .pill{flex:0 1 170px}
 /* Cuando sale el menú, los dos botones de la portada se van: no hay dos «Reservar» a la vez */
 .portada .acc.oculta{opacity:0;pointer-events:none}
-.sigue{padding-block:clamp(40px,10vh,110px) 40px}
 .estado{display:inline-flex;align-items:center;gap:10px;margin:22px 0 0;font:400 .9rem/1.3 var(--sans);color:var(--bone-2)}
 .estado::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--bone-3)}
 .estado.abierta::before{background:var(--ember);box-shadow:0 0 12px 2px rgba(255,120,40,.55)}
-/* El Inicio por bloques (2026-11-02): cada uno cuenta una cosa de Cokima y adelanta una sección,
-   con la misma manera de presentarse —etiqueta brasa, título fino, voz en cursiva, fotos que se
-   funden en el negro y un enlace—. La dirección y lo descartado, en docs/cokima-el-rediseno.md §3. */
-.ini-bloque{margin-top:clamp(90px,16vh,190px)}
-.ini-bloque:first-child{margin-top:0}
-.ini-frase{margin:14px 0 0;max-width:15ch;font:200 clamp(2.5rem,9.6vw,6.2rem)/1.02 var(--sans);letter-spacing:-.025em;text-wrap:balance}
+/* El Inicio: cinco paneles (2026-11-02). Ninguno cambia de tamaño, que recalcularía la página en cada
+   fotograma (regla 2 de movimiento.md): los cinco ocupan la zona entera, uno encima de otro, y cada uno
+   se deja ver por su franja recortado con clip-path; su foto, del tamaño del panel abierto, y su rótulo
+   se colocan con transform. brasa.js reparte las franjas en el mismo fotograma (regla 27). En el
+   ordenador son columnas; en el móvil, bandas, y la zona mide siempre lo mismo: no salta al abrir. */
+.pan-zona{padding:clamp(40px,8vh,90px) var(--gr) 0 var(--gl)}
+.paneles{position:relative;height:var(--alto-paneles,640px)}
+.pan{position:absolute;inset:0;overflow:hidden;clip-path:inset(0 0 100% 0);background:#160f0c}
+.pan-foto{position:absolute;left:0;top:0;width:100%;height:var(--tam-abierto,100%);object-fit:cover;opacity:.55;transition:opacity var(--dur-in) var(--ease)}
+.pan.abierto .pan-foto{opacity:.9}
+.pan::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(14,9,7,.97) 0%,rgba(14,9,7,.84) 40%,rgba(14,9,7,.25) 78%,rgba(14,9,7,.08) 100%)}
+.pan-abrir{position:absolute;inset:0;z-index:3;width:100%;padding:0;border:0;background:none;color:var(--bone);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pan.abierto .pan-abrir{visibility:hidden}
+.pan-rotulo{position:absolute;left:20px;top:0;font:200 1.5rem/1 var(--sans);letter-spacing:-.01em;white-space:nowrap;transition:opacity var(--dur-out) var(--ease)}
+.pan-rotulo small{display:none}
+.pan.abierto .pan-rotulo{opacity:0}
+/* Lo de un panel cerrado no se toca ni recibe el foco: si no, el toque cae en sus botones invisibles */
+.pan-cont{position:absolute;left:0;top:0;z-index:2;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-end;width:100%;height:var(--tam-abierto,100%);padding:24px 20px;
+  opacity:0;visibility:hidden;transition:opacity var(--dur-out) var(--ease),visibility 0s linear var(--dur-out)}
+.pan.abierto .pan-cont{opacity:1;visibility:visible;transition:opacity var(--dur-in) var(--ease) var(--dur-out)}
+.pan-cont>*{flex:none}
+.pan-cont .voz{max-width:46ch}
+.pan-tit{margin:10px 0 0;font:200 clamp(2rem,8vw,3.4rem)/1.04 var(--sans);letter-spacing:-.022em;text-wrap:balance}
+.pan-tit i{font-family:var(--voz);font-style:italic;font-weight:400}
 .voz i{font-style:normal}
-.tit i{font-family:var(--voz);font-style:italic;font-weight:400}
-.ini-trio{list-style:none;margin:clamp(30px,6vh,56px) 0 0;padding:0;display:grid;gap:40px}
-.ini-trio img{width:100%;aspect-ratio:4/5;object-fit:cover;
-  -webkit-mask-image:linear-gradient(to bottom,#000 58%,transparent 100%);mask-image:linear-gradient(to bottom,#000 58%,transparent 100%)}
-.ini-trio p{position:relative;margin:-14% 0 0;font:200 clamp(1.8rem,7vw,2.5rem)/1.1 var(--sans);letter-spacing:-.015em;text-wrap:balance}
-/* Los imprescindibles: los pinta brasa.js con los platos y precios de la carta. En el móvil cada uno
-   lleva su foto en pequeño; en el ordenador, la foto grande de al lado cambia al pasar el ratón. */
-.ini-dest{margin-top:clamp(28px,5vh,48px)}
-.ini-dest ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
-.ini-dest li{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:4px 16px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
-.ini-dest .mini{grid-row:1/span 2;width:64px;height:64px;object-fit:cover;border-radius:4px}
-.ini-dest .n{font:200 clamp(1.4rem,5.4vw,2.2rem)/1.1 var(--sans);letter-spacing:-.015em}
-.ini-dest .p{font:500 .95rem/1 var(--sans);color:var(--ember);font-variant-numeric:tabular-nums;white-space:nowrap}
-.ini-dest .d{grid-column:2/4;font:italic 400 1.02rem/1.4 var(--voz);color:var(--bone-2)}
-.ini-dest .foto{display:none}
-.ini-acc{display:flex;flex-wrap:wrap;gap:10px;margin:30px 0 0}
-.ini-muestra{display:grid}
-.ini-muestra>img{width:100%;aspect-ratio:4/3;object-fit:cover;
-  -webkit-mask-image:linear-gradient(to bottom,#000 58%,transparent 100%);mask-image:linear-gradient(to bottom,#000 58%,transparent 100%)}
-.ini-muestra .ini-txt{position:relative;margin-top:-10%}
-.ini-muestra .tit{font-size:clamp(2rem,8.4vw,3.4rem)}
-.ini-dato{margin:18px 0 0;font:400 .9rem/1.4 var(--sans);color:var(--bone-2)}
+.pan-trio{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:620px}
+.pan-trio img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:3px}
+.pan-trio p{margin:8px 0 0;font:200 clamp(.98rem,1.3vw,1.2rem)/1.2 var(--sans)}
+.pan-platos{list-style:none;margin:16px 0 0;padding:0;border-top:1px solid var(--line);max-width:620px}
+.pan-platos li{display:flex;justify-content:space-between;gap:14px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line);font:300 clamp(1rem,1.2vw,1.12rem)/1.25 var(--sans)}
+.pan-platos small{display:block;margin-top:2px;font:italic 400 .98rem/1.3 var(--voz);color:var(--bone-2)}
+.pan-platos b{color:var(--ember);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pan-dato{margin:14px 0 0;font:400 .9rem/1.4 var(--sans);color:var(--bone-2)}
+.pan-acc{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 0}
 
 /* ===== La carta ===== */
 .chips{position:sticky;top:calc(var(--barra) + var(--st));z-index:4;margin-top:30px;background:var(--panel);border-block:1px solid var(--line)}
@@ -201,25 +205,13 @@ main{position:relative;z-index:1}
   .secciones{display:flex}
   .barra{--barra:72px}
   :root{--barra:72px}
-  .ini-trio{grid-template-columns:repeat(3,1fr);gap:28px}
-  .ini-trio p{font-size:clamp(1.5rem,2.3vw,2.1rem)}
-  .ini-dest{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:56px;align-items:start}
-  .ini-dest li{grid-template-columns:minmax(0,1fr) auto;padding:20px 0}
-  .ini-dest .mini{display:none}
-  .ini-dest .d{grid-column:1/3}
-  .ini-dest .n{color:var(--bone-2);transition:color var(--dur-out) var(--ease)}
-  .ini-dest li.on .n{color:var(--bone)}
-  .ini-dest .foto{display:block;position:sticky;top:calc(var(--barra) + var(--st) + 40px);aspect-ratio:4/5}
-  .ini-dest figure{position:absolute;inset:0;margin:0;opacity:0;transition:opacity var(--dur-in) var(--ease)}
-  .ini-dest figure.on{opacity:1}
-  .ini-dest figure img{width:100%;height:100%;object-fit:cover;
-    -webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent 100%);mask-image:linear-gradient(to bottom,#000 55%,transparent 100%)}
-  .ini-dest figcaption{position:absolute;left:0;right:0;bottom:4%;padding:0 6%;font:italic 300 clamp(1.5rem,2.2vw,2.1rem)/1.15 var(--voz);text-wrap:balance}
-  .ini-muestra{grid-template-columns:repeat(12,1fr);align-items:center}
-  .ini-muestra>img{grid-column:1/8;grid-row:1;-webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);mask-image:radial-gradient(closest-side,#000 62%,transparent 100%)}
-  .ini-muestra .ini-txt{grid-column:8/13;grid-row:1;margin-top:0}
-  .ini-muestra.der>img{grid-column:6/13}
-  .ini-muestra.der .ini-txt{grid-column:1/6}
+  .pan-zona{padding-top:clamp(50px,10vh,110px)}
+  .paneles{height:clamp(600px,84vh,800px)}
+  .pan-foto{width:var(--tam-abierto,100%);height:100%}
+  .pan-cont{width:min(700px,var(--tam-abierto,100%));height:100%;padding:40px 44px}
+  .pan-rotulo{left:0;top:auto;bottom:30px;writing-mode:vertical-rl;font-size:2rem}
+  .pan-rotulo small{display:block;margin-bottom:14px;font:500 .6rem/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--ember)}
+  .pan-tit{font-size:clamp(2.2rem,3.4vw,3.4rem)}
   .pf img{aspect-ratio:16/11;
     -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 16%,#000 58%,transparent 100%),linear-gradient(to right,transparent 0%,#000 14%,#000 86%,transparent 100%);
     -webkit-mask-composite:source-in;
