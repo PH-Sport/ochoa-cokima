@@ -65,12 +65,17 @@ main{position:relative;z-index:1}
   background:var(--ground);border-bottom:1px solid var(--line);opacity:0;visibility:hidden;transform:translateY(-10px);
   transition:opacity var(--dur-out) var(--ease),transform var(--dur-out) var(--ease),visibility 0s linear var(--dur-out)}
 .menu-abierto .desplegable{opacity:1;visibility:visible;transform:none;transition:opacity var(--dur-in) var(--ease),transform var(--dur-in) var(--ease)}
-.desplegable a{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);text-decoration:none;
+.desplegable>a{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);text-decoration:none;
   font:200 1.9rem/1.1 var(--sans);letter-spacing:-.015em;color:var(--bone-2)}
-.desplegable a:last-child{border-bottom:0}
-.desplegable a::before{content:"";flex:none;width:7px;height:7px;border-radius:50%}
-.desplegable a[aria-current="page"]{color:var(--bone)}
-.desplegable a[aria-current="page"]::before{background:var(--ember)}
+.desplegable>a:last-of-type{border-bottom:0}
+.desplegable>a::before{content:"";flex:none;width:7px;height:7px;border-radius:50%}
+.desplegable>a[aria-current="page"]{color:var(--bone)}
+.desplegable>a[aria-current="page"]::before{background:var(--ember)}
+/* Al pie de la lista, el teléfono y el Instagram, como en el menú de Ochoa (Mario, 2026-11-02) */
+.desp-pie{margin-top:10px;padding-top:16px;border-top:1px solid var(--line)}
+/* Con el teléfono y el Instagram, la lista ya no cabe en un móvil tumbado: se desplaza por dentro, sin
+   arrastrar la página (lo que se sale se recorta en la pieza, regla 15 de movimiento.md). */
+.desplegable{max-height:calc(100svh - var(--st) - var(--barra));overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box}
 .velo{position:fixed;left:0;right:0;bottom:0;top:calc(var(--st) + var(--barra));z-index:4;background:rgba(14,9,7,.55);
   opacity:0;visibility:hidden;transition:opacity var(--dur-out) var(--ease),visibility 0s linear var(--dur-out)}
 .menu-abierto .velo{opacity:1;visibility:visible;transition:opacity var(--dur-in) var(--ease)}
@@ -202,6 +207,21 @@ main{position:relative;z-index:1}
 .datos dd+dd{margin-top:4px}
 .datos .enlace{display:inline-block;margin-top:8px;font:500 .9rem/1 var(--sans);color:var(--ember);text-decoration:none;border-bottom:1px solid rgba(255,154,82,.4);padding-bottom:3px}
 .datos .estado{margin-top:10px}
+/* El teléfono y el Instagram como dos acciones (components/Contacto.astro; Mario, 2026-11-02, «tal y
+   como hicimos con Ochoa»): icono, lo que hace y cuál es. Píldoras, porque se pulsan (tokens.css,
+   curvatura), con el borde y el fondo de .pill. Una debajo de otra hasta que caben las dos en fila:
+   «@cokimamadrid» no cabe en media pantalla de 390. En Visítanos van antes que los datos, como en
+   Ochoa: quien llega ahí ya quiere venir. */
+.contacto{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.contacto li{display:grid}
+.contacto a{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"icono etq" "icono dato";align-items:center;column-gap:14px;row-gap:3px;
+  min-height:58px;box-sizing:border-box;padding:9px 24px 9px 20px;border:1px solid rgba(243,234,221,.32);border-radius:var(--r-control);
+  background:rgba(14,9,7,.55);color:var(--bone);text-decoration:none}
+.contacto svg{grid-area:icono;width:20px;height:20px;color:var(--ember)}
+.contacto .etq{grid-area:etq}
+.contacto .dato{grid-area:dato;font:300 1rem/1.2 var(--sans)}
+@media (min-width:430px){.contacto{grid-template-columns:1fr 1fr}}
+.visita-datos{display:grid;gap:34px;align-content:start}
 /* ===== Reservar (2026-11-02) =====
    El motor de CoverManager dentro de la web, como en Ochoa, con la piel de Brasa (/covermanager.css).
    En el ordenador, el texto y el recuadro juntos; el recuadro con tope, como en Ochoa: el motor pasa

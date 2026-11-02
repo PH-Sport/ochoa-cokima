@@ -64,7 +64,9 @@ fondo ya no es el fuego sino **chispas de brasa que suben** —en una segunda ve
 primera, puntos con halo, le parecieron estrellas: ahora son trazos finos con su vuelo, que se
 enfrían de amarillo a rojo, sin halo—. La cuarta, la carta siempre a la vista
 en el móvil, **no cabe en la barra sin quitar el nombre de la sección del desplegable**, y eso
-espera a Mario (`cokima-el-rediseno.md` §3, «Reservar dentro, chispas y la carta a mano»).
+espera a Mario (`cokima-el-rediseno.md` §3, «Reservar dentro, chispas y la carta a mano»). Y, como
+en Ochoa, **el teléfono y el Instagram como dos acciones**, en Visítanos y al pie del desplegable del
+móvil, y en los pies de página (mismo §3, «El teléfono y el Instagram»).
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las

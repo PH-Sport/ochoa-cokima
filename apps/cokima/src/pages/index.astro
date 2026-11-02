@@ -9,6 +9,7 @@ import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import Seo from "@tombo/ui/Seo.astro";
 import BookingEmbed from "@tombo/ui/BookingEmbed.astro";
+import Contacto from "../components/Contacto.astro";
 import { RESTAURANT, COVER_SLUG } from "../site.ts";
 import poster from "../assets/entrada-poster.jpg";
 
@@ -104,6 +105,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
     <div class="velo" aria-hidden="true"></div>
     <nav class="desplegable" id="desplegable-secciones" aria-label="Secciones">
       <a href="#inicio" data-ir="inicio">Inicio</a><a href="#carta" data-ir="carta">La carta</a><a href="#nosotros" data-ir="nosotros">Nosotros</a><a href="#visitanos" data-ir="visitanos">Visítanos</a>
+      <div class="desp-pie"><Contacto /></div>
     </nav>
 
     <main>
@@ -178,7 +180,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
           </div>
         </div>
         <div class="wrap">
-          <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><span>+34 915 98 94 01</span><span>Lunes a domingo, 9:00–00:00</span></footer>
+          <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><a href="tel:+34915989401">+34 915 98 94 01</a><a href="https://instagram.com/cokimamadrid" rel="me noopener" target="_blank">@cokimamadrid</a><span>Lunes a domingo, 9:00–00:00</span></footer>
         </div>
       </section>
 
@@ -190,7 +192,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
         </div>
         <nav class="chips" aria-label="Partes de la carta"><div class="wrap"><a href="#p-compartir" data-a="compartir">Compartir es vivir</a><a href="#p-terminar" data-a="terminar">Para terminar o no…</a><a href="#p-postres" data-a="postres">Los postres</a></div></nav>
         <div id="carta-cuerpo"></div>
-        <div class="wrap"><footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><span>+34 915 98 94 01</span></footer></div>
+        <div class="wrap"><footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><a href="tel:+34915989401">+34 915 98 94 01</a><a href="https://instagram.com/cokimamadrid" rel="me noopener" target="_blank">@cokimamadrid</a></footer></div>
       </section>
 
       <!-- ===== Nosotros ===== -->
@@ -213,7 +215,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
             <div class="txt"><p class="etq">Compartir es vivir</p><p class="tit">Hay platos que no necesitan cubiertos.</p><p class="voz">Solo ganas. Buen rollo. Y alguien con quien compartir.</p></div></article>
           <article class="relato der rv"><figure><div class="par"><img src="/images/tarta.jpg" alt="Una mujer se come la tarta de queso" width="1100" height="1100"><img src="/images/vacio.jpg" alt="El plato vacío" width="1100" height="1100"></div></figure>
             <div class="txt" style="margin-top:28px"><p class="etq">Lo que dicen</p><p class="tit">La mejor crítica nunca ha necesitado palabras.</p><p class="voz">Solo un plato vacío.</p><p class="hueco">Hueco: reseñas reales de clientes. Falta el material.</p></div></article>
-          <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><span>+34 915 98 94 01</span></footer>
+          <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><a href="tel:+34915989401">+34 915 98 94 01</a><a href="https://instagram.com/cokimamadrid" rel="me noopener" target="_blank">@cokimamadrid</a></footer>
         </div>
       </section>
 
@@ -226,13 +228,15 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
         </div>
         <div class="wrap visita">
           <img src="/images/puerta.jpg" alt="El rótulo de Cokima en la entrada" width="1400" height="1400">
-          <dl class="datos">
-            <div><dt>Dónde</dt><dd>Calle de Andrés Mellado, 21</dd><dd>28015 Madrid · Argüelles</dd>
-              <dd><a class="enlace" href="https://www.google.com/maps/search/?api=1&amp;query=Calle%20de%20Andr%C3%A9s%20Mellado%2021%2C%2028015%20Madrid" target="_blank" rel="noopener">Cómo llegar ↗</a></dd></div>
-            <div><dt>Cuándo</dt><dd>Lunes a domingo, 9:00–00:00</dd><dd>Cocina 13:00–16:00 y 19:30–23:30</dd><dd class="estado" data-estado></dd></div>
-            <div><dt>Teléfono</dt><dd>+34 915 98 94 01</dd></div>
-            <div><dt>Reservas</dt><dd><a class="pill solid" href="#reservar" data-ir="reservar" style="margin-top:4px">Reservar mesa</a></dd></div>
-          </dl>
+          <div class="visita-datos">
+            <Contacto />
+            <dl class="datos">
+              <div><dt>Dónde</dt><dd>Calle de Andrés Mellado, 21</dd><dd>28015 Madrid · Argüelles</dd>
+                <dd><a class="enlace" href="https://www.google.com/maps/search/?api=1&amp;query=Calle%20de%20Andr%C3%A9s%20Mellado%2021%2C%2028015%20Madrid" target="_blank" rel="noopener">Cómo llegar ↗</a></dd></div>
+              <div><dt>Cuándo</dt><dd>Lunes a domingo, 9:00–00:00</dd><dd>Cocina 13:00–16:00 y 19:30–23:30</dd><dd class="estado" data-estado></dd></div>
+              <div><dt>Reservas</dt><dd><a class="pill solid" href="#reservar" data-ir="reservar" style="margin-top:4px">Reservar mesa</a></dd></div>
+            </dl>
+          </div>
         </div>
         <div class="wrap"><footer class="pie"><a href="/aviso-legal">Aviso legal</a><a href="/privacidad">Privacidad</a><a href="/cookies">Cookies</a></footer></div>
       </section>

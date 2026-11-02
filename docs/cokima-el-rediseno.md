@@ -487,6 +487,22 @@ y los textos por encima de 4,5:1 de contraste. **Sin comprobar:** que el motor c
 desde el despliegue (hace falta https), la fuente cruzando de dominio, el paso de los datos
 personales —solo se ve empezando una reserva real, que puede bloquear mesa— y un iPhone de verdad.
 
+**El teléfono y el Instagram (2026-11-02).** *«No te olvides del Instagram y del teléfono, tal y como
+hicimos con Ochoa. Añádelos.»* La idea es la de Ochoa —dos acciones, no dos renglones: icono, lo que
+hace y cuál es, porque el número escrito es lo que alguien copia o lee en voz alta—, pero la pieza es
+de Brasa (`apps/cokima/src/components/Contacto.astro`, estilo en `brasa.css`): **píldoras**, porque
+se pulsan, con el borde y el fondo de `.pill`. Van donde en Ochoa: **en Visítanos, antes que los
+datos** —quien llega ahí ya quiere venir—, y la línea suelta del teléfono se quita porque ya está en
+«Llamar»; y **al pie del desplegable del móvil**, como en el menú de Ochoa. Como Brasa no tiene menú en
+el ordenador, **en los pies de Inicio, La carta y Nosotros el teléfono se pulsa y va el Instagram**. Una
+píldora debajo de otra hasta 430 px: «@cokimamadrid» no cabe en media pantalla de 390. Con las dos,
+el desplegable ya no cabe en un móvil tumbado, así que se desplaza por dentro sin arrastrar la página.
+Medido sobre el build, en WebKit y Chromium a 1440, 390, 320 y 844×390: los dos enlaces con su `tel:`
+y su dirección de Instagram; en fila desde 430 y una debajo de otra por debajo; antes que los datos;
+el texto dentro de la píldora; el desplegable entero a 390 y 320, y en el móvil tumbado se desplaza por
+dentro hasta verlo todo con la página quieta; las secciones del desplegable, como estaban; los tres
+pies con los dos enlaces; sin errores ni scroll lateral.
+
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
 rediseñan después, sobre esta dirección.**
