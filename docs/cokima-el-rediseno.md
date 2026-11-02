@@ -454,12 +454,30 @@ pidió cuatro cosas:
   el reloj pierde precisión a los pocos minutos en algunos móviles. Sin WebGL no hay respaldo: el
   degradado de fuego que había ya no se pide.
 
+  **Esa versión no le convenció:** *«No me convence que las brasas sean como estrellas. No deberían
+  tener tanto glow, de hecho, no me parecen siquiera brasas… que se vea más realista»*. Puntos con
+  halo, repartidos por una rejilla y subiendo todos a la vez, son un cielo, no una barbacoa. **La que
+  hay es otra cosa: partículas, cada una con su vuelo**, en un lienzo 2D. Sale de abajo empujada por
+  el aire caliente (de 70 a 170 px por segundo), frena, va dando bandazos —un vaivén de dos ondas y,
+  de vez en cuando, un golpe de aire—, se enfría de amarillo a naranja, rojo y granate, y se apaga
+  a los 2-4,5 s. Seis de cada diez nacen bajo el borde de abajo; las demás aparecen ya en el aire,
+  poco a poco, como si entraran en foco, para que las haya en todo el alto. **Se pintan como salen en
+  una foto**: un trazo fino a lo largo del vuelo —lo que recorren en 50 ms, más largo cuanto más
+  rápidas—, con la cabeza más clara mientras están calientes, y **sin halo**. Tres profundidades: las
+  de lejos, más finas, lentas y tenues. Una por cada 16.000 px² de pantalla, entre 28 y 90 (unas 80
+  en un portátil, 28 en el móvil). Arranca con tres segundos ya vividos, para no empezar vacía. Lo
+  que mueve el aire —empujes, frenos, vaivenes— es física, no una transición: va con sus números en
+  `brasa.js`, no en `tokens.css`.
+
 Medido sobre el build, en WebKit y Chromium a 1440 y 390: bajar el Inicio entero no hace ni una
 petición a `covermanager.com`; no queda ningún enlace que salga a él; «Reservar» de la barra abre la
 sección arriba del todo, el desplegable dice «Reservar», el motor se monta con el iframeResizer ya
 cargado, y abrirla otra vez no lo monta dos veces; por `#reservar` se entra directo; en el
 ordenador, título y recuadro uno al lado del otro, y en el móvil, uno debajo; sin errores ni scroll
-lateral. Los paneles fijos, otra vez entera su prueba, sin un fallo en los dos motores. **El motor
+lateral. Los paneles fijos, otra vez entera su prueba, sin un fallo en los dos motores. Las chispas
+de la segunda versión, en los dos motores a 1440 y 390: se pintan, se mueven entre dos instantes, con
+«reducir movimiento» se quedan quietas sin desaparecer, y sin errores; vistas en recortes ampliados
+del build, no en un iPhone. **El motor
 no se deja ver en el navegador de pruebas**: dentro de la página local, CloudFront le contesta 403.
 La piel se midió como la de Ochoa, abriendo la página del motor directamente (ahí da 200) e
 inyectándole la hoja construida, en los dos motores, a 347, 390, 540 y 800 px: sin desbordar,

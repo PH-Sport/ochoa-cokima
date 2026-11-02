@@ -18,7 +18,7 @@ img{max-width:100%;height:auto;display:block}
 a{color:inherit}
 /* El fondo son chispas de brasa que suben (brasa.js; antes, el lecho de brasas de Rescoldo, hasta el
    2026-11-02). Es transparente donde no hay chispa, para que se vea lo de detrás: el suelo, o el vídeo
-   en la portada. Sin WebGL no hay respaldo: se queda el suelo, que el fuego pintado ya no se pide. */
+   en la portada. Si el lienzo no arranca, se queda el suelo: el fuego pintado ya no se pide. */
 .fondo{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
 main{position:relative;z-index:1}
 /* El vídeo de la entrada detrás de la portada, debajo de las chispas: un punto oscurecido entero y

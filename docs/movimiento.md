@@ -132,13 +132,14 @@ más lejos; Ochoa es una tasca y es seca.
    Era el fuego de Rescoldo, que eligió él de entre los bocetos; **desde el 2026-11-02 son chispas
    de brasa que suben**, como en una barbacoa, porque prefirió *«quitar el "fuego" de fondo»* por
    algo que abarque más el alto de la pantalla, sutilmente. Es el mismo caso que el de Ochoa: un
-   lienzo de WebGL detrás de toda la página, que no se para al tocar. Cumple con la pestaña oculta
-   (no pinta: va con `requestAnimationFrame`) y con «reducir movimiento» (un fotograma quieto, que
-   no sigue al scroll y solo se repite al cambiar de tamaño la ventana). Pinta a la resolución de la
-   página —una chispa son dos o tres píxeles, y a 0,6 se quedaba en mancha— y a 30 fotogramas por
-   segundo como mucho, y **no suelta la GPU**: Brasa es una sola página y el fondo está en todas sus
-   secciones. Lo que cuesta en un móvil modesto **no está medido**; las palancas son `ESCALA`, la
-   densidad de cada capa y el tope de fotogramas. El vídeo de su portada sí sigue la regla: se pausa fuera
+   lienzo detrás de toda la página, que no se para al tocar. Desde la segunda versión es un lienzo
+   2D con partículas, no WebGL (`cokima-el-rediseno.md` §3). Cumple con la pestaña oculta (no pinta:
+   va con `requestAnimationFrame`, y al volver el salto de tiempo se queda en un paso) y con
+   «reducir movimiento» (un fotograma quieto, que no sigue al scroll y solo se repite al cambiar de
+   tamaño la ventana). Pinta a la densidad de la pantalla, hasta 2×, y a 30 fotogramas por segundo
+   como mucho, y **no para**: Brasa es una sola página y el fondo está en todas sus secciones. Lo
+   que cuesta en un móvil modesto **no está medido**; las palancas son cuántas chispas hay (una por
+   cada 16.000 px², entre 28 y 90), la densidad y el tope de fotogramas. El vídeo de su portada sí sigue la regla: se pausa fuera
    de la vista, con la pestaña oculta y en las otras secciones, y la regla 20 tal cual.
 
    **Qué es tocar (2026-10-29).** Un toque o un gesto sobre la pieza; **no el dedo que baja la
@@ -518,7 +519,7 @@ más lejos; Ochoa es una tasca y es seca.
 | Portada de Brasa (Cokima) | Al pasar el 60% de la pantalla, «Reservar» y «Ver carta» viajan hasta la barra cambiando de tamaño —«Ver carta» se vuelve «La carta», la del menú de arriba—, y vuelven al subir por debajo del 50%. En el móvil solo viaja «Reservar»: «La carta» está en el desplegable cerrado | un viajero desde `brasa.js`: `transform` y `clip-path` en el mismo fotograma (regla 27), `--dur-viaje`, `--ease-viaje`; parte de donde va si se cruza de vuelta; directo con «reducir movimiento», en un salto largo o al cambiar de sección |
 | Inicio de Brasa (Cokima) | Cinco paneles: al abrir uno, las franjas se reparten —columnas en el ordenador, bandas en el móvil— y su foto se recoloca. Si la zona cabe en la pantalla, se queda fija al bajar y cada tramo abre el siguiente; tocar uno lo abre y lleva la página a su tramo. Si no cabe, se abren al tocarlos. No pasan solos | `clip-path` y `transform` desde `brasa.js` en el mismo fotograma (regla 27), `--ease-viaje`, `--dur-viaje`; el texto entra con `opacity` tras `--dur-out`; la zona, `position: sticky`, que no es animación; cambia pasada la mitad del tramo con un 8 % de holgura; directo con «reducir movimiento» |
 | Barra del móvil de Brasa (Cokima) | El desplegable de secciones baja bajo la barra con un velo detrás, y la flecha gira | `opacity` + `translateY`, `--dur-in` al abrir y `--dur-out` al cerrar (regla 3); la flecha, `rotate`, `--dur-out`; sin transición con «reducir movimiento» |
-| Fondo de Brasa (Cokima) | Chispas de brasa que suben por toda la pantalla —más abajo, menos arriba, sin llegar a nada—: se mecen, parpadean, dejan una estela corta y se apagan; al bajar la página, las de cerca suben un poco más que las de lejos. Sustituyen al fuego de Rescoldo desde el 2026-11-02 | WebGL desde `brasa.js`, tres capas, a 30 fps y a la resolución de la página, en cada fotograma mientras se ve (excepción de la regla 6); nada con la pestaña oculta; un fotograma quieto, sin seguir al scroll, con «reducir movimiento» |
+| Fondo de Brasa (Cokima) | Chispas de brasa que suben: salen de abajo empujadas por el aire caliente, frenan, dan bandazos, se enfrían de amarillo a rojo y se apagan; algunas aparecen ya en el aire, para que las haya en todo el alto. Un trazo fino a lo largo del vuelo, con la cabeza más clara mientras está caliente, sin halo; al bajar la página, las de cerca suben un poco más. Sustituyen al fuego de Rescoldo desde el 2026-11-02 | Lienzo 2D desde `brasa.js`, partículas con su física, a 30 fps, en cada fotograma mientras se ve (excepción de la regla 6); nada con la pestaña oculta; un fotograma quieto, sin seguir al scroll, con «reducir movimiento» |
 | Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |
 | Entrada (Cokima) | Una chispa baja por un riel, avisando de que hay más | `stroke-dashoffset`, 3,2s |
 | Entrada (Cokima) | La cabecera, el cartel de cookies y el aviso entran al deslizar | `opacity` + `visibility`, `--dur-in` / `--dur-out` |

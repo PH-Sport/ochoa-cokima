@@ -401,76 +401,94 @@
   }
 
   // Fondo: chispas de brasa que suben, como en una barbacoa (Mario, 2026-11-02, en lugar del lecho de
-  // brasas de Rescoldo: «que suban ligeramente… que abarquen más el alto de la pantalla, sutilmente»).
-  // En WebGL y a 30 fps: tres capas de chispas, de lejos —pequeñas, lentas y tenues— a cerca. Cada una
-  // vive unos segundos en cualquier punto de la pantalla, se mece, parpadea y deja una estela corta;
-  // abajo hay más y arriba se apagan, sin llegar a nada. Al bajar la página, las de cerca suben un poco
-  // más que las de lejos. Es transparente donde no hay chispa, y en la portada deja ver el vídeo debajo.
-  // La regla 6 de movimiento.md tiene su excepción escrita para este fondo.
-  const cv = document.querySelector(".fondo");
-  const gl = cv.getContext("webgl", { antialias: false, alpha: true, premultipliedAlpha: true });
-  if (!gl) return;
-  const VS = "attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}";
-  // highp donde lo hay: con mediump, que en algunos móviles es de 16 bits, el reloj pierde precisión a
-  // los pocos minutos y las chispas dan saltos.
-  const FS = `#ifdef GL_FRAGMENT_PRECISION_HIGH
-precision highp float;
-#else
-precision mediump float;
-#endif
-uniform vec2 r;uniform float t,s,e;
-float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-// Una capa: como mucho una chispa por celda (hay = la parte de celdas con chispa), y la rejilla entera
-// sube a vel celdas por segundo; hondo es lo que sube de más al bajar la página.
-float capa(vec2 px,float celda,float vel,float radio,float hay,float hondo,float semilla){
-  vec2 p=px/celda;
-  p.y-=t*vel+s*hondo/celda;
-  vec2 id=floor(p),f=fract(p);
-  float a=h(id+semilla);
-  if(a>hay)return 0.;
-  float b=h(id+semilla+3.7),c=h(id+semilla+9.1);
-  vec2 sitio=vec2(.25+.5*b+.12*sin(t*(.5+.8*c)+6.2832*a/hay),.25+.5*c);
-  vec2 d=(f-sitio)*celda;
-  // El halo es redondo; solo el núcleo deja estela hacia abajo, y corta: estirado entero parecía una vela.
-  float halo=exp(-dot(d,d)/(radio*radio*9.));
-  if(d.y<0.)d.y*=.5;
-  float nucleo=exp(-dot(d,d)/(radio*radio));
-  float vida=fract(t*(.09+.12*b)+a*7.);
-  float luz=smoothstep(0.,.12,vida)*(1.-smoothstep(.55,1.,vida));
-  float parpadeo=.6+.4*sin(t*(6.+9.*c)+40.*b);
-  return (nucleo+.22*halo)*luz*parpadeo*(.55+.9*c);
-}
-void main(){
-  vec2 px=gl_FragCoord.xy/e,uv=gl_FragCoord.xy/r;
-  float i=capa(px,64.,.55,1.2,.26,.1,1.)*.6+capa(px,110.,.5,1.7,.2,.22,17.)*.9+capa(px,170.,.42,2.3,.12,.38,41.)*1.2;
-  i*=.2+.8*pow(1.-uv.y,1.4);
-  float a=clamp(i,0.,1.);
-  vec3 col=mix(vec3(1.,.42,.12),vec3(1.,.86,.6),smoothstep(.55,1.,i));
-  gl_FragColor=vec4(col*a,a);
-}`;
-  const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
-  const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr); gl.useProgram(pr);
-  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-  const loc = gl.getAttribLocation(pr, "a"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  const U = {}; ["r", "t", "s", "e"].forEach((u) => (U[u] = gl.getUniformLocation(pr, u)));
-  // A la resolución de la página, no a menos como el fuego: una chispa son dos o tres píxeles, y a
-  // 0,6 se quedaba en una mancha.
-  const ESCALA = 1;
-  const size = () => { cv.width = Math.round(innerWidth * ESCALA); cv.height = Math.round(innerHeight * ESCALA); gl.viewport(0, 0, cv.width, cv.height); };
-  // Cambiar el tamaño del lienzo lo borra: con «reducir movimiento», que no repinta solo, se fuerza
-  // un fotograma nuevo, o las chispas desaparecerían hasta el siguiente cambio de sección.
-  addEventListener("resize", () => { size(); last = -1e3; }); size();
+  // brasas de Rescoldo). La primera versión, puntos con halo en WebGL, le parecieron estrellas: «no
+  // deberían tener tanto glow… no me parecen siquiera brasas». Así que son partículas, cada una con su
+  // vuelo: sale de abajo empujada por el aire caliente, frena, va dando bandazos, se enfría de amarillo
+  // a rojo y se apaga. Se pinta como se ve en una foto: un trazo fino a lo largo de su vuelo —lo que
+  // recorre en un instante, más largo cuanto más rápida—, sin halo. Lienzo 2D, a 30 fotogramas por
+  // segundo como mucho; transparente, y en la portada deja ver el vídeo debajo. La regla 6 de
+  // movimiento.md tiene su excepción escrita para este fondo.
+  const cv = document.querySelector(".fondo"), cx = cv.getContext("2d");
+  if (!cx) return;
   const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let last = -1e3;
+  let W = 0, H = 0;
+  const size = () => {
+    const d = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight;
+    cv.width = Math.round(W * d); cv.height = Math.round(H * d); cx.setTransform(d, 0, 0, d, 0, 0);
+  };
+  // Una por cada 16.000 px² de pantalla, entre 28 y 90.
+  const cuantas = () => Math.max(28, Math.min(90, Math.round((W * H) / 16000)));
+  const azar = (a, b) => a + Math.random() * (b - a);
+  // z es lo cerca que está (1, delante): las de lejos son más finas, más lentas y más tenues. Seis de cada
+  // diez nacen bajo el borde de abajo y entran subiendo; las demás aparecen ya en el aire, poco a poco,
+  // como si entraran en foco, para que las haya en todo el alto de la pantalla.
+  const nueva = () => {
+    const z = azar(0.45, 1), abajo = Math.random() < 0.6;
+    return { z, x: azar(0, W), y: abajo ? H + azar(4, 40) : azar(H * 0.2, H), vx: azar(-15, 15), vy: -azar(70, 170) * z,
+      edad: 0, vida: azar(1.8, 4.6), entra: abajo ? 0.12 : 0.5, calor: azar(0.75, 1), grueso: Math.random() < 0.12 ? azar(2, 2.6) : azar(1.1, 1.6),
+      f1: azar(1.2, 2.6), f2: azar(3.2, 6.5), p1: azar(0, 6.3), p2: azar(0, 6.3), luz: azar(0, 100) };
+  };
+  const chispas = [];
+  // El aire: un empujón hacia arriba que se gasta, un vaivén de dos ondas y, de vez en cuando, un bandazo.
+  const mover = (c, dt, t) => {
+    c.edad += dt;
+    c.vx += (Math.sin(t * c.f1 + c.p1) + 0.6 * Math.sin(t * c.f2 + c.p2)) * 70 * c.z * dt;
+    if (Math.random() < 0.6 * dt) c.vx += azar(-70, 70) * c.z;
+    c.vx *= Math.exp(-1.2 * dt);
+    c.vy = (c.vy - 25 * c.z * dt) * Math.exp(-0.45 * dt);
+    c.x += c.vx * dt; c.y += c.vy * dt;
+  };
+  // Del amarillo al rojo apagado según se enfría (k: 1, recién salida; 0, fría).
+  const TONOS = [[110, 22, 8], [214, 62, 18], [255, 140, 45], [255, 214, 140]];
+  const tono = (k) => {
+    const x = Math.min(0.999, Math.max(0, k)) * 3, i = Math.floor(x), f = x - i, a = TONOS[i], b = TONOS[i + 1];
+    return a.map((v, n) => Math.round(v + (b[n] - v) * f)).join(",");
+  };
+  const suaveF = (x) => { const t = Math.min(1, Math.max(0, x)); return t * t * (3 - 2 * t); };
+  const pintar = (t) => {
+    cx.clearRect(0, 0, W, H);
+    cx.globalCompositeOperation = "lighter"; cx.lineCap = "round";
+    for (const c of chispas) {
+      const vida = c.edad / c.vida, k = c.calor * Math.pow(1 - vida, 0.6);
+      const parpadeo = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(t * 13 + c.luz)) * (0.5 + 0.5 * Math.sin(t * 29 + c.luz * 1.7));
+      const alfa = suaveF(c.edad / c.entra) * (1 - suaveF((vida - 0.7) / 0.3)) * suaveF(c.y / (H * 0.2)) * parpadeo * (0.5 + 0.5 * k) * (0.6 + 0.4 * c.z);
+      if (alfa < 0.01) continue;
+      // El trazo: lo que recorre en 50 ms, hacia atrás desde donde está. Y, mientras está caliente, la
+      // cabeza más clara: es lo que la hace brasa y no una mota, sin halo.
+      const largo = 0.05, x0 = c.x - c.vx * largo, y0 = c.y - c.vy * largo;
+      cx.strokeStyle = `rgba(${tono(k)},${Math.min(1, alfa).toFixed(3)})`; cx.lineWidth = c.grueso * c.z;
+      cx.beginPath(); cx.moveTo(x0, y0); cx.lineTo(c.x, c.y); cx.stroke();
+      if (k > 0.45) {
+        cx.strokeStyle = `rgba(${tono(Math.min(1, k + 0.3))},${Math.min(1, alfa * (k - 0.45) * 1.8).toFixed(3)})`;
+        cx.beginPath(); cx.moveTo(c.x - c.vx * largo * 0.35, c.y - c.vy * largo * 0.35); cx.lineTo(c.x, c.y); cx.stroke();
+      }
+    }
+  };
+  // Al bajar la página, las chispas suben un poco con ella, más las de cerca; un salto grande (cambiar de
+  // sección) no las arrastra.
+  let yAntes = scrollY;
+  const llevar = () => {
+    const d = scrollY - yAntes; yAntes = scrollY;
+    if (Math.abs(d) < 300) for (const c of chispas) c.y -= d * 0.25 * c.z;
+  };
+  const llenar = () => { while (chispas.length < cuantas()) chispas.push(nueva()); chispas.length = cuantas(); };
+  const avanzar = (dt, t) => chispas.forEach((c, n) => {
+    mover(c, dt, t);
+    if (c.edad > c.vida || c.y < -30 || c.x < -40 || c.x > W + 40) chispas[n] = nueva();
+  });
+  size(); llenar();
+  // Se arranca con tres segundos ya vividos, para que la pantalla no empiece vacía.
+  for (let n = 0; n < 90; n++) avanzar(1 / 30, n / 30);
+  // Cambiar el tamaño del lienzo lo borra: con «reducir movimiento», que no repinta solo, se repinta aquí.
+  addEventListener("resize", () => { size(); llenar(); if (quieto) pintar(3); });
+  if (quieto) { pintar(3); return; }
+  let ultimo = 0;
   const frame = (ms) => {
     requestAnimationFrame(frame);
-    // Con «reducir movimiento», un fotograma quieto, sin seguir al scroll. El reloj da la vuelta cada
-    // hora: una vez por hora, las chispas cambian de sitio de golpe.
-    if (ms - last < 32 || (quieto && last > 0)) return; last = ms;
-    gl.uniform2f(U.r, cv.width, cv.height); gl.uniform1f(U.e, ESCALA);
-    gl.uniform1f(U.t, quieto ? 20 : (ms / 1000) % 3600); gl.uniform1f(U.s, quieto ? 0 : scrollY);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    if (ms - ultimo < 32) return;
+    // Con la pestaña oculta no se pinta; al volver, el salto de tiempo se queda en un paso normal.
+    const dt = ultimo ? Math.min(0.05, (ms - ultimo) / 1000) : 1 / 30; ultimo = ms;
+    llevar(); avanzar(dt, ms / 1000); pintar(ms / 1000);
   };
   requestAnimationFrame(frame);
 })();

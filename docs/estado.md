@@ -60,7 +60,9 @@ tamaños y los dos motores; **sin mirar en un iPhone, donde puede que no se fije
 (`cokima-el-rediseno.md` §3, «Se abren al bajar»). **Por la noche, cuatro cosas más que pidió:**
 los dos primeros paneles llevan botones; **Reservar es una sección de Brasa con el motor de
 CoverManager dentro**, con la piel de la casa, como en Ochoa, y ya no se sale a su página; y el
-fondo ya no es el fuego sino **chispas de brasa que suben**. La cuarta, la carta siempre a la vista
+fondo ya no es el fuego sino **chispas de brasa que suben** —en una segunda versión, porque la
+primera, puntos con halo, le parecieron estrellas: ahora son trazos finos con su vuelo, que se
+enfrían de amarillo a rojo, sin halo—. La cuarta, la carta siempre a la vista
 en el móvil, **no cabe en la barra sin quitar el nombre de la sección del desplegable**, y eso
 espera a Mario (`cokima-el-rediseno.md` §3, «Reservar dentro, chispas y la carta a mano»).
 
