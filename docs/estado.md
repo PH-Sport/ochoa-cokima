@@ -156,9 +156,10 @@ en `ochoa-inicio-vivo.md` §3.7.
 
 - **Seguir con los retoques de Brasa**, en el alias de Cokima de `preview`, y decir si los
   nombres de las secciones valen (`cokima-el-rediseno.md` §3). Y si se borra `feat/cokima-brasa`, que ya sobra.
-- **Ver el Inicio nuevo de Brasa** en el alias de Cokima de `preview` y seguir iterando sobre él
-  (`cokima-el-rediseno.md` §3, «La dirección de Brasa»). Después vienen Nosotros y Visítanos, sobre
-  la misma dirección.
+- **Elegir cómo se presenta el Inicio de Brasa.** El de `preview`, por bloques, no le convenció;
+  el contenido se queda y hay tres maneras de presentarlo en una maqueta —paneles, mosaico e
+  índice—: https://claude.ai/artifact/VM1QDA4nP7nzN9NFVjZpPm (`cokima-el-rediseno.md` §3, «La
+  dirección de Brasa»). Después vienen Nosotros y Visítanos, sobre la misma dirección.
 - **Contar de dónde viene Cokima:** quién está detrás y desde cuándo. Es lo que le falta a Nosotros
   para tener historia y no solo concepto; ni el repo ni la web del grupo lo dicen.
 - **Ver en su móvil el desplegable de secciones y el viaje de «Reservar»**, y seguir iterando

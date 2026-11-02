@@ -333,6 +333,19 @@ foto grande sigue al ratón y no cambia con el tataki, que no tiene; cada enlace
 sin errores ni scroll lateral. La página del Inicio pasa a medir 4.820 px en el ordenador. Sin mirar
 en un iPhone, y **falta que lo vea Mario**.
 
+**Lo vio y no le convenció** (*«No me termina de convencer. Dame más alternativas»*): en el ordenador
+quiere aprovechar más el ancho de la pantalla, y en el móvil, compactar la información como el
+collage de Ochoa, que se redimensionaba solo y se hacía grande al tocar un recuadro; algo *«atractivo
+visualmente, [que] genere ese efecto WOW, y proporcione información»*. El contenido de los cinco
+bloques se queda; lo que cambia es cómo se presenta. **Tres maneras en una maqueta**, con el
+contenido real y el fuego quieto: https://claude.ai/artifact/VM1QDA4nP7nzN9NFVjZpPm —1 *Paneles*,
+cinco columnas a todo lo ancho y la abierta ocupa más de la mitad (en el móvil, bandas que se
+despliegan); 2 *Mosaico*, nueve recuadros que llenan una pantalla y crecen hasta ocuparla al
+tocarlos; 3 *Índice*, el índice en grande a un lado y un escenario que cambia solo al otro (en el
+móvil, una fila de botones y el escenario se pasa con el dedo)—. Lo que se mueve solo se para para
+siempre al tocarlo (regla 6). El mosaico es el más cercano al collage de Ochoa por idea, no por
+forma: aquel cambia solo de forma; este se queda quieto y crece al tocarlo.
+
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
 rediseñan después, sobre esta dirección.**
