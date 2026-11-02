@@ -538,7 +538,9 @@ queda encendida, **todo en fundidos**. Al pulsar baja la luz despacio y vuelve a
 «Reservar», que es macizo, se atenúa a la mitad sin desaparecer. Medido en WebKit y Chromium
 muestreando la luz del tubo cada 40 ms: fijo a los 1,56-1,64 s, y el mayor salto entre dos muestras
 es de 0,27-0,31 (en la segunda versión era de 0 a 1, que es lo que la hacía estroboscópica); al
-pulsar, de 0,34-0,38. **Falta que diga si así, y aplicarlo a la web.**
+pulsar, de 0,34-0,38. **Y ahí se pasó:** *«ahora creo que te has pasado jajaja, trata de hacerlo
+ligeeeeramente más corto»*. **La cuarta versión** arranca en 1,4 s con los mismos trompicones: fija a
+los 1,20-1,28 s, salto mayor 0,35-0,38. **Falta que diga si así, y aplicarlo a la web.**
 
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
