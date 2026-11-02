@@ -84,12 +84,10 @@
   --dur-revela: 1100ms;
   /* El viaje de «Reservar» y «Ver carta» entre la portada de Brasa y la barra (2026-11-02). Cruza
      de 280 a 670 px de pantalla, y la quíntica frena tan pronto que en ese recorrido sería un golpe
-     (regla 9 de movimiento.md): va con una curva que reparte el camino, la forma de --ease-telon. */
+     (regla 9 de movimiento.md): va con una curva que reparte el camino, la forma de --ease-telon. Con
+     las dos se reparten también las franjas de los paneles del Inicio al abrir otro. */
   --ease-viaje: cubic-bezier(0.45, 0.02, 0.55, 1);
   --dur-viaje: 640ms;
-  /* Cada cuánto se abre solo el panel siguiente del Inicio de Brasa, en el ordenador, mientras se ve y
-     hasta que alguien toca uno (regla 6). El reparto de las franjas va con --ease-viaje y --dur-viaje. */
-  --dur-paneles: 6500ms;
 
   --t-heading-font: var(--serif);
   --t-menu-title-size: 1.6rem;

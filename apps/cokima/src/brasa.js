@@ -246,8 +246,10 @@
   // fotograma (regla 2)—: los cinco ocupan la zona entera y cada uno se deja ver por su franja,
   // recortado con clip-path; su foto, su rótulo y su texto se colocan con transform. Al abrir otro, las
   // franjas se reparten en el mismo requestAnimationFrame (regla 27), con --ease-viaje y --dur-viaje.
-  // En el ordenador van pasando solos mientras se ven, hasta que alguien toca uno (regla 6); en el
-  // móvil, no: un panel que se abre solo cambia lo que estás leyendo.
+  // Si la zona cabe en la pantalla bajo la barra, se queda fija mientras se baja (.fija en brasa.css) y
+  // cada tramo de scroll abre el siguiente; tocar uno lo abre y lleva la página a su tramo, para que el
+  // scroll y el panel abierto nunca se contradigan. Si no cabe —los móviles pequeños—, se abren al
+  // tocarlos. Ya no pasan solos: con el scroll mandando, un reloj se pelearía con él.
   const paneles = document.querySelector("[data-paneles]");
   if (paneles) {
     // Los imprescindibles: los mismos platos y precios de la carta.
@@ -257,18 +259,22 @@
       if (d.description) n.append(el("small", null, d.description));
       li.append(n, el("b", null, fmt(d.price))); ulDest.append(li);
     });
-    const ps = [...paneles.querySelectorAll("[data-panel]")], N = ps.length;
+    const ps = [...paneles.querySelectorAll("[data-panel]")], N = ps.length, zona = paneles.parentElement;
     const ancho = matchMedia("(min-width: 900px)"), sinMov = matchMedia("(prefers-reduced-motion: reduce)");
-    // Lo que pesa el abierto frente a uno cerrado, el hueco entre franjas y el alto de una banda del móvil.
-    const PESO = 6.5, HUECO = 8, BANDA = 68;
-    let abiertoP = 0, franjas = null, animP = 0, tocado = false, visibleP = false, relojP = 0, ultAncho = 0, tam = 0;
+    // Lo que pesa el abierto frente a uno cerrado, el hueco entre franjas y el alto de una banda del móvil,
+    // suelta o fija. TRAMO es el scroll que abre el siguiente, en partes del alto de la zona; HOLGURA, lo
+    // que hay que pasarse de la mitad del tramo para cambiar, para que un temblor del dedo en la frontera no
+    // abra y cierre; MARGEN, lo que queda entre la barra y la zona fija (los 16px de .fija en brasa.css).
+    const PESO = 6.5, HUECO = 8, BANDA = 68, HUECO_FIJA = 6, BANDA_FIJA = 40, TRAMO = 0.75, HOLGURA = 0.08, MARGEN = 8;
+    let abiertoP = 0, franjas = null, animP = 0, clave = "", tam = 0, hueco = HUECO, banda = BANDA;
+    let fija = false, tramo = 0, arriba = 0, relleno = 0, pendiente = 0;
     // Dónde va cada franja con el panel i abierto: [inicio, tamaño] a lo largo del eje que toca.
     const reparto = (i) => {
       const total = ancho.matches ? paneles.clientWidth : paneles.clientHeight;
-      const cerrado = ancho.matches ? (total - HUECO * (N - 1)) / (PESO + N - 1) : BANDA;
-      const grande = ancho.matches ? cerrado * PESO : total - (BANDA + HUECO) * (N - 1);
+      const cerrado = ancho.matches ? (total - hueco * (N - 1)) / (PESO + N - 1) : banda;
+      const grande = ancho.matches ? cerrado * PESO : total - (banda + hueco) * (N - 1);
       let a = 0;
-      return ps.map((_, j) => { const t = j === i ? grande : cerrado, f = [a, t]; a += t + HUECO; return f; });
+      return ps.map((_, j) => { const t = j === i ? grande : cerrado, f = [a, t]; a += t + hueco; return f; });
     };
     const f1 = (v) => v.toFixed(1);
     const pintarP = (F) => {
@@ -296,31 +302,57 @@
       };
       paso(t0);
     };
-    // En el móvil la zona mide lo que pide el texto más largo, abierto, más las otras cuatro bandas;
-    // en el ordenador, lo que dice brasa.css. Y el panel abierto, lo que queda.
+    // Lo que mide el texto de un panel, de la primera línea a la última.
+    const texto = (p) => { const k = [...p.querySelector(".pan-cont").children]; return k[k.length - 1].getBoundingClientRect().bottom - k[0].getBoundingClientRect().top; };
+    // Lo que se ha bajado desde que la zona se quedó fija: 0 al fijarse y (N-1)·tramo al soltarse.
+    const bajado = () => arriba - (zona.getBoundingClientRect().top + relleno);
+    // El panel que toca según el scroll: al bajar, pasada la HOLGURA; al recolocar, el que toque, sin animar.
+    const segunScroll = (animar) => {
+      if (!fija || !paneles.clientWidth) return;
+      const f = Math.min(Math.max(bajado() / tramo, 0), N - 1), k = Math.round(f);
+      if (k !== abiertoP && (!animar || Math.abs(f - abiertoP) > 0.5 + HOLGURA)) abrirP(k, animar);
+    };
+    // Primero se prueba fija. En el ordenador cabe si la zona, que mide lo que dice brasa.css, cabe en la
+    // ventana con la barra; en el móvil la zona ya llena la pantalla, y cabe si el texto más largo cabe en
+    // el panel abierto. Si no, suelta: en el móvil la zona mide lo que pide el texto más largo, abierto, más
+    // las otras cuatro bandas. Y el panel abierto, lo que queda.
     const recolocar = () => {
       if (!paneles.clientWidth) return;
-      if (ancho.matches) paneles.style.removeProperty("--alto-paneles");
-      else {
-        const texto = Math.max(...ps.map((p) => { const k = [...p.querySelector(".pan-cont").children]; return k[k.length - 1].getBoundingClientRect().bottom - k[0].getBoundingClientRect().top; }));
-        paneles.style.setProperty("--alto-paneles", Math.round(Math.max(460, texto + 64) + (BANDA + HUECO) * (N - 1)) + "px");
+      const h = ancho.matches, alto = barra.getBoundingClientRect().height;
+      zona.classList.add("fija"); paneles.style.removeProperty("--alto-paneles");
+      hueco = h ? HUECO : HUECO_FIJA; banda = h ? BANDA : BANDA_FIJA;
+      const z = paneles.clientHeight;
+      fija = h ? z + alto + 2 * MARGEN <= innerHeight : Math.max(...ps.map(texto)) + 64 <= z - (banda + hueco) * (N - 1);
+      if (fija) {
+        tramo = Math.round(z * TRAMO); relleno = parseFloat(getComputedStyle(zona).paddingTop);
+        arriba = alto + (h ? Math.max(MARGEN, (innerHeight - alto - z) / 2) : MARGEN);
+        zona.style.setProperty("--recorrido", tramo * (N - 1) + "px"); zona.style.setProperty("--fijo-arriba", arriba + "px");
+      } else {
+        zona.classList.remove("fija"); hueco = HUECO; banda = BANDA;
+        if (!h) paneles.style.setProperty("--alto-paneles", Math.round(Math.max(460, Math.max(...ps.map(texto)) + 64) + (BANDA + HUECO) * (N - 1)) + "px");
       }
       const F = reparto(abiertoP);
       tam = Math.max(...F.map((f) => f[1])); paneles.style.setProperty("--tam-abierto", tam + "px");
       cancelAnimationFrame(animP); pintarP(F);
+      segunScroll(false);
     };
     // Se recoloca un fotograma después: en el móvil recolocar cambia el alto de la zona, y hacerlo dentro
-    // del aviso de ResizeObserver lo vuelve a disparar en el mismo fotograma («loop completed…»).
-    new ResizeObserver(() => requestAnimationFrame(() => { const w = paneles.clientWidth; if (w && w !== ultAncho) { ultAncho = w; recolocar(); } })).observe(paneles);
+    // del aviso de ResizeObserver lo vuelve a disparar en el mismo fotograma («loop completed…»). Cuenta el
+    // ancho y, en el ordenador, el alto de la ventana; en el móvil el alto no, que cambia al deslizar con la
+    // barra del navegador (regla 15), y la zona fija cuelga de 100svh, que no.
+    const revisar = () => requestAnimationFrame(() => {
+      const w = paneles.clientWidth, c = ancho.matches ? w + "x" + innerHeight : String(w);
+      if (w && c !== clave) { clave = c; recolocar(); }
+    });
+    new ResizeObserver(revisar).observe(paneles);
+    addEventListener("resize", revisar);
     document.fonts?.ready.then(recolocar);
-    const programa = () => {
-      clearTimeout(relojP);
-      if (tocado || !visibleP || document.hidden || !ancho.matches || sinMov.matches) return;
-      relojP = setTimeout(() => { abrirP((abiertoP + 1) % N, true); programa(); }, leeMs("--dur-paneles"));
-    };
-    new IntersectionObserver(([e]) => { visibleP = e.intersectionRatio >= 0.4; programa(); }, { threshold: [0, 0.4, 1] }).observe(paneles);
-    document.addEventListener("visibilitychange", programa);
-    ps.forEach((p, j) => p.querySelector(".pan-abrir").addEventListener("click", () => { tocado = true; clearTimeout(relojP); abrirP(j, true); }));
+    addEventListener("scroll", () => { if (!pendiente) pendiente = requestAnimationFrame(() => { pendiente = 0; segunScroll(true); }); }, { passive: true });
+    ps.forEach((p, j) => p.querySelector(".pan-abrir").addEventListener("click", () => {
+      abrirP(j, true);
+      // Fija, la página salta al tramo del panel: la zona no se mueve, y el scroll que siga parte de ahí.
+      if (fija) scrollTo(0, scrollY + j * tramo - bajado());
+    }));
     abrirP(0, false);
   }
 

@@ -349,9 +349,10 @@ forma: aquel cambia solo de forma; este se queda quieto y crece al tocarlo.
 
 **Eligió los paneles:** *«Me quedo con la de paneles. Aplícala en preview a ver qué tal queda»*. Están
 en `preview` desde el 2026-11-02: en el ordenador, cinco columnas a todo lo ancho —la abierta pesa
-6,5 veces lo que una cerrada— que van pasando solas cada `--dur-paneles` (6,5 s) mientras se ven y
-se paran para siempre al tocar una (regla 6); en el móvil, cinco bandas que se abren al tocarlas y no
-pasan solas, porque cambiarían lo que estás leyendo. **No están hechos como en la maqueta**, que
+6,5 veces lo que una cerrada— que al principio pasaban solas cada 6,5 s mientras se veían, hasta
+tocar una (regla 6); en el móvil, cinco bandas que se abren al tocarlas y no pasaban solas, porque
+cambiarían lo que estás leyendo. **Esa misma tarde dejaron de pasar solos: se abren al bajar**
+(abajo). **No están hechos como en la maqueta**, que
 animaba el ancho y el alto: eso recalcula la página en cada fotograma, y la regla 2 de
 `movimiento.md` lo prohíbe. Aquí los cinco paneles ocupan la zona entera, uno encima de otro, y cada
 uno se deja ver por su franja con `clip-path`; su foto, del tamaño del panel abierto, se centra en la
@@ -362,13 +363,58 @@ la maqueta sí pasaba. Dos detalles que costaron una vuelta: el texto de un pane
 `visibility: hidden`, porque si no el toque cae en sus botones invisibles (pasó en la maqueta); y la
 recolocación va un fotograma después del aviso de `ResizeObserver`, porque en el móvil cambia el alto
 de la zona y dentro del aviso lo vuelve a disparar («ResizeObserver loop completed…»).
-Medido sobre el build, en WebKit y Chromium a 1440, 1280×720, 1920, 390 y 320: bajo el centro de
+Medido sobre el build de aquella versión, en WebKit y Chromium a 1440, 1280×720, 1920, 390 y 320: bajo el centro de
 cada franja está su panel —el reparto y el toque, a la vez—; el texto de cada panel abierto cabe
 entero, también en la pantalla baja (el de la carta, con 20 px de sobra a 1280×720); tocar uno lo
 abre; en el ordenador, a los 7,5 s se ha abierto el siguiente y, tras tocar uno, 8 s después sigue
 ese; en el móvil no pasan solos y el pie no se mueve al abrir otro; con «reducir movimiento», ni
 pasan solos ni se animan; al volver al Inicio desde otra sección, todo en su sitio; sin errores ni
 scroll lateral. Sin mirar en un iPhone.
+
+**Se abren al bajar (2026-11-02, por la tarde).** Mario: *«para que la web no tenga tan poco
+recorrido vertical, a medida que vayamos scrolleando, se van abriendo las distintas secciones, y si
+se prefiere, si se clica una en concreto, esta se abre dejando ver su contenido»*. Si la zona cabe en
+la pantalla bajo la barra, se queda fija (`sticky`) mientras se baja, y cada tramo de scroll —tres
+cuartos de lo que mide la zona— abre el panel siguiente; pasado el quinto, la zona se suelta y sigue
+el pie. Lo que se decidió, con su porqué:
+
+- **Cada panel se abre entero al cruzar la mitad de su tramo, no a medias siguiendo el dedo.** Un
+  panel a medio abrir no se lee. Con una holgura del 8 % del tramo a cada lado de la frontera, para
+  que un temblor en ella no abra y cierre.
+- **Tocar uno lo abre y lleva la página a su tramo.** Con la zona fija, el salto no se ve, y el
+  scroll que siga parte de ahí. Sin eso el scroll y el panel se contradicen: tocas el cuarto, bajas
+  un poco y se vuelve a abrir el segundo. Si se toca con la zona aún llegando, el salto sí se ve,
+  como el de un enlace; en el móvil casi no pasa, porque llegando solo asoma el panel abierto.
+- **Ya no pasan solos, y `--dur-paneles` se borró.** Con el scroll mandando, un reloj abriendo
+  paneles por su cuenta se pelea con él.
+- **Solo se fijan si caben**, y si no siguen como estaban: se abren al tocarlos. En el ordenador,
+  si la zona (`clamp(600px, 84vh, 800px)`) y la barra caben en la ventana. En el móvil, fija, la zona
+  llena la pantalla —`100svh`, el alto pequeño, que no se mueve cuando se esconde la barra del
+  navegador (regla 15 de `movimiento.md`)— menos la barra y 8 px arriba y abajo; las bandas cerradas
+  bajan de 68 a 40 px, solo con el nombre, y los imprescindibles se quedan con nombre y precio, sin
+  descripción, que está en La carta. Se fija si el texto más largo cabe en el panel abierto.
+- **Descartado, abrirlos al bajar en el móvil sin fijar la zona:** con la zona de alto constante, al
+  abrirse uno los de debajo se desplazan, y el contenido se mueve bajo el dedo mientras bajas.
+
+Antes se midió dónde cabría: suelta, la zona del móvil medía de 953 a 1.061 px frente a 580-784 de
+pantalla libre, y el panel de los imprescindibles pedía de 633 a 741 px él solo con las
+descripciones, de 521 a 568 sin ellas. Por eso en el móvil son las dos cosas a la vez, bandas finas
+y sin descripción, y aun así no llega a los pequeños.
+
+Medido sobre el build, en WebKit y Chromium: **se fija** a 1440×900, 1280×720, 1920×1080, 430×932 y
+390×844, y **no** a 375×667 ni a 320×640, que siguen como antes (tocar abre, el pie no se mueve,
+bajar no abre otro, con descripciones). Fija: en cada tramo está abierto su panel, la zona no se
+mueve (desvío ≤ 1 px), el texto cabe —el de la carta, con 20 px de sobra a 1280×720— y bajo el
+centro de cada franja está su panel; con la rueda, de 60 en 60 px, bajando se abren 0→4 y subiendo
+4→0, y pasado el quinto la zona se va; la holgura —tramo 0 → 0,55 → 0,62 → 0,45 → 0,38— da 0, 0, 1,
+1, 0; de un tirón del 0 al 4, el 4; un clic en el 3 desde el tramo 1 lo abre con la zona quieta y la
+página en el tramo 3,00, y un poco más abajo sigue el 3 y luego el 4; un clic con la zona llegando
+la lleva a su tramo; 7,5 s quieto no abre nada; al volver al Inicio desde La carta, todo en su sitio;
+con «reducir movimiento», fija y el cambio directo; sin errores ni scroll lateral. El Inicio pasa de
+1.935 a 4.203 px a 1440×900 (4,7 pantallas) y de 2.069 a 4.188 a 390×844. **Sin mirar en un
+iPhone, y es lo primero:** la pantalla de Playwright no tiene las barras de Safari, así que el hueco
+real es menor que el medido, y a 390×844 al texto de la carta le sobraban 47 px para fijarse. Puede
+que en un iPhone normal la zona no se fije y siga como antes.
 
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se

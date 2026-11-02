@@ -50,10 +50,14 @@ del Grupo Tombo. **Está montado en `preview`:** la frase de la casa, el product
 imprescindibles de la carta, y las muestras de Nosotros y Visítanos, cada una con su enlace.
 Medido sobre el build en WebKit y Chromium a 1440, 390 y 320; sin mirar en un iPhone. **No le
 convenció**, y de tres maneras de presentarlo en una maqueta eligió **los paneles**: desde esa misma
-tarde el Inicio son cinco paneles a todo lo ancho en el ordenador, que pasan solos hasta que tocas
-uno, y cinco bandas que se abren al tocarlas en el móvil. Hechos con recortes y no cambiando de
-tamaño, por la regla 2 de `movimiento.md`, y medidos en cinco tamaños de pantalla y los dos motores
-(`cokima-el-rediseno.md` §3).
+tarde el Inicio son cinco paneles a todo lo ancho en el ordenador, y cinco bandas en el móvil.
+Hechos con recortes y no cambiando de tamaño, por la regla 2 de `movimiento.md`. **Y se abren al
+bajar**, que pidió Mario para que el Inicio tenga recorrido: si la zona cabe en la pantalla, se queda
+fija y cada tramo de scroll abre el siguiente; tocar uno lo abre y lleva la página a su tramo. Ya no
+pasan solos. En el móvil, para caber, las bandas cerradas son más finas y los imprescindibles van sin
+descripción; en los móviles pequeños no cabe y siguen abriéndose al tocarlos. Medido en siete
+tamaños y los dos motores; **sin mirar en un iPhone, donde puede que no se fije**
+(`cokima-el-rediseno.md` §3, «Se abren al bajar»).
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las
@@ -162,9 +166,11 @@ en `ochoa-inicio-vivo.md` §3.7.
 - **Seguir con los retoques de Brasa**, en el alias de Cokima de `preview`, y decir si los
   nombres de las secciones valen (`cokima-el-rediseno.md` §3). Y si se borra `feat/cokima-brasa`, que ya sobra.
 - **Ver los paneles del Inicio en su móvil y en el ordenador** y seguir iterando sobre ellos
-  (`cokima-el-rediseno.md` §3, «La dirección de Brasa»). Salieron de una maqueta de tres maneras:
-  https://claude.ai/artifact/VM1QDA4nP7nzN9NFVjZpPm. Después vienen Nosotros y Visítanos, sobre la
-  misma dirección.
+  (`cokima-el-rediseno.md` §3, «La dirección de Brasa» y «Se abren al bajar»). Salieron de una
+  maqueta de tres maneras: https://claude.ai/artifact/VM1QDA4nP7nzN9NFVjZpPm. **Lo primero, en su
+  iPhone: si la zona se queda fija al bajar o se abren tocando**, que no se ha podido medir con las
+  barras de Safari; y si el tramo de scroll de cada panel se hace corto o largo. Después vienen
+  Nosotros y Visítanos, sobre la misma dirección.
 - **Contar de dónde viene Cokima:** quién está detrás y desde cuándo. Es lo que le falta a Nosotros
   para tener historia y no solo concepto; ni el repo ni la web del grupo lo dicen.
 - **Ver en su móvil el desplegable de secciones y el viaje de «Reservar»**, y seguir iterando

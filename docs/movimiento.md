@@ -50,14 +50,13 @@ salen de aquí:
 | `--dur-recogida` | `700ms` | Lo que la plancha de la entrada tarda en **recogerse hasta ser la barra**. No sale de `--dur-in`: ese mide un panel que aparece y esto recorre la pantalla entera. |
 | `--tuerce` | `4deg` | Cuánto se **tuerce** lo que llega antes de encajar. Es a la rotación lo que `--shift` es al desplazamiento: la medida de un gesto. Un rótulo de bar se monta pieza a pieza y nunca queda a plomo. |
 
-**Cuatro más, solo en Cokima**, para Brasa:
+**Tres más, solo en Cokima**, para Brasa:
 
 | Token | Cokima | Para qué |
 |---|---|---|
 | `--dur-revela` | `1100ms` | Lo que **aparece al bajar**: lento a propósito, como sube una brasa. |
 | `--dur-viaje` | `640ms` | Lo que tardan «Reservar» y «Ver carta» en **viajar entre la portada y la barra** (2026-11-02). |
 | `--ease-viaje` | `cubic-bezier(0.45, 0.02, 0.55, 1)` | La curva de ese viaje, que cruza de 280 a 670 px: la forma de `--ease-telon` (regla 9). Es también la del reparto de los paneles del Inicio. |
-| `--dur-paneles` | `6500ms` | Cada cuánto se abre solo el panel siguiente del Inicio, en el ordenador, mientras se ve y hasta que alguien toca uno. |
 
 Y una escala de curvatura, que no es movimiento pero sigue la misma disciplina de no escribir
 números sueltos en los componentes: `--r-chapa` 4px, `--r-btn` 7px, `--r-caja` 9px, `--r-marco`
@@ -515,7 +514,7 @@ más lejos; Ochoa es una tasca y es seca.
 | Mazo de platos (Ochoa, solo móvil) | La de delante sale por la izquierda torciéndose y vuelve al fondo; deslizando a la derecha, la anterior entra por la izquierda por encima, en la mitad del tiempo; el turno se rellena | `transform` + `opacity`, `--dur-turno`, `--desfase-turno`, `--dur-baraja`, `--ease-telon`; `scaleX`; se apaga con un toque o una carta pasada, no al bajar con el dedo encima. En el móvil tumbado no hay mazo: la tira de fichas que se desliza |
 | Portada | El titular se aparta del cartel de cookies | `translateY`, `--dur-out` |
 | Portada de Brasa (Cokima) | Al pasar el 60% de la pantalla, «Reservar» y «Ver carta» viajan hasta la barra cambiando de tamaño —«Ver carta» se vuelve «La carta», la del menú de arriba—, y vuelven al subir por debajo del 50%. En el móvil solo viaja «Reservar»: «La carta» está en el desplegable cerrado | un viajero desde `brasa.js`: `transform` y `clip-path` en el mismo fotograma (regla 27), `--dur-viaje`, `--ease-viaje`; parte de donde va si se cruza de vuelta; directo con «reducir movimiento», en un salto largo o al cambiar de sección |
-| Inicio de Brasa (Cokima) | Cinco paneles: al abrir uno, las franjas se reparten —columnas en el ordenador, bandas en el móvil— y su foto se recoloca; en el ordenador se abre solo el siguiente cada `--dur-paneles` mientras se ven | `clip-path` y `transform` desde `brasa.js` en el mismo fotograma (regla 27), `--ease-viaje`, `--dur-viaje`; el texto entra con `opacity` tras `--dur-out`; se paran para siempre al tocar uno (regla 6); en el móvil no pasan solos; directo y quietos con «reducir movimiento» |
+| Inicio de Brasa (Cokima) | Cinco paneles: al abrir uno, las franjas se reparten —columnas en el ordenador, bandas en el móvil— y su foto se recoloca. Si la zona cabe en la pantalla, se queda fija al bajar y cada tramo abre el siguiente; tocar uno lo abre y lleva la página a su tramo. Si no cabe, se abren al tocarlos. No pasan solos | `clip-path` y `transform` desde `brasa.js` en el mismo fotograma (regla 27), `--ease-viaje`, `--dur-viaje`; el texto entra con `opacity` tras `--dur-out`; la zona, `position: sticky`, que no es animación; cambia pasada la mitad del tramo con un 8 % de holgura; directo con «reducir movimiento» |
 | Barra del móvil de Brasa (Cokima) | El desplegable de secciones baja bajo la barra con un velo detrás, y la flecha gira | `opacity` + `translateY`, `--dur-in` al abrir y `--dur-out` al cerrar (regla 3); la flecha, `rotate`, `--dur-out`; sin transición con «reducir movimiento» |
 | Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |
 | Entrada (Cokima) | Una chispa baja por un riel, avisando de que hay más | `stroke-dashoffset`, 3,2s |
