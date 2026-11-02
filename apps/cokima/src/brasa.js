@@ -3,8 +3,10 @@
 // La carta llega del build, de menu-es.json, en el JSON de #carta-datos: no hay copia aquí.
 (() => {
   const MENU = JSON.parse(document.getElementById("carta-datos").textContent);
-  // La duración del fundido de salida es la de tokens.css: el cambio de sección espera a que acabe.
-  const DUR_OUT = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dur-out")) || 180;
+  // Los tokens de tokens.css se leen al usarlos y con su unidad: el build reescribe 180ms como .18s,
+  // y WebKit los devuelve vacíos mientras carga la página (regla 30 de movimiento.md).
+  const token = (t) => getComputedStyle(document.documentElement).getPropertyValue(t).trim();
+  const leeMs = (t) => { const v = token(t); return v.endsWith("ms") ? parseFloat(v) : parseFloat(v) * 1000; };
   const POR_ID = Object.fromEntries(MENU.map((d) => [d.id, d]));
   const fmt = (p) => (Number.isInteger(p) ? p + " €" : p.toFixed(2).replace(".", ",") + " €");
   // Los platos con foto en la fototeca, y la frase que la casa ha publicado de cada uno.
@@ -163,7 +165,8 @@
       requestAnimationFrame(() => requestAnimationFrame(() => entra.classList.remove("entrando")));
       revelar(); alScroll();
     };
-    if (instantaneo) cambiar(); else { sale.classList.add("saliendo"); setTimeout(cambiar, DUR_OUT); }
+    // El cambio de sección espera a que acabe el fundido de salida, que dura --dur-out.
+    if (instantaneo) cambiar(); else { sale.classList.add("saliendo"); setTimeout(cambiar, leeMs("--dur-out")); }
   };
   document.addEventListener("click", (e) => { const a = e.target.closest("[data-ir]"); if (!a) return; e.preventDefault(); ir(a.dataset.ir); });
 
@@ -175,10 +178,7 @@
   // calculan en el mismo requestAnimationFrame (regla 27 de movimiento.md), con la curva y la
   // duración de tokens.css. Si se cruza de vuelta a medio viaje, parte de donde va. Sin movimiento,
   // o si lo que se va ya no está en pantalla (un salto), el cambio es directo, como antes.
-  // Los dos tokens se leen al empezar cada viaje, no al cargar, y con su unidad: el build reescribe
-  // 640ms como .64s, y WebKit los devuelve vacíos mientras carga la página (regla 30 de movimiento.md).
-  const token = (t) => getComputedStyle(document.documentElement).getPropertyValue(t).trim();
-  const leeMs = (t) => { const v = token(t); return v.endsWith("ms") ? parseFloat(v) : parseFloat(v) * 1000; };
+  // Los dos tokens se leen al empezar cada viaje, no al cargar (regla 30 de movimiento.md).
   const leeCurva = (t) => {
     const n = (token(t).match(/cubic-bezier\(([^)]+)\)/)?.[1] || "").split(",").map(Number);
     if (n.length !== 4 || n.some((x) => !Number.isFinite(x))) return null;

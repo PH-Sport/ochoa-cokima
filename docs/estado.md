@@ -47,8 +47,9 @@ WebKit y Chromium a 390 y a 1440: un solo «Reservar» y una sola carta a la vis
 fotograma, bajando, subiendo y dándose la vuelta a medio camino; en el penúltimo fotograma, a
 menos de 0,7 px de su sitio; y sin viaje con «reducir movimiento», en un salto largo o al cambiar
 de sección. Salió una trampa sin error, ya regla 30 de `movimiento.md`: el build reescribe
-`640ms` como `.64s`, y WebKit devuelve vacíos los tokens mientras carga la página. Sin mirar en
-un iPhone.
+`640ms` como `.64s`, y WebKit devuelve vacíos los tokens mientras carga la página. Por la misma
+trampa, en Chrome el cambio de sección no esperaba a su fundido; arreglado también, y medido: la
+sección vieja se esconde a los 200 ms en los dos motores. Sin mirar en un iPhone.
 
 **Ochoa, 2026-10-29: la home viva está en `preview`.** Mario la fue eligiendo en tres rondas de un
 probador montado sobre la web real, y está en las dos homes, la española y la inglesa. **El porqué
@@ -132,8 +133,6 @@ en `ochoa-inicio-vivo.md` §3.7.
 - **Probar en su móvil el viaje de «Reservar» y «Ver carta»** y decir si convence que en el móvil
   se separen —uno a la esquina de arriba y otro a la barra de abajo—; si no, viaja solo
   «Reservar» (`cokima-el-rediseno.md` §3).
-- **Decir si se arregla el fundido al cambiar de sección de Brasa en Chrome**, que no espera a
-  apagarse la sección de antes por la misma trampa (regla 30 de `movimiento.md`). Es una línea.
 - **Probar la imagen nueva compartiendo el enlace de `preview` en WhatsApp.** Si sale la de antes,
   añadir `?v=2` al final del enlace: WhatsApp recuerda la vista previa de lo ya compartido.
 - **Ver en su iPhone los ajustes de esa noche**, en el alias de `preview` desde el 2026-10-30, y

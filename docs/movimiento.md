@@ -486,10 +486,11 @@ más lejos; Ochoa es una tasca y es seca.
     en su valor de reserva y en una curva lineal; Chromium sí las devolvía, pero en segundos. Las
     dos se taparon una a la otra: en el iPhone la reserva escondía el error de unidad. Ochoa no las
     sufre porque `leeDuracion` (`compas.ts`) mira la unidad y lee en `astro:page-load`. **Brasa lee
-    `--dur-viaje` y `--ease-viaje` al empezar cada viaje, con la unidad.** Sigue afectado el
-    cambio de sección de Brasa, que lee `--dur-out` al arrancar: en Chromium no espera al fundido
-    de salida —medido: a los 60 ms del clic la sección vieja ya está escondida; en WebKit, no—.
-    Pendiente de que Mario diga si se arregla.
+    `--dur-viaje` y `--ease-viaje` al empezar cada viaje, con la unidad.** El cambio de sección de
+    Brasa tenía la misma trampa con `--dur-out`: en Chromium no esperaba al fundido de salida —a
+    los 60 ms del clic la sección vieja ya estaba escondida; en WebKit, no—. Arreglado ese mismo
+    día, a petición de Mario, con la misma lectura: medido, la sección vieja se esconde a los
+    196–209 ms en los dos motores, a 390 y a 1440.
 
 ## Qué se mueve hoy
 
