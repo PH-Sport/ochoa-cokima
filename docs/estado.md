@@ -160,7 +160,9 @@ en `ochoa-inicio-vivo.md` §3.7.
   rótulo a toda pantalla, los datos como el vinilo de un escaparate y un neón «Abierto» que se
   enciende con el horario real (o, la otra, una franja de 24 horas con la cocina encendida y la
   hora de ahora moviéndose). Ninguna es de Ochoa ni de lo ya descartado: *Comanda*, las fotos que
-  estallan y las pantallas como historias.
+  estallan y las pantallas como historias. **Las recomendadas, en una maqueta** con las fotos y los
+  textos reales, el fuego de verdad y un panel para apagar el fuego que responde y simular la hora:
+  https://claude.ai/artifact/9maPX8uKzqNrT3e6n3QFoa (2026-11-02).
 - **Ver en su móvil el desplegable de secciones y el viaje de «Reservar»**, y seguir iterando
   sobre ellos (`cokima-el-rediseno.md` §3). El desplegable salió de una maqueta de tres:
   https://claude.ai/artifact/TGPi5Le9WBSVTFXZGoLwhc.
