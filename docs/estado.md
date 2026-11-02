@@ -130,6 +130,13 @@ en `ochoa-inicio-vivo.md` §3.7.
 - **Seguir con los retoques de Brasa**, en el alias de Cokima de `preview`, y decir cuál de las
   tres maneras de La carta —Portadilla, Al tocar o Pareja— y si los nombres de las secciones valen
   (`cokima-el-rediseno.md` §3). Y si se borra `feat/cokima-brasa`, que ya sobra.
+- **Elegir la barra de secciones del móvil.** La píldora flotante de abajo no le termina de
+  gustar (2026-11-02); en el ordenador, las secciones arriba en el centro sí. Tres alternativas en
+  una maqueta, con la de ahora al lado: https://claude.ai/artifact/TGPi5Le9WBSVTFXZGoLwhc —
+  1 *Arriba*, en una línea bajo la marca como en el ordenador (la recomendada: nada flota sobre las
+  fotos y los dos botones de la portada viajarían hacia arriba); 2 *Desplegable*, la sección en la
+  que estás y al tocarla la lista; 3 *Abajo, plana*, de lado a lado y solo texto. Ninguna es un
+  botón «Menú» con cortina, que es de Ochoa.
 - **Probar en su móvil el viaje de «Reservar» y «Ver carta»** y decir si convence que en el móvil
   se separen —uno a la esquina de arriba y otro a la barra de abajo—; si no, viaja solo
   «Reservar» (`cokima-el-rediseno.md` §3).
