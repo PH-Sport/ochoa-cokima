@@ -29,7 +29,9 @@ nombre de la portada y el vídeo de la entrada detrás, oscurecido, con el fuego
 2026-11-01, «Kitchen Madness» pasó de la cursiva a la letra de los textos, en mayúsculas pequeñas.
 El 2026-11-02, «Reservar» y «Ver carta» dejaron de apagarse en la portada para salir en la barra:
 viajan hasta su sitio al bajar y vuelven al subir. Mario eligió esa entre tres; las otras dos, y
-por qué no, en `cokima-el-rediseno.md` §3.
+por qué no, en `cokima-el-rediseno.md` §3. Ese mismo día, en el móvil, la píldora de secciones de
+abajo dejó paso a un desplegable en la barra de arriba, que Mario eligió en una maqueta entre tres:
+*«Es la que menos sitio ocupa y la más limpia»*. Con él, en el móvil solo viaja «Reservar».
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las
@@ -50,6 +52,14 @@ de sección. Salió una trampa sin error, ya regla 30 de `movimiento.md`: el bui
 `640ms` como `.64s`, y WebKit devuelve vacíos los tokens mientras carga la página. Por la misma
 trampa, en Chrome el cambio de sección no esperaba a su fundido; arreglado también, y medido: la
 sección vieja se esconde a los 200 ms en los dos motores. Sin mirar en un iPhone.
+
+El desplegable del móvil, medido sobre el build en WebKit y Chromium a 390 y a 320: la marca, la
+sección y «Reservar» caben en una fila sin pisarse ni scroll lateral; la lista se abre pegada a la
+barra (0 px) con la sección actual marcada, lleva a la que se elige y pone su nombre en la barra,
+y se cierra al tocar fuera, con Escape (el foco vuelve al botón), al mover la página y al volver
+a la portada; sin transición con «reducir movimiento». En el móvil viaja «Reservar» y no «Ver
+carta»; en el ordenador, los dos, y ni desplegable ni píldora. Sin errores. Sin mirar en un
+iPhone.
 
 **Ochoa, 2026-10-29: la home viva está en `preview`.** Mario la fue eligiendo en tres rondas de un
 probador montado sobre la web real, y está en las dos homes, la española y la inglesa. **El porqué
@@ -130,16 +140,9 @@ en `ochoa-inicio-vivo.md` §3.7.
 - **Seguir con los retoques de Brasa**, en el alias de Cokima de `preview`, y decir cuál de las
   tres maneras de La carta —Portadilla, Al tocar o Pareja— y si los nombres de las secciones valen
   (`cokima-el-rediseno.md` §3). Y si se borra `feat/cokima-brasa`, que ya sobra.
-- **Elegir la barra de secciones del móvil.** La píldora flotante de abajo no le termina de
-  gustar (2026-11-02); en el ordenador, las secciones arriba en el centro sí. Tres alternativas en
-  una maqueta, con la de ahora al lado: https://claude.ai/artifact/TGPi5Le9WBSVTFXZGoLwhc —
-  1 *Arriba*, en una línea bajo la marca como en el ordenador (la recomendada: nada flota sobre las
-  fotos y los dos botones de la portada viajarían hacia arriba); 2 *Desplegable*, la sección en la
-  que estás y al tocarla la lista; 3 *Abajo, plana*, de lado a lado y solo texto. Ninguna es un
-  botón «Menú» con cortina, que es de Ochoa.
-- **Probar en su móvil el viaje de «Reservar» y «Ver carta»** y decir si convence que en el móvil
-  se separen —uno a la esquina de arriba y otro a la barra de abajo—; si no, viaja solo
-  «Reservar» (`cokima-el-rediseno.md` §3).
+- **Ver en su móvil el desplegable de secciones y el viaje de «Reservar»**, y seguir iterando
+  sobre ellos (`cokima-el-rediseno.md` §3). El desplegable salió de una maqueta de tres:
+  https://claude.ai/artifact/TGPi5Le9WBSVTFXZGoLwhc.
 - **Probar la imagen nueva compartiendo el enlace de `preview` en WhatsApp.** Si sale la de antes,
   añadir `?v=2` al final del enlace: WhatsApp recuerda la vista previa de lo ya compartido.
 - **Ver en su iPhone los ajustes de esa noche**, en el alias de `preview` desde el 2026-10-30, y

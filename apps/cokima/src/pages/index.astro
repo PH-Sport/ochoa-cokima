@@ -92,10 +92,12 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
       <nav class="secciones" aria-label="Secciones">
         <a href="#inicio" data-ir="inicio">Inicio</a><a href="#carta" data-ir="carta">La carta</a><a href="#nosotros" data-ir="nosotros">Nosotros</a><a href="#visitanos" data-ir="visitanos">Visítanos</a>
       </nav>
+      <button type="button" class="desp" aria-expanded="false" aria-controls="lista-secciones"><span data-actual>Inicio</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.2 6 8l4-3.8" /></svg></button>
       <a class="pill solid peq" href="https://www.covermanager.com/reservation/module_restaurant/restaurante-cokima/spanish" target="_blank" rel="noopener">Reservar</a>
     </header>
 
-    <nav class="pestanas oculta" aria-label="Secciones">
+    <div class="velo" aria-hidden="true"></div>
+    <nav class="lista" id="lista-secciones" aria-label="Secciones">
       <a href="#inicio" data-ir="inicio">Inicio</a><a href="#carta" data-ir="carta">La carta</a><a href="#nosotros" data-ir="nosotros">Nosotros</a><a href="#visitanos" data-ir="visitanos">Visítanos</a>
     </nav>
 

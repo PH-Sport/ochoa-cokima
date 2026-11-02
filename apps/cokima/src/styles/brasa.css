@@ -12,7 +12,7 @@
   --barra:60px;
 }
 html,body{margin:0;background:var(--ground);color:var(--bone)}
-body{font:300 17px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:calc(92px + var(--sb))}
+body{font:300 17px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:var(--sb)}
 img{max-width:100%;height:auto;display:block}
 a{color:inherit}
 /* El fondo es transparente donde no hay fuego, para que se vea lo de detrás: el suelo, o el vídeo
@@ -46,20 +46,36 @@ main{position:relative;z-index:1}
   transition:opacity var(--dur-in) var(--ease),transform var(--dur-in) var(--ease)}
 .marca{font:300 1.45rem/1 var(--sans);letter-spacing:-.01em;text-decoration:none}
 .secciones{display:none;gap:30px}
-.secciones a,.pestanas a{text-decoration:none;position:relative}
+.secciones a{text-decoration:none;position:relative}
 .secciones a{font:400 .94rem/1 var(--sans);color:var(--bone-2);padding:8px 0}
 .secciones a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ember);transform:scaleX(0);transform-origin:left;transition:transform var(--dur-out) var(--ease)}
 .secciones a[aria-current="page"]{color:var(--bone)}
 .secciones a[aria-current="page"]::after{transform:scaleX(1)}
-/* Abajo en el móvil: las cuatro secciones al alcance del pulgar */
-.pestanas{position:fixed;left:50%;bottom:calc(14px + var(--sb));z-index:6;display:flex;gap:2px;padding:5px;border-radius:999px;
-  background:var(--panel);border:1px solid var(--line);transform:translateX(-50%);
-  transition:opacity var(--dur-in) var(--ease),transform var(--dur-in) var(--ease)}
-.pestanas a{font:500 .82rem/1 var(--sans);color:var(--bone-2);padding:12px 14px;border-radius:999px;white-space:nowrap}
-.pestanas a[aria-current="page"]{color:var(--bone);background:rgba(243,234,221,.1)}
+/* En el móvil, las secciones en un desplegable (Mario, 2026-11-02, entre tres en una maqueta: «es la
+   que menos sitio ocupa y la más limpia»). En la barra va la sección en la que estás; al tocarla baja
+   la lista, y la barra se vuelve opaca para que barra y lista sean una pieza. Sustituye a la píldora
+   flotante de abajo. En el ordenador no existe: allí están las secciones de la barra. Abrir es entrar
+   (--dur-in) y cerrar es responder (--dur-out), regla 3 de movimiento.md. */
+.desp{display:inline-flex;align-items:center;gap:7px;margin-left:auto;padding:10px 2px;border:0;background:none;cursor:pointer;
+  font:400 .9rem/1 var(--sans);color:var(--bone);-webkit-tap-highlight-color:transparent}
+.desp svg{width:11px;height:11px;fill:none;stroke:var(--bone-2);stroke-width:1.6;transition:transform var(--dur-out) var(--ease)}
+.menu-abierto .desp svg{transform:rotate(180deg)}
+.menu-abierto .barra{background:var(--ground)}
+.lista{position:fixed;left:0;right:0;top:calc(var(--st) + var(--barra));z-index:5;padding:4px var(--gr) 16px var(--gl);
+  background:var(--ground);border-bottom:1px solid var(--line);opacity:0;visibility:hidden;transform:translateY(-10px);
+  transition:opacity var(--dur-out) var(--ease),transform var(--dur-out) var(--ease),visibility 0s linear var(--dur-out)}
+.menu-abierto .lista{opacity:1;visibility:visible;transform:none;transition:opacity var(--dur-in) var(--ease),transform var(--dur-in) var(--ease)}
+.lista a{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);text-decoration:none;
+  font:200 1.9rem/1.1 var(--sans);letter-spacing:-.015em;color:var(--bone-2)}
+.lista a:last-child{border-bottom:0}
+.lista a::before{content:"";flex:none;width:7px;height:7px;border-radius:50%}
+.lista a[aria-current="page"]{color:var(--bone)}
+.lista a[aria-current="page"]::before{background:var(--ember)}
+.velo{position:fixed;left:0;right:0;bottom:0;top:calc(var(--st) + var(--barra));z-index:4;background:rgba(14,9,7,.55);
+  opacity:0;visibility:hidden;transition:opacity var(--dur-out) var(--ease),visibility 0s linear var(--dur-out)}
+.menu-abierto .velo{opacity:1;visibility:visible;transition:opacity var(--dur-in) var(--ease)}
 .oculta{opacity:0;pointer-events:none}
 .barra.oculta{transform:translateY(-10px)}
-.pestanas.oculta{transform:translate(-50%,12px)}
 /* El viajero (2026-11-02): al cruzar el límite de la portada, «Reservar» y «Ver carta» no se apagan
    en un sitio para salir en otro, viajan. Lo que se mueve es una copia sin función, por encima de
    todo, y las piezas de verdad esperan en .vuela hasta que llega: nunca hay dos «Reservar» a la vez.
@@ -179,11 +195,11 @@ main{position:relative;z-index:1}
 
 .rv{opacity:0;transform:translateY(22px);transition:opacity var(--dur-revela) var(--ease),transform var(--dur-revela) var(--ease)}
 .rv.in{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){.rv,.vista,.vista.entrando{opacity:1;transform:none;transition:none}.despliegue .pf{animation:none}}
+@media (prefers-reduced-motion:reduce){.rv,.vista,.vista.entrando{opacity:1;transform:none;transition:none}.despliegue .pf{animation:none}.lista,.velo,.menu-abierto .lista,.menu-abierto .velo,.desp svg{transition:none}}
 
 @media (min-width:900px){
   body{padding-bottom:0}
-  .pestanas{display:none}
+  .desp,.lista,.velo{display:none}
   .secciones{display:flex}
   .barra{--barra:72px}
   :root{--barra:72px}

@@ -151,9 +151,10 @@ exclusiva para esta nueva versión»*. **Desde el 2026-10-31 Brasa es la web de 
   va a 1,25 veces el ritmo del boceto (`VELOCIDAD` en `brasa.js`). Tiene su excepción a la regla 6
   en `movimiento.md`.
 - **Títulos en Bricolage 200, y la voz en Cormorant Garamond cursiva.**
-- **Cuatro secciones: Inicio, La carta, Nosotros y Visítanos**, con nombres provisionales. Barra
-  arriba en el ordenador; en el móvil, pestañas abajo, al alcance del pulgar. No es la cortina,
-  que es de Ochoa.
+- **Cuatro secciones: Inicio, La carta, Nosotros y Visítanos**, con nombres provisionales. En el
+  ordenador, en la barra de arriba, en el centro. En el móvil, desde el 2026-11-02, en un
+  desplegable de la barra de arriba (más abajo); antes, una píldora flotante abajo. No es la
+  cortina, que es de Ochoa.
 - **La portada del Inicio sigue la regla de §4:** el nombre y los dos botones, sin menú, que
   aparece al bajar. Con dos cosas que pidió Mario al verla: **«Kitchen Madness» bajo el nombre**
   —*«le da algo más de dinamismo a la portada»*—, y **el vídeo de la
@@ -171,8 +172,11 @@ exclusiva para esta nueva versión»*. **Desde el 2026-10-31 Brasa es la web de 
   60% de la pantalla, se apagaban en su sitio mientras la barra aparecía en otro, sin relación, y
   durante un instante había dos «Reservar» a medio fundir. **Se le propusieron tres maneras y
   eligió la primera:** que viajen al cruzar el límite. Ahora «Reservar» sube a la esquina
-  encogiéndose y «Ver carta» se vuelve «La carta» —la del menú de arriba en el ordenador; en el
-  móvil baja a la barra de abajo, que se abre desde ella—, y al subir hacen el camino de vuelta.
+  encogiéndose y, en el ordenador, «Ver carta» se vuelve «La carta», la del menú de arriba; al
+  subir hacen el camino de vuelta. **En el móvil solo viaja «Reservar»:** «Ver carta» bajaba a la
+  píldora de abajo, y desde que las secciones del móvil van en el desplegable (más abajo) «La
+  carta» queda dentro de la lista cerrada y no hay adónde llegar; se apaga con la portada, como
+  antes.
   Lo que vuela es una copia sin función y los de verdad esperan escondidos, así que nunca hay dos a
   la vez. Con margen: se va al 60% y vuelve por debajo del 50%, para que nadie los ponga a ir y
   venir parándose en el límite. Cómo está hecho, en `movimiento.md` («Qué se mueve hoy» y regla 30).
@@ -181,11 +185,24 @@ exclusiva para esta nueva versión»*. **Desde el 2026-10-31 Brasa es la web de 
   (`archivo/barra-del-navegador-ios.md`) y el viaje daría saltos, porque a medio camino los
   botones pisan «Buen producto. Malas intenciones.» y porque es trabajo en cada movimiento del
   dedo con el fuego ya cargando el móvil; y *el gesto mínimo* —deslizarse unos píxeles hacia donde
-  van— porque insinúa la dirección pero no se ve que sea el mismo botón. **El riesgo que queda por
-  ver en su móvil:** los dos botones se separan en direcciones contrarias, uno arriba y otro abajo.
-  Si no convence, viaja solo «Reservar» y la barra de abajo entra como antes. **Y lo que no se
+  van— porque insinúa la dirección pero no se ve que sea el mismo botón. **Y lo que no se
   mueve, a propósito:** el «Cokima» grande de la portada no vuela a la barra, porque eso hace ya la
   entrada de Ochoa con su rótulo.
+- **En el móvil, las secciones van en un desplegable (2026-11-02).** Mario: *«En escritorio me
+  gusta la idea de tener las secciones arriba en el medio de la pantalla, pero en móvil no me
+  termina de gustar la píldora abajo»*. Se le propusieron tres alternativas y las pidió ver en una
+  maqueta, con la píldora al lado: https://claude.ai/artifact/TGPi5Le9WBSVTFXZGoLwhc. Eligió la 2:
+  *«Es la que menos sitio ocupa y la más limpia, cosa que nos interesa bastante para este
+  diseño»*. En la barra va la sección en la que estás con una flecha; al tocarla baja la lista de
+  las cuatro, en la letra fina de los títulos, con un punto brasa en la actual, y la barra se
+  vuelve opaca para que barra y lista sean una pieza. Se cierra al elegir, al tocar fuera, con
+  Escape, al mover la página, al volver a la portada —donde no hay barra— y al pasar a ancho de
+  ordenador. **Las descartadas, y por qué:** *arriba*, en una línea bajo la marca como en el
+  ordenador, que era la que recomendaba el agente —nada flota sobre las fotos y los dos botones de
+  la portada viajarían hacia arriba—, porque la franja de arriba crece y aquí se quiere lo mínimo;
+  *abajo, plana*, de lado a lado y solo texto, porque sigue tapando abajo y en el iPhone se estira
+  bajo la rayita de inicio; y la píldora, que es la que no le gustaba. Ninguna de las tres era un
+  botón «Menú» con cortina, que es de Ochoa.
 - **El Inicio es corto:** la frase de la casa, si la cocina está abierta ahora (con su horario) y
   tres puertas a las otras secciones.
 - **La carta tiene siempre los 21 platos en la misma lista**, con tres maneras de enseñar los
