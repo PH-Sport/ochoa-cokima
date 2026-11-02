@@ -528,12 +528,17 @@ CoverManager, solo entraría el aspecto en reposo. La maqueta se probó en WebKi
 390, sin errores ni scroll lateral, en reposo, con el ratón y pulsando.
 
 **Mario se queda con el neón**, y lo pidió *«algo más pronunciado… que el parpadeo se note un poco
-más»*. En la segunda versión de la maqueta (mismo enlace) los parpadeos son **cortes secos**
-(`steps`), no fundidos: tres apagones enteros y un tartamudeo en unos 720 ms antes de quedarse
-encendido; al pulsar, se apaga del todo unos 160 ms y vuelve a arrancar, y «Reservar», que es
-macizo, se atenúa a la mitad sin desaparecer. El tubo encendido pasa a 2 px y con algo más de luz.
-Medido en WebKit y Chromium muestreando la opacidad del tubo cada 20 ms: la secuencia sale igual en
-los dos. **Falta que diga si así, y aplicarlo a la web.**
+más»*. **Se entendió mal a la primera:** la segunda versión de la maqueta lo hizo más brillante y con
+cortes secos, y le pareció estroboscópica. Lo que quería: *«No me refería a que fuese más brillante,
+sino que el tiempo que está parpadeando fuese más distendido, como si le costase más arrancar al
+neón… y trata de hacerlo suave, que no sea tan estroboscópico»*. **La tercera versión** (mismo
+enlace) vuelve al brillo de la primera y **le cuesta arrancar**: en 1,8 s va cogiendo luz a
+trompicones —sube un poco, se apaga, espera a oscuras, vuelve a medias, cae, sube casi entera— y se
+queda encendida, **todo en fundidos**. Al pulsar baja la luz despacio y vuelve a arrancar en 0,76 s;
+«Reservar», que es macizo, se atenúa a la mitad sin desaparecer. Medido en WebKit y Chromium
+muestreando la luz del tubo cada 40 ms: fijo a los 1,56-1,64 s, y el mayor salto entre dos muestras
+es de 0,27-0,31 (en la segunda versión era de 0 a 1, que es lo que la hacía estroboscópica); al
+pulsar, de 0,34-0,38. **Falta que diga si así, y aplicarlo a la web.**
 
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
