@@ -544,8 +544,42 @@ los 1,20-1,28 s, salto mayor 0,35-0,38. Mario contó los pulsos —*«unos 5-6�
 primer pulso al segundo»*— y pidió quitar el primero, el más largo y el que más se aleja del resto,
 porque *«la gran mayoría no se para a ver una animación de ~1 seg, y en móvil directamente casi ni se
 aprecia»*. **La quinta versión** es la cuarta sin ese pulso ni la espera a oscuras que lo seguía, con el
-resto igual: 1,12 s, fija a los 0,96-1,00 s, salto mayor 0,35-0,40. **Falta que diga si así, y
-aplicarlo a la web.**
+resto igual: 1,12 s, fija a los 0,96-1,00 s, salto mayor 0,35-0,40. Y al pulsar, **el clic de la
+brasa que salta**: *«el hover encendería el botón, mientras que el clic haría que se hundiese
+ligeramente, se quedase el neón encendido y saltasen esas brasas. Solo se apagaría si quitamos el
+cursor de encima»*. Así, en la sexta versión: el ratón enciende; el clic hunde el botón al 96,5 % y
+suelta chispas, sin tocar el tubo; quitar el ratón lo apaga. En el móvil, sin ratón, el toque lo
+enciende y se apaga solo a los 1,8 s. Medido en WebKit y Chromium: con el ratón, tubo a 1; pulsando,
+tubo a 1, escala 0,965 y chispas pintadas; al soltar sigue a 1; fuera, a 0; en el móvil, el toque lo
+pone a 1 y se apaga solo. **Falta que diga si así, y aplicarlo a la web.**
+
+**La entrada y el cambio de sección: en maqueta y a la espera de Mario (2026-11-02).** *«No tenemos
+ninguna animación de entrada ni transición entre páginas… Quisiera seguir la temática de las
+brasas»*. Las reglas que se le pusieron, por lo que él mismo dijo del neón —casi nadie se para a
+ver una animación de un segundo—: **cortas** (la entrada, poco más de un segundo; el cambio, menos
+de uno), **sin hacer esperar** (los botones se pueden pulsar desde el primer fotograma y tocar
+termina la animación, regla 6) y **la entrada, solo la primera vez**. Con «reducir movimiento», no
+se pintan (regla 5). Y **nada de telón**, que es la entrada de Ochoa. Una maqueta con una Brasa en
+pequeño para verlas: https://claude.ai/artifact/Egejk8xKnrgLW7g5y3G9ia
+
+- **Entrada A, se aviva:** a oscuras, sube una bocanada de chispas y «Cokima» se destapa de abajo
+  arriba; luego «Kitchen Madness» y los botones. Unos 1,2 s.
+- **Entrada B, el nombre se enfría** (la que recomienda el agente): «Cokima» ya en su sitio pero al
+  rojo, una copia en degradado de brasa encima que se apaga hasta el hueso en 1,1 s, de forma
+  pareja (con la curva que frena, casi todo caía en el primer tercio y se veía como un destello).
+  Nada se mueve de su sitio.
+- **Cambio C, una bocanada** (la que recomienda el agente): el fundido de hoy y, encima, una ráfaga
+  de chispas desde abajo. Unos 0,7 s. Usa el mismo fondo, así que es ligera.
+- **Cambio D, el papel que se quema:** la sección vieja se consume de abajo arriba por un borde
+  quemado —una onda irregular, no un zigzag— y deja ver la nueva. Unos 0,8 s. Recuerda al telón y
+  pide pintar las dos secciones a la vez, con la vieja opaca: sin fondo, los textos de las dos se
+  leían a la vez.
+
+Probada en WebKit y Chromium a 1280 y 390: las dos entradas llegan al reposo, tocar a mitad de la
+entrada la termina, los tres cambios —C, D y el de hoy— acaban con una sola sección a la vista, sin
+errores ni scroll lateral. Dos fallos de la propia maqueta cazados así: D no acababa nunca —la curva
+se quedaba en 0,99999 y la sección vieja seguía puesta, bloqueando los cambios siguientes— y el
+enfriamiento de B, demasiado rápido.
 
 **El Inicio, reordenado: cuatro paneles (2026-11-02, por la noche).** Mario: *«Pondría primero la de
 "Imprescindibles", similar a cómo hicimos en Ochoa con "Lo que más sale". Ponemos el acceso directo a

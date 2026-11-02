@@ -184,9 +184,12 @@ en `ochoa-inicio-vivo.md` §3.7.
   Nosotros y Visítanos, sobre la misma dirección.
 - **Revisar el texto para buscadores del último panel del Inicio**, «Ven» (`cokima-el-rediseno.md`
   §3, «El Inicio, reordenado»): lo escribió el agente con frases de la casa y datos comprobados.
-- **Ver el neón de los botones, más marcado, en la maqueta**
-  https://claude.ai/artifact/9aLVRRLV8f3ZJWbYfStUSw y decir si se aplica así a la web: eligió el
-  neón entre tres (`cokima-el-rediseno.md` §3, «Los botones, con carácter»).
+- **Ver el neón de los botones en la maqueta** https://claude.ai/artifact/9aLVRRLV8f3ZJWbYfStUSw
+  —sin el primer pulso y con el clic de la brasa que salta— y decir si se aplica así a la web: eligió
+  el neón entre tres (`cokima-el-rediseno.md` §3, «Los botones, con carácter»).
+- **Elegir la entrada y el cambio de sección** en la maqueta
+  https://claude.ai/artifact/Egejk8xKnrgLW7g5y3G9ia (`cokima-el-rediseno.md` §3, «La entrada y el
+  cambio de sección»). El agente recomienda B, el nombre se enfría, y C, una bocanada.
 - **Decidir cómo va «Carta» en la barra del móvil**: cabe si la marca abre el menú y el desplegable
   deja de decir en qué sección estás (`cokima-el-rediseno.md` §3, «Reservar dentro, chispas y la
   carta a mano»).
