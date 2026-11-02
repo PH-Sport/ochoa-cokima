@@ -503,6 +503,30 @@ el texto dentro de la píldora; el desplegable entero a 390 y 320, y en el móvi
 dentro hasta verlo todo con la página quieta; las secciones del desplegable, como estaban; los tres
 pies con los dos enlaces; sin errores ni scroll lateral.
 
+**Los botones, con carácter: en maqueta y a la espera de Mario (2026-11-02).** *«Quisiera que los
+botones (todos, en general vaya) tuviesen un poquito más de personalidad. Hoy en día, son píldoras
+simples y ya. En Ochoa nos salió muy bien cuando hicimos el 3D que se hundía al clicar. ¿Qué se te
+ocurre aquí?»* **El 3D de Ochoa no se copia**: es la firma de la otra casa, y las dos no se cruzan. Lo
+que sí se lleva es su idea: que el botón se sienta al pulsarlo y que salga del sitio. Tres maneras,
+cada una de algo que solo tiene Cokima, en una maqueta con los botones reales —portada, barra y
+Visítanos— para pulsarlos: https://claude.ai/artifact/9aLVRRLV8f3ZJWbYfStUSw
+
+1. **La brasa que salta**, de las chispas del fondo, la que recomienda el agente: en reposo asoma una
+   línea de brasa por el borde de abajo; con el ratón, el calor sube despacio y llena el botón; al
+   pulsar, cede un poco y suelta unas chispas hacia arriba, las del fondo. Sin brillo, que Mario ya
+   descartó en las chispas.
+2. **El neón que se enciende**, de los rótulos de la sala: el botón de borde es un tubo apagado; con
+   el ratón se enciende con dos parpadeos cortos y desiguales; al pulsar se apaga un instante y
+   vuelve. Pide algo de brillo, o no se lee como neón.
+3. **El trazo de rotulador**, del grafiti del mural: el borde es un trazo a mano, distinto en cada
+   botón; con el ratón se repasa; al pulsar, un garabato subraya el texto. Rompe la regla de curvatura
+   de `tokens.css`: lo que se pulsa es siempre una píldora perfecta.
+
+Las tres evitan lo que la regla 18 de `movimiento.md` llama patrones típicos —brillo que barre, halo
+que late, borde que gira— y valdrían para todos los botones; en el calendario de reservas, que es de
+CoverManager, solo entraría el aspecto en reposo. La maqueta se probó en WebKit y Chromium a 1280 y
+390, sin errores ni scroll lateral, en reposo, con el ratón y pulsando.
+
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
 rediseñan después, sobre esta dirección.**
