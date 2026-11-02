@@ -416,8 +416,9 @@
     const d = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight;
     cv.width = Math.round(W * d); cv.height = Math.round(H * d); cx.setTransform(d, 0, 0, d, 0, 0);
   };
-  // Una por cada 16.000 px² de pantalla, entre 28 y 90.
-  const cuantas = () => Math.max(28, Math.min(90, Math.round((W * H) / 16000)));
+  // Una por cada 12.000 px² de pantalla, entre 36 y 120. Eran 16.000, 28 y 90: Mario las pidió
+  // «ligeramente» más densas el 2026-11-02, y es un tercio más.
+  const cuantas = () => Math.max(36, Math.min(120, Math.round((W * H) / 12000)));
   const azar = (a, b) => a + Math.random() * (b - a);
   // z es lo cerca que está (1, delante): las de lejos son más finas, más lentas y más tenues. Seis de cada
   // diez nacen bajo el borde de abajo y entran subiendo; las demás aparecen ya en el aire, poco a poco,

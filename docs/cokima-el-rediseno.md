@@ -464,8 +464,9 @@ pidió cuatro cosas:
   poco a poco, como si entraran en foco, para que las haya en todo el alto. **Se pintan como salen en
   una foto**: un trazo fino a lo largo del vuelo —lo que recorren en 50 ms, más largo cuanto más
   rápidas—, con la cabeza más clara mientras están calientes, y **sin halo**. Tres profundidades: las
-  de lejos, más finas, lentas y tenues. Una por cada 16.000 px² de pantalla, entre 28 y 90 (unas 80
-  en un portátil, 28 en el móvil). Arranca con tres segundos ya vividos, para no empezar vacía. Lo
+  de lejos, más finas, lentas y tenues. Una por cada 12.000 px² de pantalla, entre 36 y 120 (unas 108
+  en un portátil, 36 en el móvil); eran un tercio menos hasta que Mario, con esta versión ya vista
+  —*«Mucho mejor las partículas»*—, las pidió *«ligeramente»* más densas. Arranca con tres segundos ya vividos, para no empezar vacía. Lo
   que mueve el aire —empujes, frenos, vaivenes— es física, no una transición: va con sus números en
   `brasa.js`, no en `tokens.css`.
 

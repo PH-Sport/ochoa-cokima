@@ -139,7 +139,7 @@ más lejos; Ochoa es una tasca y es seca.
    tamaño la ventana). Pinta a la densidad de la pantalla, hasta 2×, y a 30 fotogramas por segundo
    como mucho, y **no para**: Brasa es una sola página y el fondo está en todas sus secciones. Lo
    que cuesta en un móvil modesto **no está medido**; las palancas son cuántas chispas hay (una por
-   cada 16.000 px², entre 28 y 90), la densidad y el tope de fotogramas. El vídeo de su portada sí sigue la regla: se pausa fuera
+   cada 12.000 px², entre 36 y 120), la densidad y el tope de fotogramas. El vídeo de su portada sí sigue la regla: se pausa fuera
    de la vista, con la pestaña oculta y en las otras secciones, y la regla 20 tal cual.
 
    **Qué es tocar (2026-10-29).** Un toque o un gesto sobre la pieza; **no el dedo que baja la
