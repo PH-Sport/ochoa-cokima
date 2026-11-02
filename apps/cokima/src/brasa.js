@@ -1,4 +1,4 @@
-// Brasa: las secciones, La carta con la foto de cada parte, el estado de la cocina y el fondo de brasas.
+// Brasa: las secciones, La carta con la foto de cada parte, el estado de la cocina y el fondo de chispas.
 // Es el código del boceto que eligió Mario el 2026-10-31, pasado tal cual (docs/cokima-el-rediseno.md §3).
 // La carta llega del build, de menu-es.json, en el JSON de #carta-datos: no hay copia aquí.
 (() => {
@@ -93,7 +93,8 @@
     document.querySelectorAll(".secciones [data-ir], .desplegable [data-ir]").forEach((a) => {
       if (a.dataset.ir === actual) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
     });
-    const nombre = document.querySelector(`.desplegable [data-ir="${actual}"]`)?.textContent || "";
+    // Reservar no está en el menú: su nombre lo lleva la sección (data-nombre).
+    const nombre = document.querySelector(`.desplegable [data-ir="${actual}"]`)?.textContent || vistas[actual].dataset.nombre || "";
     desp.querySelector("[data-actual]").textContent = nombre;
     desp.setAttribute("aria-label", `Secciones. Estás en ${nombre}`);
   };
@@ -101,9 +102,22 @@
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
     vistas[actual].querySelectorAll(".rv:not(.in)").forEach((x) => io.observe(x));
   };
-  // El vídeo de la portada vive fuera de <main> para quedar debajo del fuego, así que no se esconde
+  // El vídeo de la portada vive fuera de <main> para quedar debajo de las chispas, así que no se esconde
   // con la sección: se esconde aquí, y al esconderlo su observador lo pausa.
   const cine = document.querySelector(".cine");
+  // El motor de reservas (2026-11-02) se monta la primera vez que se abre Reservar, y no antes: así el
+  // Inicio no llama a covermanager.com. Primero la mitad del iframeResizer que va en esta página y luego
+  // el iframe, porque su onload la necesita ya cargada; si no, el iframe se queda en 550px con scroll
+  // propio (recursos.md §2). Si el script no llega, el iframe se monta igual, y reserva igual.
+  const motor = document.querySelector("template[data-motor]");
+  const montarMotor = () => {
+    if (!motor || motor.dataset.montado) return;
+    motor.dataset.montado = "1";
+    const frag = motor.content.cloneNode(true), viejo = frag.querySelector("script"), js = document.createElement("script");
+    js.src = viejo.src; viejo.remove();
+    js.onload = js.onerror = () => motor.replaceWith(frag);
+    document.head.append(js);
+  };
   const ir = (destino, instantaneo) => {
     // Las direcciones de cuando La carta tenía tres maneras (#carta-1, -2 y -3) llevan a La carta.
     let v = /^carta-[123]$/.test(destino) ? "carta" : destino;
@@ -116,6 +130,7 @@
       sale.hidden = true; sale.classList.remove("saliendo");
       if (cine) cine.hidden = v !== "inicio";
       entra.classList.add("entrando"); entra.hidden = false; scrollTo(0, 0);
+      if (v === "reservar") montarMotor();
       requestAnimationFrame(() => requestAnimationFrame(() => entra.classList.remove("entrando")));
       revelar(); alScroll();
     };
@@ -385,65 +400,77 @@
     document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") cinta.pause(); });
   }
 
-  // Fondo: el lecho de brasas de Rescoldo, en WebGL a poca resolución y a 30 fps. En la portada del
-  // Inicio sube; en el resto se recoge al pie. Es transparente donde no hay fuego: sobre el suelo se
-  // ve igual que opaco, porque el negro de antes era el mismo --ground, y en la portada deja ver el
-  // vídeo debajo. La regla 6 de movimiento.md tiene su excepción escrita para este fondo.
+  // Fondo: chispas de brasa que suben, como en una barbacoa (Mario, 2026-11-02, en lugar del lecho de
+  // brasas de Rescoldo: «que suban ligeramente… que abarquen más el alto de la pantalla, sutilmente»).
+  // En WebGL y a 30 fps: tres capas de chispas, de lejos —pequeñas, lentas y tenues— a cerca. Cada una
+  // vive unos segundos en cualquier punto de la pantalla, se mece, parpadea y deja una estela corta;
+  // abajo hay más y arriba se apagan, sin llegar a nada. Al bajar la página, las de cerca suben un poco
+  // más que las de lejos. Es transparente donde no hay chispa, y en la portada deja ver el vídeo debajo.
+  // La regla 6 de movimiento.md tiene su excepción escrita para este fondo.
   const cv = document.querySelector(".fondo");
   const gl = cv.getContext("webgl", { antialias: false, alpha: true, premultipliedAlpha: true });
   if (!gl) return;
   const VS = "attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}";
-  const FS = `precision mediump float;
-uniform vec2 r;uniform float t,s,bed;
+  // highp donde lo hay: con mediump, que en algunos móviles es de 16 bits, el reloj pierde precisión a
+  // los pocos minutos y las chispas dan saltos.
+  const FS = `#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform vec2 r;uniform float t,s,e;
 float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
-  return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
-float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
-float ridge(vec2 p){float v=0.,a=.55;for(int i=0;i<3;i++){float k=1.-abs(n(p)*2.-1.);v+=a*k*k*k;p=p*2.1+vec2(3.1,1.7);a*=.5;}return v;}
-vec3 ramp(float x){x=clamp(x,0.,1.2);
-  vec3 c=mix(vec3(0.),vec3(.30,.035,.012),smoothstep(0.,.3,x));
-  c=mix(c,vec3(.82,.2,.035),smoothstep(.28,.68,x));
-  c=mix(c,vec3(1.,.52,.16),smoothstep(.62,.95,x));
-  return mix(c,vec3(1.,.78,.48),smoothstep(.95,1.2,x));}
+// Una capa: como mucho una chispa por celda (hay = la parte de celdas con chispa), y la rejilla entera
+// sube a vel celdas por segundo; hondo es lo que sube de más al bajar la página.
+float capa(vec2 px,float celda,float vel,float radio,float hay,float hondo,float semilla){
+  vec2 p=px/celda;
+  p.y-=t*vel+s*hondo/celda;
+  vec2 id=floor(p),f=fract(p);
+  float a=h(id+semilla);
+  if(a>hay)return 0.;
+  float b=h(id+semilla+3.7),c=h(id+semilla+9.1);
+  vec2 sitio=vec2(.25+.5*b+.12*sin(t*(.5+.8*c)+6.2832*a/hay),.25+.5*c);
+  vec2 d=(f-sitio)*celda;
+  // El halo es redondo; solo el núcleo deja estela hacia abajo, y corta: estirado entero parecía una vela.
+  float halo=exp(-dot(d,d)/(radio*radio*9.));
+  if(d.y<0.)d.y*=.5;
+  float nucleo=exp(-dot(d,d)/(radio*radio));
+  float vida=fract(t*(.09+.12*b)+a*7.);
+  float luz=smoothstep(0.,.12,vida)*(1.-smoothstep(.55,1.,vida));
+  float parpadeo=.6+.4*sin(t*(6.+9.*c)+40.*b);
+  return (nucleo+.22*halo)*luz*parpadeo*(.55+.9*c);
+}
 void main(){
-  vec2 uv=gl_FragCoord.xy/r;
-  float k=min(r.x,r.y);
-  vec2 p=gl_FragCoord.xy/k*2.4+vec2(0.,s*.00035);
-  vec2 q=vec2(fbm(p*.7+vec2(0.,t*.018)),fbm(p*.7+vec2(5.2,1.3)-vec2(t*.012,0.)));
-  float f=fbm(p+1.8*q);
-  float veta=pow(ridge(p*1.35+q*2.),2.2);
-  float ph=n(p*.45+7.)*6.2832;
-  float resp=.62+.38*sin(t*.85+ph);
-  float lecho=smoothstep(bed,0.,uv.y);
-  float calor=(veta*.95+smoothstep(.5,.82,f)*.55)*resp*lecho;
-  calor*=(.82+.18*sin(t*.5))*1.08;
-  vec3 col=ramp(calor);
-  col+=vec3(.16,.045,.015)*lecho*lecho*(.55+.45*resp)*.75;
-  gl_FragColor=vec4(col,clamp(max(col.r,max(col.g,col.b)),0.,1.));
+  vec2 px=gl_FragCoord.xy/e,uv=gl_FragCoord.xy/r;
+  float i=capa(px,64.,.55,1.2,.26,.1,1.)*.6+capa(px,110.,.5,1.7,.2,.22,17.)*.9+capa(px,170.,.42,2.3,.12,.38,41.)*1.2;
+  i*=.2+.8*pow(1.-uv.y,1.4);
+  float a=clamp(i,0.,1.);
+  vec3 col=mix(vec3(1.,.42,.12),vec3(1.,.86,.6),smoothstep(.55,1.,i));
+  gl_FragColor=vec4(col*a,a);
 }`;
   const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
   const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr); gl.useProgram(pr);
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
   const loc = gl.getAttribLocation(pr, "a"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  const U = {}; ["r", "t", "s", "bed"].forEach((u) => (U[u] = gl.getUniformLocation(pr, u)));
-  cv.classList.add("viva");
-  const ESCALA = 0.6;
-  // El ritmo del fuego: 1 es el del boceto. Mario lo pidió «ligeramente» más rápido el 2026-10-31.
-  const VELOCIDAD = 1.25;
+  const U = {}; ["r", "t", "s", "e"].forEach((u) => (U[u] = gl.getUniformLocation(pr, u)));
+  // A la resolución de la página, no a menos como el fuego: una chispa son dos o tres píxeles, y a
+  // 0,6 se quedaba en una mancha.
+  const ESCALA = 1;
   const size = () => { cv.width = Math.round(innerWidth * ESCALA); cv.height = Math.round(innerHeight * ESCALA); gl.viewport(0, 0, cv.width, cv.height); };
   // Cambiar el tamaño del lienzo lo borra: con «reducir movimiento», que no repinta solo, se fuerza
-  // un fotograma nuevo, o el fuego desaparecería hasta el siguiente cambio de sección.
+  // un fotograma nuevo, o las chispas desaparecerían hasta el siguiente cambio de sección.
   addEventListener("resize", () => { size(); last = -1e3; }); size();
   const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let bed = actual === "inicio" ? 0.54 : 0.3, last = -1e3;
+  let last = -1e3;
   const frame = (ms) => {
     requestAnimationFrame(frame);
-    if (ms - last < 32 || (quieto && last > 0 && Math.abs(bed - objetivo()) < 0.002)) return; last = ms;
-    bed += (objetivo() - bed) * (quieto ? 1 : 0.04);
-    gl.uniform2f(U.r, cv.width, cv.height); gl.uniform1f(U.t, quieto ? 20 : (ms / 1000) * VELOCIDAD); gl.uniform1f(U.s, scrollY); gl.uniform1f(U.bed, bed);
+    // Con «reducir movimiento», un fotograma quieto, sin seguir al scroll. El reloj da la vuelta cada
+    // hora: una vez por hora, las chispas cambian de sitio de golpe.
+    if (ms - last < 32 || (quieto && last > 0)) return; last = ms;
+    gl.uniform2f(U.r, cv.width, cv.height); gl.uniform1f(U.e, ESCALA);
+    gl.uniform1f(U.t, quieto ? 20 : (ms / 1000) % 3600); gl.uniform1f(U.s, quieto ? 0 : scrollY);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
-  const objetivo = () => (actual === "inicio" ? (scrollY < innerHeight * 0.5 ? 0.54 : 0.34) : 0.3);
   requestAnimationFrame(frame);
 })();

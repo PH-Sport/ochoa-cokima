@@ -144,12 +144,11 @@ lo contrario: *«Puesto que quiero comenzar a iterar sobre esta variante, haz la
 exclusiva para esta nueva versión»*. **Desde el 2026-10-31 Brasa es la web de Cokima en
 `preview`**, y `feat/cokima-brasa` sobra (si se borra lo decide él).
 
-- **El fuego de Rescoldo de fondo:** sube en la portada del Inicio y baja al pie en las demás
-  secciones. WebGL a 0,6 de resolución y a 30 fotogramas por segundo como mucho, y **transparente
-  donde no hay fuego**: sobre el suelo se ve igual que el opaco del boceto, porque su negro era el
-  mismo `--ground`, y en la portada deja ver el vídeo. Mario lo pidió *«ligeramente»* más rápido:
-  va a 1,25 veces el ritmo del boceto (`VELOCIDAD` en `brasa.js`). Tiene su excepción a la regla 6
-  en `movimiento.md`.
+- **El fuego de Rescoldo de fondo, hasta el 2026-11-02:** subía en la portada del Inicio y bajaba
+  al pie en las demás secciones, en WebGL, **transparente donde no hay fuego**, para dejar ver el
+  vídeo en la portada. Mario lo pidió *«ligeramente»* más rápido el primer día. **Lo sustituyen
+  chispas de brasa que suben** (abajo, «Reservar dentro, chispas y la carta a mano»). Tiene su
+  excepción a la regla 6 en `movimiento.md`.
 - **Títulos en Bricolage 200, y la voz en Cormorant Garamond cursiva.**
 - **Cuatro secciones: Inicio, La carta, Nosotros y Visítanos**, con nombres provisionales. En el
   ordenador, en la barra de arriba, en el centro. En el móvil, desde el 2026-11-02, en un
@@ -415,6 +414,59 @@ con «reducir movimiento», fija y el cambio directo; sin errores ni scroll late
 iPhone, y es lo primero:** la pantalla de Playwright no tiene las barras de Safari, así que el hueco
 real es menor que el medido, y a 390×844 al texto de la carta le sobraban 47 px para fijarse. Puede
 que en un iPhone normal la zona no se fije y siga como antes.
+
+**Reservar dentro, chispas y la carta a mano (2026-11-02, por la noche).** Mario vio los paneles y
+pidió cuatro cosas:
+
+- *«Las 2 primeras tarjetas solo contienen texto»*: **ahora llevan botones.** Cokima, «Ver la carta»
+  y «Reservar mesa», en el orden de la portada; El producto, «Ver la carta», porque del producto se
+  pasa a los platos. Con los botones, el texto de los dos sigue cabiendo: el más justo, el del
+  producto a 1280×720, con 138 px de sobra.
+- *«Las dos acciones más importantes son la carta y la reserva. Esta última la tenemos siempre
+  visible, pero la carta no»*. En el ordenador la carta está en las secciones de la barra; **en el
+  móvil no cabe tal como está la barra**. Medido: la marca 79 px, el desplegable con el nombre de
+  la sección de 58 a 85 y «Reservar» 97, y una píldora más con sus huecos pide unos 400 px, frente a
+  280 de sitio a 320 y 350 a 390. Cabe si la marca abre el menú —«Cokima ⌄», sin el nombre de la
+  sección— y a la derecha van «Carta» y «Reservar», un poco más estrechas: comprobado en capturas
+  reales a 390 y a 320, sin desbordar. **Eso quita el nombre de la sección del desplegable, que
+  eligió Mario, así que espera a que lo diga.**
+- *«El widget de CoverManager para las reservas no está, nos redirige a una página externa. Debemos
+  hacerlo como en Ochoa, adaptado al estilo de la web»*. **Reservar es ahora una sección de Brasa**
+  (`#reservar`), con el motor dentro y la piel de Brasa, como `/reservas` en Ochoa: el mismo
+  `BookingEmbed` de `@tombo/ui` y una hoja `/covermanager.css` propia, que junta la Bricolage,
+  `tokens.css` y la piel (`apps/cokima/src/styles/covermanager.css`). Todos los «Reservar» llevan
+  ahí, y `/reservas` y `/en/reservations` también. No está en el menú de secciones: se llega por los
+  botones, y el desplegable dice «Reservar». **El motor se monta la primera vez que se abre la
+  sección, no antes**, para que el Inicio no llame a `covermanager.com`, igual que en Ochoa solo
+  carga en `/reservas`: va en un `<template>` y `brasa.js` carga primero la mitad del iframeResizer
+  y después el iframe, porque su `onload` la necesita ya cargada (si no, se queda en 550 px con
+  scroll propio). En el ordenador, el título a un lado y el recuadro al otro, con 44rem de tope,
+  como en Ochoa.
+- *«Prefiero quitar el "fuego" de fondo y poner algo tipo chispas de brasas, que suban
+  ligeramente como en una barbacoa… que abarquen más el alto de la pantalla, sutilmente»*. **El
+  fondo son chispas**: tres capas en WebGL, de lejos —pequeñas, lentas y tenues— a cerca; cada una
+  vive unos segundos en cualquier punto de la pantalla, se mece, parpadea, deja una estela corta y se
+  apaga; abajo hay más y arriba se apagan sin llegar a nada, y al bajar la página las de cerca suben
+  un poco más. Suben de 35 a 70 px por segundo. **Una vuelta que costó:** con el halo estirado igual
+  que la estela, cada chispa salía como una vela, una columna con el borde cortado por su celda; el
+  halo es redondo y solo el núcleo deja estela, y corta. Pinta a la resolución de la página —a 0,6,
+  como el fuego, una chispa se quedaba en mancha— y con `highp` donde lo hay, porque con `mediump`
+  el reloj pierde precisión a los pocos minutos en algunos móviles. Sin WebGL no hay respaldo: el
+  degradado de fuego que había ya no se pide.
+
+Medido sobre el build, en WebKit y Chromium a 1440 y 390: bajar el Inicio entero no hace ni una
+petición a `covermanager.com`; no queda ningún enlace que salga a él; «Reservar» de la barra abre la
+sección arriba del todo, el desplegable dice «Reservar», el motor se monta con el iframeResizer ya
+cargado, y abrirla otra vez no lo monta dos veces; por `#reservar` se entra directo; en el
+ordenador, título y recuadro uno al lado del otro, y en el móvil, uno debajo; sin errores ni scroll
+lateral. Los paneles fijos, otra vez entera su prueba, sin un fallo en los dos motores. **El motor
+no se deja ver en el navegador de pruebas**: dentro de la página local, CloudFront le contesta 403.
+La piel se midió como la de Ochoa, abriendo la página del motor directamente (ahí da 200) e
+inyectándole la hoja construida, en los dos motores, a 347, 390, 540 y 800 px: sin desbordar,
+calendario y campos en los mismos píxeles, el día elegido como píldora sólida de hueso sin estirarse
+y los textos por encima de 4,5:1 de contraste. **Sin comprobar:** que el motor cargue la hoja él solo
+desde el despliegue (hace falta https), la fuente cruzando de dominio, el paso de los datos
+personales —solo se ve empezando una reserva real, que puede bloquear mesa— y un iPhone de verdad.
 
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se

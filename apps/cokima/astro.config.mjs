@@ -31,9 +31,9 @@ export default defineConfig({
   // sección que las sustituye. La home inglesa va aparte, en src/pages/en/index.astro.
   redirects: {
     "/carta": "/#carta",
-    "/reservas": "/#visitanos",
+    "/reservas": "/#reservar",
     "/en/menu": "/#carta",
-    "/en/reservations": "/#visitanos",
+    "/en/reservations": "/#reservar",
   },
   i18n: {
     defaultLocale: "es",

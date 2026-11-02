@@ -80,10 +80,14 @@ escrito por el autor de CoverManager), que es la única documentación técnica 
 - **`?template=`** — CoverManager solo anuncia `trans-white` y `trans-black` (dos hojas suyas en
   `/css/modulo/`). **Con una URL absoluta, el motor la enlaza como hoja de estilo, la última del
   `<head>`**, por detrás de Bootstrap 3, jQuery UI 1.10 y sus estilos en línea. Acepta la URL
-  codificada (`https%3A%2F%2F…`). Es la vía de la piel de Ochoa (`estado.md` §0). **No está
+  codificada (`https%3A%2F%2F…`). Es la vía de la piel de Ochoa y, desde el 2026-11-02, de la de
+  Cokima (`estado.md` §0). **No está
   documentado para URLs**: si lo retiran, el motor vuelve a su aspecto de serie y sigue reservando.
   Tiene que ser `https`: el motor no carga una hoja de `http://localhost`, así que en local la piel
   no se ve.
+- **En el navegador de pruebas, el iframe dentro de la página local da `403`** (lo corta CloudFront,
+  delante del motor); la página del motor abierta directamente da `200`. Por eso la piel se mide
+  abriendo esa página e inyectándole la hoja construida (2026-11-02, Cokima; antes, Ochoa).
 - **`?source=`** — el plugin reenvía el `source` de la URL de la página. Parece etiquetar el origen
   de la reserva dentro de CoverManager (en el panel se ven reservas marcadas «CH: Google»). **Sin
   probar.**

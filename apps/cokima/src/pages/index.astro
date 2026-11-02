@@ -1,6 +1,6 @@
 ---
 // La home de Cokima es Brasa desde el 2026-10-31: el boceto que eligió Mario, en una sola página
-// con cuatro secciones (docs/cokima-el-rediseno.md §3). No usa Base.astro: aquel es el marco de la
+// con cuatro secciones y Reservar (docs/cokima-el-rediseno.md §3). No usa Base.astro: es el marco de la
 // web anterior —su cabecera, su pie, su cartel de cookies y el router de transiciones—, y Brasa
 // trae su propia barra y cambia de sección sin recargar. Las legales siguen con Base.
 import "../styles/tokens.css";
@@ -8,7 +8,8 @@ import "../styles/brasa.css";
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import Seo from "@tombo/ui/Seo.astro";
-import { RESTAURANT } from "../site.ts";
+import BookingEmbed from "@tombo/ui/BookingEmbed.astro";
+import { RESTAURANT, COVER_SLUG } from "../site.ts";
 import poster from "../assets/entrada-poster.jpg";
 
 // El vídeo de la entrada, detrás de la portada (Mario, 2026-10-31: «a modo provisional»). Se busca
@@ -26,6 +27,10 @@ const mp4 = url("entrada", "mp4");
 const webm = url("entrada", "webm");
 const mp4Ancho = url("entrada-ancho", "mp4");
 const webmAncho = url("entrada-ancho", "webm");
+
+// La piel de Brasa para el motor de CoverManager (ver pages/covermanager.css.ts). En local no se
+// aplica: el motor es https y no carga una hoja de http://localhost.
+const coverTemplate = new URL("/covermanager.css", Astro.site).href;
 
 // La carta entra en la página como datos, y la pinta brasa.js según la manera elegida.
 const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
@@ -62,7 +67,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
     <link rel="sitemap" href="/sitemap-index.xml" />
   </head>
   <body>
-    {/* El vídeo va antes que el fondo y fuera de <main>: así el fuego se pinta ENCIMA del vídeo
+    {/* El vídeo va antes que el fondo y fuera de <main>: así las chispas se pintan ENCIMA del vídeo
         y el texto encima de los dos. El póster manda mientras no hay cinta —con «reducir
         movimiento», con ahorro de datos o si el iPhone no deja reproducir—. Sin `autoplay`: la
         arranca brasa.js, que es quien sabe qué ha pedido quien mira (regla 20 de movimiento.md). */}
@@ -93,7 +98,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
         <a href="#inicio" data-ir="inicio">Inicio</a><a href="#carta" data-ir="carta">La carta</a><a href="#nosotros" data-ir="nosotros">Nosotros</a><a href="#visitanos" data-ir="visitanos">Visítanos</a>
       </nav>
       <button type="button" class="desp" aria-expanded="false" aria-controls="desplegable-secciones"><span data-actual>Inicio</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.2 6 8l4-3.8" /></svg></button>
-      <a class="pill solid peq" href="https://www.covermanager.com/reservation/module_restaurant/restaurante-cokima/spanish" target="_blank" rel="noopener">Reservar</a>
+      <a class="pill solid peq" href="#reservar" data-ir="reservar">Reservar</a>
     </header>
 
     <div class="velo" aria-hidden="true"></div>
@@ -106,7 +111,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
       <section class="vista" data-vista="inicio">
         <div class="portada">
           <h1><span class="nombre">Cokima</span><span class="sub">Kitchen Madness</span></h1>
-          <div class="acc"><a class="pill" href="#carta" data-ir="carta">Ver carta</a><a class="pill solid" href="https://www.covermanager.com/reservation/module_restaurant/restaurante-cokima/spanish" target="_blank" rel="noopener">Reservar</a></div>
+          <div class="acc"><a class="pill" href="#carta" data-ir="carta">Ver carta</a><a class="pill solid" href="#reservar" data-ir="reservar">Reservar</a></div>
         </div>
         <!-- Por debajo de la portada, el Inicio son cinco paneles a todo lo ancho: cada uno cuenta una
              cosa de Cokima y adelanta una sección. Mario los eligió entre tres maneras el 2026-11-02
@@ -122,6 +127,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
                 <h2 class="pan-tit">Puedes comer en cualquier sitio, pero será solo comer.</h2>
                 <p class="voz">Cokima es una explosión de sabor, un concepto creado para compartir y desfasar, mandanga de la buena.</p>
                 <p class="estado" data-estado></p>
+                <p class="pan-acc"><a class="pill" href="#carta" data-ir="carta">Ver la carta</a><a class="pill solid" href="#reservar" data-ir="reservar">Reservar mesa</a></p>
               </div>
             </div>
             <div class="pan" data-panel>
@@ -135,6 +141,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
                   <li><img src="/images/producto-picana.jpg" alt="Una picaña madurada abierta por la mitad" width="1100" height="1100" loading="lazy"><p>carne de animales que viven mejor que tú</p></li>
                   <li><img src="/images/producto-tomates.jpg" alt="Tres tomates apilados en unas manos con guantes negros" width="1100" height="1467" loading="lazy"><p>y verduras que saben a lo que tienen que saber.</p></li>
                 </ul>
+                <p class="pan-acc"><a class="pill" href="#carta" data-ir="carta">Ver la carta</a></p>
               </div>
             </div>
             <div class="pan" data-panel>
@@ -165,7 +172,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
                 <h2 class="pan-tit">Ven a conocernos y le dirás <i>ciao</i> a las croquetas de tu abuela.</h2>
                 <p class="pan-dato">Calle de Andrés Mellado, 21 · Argüelles, Madrid</p>
                 <p class="estado" data-estado></p>
-                <p class="pan-acc"><a class="pill solid" href="https://www.covermanager.com/reservation/module_restaurant/restaurante-cokima/spanish" target="_blank" rel="noopener">Reservar mesa</a><a class="pill" href="#visitanos" data-ir="visitanos">Cómo llegar y horario</a></p>
+                <p class="pan-acc"><a class="pill solid" href="#reservar" data-ir="reservar">Reservar mesa</a><a class="pill" href="#visitanos" data-ir="visitanos">Cómo llegar y horario</a></p>
               </div>
             </div>
           </div>
@@ -224,8 +231,25 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
               <dd><a class="enlace" href="https://www.google.com/maps/search/?api=1&amp;query=Calle%20de%20Andr%C3%A9s%20Mellado%2021%2C%2028015%20Madrid" target="_blank" rel="noopener">Cómo llegar ↗</a></dd></div>
             <div><dt>Cuándo</dt><dd>Lunes a domingo, 9:00–00:00</dd><dd>Cocina 13:00–16:00 y 19:30–23:30</dd><dd class="estado" data-estado></dd></div>
             <div><dt>Teléfono</dt><dd>+34 915 98 94 01</dd></div>
-            <div><dt>Reservas</dt><dd><a class="pill solid" href="https://www.covermanager.com/reservation/module_restaurant/restaurante-cokima/spanish" target="_blank" rel="noopener" style="margin-top:4px">Reservar mesa</a></dd></div>
+            <div><dt>Reservas</dt><dd><a class="pill solid" href="#reservar" data-ir="reservar" style="margin-top:4px">Reservar mesa</a></dd></div>
           </dl>
+        </div>
+        <div class="wrap"><footer class="pie"><a href="/aviso-legal">Aviso legal</a><a href="/privacidad">Privacidad</a><a href="/cookies">Cookies</a></footer></div>
+      </section>
+
+      <!-- ===== Reservar ===== -->
+      <!-- El motor de CoverManager dentro de la web, como en Ochoa (Mario, 2026-11-02), con la piel de
+           Brasa. Va en un <template>: brasa.js lo monta la primera vez que se abre esta sección, y así
+           el Inicio no llama a covermanager.com (docs/cokima-el-rediseno.md §3). No está en el menú de
+           secciones: se llega por los «Reservar». -->
+      <section class="vista" data-vista="reservar" data-nombre="Reservar" hidden>
+        <div class="wrap cab-vista reserva">
+          <div>
+            <p class="etq">Reservas</p>
+            <h2 class="tit">Reserva tu mesa</h2>
+            <p class="reserva-txt">Lunes a domingo, 9:00–00:00. Si no encuentras hueco, llámanos al <a href="tel:+34915989401">+34 915 98 94 01</a>.</p>
+          </div>
+          <template data-motor><BookingEmbed slug={COVER_SLUG} locale="es" title="Reservas Cokima" template={coverTemplate} /></template>
         </div>
         <div class="wrap"><footer class="pie"><a href="/aviso-legal">Aviso legal</a><a href="/privacidad">Privacidad</a><a href="/cookies">Cookies</a></footer></div>
       </section>

@@ -1,7 +1,8 @@
 /* Brasa: la web de Cokima desde el 2026-10-31 (docs/cokima-el-rediseno.md §3).
-   Es el boceto que eligió Mario, pasado tal cual: el lecho de brasas de fondo, la Bricolage fina
-   en los títulos y la Cormorant en la voz; cuatro secciones —Inicio, La carta, Nosotros y
-   Visítanos— en una sola página, y en La carta la foto de un plato abre cada parte, con todos
+   Es el boceto que eligió Mario: de fondo, chispas de brasa que suben (eran un lecho de brasas hasta
+   el 2026-11-02); la Bricolage fina en los títulos y la Cormorant en la voz; cuatro secciones
+   —Inicio, La carta, Nosotros y Visítanos—, y Reservar, en una sola página; y en La carta la foto
+   de un plato abre cada parte, con todos
    debajo (Mario eligió esa manera entre tres el 2026-11-02).
    Colores, letras, curva y duraciones salen de tokens.css. Esta página no carga global.css, que
    es el de la web anterior: por eso declara aquí su letra y su apagado de movimiento. */
@@ -15,15 +16,14 @@ html,body{margin:0;background:var(--ground);color:var(--bone)}
 body{font:300 17px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:var(--sb)}
 img{max-width:100%;height:auto;display:block}
 a{color:inherit}
-/* El fondo es transparente donde no hay fuego, para que se vea lo de detrás: el suelo, o el vídeo
-   en la portada. El degradado es el respaldo si no hay WebGL; con él, brasa.js pone .viva y se va. */
-.fondo{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block;
-  background:radial-gradient(120% 60% at 50% 110%,#5a1606 0%,#2a0b05 40%,transparent 75%)}
-.fondo.viva{background:none}
+/* El fondo son chispas de brasa que suben (brasa.js; antes, el lecho de brasas de Rescoldo, hasta el
+   2026-11-02). Es transparente donde no hay chispa, para que se vea lo de detrás: el suelo, o el vídeo
+   en la portada. Sin WebGL no hay respaldo: se queda el suelo, que el fuego pintado ya no se pide. */
+.fondo{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
 main{position:relative;z-index:1}
-/* El vídeo de la entrada detrás de la portada, debajo del fuego: un punto oscurecido entero y mucho
-   más abajo, hasta el suelo, para que el lecho de brasas se pinte encima de lo más oscuro. Se va
-   con la portada al bajar y no está en las otras secciones. */
+/* El vídeo de la entrada detrás de la portada, debajo de las chispas: un punto oscurecido entero y
+   mucho más abajo, hasta el suelo, donde nacen más. Se va con la portada al bajar y no está en las
+   otras secciones. */
 .cine{position:absolute;top:0;left:0;right:0;height:100svh;z-index:0;overflow:hidden;pointer-events:none}
 .cine img,.cine video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .cine video{opacity:0;transition:opacity var(--dur-in) var(--ease)}
@@ -202,6 +202,13 @@ main{position:relative;z-index:1}
 .datos dd+dd{margin-top:4px}
 .datos .enlace{display:inline-block;margin-top:8px;font:500 .9rem/1 var(--sans);color:var(--ember);text-decoration:none;border-bottom:1px solid rgba(255,154,82,.4);padding-bottom:3px}
 .datos .estado{margin-top:10px}
+/* ===== Reservar (2026-11-02) =====
+   El motor de CoverManager dentro de la web, como en Ochoa, con la piel de Brasa (/covermanager.css).
+   En el ordenador, el texto y el recuadro juntos; el recuadro con tope, como en Ochoa: el motor pasa
+   a dos columnas hacia los 777px. */
+.reserva{display:grid;gap:32px}
+.reserva-txt{margin:18px 0 0;max-width:38ch;font:300 1.05rem/1.55 var(--sans);color:var(--bone-2)}
+.reserva-txt a{color:var(--bone);white-space:nowrap}
 .pie{margin-top:clamp(80px,14vh,140px);padding-block:22px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px 22px;font:400 .8rem/1.4 var(--sans);color:var(--bone-3)}
 
 .rv{opacity:0;transform:translateY(22px);transition:opacity var(--dur-revela) var(--ease),transform var(--dur-revela) var(--ease)}
@@ -237,4 +244,5 @@ main{position:relative;z-index:1}
   .relato.der .txt{grid-column:2/7}
   .relato img{-webkit-mask-image:radial-gradient(closest-side,#000 60%,transparent 100%);mask-image:radial-gradient(closest-side,#000 60%,transparent 100%)}
   .visita{grid-template-columns:7fr 5fr;gap:56px;align-items:center}
+  .reserva{grid-template-columns:minmax(0,1fr) minmax(0,44rem);column-gap:clamp(40px,5vw,96px);align-items:start}
 }

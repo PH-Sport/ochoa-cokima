@@ -1,0 +1,579 @@
+/* La piel de Cokima para el motor de reservas de CoverManager: el motor, en Brasa.
+
+   Es la gemela de la de Ochoa (`apps/ochoa/src/styles/covermanager.css`), y lo
+   que se sabe del motor está contado allí con sus medidas: entra por
+   `?template=` (BookingEmbed), el motor la enlaza la última del <head> —detrás
+   de Bootstrap 3, jQuery UI 1.10 y sus estilos en línea— y, si un día retiran
+   el parámetro, el motor vuelve a su aspecto de serie y sigue reservando. Las
+   reglas que vienen de allí llevan «(como Ochoa)» y el porqué en corto. No se
+   sirve tal cual: `pages/covermanager.css.ts` le antepone la `@font-face` de la
+   Bricolage y `tokens.css`, así que todo valor de aquí sale de los mismos
+   tokens que Brasa.
+
+   Lo que es solo de Cokima, medido inyectando la hoja en el motor real
+   (`restaurante-cokima`) el 2026-11-02:
+
+   - El motor es claro de serie y Brasa es oscura. Ochoa cambia colores sobre un
+     fondo que ya era claro; aquí hay que darle la vuelta, y todo lo que el
+     motor pinta en claro con la letra heredada saldría hueso sobre blanco. Por
+     eso se oscurecen también piezas que no están en el primer paso: los
+     desplegables del teléfono, las tablas y el diálogo de jQuery UI.
+   - La flecha de los desplegables es un PNG negro de los estilos en línea del
+     motor, y sobre el suelo no se ve: se dibuja con dos degradados, en hueso.
+   - Movimiento: solo `transform` y `opacity` (movimiento.md, regla 2).
+     Bootstrap anima el borde y la sombra de los campos, y eso se apaga.
+   - «Personas» y «Hora» van uno debajo del otro, como «Zona» (`#extra_box`),
+     que el motor de Cokima pide además: lado a lado, el texto no cabía en la
+     píldora a 347px (la medida, junto a la regla).
+   - No lleva el `zoom` de Ochoa para pantallas grandes: allí lo pide el ancho
+     que su página de reservas da al iframe (hasta 66rem). Si el recuadro de
+     Cokima pasa de ~780px, se copia igual; BookingEmbed ya mide el alto con
+     `lowestElement`, que es lo que el `zoom` necesita. */
+
+/* Bootstrap 3 fija `html { font-size: 10px }` y cada `rem` mediría 10px (como
+   Ochoa). Bootstrap no usa `rem`, así que esto solo toca lo nuestro. */
+html {
+  font-size: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Transparente para que se vea el recuadro que lo rodea (`--t-surface` en
+   BookingEmbed). Funciona porque las dos páginas declaran `color-scheme: dark`
+   —tokens.css va en esta misma hoja—; si no coincidieran, el navegador pintaría
+   el iframe opaco. La letra es la del cuerpo de Brasa: Bricolage fina. */
+body {
+  background: transparent;
+  color: var(--bone);
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a,
+a:hover,
+a:focus {
+  color: var(--bone);
+  text-decoration: underline;
+  text-decoration-color: var(--bone-3);
+  text-underline-offset: 0.2em;
+}
+a:hover {
+  text-decoration-color: var(--bone);
+}
+
+hr {
+  border-top-color: var(--line);
+}
+
+/* Las etiquetas de los campos hablan como las `.etq` de Brasa: versal pequeña,
+   espaciada, en brasa. */
+label {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.66rem;
+  line-height: 1.2;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 8px;
+}
+/* La frase de la lista de espera es una etiqueta para el motor, pero se lee
+   como una frase: en versales sería un grito de tres líneas (como Ochoa). */
+#waiting_button_list label {
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.45;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--bone-2);
+}
+
+/* --- Campos ------------------------------------------------------------- */
+
+/* Lo que se pulsa en Cokima es píldora (tokens.css, CURVATURA), y un campo se
+   pulsa. El fondo es el suelo hondo, un escalón por debajo del recuadro, y el
+   borde va en hueso al 48% (`--bone-3`): con el 32% de la `.pill` de Brasa el
+   borde se queda en 2,6:1 contra el recuadro, por debajo del 3:1 que necesita
+   un campo para verse; al 48% da 4,3:1. A 16px, que por debajo Safari de iPhone
+   amplía la página al tocarlos (como Ochoa). */
+.form-control,
+.bootstrap-select button.btn.dropdown-toggle.btn-default {
+  height: 48px;
+  padding: 0 18px;
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--bone);
+  background-color: var(--ground);
+  border: 1px solid var(--bone-3);
+  border-radius: var(--r-control);
+  box-shadow: none;
+  transition: none;
+}
+.form-control::placeholder {
+  color: var(--bone-3);
+  opacity: 1;
+}
+.form-control:focus,
+.bootstrap-select button.btn.dropdown-toggle.btn-default:focus {
+  border-color: var(--bone);
+  box-shadow: none;
+  outline: none;
+}
+.form-control:focus-visible {
+  outline: 2px solid var(--ember);
+  outline-offset: 2px;
+}
+/* Bootstrap pinta los campos apagados en gris claro, y con la letra en hueso no
+   se leerían. */
+.form-control[disabled],
+.form-control[readonly] {
+  color: var(--bone-3);
+  background-color: var(--ground-2);
+}
+textarea.form-control {
+  height: auto;
+  min-height: 96px;
+  padding: 12px 18px;
+  border-radius: var(--r-caja);
+}
+
+/* La flecha de serie es un PNG negro (estilos en línea del motor) y sobre el
+   suelo no se ve. Se dibuja un triángulo con dos degradados, en hueso. El
+   relleno de la derecha le deja sitio; el motor pone el suyo en `em` con un
+   selector igual de concreto, por eso va con `select`. */
+select.form-control {
+  padding: 0 44px 0 18px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--bone-2) 50%),
+    linear-gradient(135deg, var(--bone-2) 50%, transparent 50%);
+  background-position:
+    calc(100% - 25px) 50%,
+    calc(100% - 20px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+/* La lista que se abre es del sistema; donde la pinta el navegador (Windows,
+   Linux), toma estos colores. */
+select.form-control option {
+  color: var(--bone);
+  background-color: var(--ground-2);
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--ember);
+}
+
+/* El prefijo del teléfono es un bootstrap-select: un `div.form-control` que
+   envuelve un botón con la misma pinta. El campo es el botón; el envoltorio no
+   pinta nada. */
+.bootstrap-select.form-control {
+  height: auto;
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+/* Su columna mide ~108px a 390, y con el relleno de los campos el triángulo
+   de bootstrap-select (a 12px del borde) pisaba el nombre del país. Se le hace
+   sitio a la derecha y se aparta de la curva de la píldora. El nombre se corta
+   igual que de serie: no cabe en esa columna. */
+.bootstrap-select button.btn.dropdown-toggle.btn-default {
+  padding: 0 30px 0 14px;
+}
+.bootstrap-select.btn-group .dropdown-toggle .caret {
+  right: 14px;
+}
+/* Y su lista es un `.dropdown-menu` de Bootstrap, blanco de serie. */
+.dropdown-menu {
+  background-color: var(--ground-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-caja);
+  box-shadow: var(--t-shadow);
+}
+.dropdown-menu > li > a {
+  color: var(--bone);
+  text-decoration: none;
+}
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus,
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:hover,
+.dropdown-menu > .active > a:focus {
+  color: var(--bone);
+  background-color: var(--ground-3);
+}
+
+/* --- Botones ------------------------------------------------------------ */
+
+/* Todos los botones del motor son `input` o `button` con `.form-control`, sin
+   clase que diga cuál es el principal (como Ochoa). Por defecto, cualquiera es
+   la `.pill` de Brasa en hueco: así también los que no tienen id («Salir»,
+   «Volver»). El hundido al pulsar es una escala, que se queda en `transform`;
+   no va en un `@media (hover)` porque es la única respuesta al dedo, aunque en
+   Safari de iPhone `:active` puede no acusarlo: el `data-tacto` de las webs no
+   entra en el iframe (movimiento.md, regla 7). */
+input[type="button"].form-control,
+button.form-control {
+  height: 48px;
+  padding: 0 24px;
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--bone);
+  background-color: transparent;
+  border: 1px solid var(--bone-3);
+  border-radius: var(--r-control);
+  cursor: pointer;
+  transition: transform var(--dur-out) var(--ease);
+}
+input[type="button"].form-control:active,
+button.form-control:active {
+  transform: scale(0.98);
+}
+@media (hover: hover) {
+  input[type="button"].form-control:hover,
+  button.form-control:hover {
+    border-color: var(--bone);
+  }
+}
+
+/* El principal es la `.pill.solid`: hueso con la letra en el suelo. Se nombran
+   por `.reservarButton` —el «Reservar» del primer paso y del segundo,
+   «Apuntarse», «Solicitar»— o por su id. Al pasar por encima baja la opacidad
+   y no el color, que es lo único que se puede animar aquí. `#btn-validate`
+   trae `height: auto` del motor con un id: el alto lo asegura `min-height`.
+   El fondo va en `background-color` y no en `background` para no tapar la
+   rueda de «enviando» que el motor pone en la imagen del botón apagado. */
+input[type="button"].reservarButton,
+button.reservarButton,
+#finish_reserv_system,
+#button_search_email {
+  height: 48px;
+  min-height: 48px;
+  padding: 0 24px;
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ground);
+  background-color: var(--bone);
+  border: 1px solid var(--bone);
+  border-radius: var(--r-control);
+  box-shadow: none;
+  cursor: pointer;
+  transition:
+    opacity var(--dur-out) var(--ease),
+    transform var(--dur-out) var(--ease);
+}
+input[type="button"].reservarButton:active,
+button.reservarButton:active,
+#finish_reserv_system:active,
+#button_search_email:active {
+  transform: scale(0.98);
+}
+@media (hover: hover) {
+  input[type="button"].reservarButton:hover,
+  button.reservarButton:hover,
+  #finish_reserv_system:hover,
+  #button_search_email:hover {
+    color: var(--ground);
+    background-color: var(--bone);
+    opacity: 0.86;
+  }
+}
+input[type="button"].form-control:focus-visible,
+button.form-control:focus-visible,
+#button_search_email:focus-visible {
+  outline: 2px solid var(--ember);
+  outline-offset: 2px;
+}
+
+/* --- Calendario (jQuery UI) -------------------------------------------- */
+
+/* jQuery UI pinta en claro todo lo suyo —el calendario y el diálogo del texto
+   legal— con la letra casi negra. Se pasa al suelo de Brasa entero. */
+.ui-widget-content {
+  color: var(--bone);
+  background: var(--ground-2);
+  border-color: var(--line);
+}
+.ui-widget-header {
+  color: var(--bone);
+  background: transparent;
+  border-color: var(--line);
+}
+.ui-dialog .ui-dialog-titlebar-close {
+  background: transparent;
+  border-color: var(--line);
+}
+
+/* A todo el ancho de su columna, que de serie mide 17em y se queda más
+   estrecho que los campos (como Ochoa). Es un panel hundido como los campos:
+   el suelo hondo y la línea de Brasa. */
+.ui-datepicker.ui-widget-content {
+  width: 100%;
+  container-type: inline-size;
+  font-family: var(--sans);
+  background: var(--ground);
+  border: 1px solid var(--line);
+  border-radius: var(--r-panel);
+  padding: 6px 10px 10px;
+}
+
+.ui-datepicker .ui-datepicker-header {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  padding: 10px 0 12px;
+}
+/* El mes es el único titular del motor, y va como los títulos de Brasa:
+   Bricolage fina y sin versales. Crece y encoge con el calendario, que es el
+   contenedor (`cqi`, como Ochoa), para que «Septiembre 2026» —el mes más largo—
+   no toque las flechas en media columna: con un suelo de 18px se quedaba a
+   0,4px de la caja de la flecha con el iframe a 560 (calendario de 235px); con
+   7cqi y suelo de 16px queda a 9,6px, y a 4,6 en el caso más estrecho, 540.
+   La caja mide 34px con el galón de 9 en medio, así que a la vista sobra.
+   El margen es fijo y no los 2.3em de jQuery UI, que en `em` del propio título
+   se comían el sitio del mes. */
+.ui-datepicker .ui-datepicker-title {
+  font-family: var(--sans);
+  font-weight: 200;
+  font-size: clamp(1rem, 7cqi, 1.6rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--bone);
+  margin: 0 36px;
+}
+
+/* Las flechas de serie son dos círculos del sprite de jQuery UI. Se cambian
+   por un galón dibujado con dos bordes, fino como la letra. */
+.ui-datepicker .ui-datepicker-prev,
+.ui-datepicker .ui-datepicker-next {
+  top: 50%;
+  margin-top: -0.9em;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.ui-datepicker .ui-datepicker-prev-hover,
+.ui-datepicker .ui-datepicker-next-hover {
+  top: 50%;
+  border: 0;
+  background: transparent;
+}
+.ui-datepicker .ui-datepicker-prev-hover {
+  left: 2px;
+}
+.ui-datepicker .ui-datepicker-next-hover {
+  right: 2px;
+}
+.ui-datepicker .ui-datepicker-prev .ui-icon,
+.ui-datepicker .ui-datepicker-next .ui-icon {
+  width: 9px;
+  height: 9px;
+  margin-top: -4.5px;
+  margin-left: -4.5px;
+  background: none;
+  border: solid var(--bone-2);
+  border-width: 0 0 1.5px 1.5px;
+}
+.ui-datepicker .ui-datepicker-prev .ui-icon {
+  transform: translateX(2px) rotate(45deg);
+}
+.ui-datepicker .ui-datepicker-next .ui-icon {
+  transform: translateX(-2px) rotate(-135deg);
+}
+.ui-datepicker .ui-datepicker-prev-hover .ui-icon,
+.ui-datepicker .ui-datepicker-next-hover .ui-icon {
+  border-color: var(--bone);
+}
+
+.ui-datepicker th {
+  font-weight: 500;
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bone-2);
+  padding: 12px 0 6px;
+}
+
+/* Cada día es una chapa redonda: lo que se pulsa es píldora, y un cuadrado con
+   radio de píldora es un círculo. `aspect-ratio` la deja redonda aunque la
+   celda encoja, y el tope de 2.6em impide que se estire en una barra cuando el
+   calendario es ancho, que es lo que le pasaba a Ochoa con la celda a 80px.
+   Va dentro del calendario y no en todo `.ui-widget-content`, que también es
+   el diálogo y su botón de cerrar. */
+.ui-datepicker td {
+  padding: 2px;
+}
+.ui-datepicker td .ui-state-default {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 2.6em;
+  aspect-ratio: 1;
+  margin: 0 auto;
+  padding: 0;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-align: center;
+  color: var(--bone);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--r-control);
+}
+/* El motor oscurece el día bajo el ratón con un gris; aquí solo se marca el
+   borde. */
+.ui-datepicker td a.ui-state-default:hover {
+  background: transparent;
+  border-color: var(--bone-3);
+}
+/* Hoy, si se puede reservar: un aro fino, sin relleno. */
+.ui-datepicker td .ui-state-highlight {
+  border-color: var(--bone-3);
+}
+/* El día elegido: la `.pill.solid` de Brasa en pequeño. El `!important` es el
+   del motor, que lo usa para su gris (como Ochoa). */
+.ui-widget-content .ui-state-active,
+.ui-widget-content a.ui-state-active,
+a.ui-state-active,
+.ui-datepicker td a.ui-state-active,
+.ui-datepicker td a.ui-state-active:hover {
+  color: var(--ground);
+  background-color: var(--bone) !important;
+  border-color: var(--bone);
+  font-weight: 500;
+}
+/* Los días que no se pueden reservar se quedan a la vista pero apagados: la
+   opacidad de serie de jQuery UI basta y se respeta. */
+.ui-datepicker .ui-state-disabled .ui-state-default {
+  font-weight: 300;
+}
+/* Los días del mes anterior y del siguiente, el motor los esconde a propósito
+   y la regla de las chapas los devolvía (como Ochoa). */
+.ui-datepicker .ui-datepicker-other-month .ui-state-default {
+  color: transparent;
+}
+/* Días cerrados y completos: el motor los pinta en negro y en rosa, con
+   `!important`. El negro sobre el suelo abre un agujero. Se apagan como los que
+   no se pueden reservar, y el completo conserva un aro discontinuo para no
+   confundirse con el cerrado. El 2026-11-02 el calendario de Cokima no tenía
+   ninguno (de noviembre a enero): se han visto forzando la clase, no en un
+   día real. */
+.close_date a,
+.complete a {
+  color: var(--bone-3) !important;
+  background-color: transparent !important;
+}
+.ui-datepicker td.complete a {
+  border: 1px dashed var(--bone-3);
+}
+
+/* «Personas» y «Hora» van siempre uno debajo del otro, como «Zona». El motor
+   los pone lado a lado, y a 347px de iframe cada uno mide 128px: con el
+   relleno de la píldora y el sitio del triángulo, «2 personas» (84px de
+   texto) salía «2 person» y «Seleccione», «Seleccio». Ochoa los apila solo en
+   media columna porque sus campos cuadrados tienen menos relleno. */
+#personas_box,
+#hour_box {
+  width: 100%;
+}
+/* En una columna, los campos van dentro de dos columnas de Bootstrap anidadas
+   y el calendario dentro de una sola: sin esto sobresale 15px por cada lado
+   respecto a los campos (como Ochoa). */
+@media (max-width: 539px) {
+  #date_box {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+/* Desde 540px de iframe, calendario y campos a medias: el motor no pasa a dos
+   columnas hasta los 768px de Bootstrap, y entre medias el calendario se
+   estiraba (como Ochoa, donde está medido). */
+@media (min-width: 540px) {
+  #date_box,
+  #date_box + div {
+    float: left;
+    width: 50%;
+  }
+  /* Los campos llevan dos rellenos de 15px hasta el borde derecho y el
+     calendario solo uno hasta el izquierdo: se iguala a 30. */
+  #date_box {
+    padding-left: 30px;
+  }
+}
+
+/* --- Avisos, textos y tablas ------------------------------------------- */
+
+/* La cuenta atrás de «dispones de X minutos para finalizar la reserva»:
+   Bootstrap la pinta azul claro. */
+.alert-info {
+  color: var(--bone);
+  background: var(--ground-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-caja);
+}
+
+.legal_notice,
+.legal_notice p,
+.legal_notice td,
+.legal_notice th {
+  font-size: 0.8rem;
+  color: var(--bone-2);
+}
+
+/* Lo que el motor deja en claro o en oscuro fijo y, con la piel, quedaría
+   ilegible: las filas de sus tablas (otros restaurantes del grupo), el carrito
+   en negro y el saludo de la ficha en gris oscuro. */
+.table > thead > tr > th,
+.table > tbody > tr > td {
+  border-color: var(--line);
+}
+.table-striped > tbody > tr > td {
+  background-color: transparent;
+}
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: var(--ground-3);
+}
+#shopping-cart,
+.title_name_of {
+  color: var(--bone);
+}
+.boxUser {
+  border-color: var(--line);
+}
+
+/* La firma de CoverManager se queda: es su motor. Va al tamaño del pie de Brasa
+   (`.pie`), pero un escalón más clara: con `--bone-3`, el del pie, se quedaba
+   en 4,3:1 sobre el recuadro, por debajo del 4,5 que pide un texto de 13px. */
+#logoCoverAdd {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--bone-2);
+}
+#logoCoverAdd a {
+  color: var(--bone);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* El apagado de movimiento: esta hoja vive en otro documento y no le llega el
+   de brasa.css. */
+@media (prefers-reduced-motion: reduce) {
+  input[type="button"].form-control,
+  button.form-control,
+  #finish_reserv_system,
+  #button_search_email {
+    transition: none;
+  }
+}

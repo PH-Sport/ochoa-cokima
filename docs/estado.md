@@ -57,7 +57,12 @@ fija y cada tramo de scroll abre el siguiente; tocar uno lo abre y lleva la pág
 pasan solos. En el móvil, para caber, las bandas cerradas son más finas y los imprescindibles van sin
 descripción; en los móviles pequeños no cabe y siguen abriéndose al tocarlos. Medido en siete
 tamaños y los dos motores; **sin mirar en un iPhone, donde puede que no se fije**
-(`cokima-el-rediseno.md` §3, «Se abren al bajar»).
+(`cokima-el-rediseno.md` §3, «Se abren al bajar»). **Por la noche, cuatro cosas más que pidió:**
+los dos primeros paneles llevan botones; **Reservar es una sección de Brasa con el motor de
+CoverManager dentro**, con la piel de la casa, como en Ochoa, y ya no se sale a su página; y el
+fondo ya no es el fuego sino **chispas de brasa que suben**. La cuarta, la carta siempre a la vista
+en el móvil, **no cabe en la barra sin quitar el nombre de la sección del desplegable**, y eso
+espera a Mario (`cokima-el-rediseno.md` §3, «Reservar dentro, chispas y la carta a mano»).
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las
@@ -171,6 +176,12 @@ en `ochoa-inicio-vivo.md` §3.7.
   iPhone: si la zona se queda fija al bajar o se abren tocando**, que no se ha podido medir con las
   barras de Safari; y si el tramo de scroll de cada panel se hace corto o largo. Después vienen
   Nosotros y Visítanos, sobre la misma dirección.
+- **Decidir cómo va «Carta» en la barra del móvil**: cabe si la marca abre el menú y el desplegable
+  deja de decir en qué sección estás (`cokima-el-rediseno.md` §3, «Reservar dentro, chispas y la
+  carta a mano»).
+- **Abrir Reservar en `preview`, en el ordenador y en su iPhone**, y ver que el motor sale con la
+  piel de Brasa: en el navegador de pruebas no se deja cargar (403), y la piel solo la enlaza desde
+  el despliegue. Y decir si las chispas del fondo se quedan así de sutiles.
 - **Contar de dónde viene Cokima:** quién está detrás y desde cuándo. Es lo que le falta a Nosotros
   para tener historia y no solo concepto; ni el repo ni la web del grupo lo dicen.
 - **Ver en su móvil el desplegable de secciones y el viaje de «Reservar»**, y seguir iterando
@@ -456,7 +467,7 @@ qué más acepta, en `recursos.md` §2). La hoja es `/covermanager.css`, que sir
 `apps/ochoa/src/pages/covermanager.css.ts` juntando las dos `@font-face`, `tokens.css` y la piel de
 `src/styles/covermanager.css`: ni un color ni una duración sueltos. `BookingEmbed` gana la prop
 `template` (sin marca: la URL la pone cada casa), y la usan las dos páginas de reservas de Ochoa;
-**Cokima no**. Lo que se ve: Archivo en todo, el mes en Anton rojo con sombra, el día elegido como
+**Cokima también desde el 2026-11-02**, en la sección Reservar de Brasa, con su piel propia. Lo que se ve: Archivo en todo, el mes en Anton rojo con sombra, el día elegido como
 chapa roja, campos con borde de tinta y a 16px (por debajo, Safari de iPhone amplía al tocarlos),
 «Reservar» como el `.btn` de la casa y «Lista de espera» como su fantasma; la firma de CoverManager
 se queda. **Medido** inyectando la hoja construida en la página real del motor: a 347px el
