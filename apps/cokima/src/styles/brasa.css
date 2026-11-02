@@ -60,6 +60,16 @@ main{position:relative;z-index:1}
 .oculta{opacity:0;pointer-events:none}
 .barra.oculta{transform:translateY(-10px)}
 .pestanas.oculta{transform:translate(-50%,12px)}
+/* El viajero (2026-11-02): al cruzar el límite de la portada, «Reservar» y «Ver carta» no se apagan
+   en un sitio para salir en otro, viajan. Lo que se mueve es una copia sin función, por encima de
+   todo, y las piezas de verdad esperan en .vuela hasta que llega: nunca hay dos «Reservar» a la vez.
+   La cápsula se recorta con clip-path y no se escala, porque una píldora escalada en dos ejes deforma
+   sus puntas y la letra con ellas. brasa.js, «El viaje». */
+.viajero{position:fixed;left:0;top:0;z-index:7;display:grid;place-items:center;pointer-events:none;will-change:transform}
+.viajero[hidden]{display:none}
+.viajero .cap,.viajero .aro{position:absolute;inset:0}
+.viajero span{grid-area:1/1;white-space:nowrap}
+.vuela{opacity:0}
 
 .vista{transition:opacity var(--dur-in) var(--ease),transform var(--dur-in) var(--ease)}
 .vista.saliendo{opacity:0;transition-duration:var(--dur-out)}

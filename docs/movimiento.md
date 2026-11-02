@@ -1,6 +1,6 @@
 # Movimiento
 
-> **Estado: vivo** · revisado 2026-10-30
+> **Estado: vivo** · revisado 2026-11-02
 
 Pocas animaciones, concretas, y todas saliendo de los mismos cinco valores. **No hay un solo
 milisegundo suelto en los componentes**: si algo se mueve, su duración y su curva vienen de
@@ -49,6 +49,14 @@ salen de aquí:
 | `--espera-firma` | `700ms` | El **retardo** de la recogida de la entrada, contado desde el arranque —no una duración—. Deja 420ms de rótulo quieto y entero después de la firma. |
 | `--dur-recogida` | `700ms` | Lo que la plancha de la entrada tarda en **recogerse hasta ser la barra**. No sale de `--dur-in`: ese mide un panel que aparece y esto recorre la pantalla entera. |
 | `--tuerce` | `4deg` | Cuánto se **tuerce** lo que llega antes de encajar. Es a la rotación lo que `--shift` es al desplazamiento: la medida de un gesto. Un rótulo de bar se monta pieza a pieza y nunca queda a plomo. |
+
+**Tres más, solo en Cokima**, para Brasa:
+
+| Token | Cokima | Para qué |
+|---|---|---|
+| `--dur-revela` | `1100ms` | Lo que **aparece al bajar**: lento a propósito, como sube una brasa. |
+| `--dur-viaje` | `640ms` | Lo que tardan «Reservar» y «Ver carta» en **viajar entre la portada y la barra** (2026-11-02). |
+| `--ease-viaje` | `cubic-bezier(0.45, 0.02, 0.55, 1)` | La curva de ese viaje, que cruza de 280 a 670 px: la forma de `--ease-telon` (regla 9). |
 
 Y una escala de curvatura, que no es movimiento pero sigue la misma disciplina de no escribir
 números sueltos en los componentes: `--r-chapa` 4px, `--r-btn` 7px, `--r-caja` 9px, `--r-marco`
@@ -469,6 +477,19 @@ más lejos; Ochoa es una tasca y es seca.
     `top` contra la de dentro, así que allí sobran 15,5 px por arriba y 20 por abajo (Chromium:
     15,5 y 15,5). `paralaje.ts` mide lo que sobra por cada lado, sin el desplazamiento puesto, al
     montar y cada vez que la sección cambia de tamaño.
+30. **Un token que se lee desde JavaScript se lee al usarlo y con su unidad.** Dos trampas que no
+    dan ningún error, cazadas el 2026-11-02 en el viaje de los botones de Brasa. **La primera: el
+    build reescribe las duraciones.** `640ms` llega a la página como `.64s`, y `180ms` como `.18s`,
+    así que `parseFloat` devuelve 0,64 y 0,18: milisegundos donde había segundos. **La segunda:
+    WebKit devuelve las variables vacías mientras carga la página.** `brasa.js` las leía al
+    arrancar (`document.readyState` en `interactive`) y en WebKit salían `""`, así que el viaje caía
+    en su valor de reserva y en una curva lineal; Chromium sí las devolvía, pero en segundos. Las
+    dos se taparon una a la otra: en el iPhone la reserva escondía el error de unidad. Ochoa no las
+    sufre porque `leeDuracion` (`compas.ts`) mira la unidad y lee en `astro:page-load`. **Brasa lee
+    `--dur-viaje` y `--ease-viaje` al empezar cada viaje, con la unidad.** Sigue afectado el
+    cambio de sección de Brasa, que lee `--dur-out` al arrancar: en Chromium no espera al fundido
+    de salida —medido: a los 60 ms del clic la sección vieja ya está escondida; en WebKit, no—.
+    Pendiente de que Mario diga si se arregla.
 
 ## Qué se mueve hoy
 
@@ -491,6 +512,7 @@ más lejos; Ochoa es una tasca y es seca.
 | Rueda de platos (Ochoa, solo ordenador) | «Los que destacan»: seis tarjetas a la vista; cada turno la fila se corre una hacia la derecha, entra por la izquierda la que esperaba fuera y sale la sexta, sin fin | `transform`, `--dur-turno`, `--desfase-turno`, `--dur-rueda`, `--ease-telon`; con `compas.ts`; con media fila a la vista y la pestaña delante; espera con el ratón encima y se para para siempre con un clic, las flechas o un gesto; quieta con «reducir movimiento»; las fotos de fuera se piden al montarla (regla 28) |
 | Mazo de platos (Ochoa, solo móvil) | La de delante sale por la izquierda torciéndose y vuelve al fondo; deslizando a la derecha, la anterior entra por la izquierda por encima, en la mitad del tiempo; el turno se rellena | `transform` + `opacity`, `--dur-turno`, `--desfase-turno`, `--dur-baraja`, `--ease-telon`; `scaleX`; se apaga con un toque o una carta pasada, no al bajar con el dedo encima. En el móvil tumbado no hay mazo: la tira de fichas que se desliza |
 | Portada | El titular se aparta del cartel de cookies | `translateY`, `--dur-out` |
+| Portada de Brasa (Cokima) | Al pasar el 60% de la pantalla, «Reservar» y «Ver carta» viajan hasta la barra cambiando de tamaño —«Ver carta» se vuelve «La carta»: la del menú de arriba en el ordenador; en el móvil, la de la barra de abajo, que se abre desde ella—, y vuelven al subir por debajo del 50% | un viajero desde `brasa.js`: `transform` y `clip-path` en el mismo fotograma (regla 27), `--dur-viaje`, `--ease-viaje`; parte de donde va si se cruza de vuelta; directo con «reducir movimiento», en un salto largo o al cambiar de sección |
 | Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |
 | Entrada (Cokima) | Una chispa baja por un riel, avisando de que hay más | `stroke-dashoffset`, 3,2s |
 | Entrada (Cokima) | La cabecera, el cartel de cookies y el aviso entran al deslizar | `opacity` + `visibility`, `--dur-in` / `--dur-out` |

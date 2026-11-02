@@ -167,11 +167,121 @@
   };
   document.addEventListener("click", (e) => { const a = e.target.closest("[data-ir]"); if (!a) return; e.preventDefault(); ir(a.dataset.ir); });
 
+  // El viaje (2026-11-02). Al pasar el límite de la portada, «Reservar» y «Ver carta» viajan hasta su
+  // sitio en la barra —«Ver carta» se vuelve «La carta»: la del menú de arriba en el ordenador; en el
+  // móvil, la de la barra de abajo, que se abre desde ella— y vuelven al subir. Lo que se mueve es un
+  // viajero: sale de donde está la pieza que se va y llega a donde está la que viene, leída en cada
+  // fotograma, porque al subir la portada sigue corriendo con el scroll. Posición, forma y letra se
+  // calculan en el mismo requestAnimationFrame (regla 27 de movimiento.md), con la curva y la
+  // duración de tokens.css. Si se cruza de vuelta a medio viaje, parte de donde va. Sin movimiento,
+  // o si lo que se va ya no está en pantalla (un salto), el cambio es directo, como antes.
+  // Los dos tokens se leen al empezar cada viaje, no al cargar, y con su unidad: el build reescribe
+  // 640ms como .64s, y WebKit los devuelve vacíos mientras carga la página (regla 30 de movimiento.md).
+  const token = (t) => getComputedStyle(document.documentElement).getPropertyValue(t).trim();
+  const leeMs = (t) => { const v = token(t); return v.endsWith("ms") ? parseFloat(v) : parseFloat(v) * 1000; };
+  const leeCurva = (t) => {
+    const n = (token(t).match(/cubic-bezier\(([^)]+)\)/)?.[1] || "").split(",").map(Number);
+    if (n.length !== 4 || n.some((x) => !Number.isFinite(x))) return null;
+    const b = (a1, a2, t) => 3 * a1 * t * (1 - t) ** 2 + 3 * a2 * t * t * (1 - t) + t ** 3;
+    return (x) => { let lo = 0, hi = 1, t = x; for (let i = 0; i < 24; i++) { t = (lo + hi) / 2; if (b(n[0], n[2], t) < x) lo = t; else hi = t; } return b(n[1], n[3], t); };
+  };
+  const suave = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  const medir = (e) => { const r = e.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; };
+  // Una píldora como trazo: el sentido contrario hace de agujero, y así el aro sale sin evenodd.
+  const estadio = (x, y, w, h, contra) => {
+    const r = Math.min(w, h) / 2, f = (v) => v.toFixed(2);
+    return contra
+      ? `M${f(x + r)} ${f(y)}A${f(r)} ${f(r)} 0 0 0 ${f(x + r)} ${f(y + h)}H${f(x + w - r)}A${f(r)} ${f(r)} 0 0 0 ${f(x + w - r)} ${f(y)}Z`
+      : `M${f(x + r)} ${f(y)}H${f(x + w - r)}A${f(r)} ${f(r)} 0 0 1 ${f(x + w - r)} ${f(y + h)}H${f(x + r)}A${f(r)} ${f(r)} 0 0 1 ${f(x + r)} ${f(y)}Z`;
+  };
+  const copiar = (s, de, c) => { s.textContent = de.textContent.trim(); s.style.font = `${c.fontStyle} ${c.fontWeight} ${c.fontSize}/1 ${c.fontFamily}`; s.style.letterSpacing = c.letterSpacing; s.style.color = c.color; };
+  const transparente = (c) => c === "transparent" || /rgba\(.*,\s*0\)$/.test(c);
+  const viaje = (portada, enBarra) => {
+    const v = el("div", "viajero"), cap = el("span", "cap"), aro = el("span", "aro"), lp = el("span"), lb = el("span");
+    v.setAttribute("aria-hidden", "true"); v.hidden = true; v.append(cap, aro, lp, lb); document.body.append(v);
+    // m: 0 es como está en la portada y 1 como está en la barra; de m sale todo lo que no es el sitio.
+    let anim = 0, m = 0, caja = null, tocados = [], abre = null;
+    const soltar = () => { if (abre) ["transition", "transform", "opacity", "clip-path"].forEach((p) => abre.style.removeProperty(p)); abre = null; };
+    const acabar = (aBarra) => {
+      cancelAnimationFrame(anim); v.hidden = true; caja = null; m = aBarra ? 1 : 0;
+      tocados.forEach((x) => x.classList.remove("vuela")); tocados = []; soltar();
+    };
+    return (aBarra, animar) => {
+      cancelAnimationFrame(anim);
+      const B = enBarra(), dur = leeMs("--dur-viaje"), curva = leeCurva("--ease-viaje");
+      if (!animar || !B || !(dur > 0) || !curva) { acabar(aBarra); return; }
+      const llega = aBarra ? B : portada, r0 = v.hidden ? medir(aBarra ? portada : B) : caja;
+      // Sin viaje si lo que se va ya no está en pantalla, o si adonde va no se pinta (otra sección).
+      if (!r0.w || r0.y + r0.h < 0 || r0.y > innerHeight || !medir(llega).w) { acabar(aBarra); return; }
+      const m0 = v.hidden ? (aBarra ? 0 : 1) : m, mT = aBarra ? 1 : 0;
+      // En el móvil, la barra de abajo se abre desde «La carta» al llegar y se cierra hacia ella al irse.
+      if (abre !== B.closest(".pestanas")) soltar();
+      abre = B.closest(".pestanas");
+      let ins = null;
+      if (abre) {
+        abre.style.transition = "none"; abre.style.transform = "translateX(-50%)";
+        const rb = medir(abre), rt = medir(B);
+        ins = [rt.y - rb.y, rb.x + rb.w - rt.x - rt.w, rb.y + rb.h - rt.y - rt.h, rt.x - rb.x, rt.h / 2, rb.h / 2];
+      }
+      const rp = medir(portada), rB = medir(B), cP = getComputedStyle(portada), cB = getComputedStyle(B);
+      const W = Math.ceil(Math.max(rp.w, rB.w, r0.w)) + 2, H = Math.ceil(Math.max(rp.h, rB.h, r0.h)) + 2;
+      v.style.width = W + "px"; v.style.height = H + "px";
+      cap.style.background = cP.backgroundColor; aro.style.background = cP.borderTopColor;
+      copiar(lp, portada, cP); copiar(lb, B, cB);
+      const fP = parseFloat(cP.fontSize), fB = parseFloat(cB.fontSize), mismo = lp.textContent === lb.textContent;
+      const capsula = !transparente(cB.backgroundColor);
+      [portada, B].forEach((x) => { x.classList.add("vuela"); if (!tocados.includes(x)) tocados.push(x); });
+      v.hidden = false;
+      const t0 = performance.now();
+      const paso = (ahora) => {
+        const p = Math.min(1, Math.max(0, (ahora - t0) / dur)), e = curva(p), r1 = medir(llega);
+        caja = { x: r0.x + (r1.x - r0.x) * e, y: r0.y + (r1.y - r0.y) * e, w: r0.w + (r1.w - r0.w) * e, h: r0.h + (r1.h - r0.h) * e };
+        m = m0 + (mT - m0) * e;
+        const { x, y, w, h } = caja, ox = (W - w) / 2, oy = (H - h) / 2, fuera = estadio(ox, oy, w, h);
+        v.style.transform = `translate(${(x - ox).toFixed(2)}px,${(y - oy).toFixed(2)}px)`;
+        cap.style.clipPath = `path("${fuera}")`;
+        aro.style.clipPath = `path("${fuera} ${estadio(ox + 1, oy + 1, w - 2, h - 2, true)}")`;
+        // La cápsula es lo que dice que es el mismo botón: se queda entera casi todo el viaje y solo
+        // se disuelve al llegar a donde no la hay. Con las dos palabras a la vez a medio fundir, el
+        // botón se quedaba en nada a mitad de camino.
+        cap.style.opacity = aro.style.opacity = capsula ? 1 : 1 - suave(0.55, 0.95, m);
+        // La letra cambia de tamaño con la cápsula. Si es la misma palabra, se pasa de una a otra a
+        // mitad de viaje, cuando ya miden lo mismo: así llega idéntica a la de verdad.
+        const s = 1 + (fB / fP - 1) * m;
+        lp.style.transform = `scale(${s})`; lb.style.transform = `scale(${(s * fP) / fB})`;
+        lp.style.opacity = mismo ? +(m < 0.5) : 1 - suave(0.35, 0.6, m);
+        lb.style.opacity = mismo ? +(m >= 0.5) : suave(0.4, 0.65, m);
+        // La barra se enciende debajo del viajero cuando ya casi ha llegado, y se abre desde él.
+        if (abre) {
+          const u = suave(0.75, 1, m), [t, r, b, l, rt, rb] = ins, k = 1 - u;
+          abre.style.clipPath = `inset(${t * k}px ${r * k}px ${b * k}px ${l * k}px round ${rt + (rb - rt) * u}px)`;
+          abre.style.opacity = suave(0.78, 0.92, m);
+        }
+        if (p < 1) anim = requestAnimationFrame(paso); else acabar(aBarra);
+      };
+      paso(t0);
+    };
+  };
+  const secciones = document.querySelector(".secciones");
+  const viajes = [
+    viaje(document.querySelector(".portada .acc .pill.solid"), () => document.querySelector(".barra .pill")),
+    viaje(document.querySelector('.portada .acc [data-ir="carta"]'), () =>
+      document.querySelector(getComputedStyle(secciones).display === "none" ? '.pestanas [data-ir="carta"]' : '.secciones [data-ir="carta"]')),
+  ];
+
   const chips = [...document.querySelectorAll(".chips a")], accPortada = document.querySelector(".portada .acc");
-  const alScroll = () => {
-    const portada = actual === "inicio" && scrollY < innerHeight * 0.6;
-    barra.classList.toggle("oculta", portada); pestanas.classList.toggle("oculta", portada);
-    accPortada.classList.toggle("oculta", !portada);
+  // Con margen: la portada se deja al pasar el 60% de la pantalla y se recupera por debajo del 50%,
+  // para que quien se pare justo en el límite no ponga los botones a ir y venir.
+  let enPortada = null;
+  const alScroll = (desdeScroll) => {
+    const portada = actual === "inicio" && scrollY < innerHeight * (enPortada === false ? 0.5 : 0.6);
+    if (portada !== enPortada) {
+      const viajar = desdeScroll === true && enPortada !== null && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+      enPortada = portada;
+      barra.classList.toggle("oculta", portada); pestanas.classList.toggle("oculta", portada);
+      accPortada.classList.toggle("oculta", !portada);
+      viajes.forEach((v) => v(!portada, viajar));
+    }
     if (actual === "carta") {
       let on = "compartir";
       document.querySelectorAll(".parte").forEach((p) => { if (p.getBoundingClientRect().top < innerHeight * 0.35) on = p.dataset.parte; });
@@ -179,7 +289,7 @@
       chips.forEach((c) => c.classList.toggle("on", c.dataset.a === on));
     }
   };
-  addEventListener("scroll", alScroll, { passive: true });
+  addEventListener("scroll", () => alScroll(true), { passive: true });
 
   pintarCarta(1);
   const inicial = (location.hash || "").slice(1);

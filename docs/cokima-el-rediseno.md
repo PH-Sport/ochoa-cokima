@@ -1,8 +1,8 @@
 # Cokima: el rediseño
 
-> **Estado: vivo** · el rediseño está en curso · revisado 2026-11-01
+> **Estado: vivo** · el rediseño está en curso · revisado 2026-11-02
 
-- **Abierto:** 2026-08-14 · **Última tanda:** 2026-10-31
+- **Abierto:** 2026-08-14 · **Última tanda:** 2026-11-02
 - **Rama:** `preview` desde el 2026-10-26, cuando Mario pidió trabajar solo en ella. Antes vivió en
   `tmp/entrada-cokima`
 - **Estado:** **desde el 2026-10-31 la web de Cokima en `preview` es Brasa** (§3), y se itera
@@ -165,6 +165,27 @@ exclusiva para esta nueva versión»*. **Desde el 2026-10-31 Brasa es la web de 
   pidió *«con la letra normal que usamos para los textos, no usaría la letra clásica curva […]
   en mayúsculas, pero con un tamaño de letra pequeño»*: va en Bricolage 500, espaciado como las
   etiquetas de la página, a 11,5 px en el móvil y 15 en el ordenador.
+- **«Reservar» y «Ver carta» viajan de la portada a la barra (2026-11-02).** Mario: *«Ahora mismo,
+  simplemente desaparecen y se cambian de sitio […] que realmente se aprecie como cambian de un
+  sitio a otro»*. Medido antes de tocar nada: los dos botones subían con la página y, al pasar el
+  60% de la pantalla, se apagaban en su sitio mientras la barra aparecía en otro, sin relación, y
+  durante un instante había dos «Reservar» a medio fundir. **Se le propusieron tres maneras y
+  eligió la primera:** que viajen al cruzar el límite. Ahora «Reservar» sube a la esquina
+  encogiéndose y «Ver carta» se vuelve «La carta» —la del menú de arriba en el ordenador; en el
+  móvil baja a la barra de abajo, que se abre desde ella—, y al subir hacen el camino de vuelta.
+  Lo que vuela es una copia sin función y los de verdad esperan escondidos, así que nunca hay dos a
+  la vez. Con margen: se va al 60% y vuelve por debajo del 50%, para que nadie los ponga a ir y
+  venir parándose en el límite. Cómo está hecho, en `movimiento.md` («Qué se mueve hoy» y regla 30).
+  **Las descartadas, y por qué:** *que sigan al dedo* —el viaje atado a lo que se ha bajado— porque
+  en el iPhone la barra del navegador cambia el alto de la pantalla mientras se desliza
+  (`archivo/barra-del-navegador-ios.md`) y el viaje daría saltos, porque a medio camino los
+  botones pisan «Buen producto. Malas intenciones.» y porque es trabajo en cada movimiento del
+  dedo con el fuego ya cargando el móvil; y *el gesto mínimo* —deslizarse unos píxeles hacia donde
+  van— porque insinúa la dirección pero no se ve que sea el mismo botón. **El riesgo que queda por
+  ver en su móvil:** los dos botones se separan en direcciones contrarias, uno arriba y otro abajo.
+  Si no convence, viaja solo «Reservar» y la barra de abajo entra como antes. **Y lo que no se
+  mueve, a propósito:** el «Cokima» grande de la portada no vuela a la barra, porque eso hace ya la
+  entrada de Ochoa con su rótulo.
 - **El Inicio es corto:** la frase de la casa, si la cocina está abierta ahora (con su horario) y
   tres puertas a las otras secciones.
 - **La carta tiene siempre los 21 platos en la misma lista**, con tres maneras de enseñar los

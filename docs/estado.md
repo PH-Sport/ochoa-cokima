@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-11-01 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-11-02 · **el punto de entrada del repo**
 
-- **Corte:** 2026-11-01
+- **Corte:** 2026-11-02
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
   nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
   de decidir, que no se fusionan: `feat/inicio-paralaje`, el Inicio de Ochoa en paralaje, parada,
@@ -27,6 +27,9 @@ quitarle sitio a los que no la tienen, que se cambian en una barra de boceto has
 mismo día pidió tres retoques, ya puestos: el fuego un poco más rápido, «Kitchen Madness» bajo el
 nombre de la portada y el vídeo de la entrada detrás, oscurecido, con el fuego encima. El
 2026-11-01, «Kitchen Madness» pasó de la cursiva a la letra de los textos, en mayúsculas pequeñas.
+El 2026-11-02, «Reservar» y «Ver carta» dejaron de apagarse en la portada para salir en la barra:
+viajan hasta su sitio al bajar y vuelven al subir. Mario eligió esa entre tres; las otras dos, y
+por qué no, en `cokima-el-rediseno.md` §3.
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las
@@ -38,6 +41,14 @@ no desde Google; el inglés; y las legales con el aspecto nuevo. La lista y el p
 Medido sobre el build, en WebKit a 390 y a 1440: el recorrido entero sin errores ni scroll
 lateral, las dos letras cargadas, y el vídeo arrancando en la portada, en pausa al bajar y en las
 otras secciones, y sin descargarse con «reducir movimiento». Sin mirar en un iPhone.
+
+El viaje de los botones, medido fotograma a fotograma con el reloj de la página en la mano, en
+WebKit y Chromium a 390 y a 1440: un solo «Reservar» y una sola carta a la vista en cada
+fotograma, bajando, subiendo y dándose la vuelta a medio camino; en el penúltimo fotograma, a
+menos de 0,7 px de su sitio; y sin viaje con «reducir movimiento», en un salto largo o al cambiar
+de sección. Salió una trampa sin error, ya regla 30 de `movimiento.md`: el build reescribe
+`640ms` como `.64s`, y WebKit devuelve vacíos los tokens mientras carga la página. Sin mirar en
+un iPhone.
 
 **Ochoa, 2026-10-29: la home viva está en `preview`.** Mario la fue eligiendo en tres rondas de un
 probador montado sobre la web real, y está en las dos homes, la española y la inglesa. **El porqué
@@ -118,6 +129,11 @@ en `ochoa-inicio-vivo.md` §3.7.
 - **Seguir con los retoques de Brasa**, en el alias de Cokima de `preview`, y decir cuál de las
   tres maneras de La carta —Portadilla, Al tocar o Pareja— y si los nombres de las secciones valen
   (`cokima-el-rediseno.md` §3). Y si se borra `feat/cokima-brasa`, que ya sobra.
+- **Probar en su móvil el viaje de «Reservar» y «Ver carta»** y decir si convence que en el móvil
+  se separen —uno a la esquina de arriba y otro a la barra de abajo—; si no, viaja solo
+  «Reservar» (`cokima-el-rediseno.md` §3).
+- **Decir si se arregla el fundido al cambiar de sección de Brasa en Chrome**, que no espera a
+  apagarse la sección de antes por la misma trampa (regla 30 de `movimiento.md`). Es una línea.
 - **Probar la imagen nueva compartiendo el enlace de `preview` en WhatsApp.** Si sale la de antes,
   añadir `?v=2` al final del enlace: WhatsApp recuerda la vista previa de lo ya compartido.
 - **Ver en su iPhone los ajustes de esa noche**, en el alias de `preview` desde el 2026-10-30, y

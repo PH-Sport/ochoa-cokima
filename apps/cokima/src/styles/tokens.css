@@ -82,6 +82,11 @@
   --stagger: 65ms; /* escalón entre hermanos en cascada */
   /* Lo que aparece al bajar en Brasa: lento a propósito, como sube una brasa. */
   --dur-revela: 1100ms;
+  /* El viaje de «Reservar» y «Ver carta» entre la portada de Brasa y la barra (2026-11-02). Cruza
+     de 280 a 670 px de pantalla, y la quíntica frena tan pronto que en ese recorrido sería un golpe
+     (regla 9 de movimiento.md): va con una curva que reparte el camino, la forma de --ease-telon. */
+  --ease-viaje: cubic-bezier(0.45, 0.02, 0.55, 1);
+  --dur-viaje: 640ms;
 
   --t-heading-font: var(--serif);
   --t-menu-title-size: 1.6rem;
