@@ -540,7 +540,34 @@ muestreando la luz del tubo cada 40 ms: fijo a los 1,56-1,64 s, y el mayor salto
 es de 0,27-0,31 (en la segunda versión era de 0 a 1, que es lo que la hacía estroboscópica); al
 pulsar, de 0,34-0,38. **Y ahí se pasó:** *«ahora creo que te has pasado jajaja, trata de hacerlo
 ligeeeeramente más corto»*. **La cuarta versión** arranca en 1,4 s con los mismos trompicones: fija a
-los 1,20-1,28 s, salto mayor 0,35-0,38. **Falta que diga si así, y aplicarlo a la web.**
+los 1,20-1,28 s, salto mayor 0,35-0,38. Mario contó los pulsos —*«unos 5-6… hay bastante distancia del
+primer pulso al segundo»*— y pidió quitar el primero, el más largo y el que más se aleja del resto,
+porque *«la gran mayoría no se para a ver una animación de ~1 seg, y en móvil directamente casi ni se
+aprecia»*. **La quinta versión** es la cuarta sin ese pulso ni la espera a oscuras que lo seguía, con el
+resto igual: 1,12 s, fija a los 0,96-1,00 s, salto mayor 0,35-0,40. **Falta que diga si así, y
+aplicarlo a la web.**
+
+**El Inicio, reordenado: cuatro paneles (2026-11-02, por la noche).** Mario: *«Pondría primero la de
+"Imprescindibles", similar a cómo hicimos en Ochoa con "Lo que más sale". Ponemos el acceso directo a
+la carta, y vemos de primeras los platos. Justo debajo… "El producto"… seguido… "La sala" con la
+redirección a "Conócenos", y debajo de él, fusionaría "Cokima" y "Ven", metiendo un último copy (que
+ayude al SEO, que para eso están) a modo de "Visítanos"»*. Ahora son **Imprescindibles** —el que se
+ve abierto al llegar: los platos y «Ver la carta entera»—, **El producto**, **La sala** y **Ven**.
+**Ven junta los dos:** la frase de la casa como título (*«Puedes comer en cualquier sitio, pero será
+solo comer»*), un párrafo para buscadores, la línea de las croquetas, el estado de la cocina, y
+«Reservar mesa» y «Cómo llegar y horario»; con la foto de la puerta. **El párrafo para buscadores lo
+escribió el agente y espera a que Mario lo revise**; no inventa nada: frases de la casa y datos
+comprobados (`site.ts`, Visítanos) —*«Cokima es una explosión de sabor en Argüelles, Madrid: cocina
+ecléctica para compartir, de las recetas más castizas a los guiños más exóticos. Estamos en la calle
+de Andrés Mellado, 21, y abrimos de lunes a domingo, de 9:00 a 00:00»*—. La foto de la sartén en
+llamas sale del Inicio. Con un panel menos, cada uno tiene más sitio: en el ordenador la columna
+abierta crece, y en el móvil hay una banda cerrada menos. Medido sobre el build, la prueba entera de
+los paneles fijos, ya para cualquier número de paneles, en WebKit y Chromium y en los siete tamaños:
+se fijan los mismos —los tres de ordenador, 430 y 390— y no a 375 ni a 320; el texto de cada panel
+cabe, el de Ven con 89 px de sobra a 390×844 y el de los imprescindibles, el más justo, con 20 a
+1280×720; la rueda abre 0→3 y cierra 3→0; holgura, clic, salto y vuelta desde La carta, bien; sin
+errores ni scroll lateral. El Inicio mide 3.636 px a 1440×900 (4,0 pantallas; con cinco paneles,
+4.203) y 3.636 a 390×844.
 
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se

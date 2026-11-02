@@ -113,8 +113,8 @@ main{position:relative;z-index:1}
 .estado{display:inline-flex;align-items:center;gap:10px;margin:22px 0 0;font:400 .9rem/1.3 var(--sans);color:var(--bone-2)}
 .estado::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--bone-3)}
 .estado.abierta::before{background:var(--ember);box-shadow:0 0 12px 2px rgba(255,120,40,.55)}
-/* El Inicio: cinco paneles (2026-11-02). Ninguno cambia de tamaño, que recalcularía la página en cada
-   fotograma (regla 2 de movimiento.md): los cinco ocupan la zona entera, uno encima de otro, y cada uno
+/* El Inicio: cuatro paneles (2026-11-02). Ninguno cambia de tamaño, que recalcularía la página en cada
+   fotograma (regla 2 de movimiento.md): todos ocupan la zona entera, uno encima de otro, y cada uno
    se deja ver por su franja recortado con clip-path; su foto, del tamaño del panel abierto, y su rótulo
    se colocan con transform. brasa.js reparte las franjas en el mismo fotograma (regla 27). En el
    ordenador son columnas; en el móvil, bandas, y la zona mide siempre lo mismo: no salta al abrir.
@@ -155,6 +155,8 @@ main{position:relative;z-index:1}
 .pan-platos small{display:block;margin-top:2px;font:italic 400 .98rem/1.3 var(--voz);color:var(--bone-2)}
 .pan-platos b{color:var(--ember);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
 .pan-dato{margin:14px 0 0;font:400 .9rem/1.4 var(--sans);color:var(--bone-2)}
+/* El texto para buscadores del último panel (Mario, 2026-11-02): se lee, no es letra pequeña */
+.pan-seo{margin:14px 0 0;max-width:52ch;font:300 1rem/1.5 var(--sans);color:var(--bone-2);text-wrap:pretty}
 .pan-acc{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 0}
 
 /* ===== La carta ===== */

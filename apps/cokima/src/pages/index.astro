@@ -115,21 +115,22 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
           <h1><span class="nombre">Cokima</span><span class="sub">Kitchen Madness</span></h1>
           <div class="acc"><a class="pill" href="#carta" data-ir="carta">Ver carta</a><a class="pill solid" href="#reservar" data-ir="reservar">Reservar</a></div>
         </div>
-        <!-- Por debajo de la portada, el Inicio son cinco paneles a todo lo ancho: cada uno cuenta una
-             cosa de Cokima y adelanta una sección. Mario los eligió entre tres maneras el 2026-11-02
-             (docs/cokima-el-rediseno.md §3, «La dirección de Brasa»). Los textos son de la web del
-             Grupo Tombo y de @cokimamadrid; los coloca y los abre brasa.js. -->
+        <!-- Por debajo de la portada, el Inicio son cuatro paneles a todo lo ancho: cada uno cuenta una
+             cosa de Cokima y adelanta una sección. Mario los eligió entre tres maneras el 2026-11-02, y
+             el mismo día los reordenó: primero los platos, como «Lo que más sale» en Ochoa; luego el
+             producto y la sala; y al final Cokima y Ven en uno, con un texto para buscadores
+             (docs/cokima-el-rediseno.md §3). Los textos son de la web del Grupo Tombo y de
+             @cokimamadrid; los coloca y los abre brasa.js. -->
         <div class="pan-zona">
           <div class="paneles rv" data-paneles>
             <div class="pan" data-panel>
-              <img class="pan-foto" src="/images/hero.jpg" alt="" width="1200" height="1200" loading="lazy">
-              <button type="button" class="pan-abrir" aria-expanded="false"><span class="pan-rotulo"><small>Kitchen Madness · Argüelles</small>Cokima</span></button>
+              <img class="pan-foto" src="/images/katsu.jpg" alt="" width="880" height="1100" loading="lazy">
+              <button type="button" class="pan-abrir" aria-expanded="false"><span class="pan-rotulo"><small>La carta</small>Imprescindibles</span></button>
               <div class="pan-cont">
-                <p class="etq">Kitchen Madness · Argüelles</p>
-                <h2 class="pan-tit">Puedes comer en cualquier sitio, pero será solo comer.</h2>
-                <p class="voz">Cokima es una explosión de sabor, un concepto creado para compartir y desfasar, mandanga de la buena.</p>
-                <p class="estado" data-estado></p>
-                <p class="pan-acc"><a class="pill" href="#carta" data-ir="carta">Ver la carta</a><a class="pill solid" href="#reservar" data-ir="reservar">Reservar mesa</a></p>
+                <p class="etq">La carta · Imprescindibles</p>
+                <p class="voz">Cocina ecléctica con toques que van desde las recetas más castizas, de las que a los de <i>Madriz</i> les llena de orgullo, hasta los guiños más exóticos para los modernos gastronómicos.</p>
+                <ul class="pan-platos" data-destacados></ul>
+                <p class="pan-acc"><a class="pill" href="#carta" data-ir="carta">Ver la carta entera</a></p>
               </div>
             </div>
             <div class="pan" data-panel>
@@ -147,16 +148,6 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
               </div>
             </div>
             <div class="pan" data-panel>
-              <img class="pan-foto" src="/images/katsu.jpg" alt="" width="880" height="1100" loading="lazy">
-              <button type="button" class="pan-abrir" aria-expanded="false"><span class="pan-rotulo"><small>La carta</small>Imprescindibles</span></button>
-              <div class="pan-cont">
-                <p class="etq">La carta · Imprescindibles</p>
-                <p class="voz">Cocina ecléctica con toques que van desde las recetas más castizas, de las que a los de <i>Madriz</i> les llena de orgullo, hasta los guiños más exóticos para los modernos gastronómicos.</p>
-                <ul class="pan-platos" data-destacados></ul>
-                <p class="pan-acc"><a class="pill" href="#carta" data-ir="carta">Ver la carta entera</a></p>
-              </div>
-            </div>
-            <div class="pan" data-panel>
               <img class="pan-foto" src="/images/sala-entera.jpg" alt="" width="1400" height="931" loading="lazy">
               <button type="button" class="pan-abrir" aria-expanded="false"><span class="pan-rotulo"><small>Nosotros</small>La sala</span></button>
               <div class="pan-cont">
@@ -170,9 +161,12 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
               <img class="pan-foto" src="/images/puerta.jpg" alt="" width="1400" height="1400" loading="lazy">
               <button type="button" class="pan-abrir" aria-expanded="false"><span class="pan-rotulo"><small>Visítanos</small>Ven</span></button>
               <div class="pan-cont">
-                <p class="etq">Visítanos</p>
-                <h2 class="pan-tit">Ven a conocernos y le dirás <i>ciao</i> a las croquetas de tu abuela.</h2>
-                <p class="pan-dato">Calle de Andrés Mellado, 21 · Argüelles, Madrid</p>
+                <p class="etq">Kitchen Madness · Argüelles</p>
+                <h2 class="pan-tit">Puedes comer en cualquier sitio, pero será solo comer.</h2>
+                <!-- El texto para buscadores que pidió Mario (2026-11-02): solo datos comprobados (site.ts y
+                     Visítanos) y frases de la casa, a la espera de que lo revise. -->
+                <p class="pan-seo">Cokima es una explosión de sabor en Argüelles, Madrid: cocina ecléctica para compartir, de las recetas más castizas a los guiños más exóticos. Estamos en la calle de Andrés Mellado, 21, y abrimos de lunes a domingo, de 9:00 a 00:00.</p>
+                <p class="voz">Ven a conocernos y le dirás <i>ciao</i> a las croquetas de tu abuela.</p>
                 <p class="estado" data-estado></p>
                 <p class="pan-acc"><a class="pill solid" href="#reservar" data-ir="reservar">Reservar mesa</a><a class="pill" href="#visitanos" data-ir="visitanos">Cómo llegar y horario</a></p>
               </div>

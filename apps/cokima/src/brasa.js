@@ -257,8 +257,8 @@
 
   pintarCarta();
 
-  // El Inicio: los cinco paneles (2026-11-02). Ninguno cambia de tamaño —recalcularía la página en cada
-  // fotograma (regla 2)—: los cinco ocupan la zona entera y cada uno se deja ver por su franja,
+  // El Inicio: los paneles, cuatro (2026-11-02). Ninguno cambia de tamaño —recalcularía la página en cada
+  // fotograma (regla 2)—: todos ocupan la zona entera y cada uno se deja ver por su franja,
   // recortado con clip-path; su foto, su rótulo y su texto se colocan con transform. Al abrir otro, las
   // franjas se reparten en el mismo requestAnimationFrame (regla 27), con --ease-viaje y --dur-viaje.
   // Si la zona cabe en la pantalla bajo la barra, se queda fija mientras se baja (.fija en brasa.css) y

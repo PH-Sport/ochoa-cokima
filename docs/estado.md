@@ -66,7 +66,9 @@ enfrían de amarillo a rojo, sin halo—. La cuarta, la carta siempre a la vista
 en el móvil, **no cabe en la barra sin quitar el nombre de la sección del desplegable**, y eso
 espera a Mario (`cokima-el-rediseno.md` §3, «Reservar dentro, chispas y la carta a mano»). Y, como
 en Ochoa, **el teléfono y el Instagram como dos acciones**, en Visítanos y al pie del desplegable del
-móvil, y en los pies de página (mismo §3, «El teléfono y el Instagram»).
+móvil, y en los pies de página (mismo §3, «El teléfono y el Instagram»). **Y el Inicio, reordenado
+como pidió:** cuatro paneles —Imprescindibles primero, El producto, La sala y Ven, que junta Cokima y
+Ven con un texto para buscadores— (mismo §3, «El Inicio, reordenado»).
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las
@@ -180,6 +182,8 @@ en `ochoa-inicio-vivo.md` §3.7.
   iPhone: si la zona se queda fija al bajar o se abren tocando**, que no se ha podido medir con las
   barras de Safari; y si el tramo de scroll de cada panel se hace corto o largo. Después vienen
   Nosotros y Visítanos, sobre la misma dirección.
+- **Revisar el texto para buscadores del último panel del Inicio**, «Ven» (`cokima-el-rediseno.md`
+  §3, «El Inicio, reordenado»): lo escribió el agente con frases de la casa y datos comprobados.
 - **Ver el neón de los botones, más marcado, en la maqueta**
   https://claude.ai/artifact/9aLVRRLV8f3ZJWbYfStUSw y decir si se aplica así a la web: eligió el
   neón entre tres (`cokima-el-rediseno.md` §3, «Los botones, con carácter»).
