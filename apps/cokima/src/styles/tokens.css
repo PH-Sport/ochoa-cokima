@@ -88,6 +88,18 @@
      las dos se reparten también las franjas de los paneles del Inicio al abrir otro. */
   --ease-viaje: cubic-bezier(0.45, 0.02, 0.55, 1);
   --dur-viaje: 640ms;
+  /* Los botones de Brasa son un neón (2026-11-02, Mario entre tres en una maqueta): lo que tarda en
+     arrancar con el ratón encima —a trompicones y en fundido, «como si le costase arrancar»— y, en el
+     móvil, que no tiene ratón que lo apague, lo que se queda encendido tras el toque. Y su tubo: el
+     de los botones de borde y la luz que suelta, poca, que el brillo sobrado ya se descartó. */
+  --dur-encender: 1120ms;
+  --dur-neon-toque: 1800ms;
+  --neon: #ffe2c6;
+  --neon-luz: rgba(255, 150, 80, 0.32);
+  /* La entrada de Brasa (2026-11-02): lo que tarda «Cokima» en destaparse de abajo arriba, y lo que
+     tarda en enfriarse del rojo al hueso, que empieza a mitad del destape. */
+  --dur-aviva: 760ms;
+  --dur-enfria: 1000ms;
 
   --t-heading-font: var(--serif);
   --t-menu-title-size: 1.6rem;

@@ -48,6 +48,19 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    {/* La entrada de Brasa (2026-11-02) se decide aquí, antes del primer pintado, y no en brasa.js: si
+        no, la portada asomaría un fotograma ya puesta. Solo la primera vez de la sesión, al llegar al
+        Inicio, y nunca con «reducir movimiento», con lo que no se pinta (regla 5 de movimiento.md). Si
+        brasa.js no llegara, a los 4 s se retira sola: la portada no se puede quedar tapada. */}
+    <script is:inline>
+      (() => { try {
+        const h = location.hash.slice(1);
+        if ((h && h !== "inicio") || matchMedia("(prefers-reduced-motion: reduce)").matches || sessionStorage.getItem("brasa-entrada")) return;
+        sessionStorage.setItem("brasa-entrada", "1");
+        const r = document.documentElement; r.setAttribute("data-entrada", "");
+        setTimeout(() => r.removeAttribute("data-entrada"), 4000);
+      } catch (e) {} })();
+    </script>
     {/* Los dos metas del esquema oscuro, por lo mismo que en Base.astro; el tono es el --ground. */}
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#0e0907" />
@@ -92,6 +105,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
       )}
     </div>
     <canvas class="fondo" aria-hidden="true"></canvas>
+    <canvas class="chispazos" aria-hidden="true"></canvas>
 
     <header class="barra oculta">
       <a class="marca" href="#inicio" data-ir="inicio">Cokima</a>
@@ -112,7 +126,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
       <!-- ===== Inicio ===== -->
       <section class="vista" data-vista="inicio">
         <div class="portada">
-          <h1><span class="nombre">Cokima</span><span class="sub">Kitchen Madness</span></h1>
+          <h1><span class="nombre" data-texto="Cokima">Cokima</span><span class="sub">Kitchen Madness</span></h1>
           <div class="acc"><a class="pill" href="#carta" data-ir="carta">Ver carta</a><a class="pill solid" href="#reservar" data-ir="reservar">Reservar</a></div>
         </div>
         <!-- Por debajo de la portada, el Inicio son cuatro paneles a todo lo ancho: cada uno cuenta una

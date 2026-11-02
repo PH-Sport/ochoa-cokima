@@ -603,6 +603,44 @@ cabe, el de Ven con 89 px de sobra a 390×844 y el de los imprescindibles, el m�
 errores ni scroll lateral. El Inicio mide 3.636 px a 1440×900 (4,0 pantallas; con cinco paneles,
 4.203) y 3.636 a 390×844.
 
+**En preview: la entrada, la bocanada y el neón (2026-11-02, de noche).** Mario, sobre la maqueta:
+*«Para la entrada… ambas pueden combinar perfectamente… Que se enfríe tras avivarse me parece la
+combinación ideal. Para la transición, me gusta la idea de la bocanada… a la que le subiría la
+densidad, aquí un poquito más considerablemente… ¿probamos ambas ya directamente en preview junto a los
+últimos cambios de los botones?»*
+
+- **La entrada es A y B juntas**, unos 1,5 s: desde un fondo vacío sube una bocanada de chispas,
+  «Cokima» se destapa de abajo arriba al rojo (`--dur-aviva`) y se enfría hasta el hueso
+  (`--dur-enfria`, desde la mitad del destape); «Kitchen Madness», los botones y el vídeo entran
+  detrás y las chispas del fondo vuelven poco a poco. **La decide un script en el `<head>`**, antes del
+  primer pintado (`data-entrada`): solo la primera vez de la sesión, al llegar al Inicio, y nunca con
+  «reducir movimiento». Si la página ya no está arriba, no hay entrada; tocar, desplazar o una tecla la
+  terminan; y si `brasa.js` no llegara, el `<head>` la retira solo a los 4 s, porque la portada no se
+  puede quedar tapada. **«Cokima» al rojo es una copia del nombre** en el `::after`, con
+  `content: attr(data-texto)` y degradado de brasa, cuya opacidad es `--calor`: así el nombre no sale
+  dos veces en el texto de la página.
+- **La bocanada al cambiar de sección**, bastante más densa que en la maqueta: una chispa por cada
+  6.000 px², entre 70 y 220 —unas 216 en un portátil, 70 en el móvil—, que salen de bajo el borde más
+  deprisa que las del fondo y viven menos. Van en un **lienzo de delante** (`.chispazos`), por encima de
+  todo y sin recibir el toque, que solo se pinta mientras tiene algo.
+- **Los botones son el neón**, la sexta versión de la maqueta: todos los `.pill` y los de llamar e
+  Instagram. El de borde pasa a ser un tubo apagado (su borde, de 0,32 a 0,16); al pulsar, se hunde y
+  salta un puñado de chispas, en el mismo lienzo de delante. El calendario de reservas, que es de
+  CoverManager, se queda como estaba.
+
+Medido sobre el build, en WebKit y Chromium a 1440 y 390: **entrada** —al cargar, nombre tapado y al
+rojo y lo demás apagado; a los ~350 ms, destapándose, con chispas delante; a los ~800 ms, enfriándose
+(0,69-0,81); a los 2 s, todo en reposo y el atributo retirado; al recargar en la misma sesión, sin
+entrada; por `#carta` y con «reducir movimiento», sin entrada; tocar a mitad la termina, y los
+botones de la portada acaban de aparecer con su propio fundido (a los 650 ms, enteros)—; **bocanada**
+—ninguna chispa delante antes, 505-538 píxeles encendidos a los 250 ms en el ordenador y 180-183 en el
+móvil, casi nada a los 2,5 s, y la sección cambiada—; **neón** —con el ratón, tubo a 1; pulsando, tubo a
+1, escala 0,965 y chispas; al soltar, a 1; fuera, a 0; en el móvil, el toque lo enciende y se apaga
+solo—; **el viaje** de «Reservar» y «Ver carta» a la barra y de vuelta, igual que antes; los botones de
+llamar e Instagram y Reservar, igual. Sin errores. **La prueba vieja del viaje ya no servía** —buscaba
+la píldora de abajo, que quitó el desplegable— y se sustituyó por una que mira el viajero y el final.
+Sin mirar en un iPhone, ni lo que cuesta en un móvil modesto.
+
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
 rediseñan después, sobre esta dirección.**

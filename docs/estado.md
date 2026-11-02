@@ -68,7 +68,10 @@ espera a Mario (`cokima-el-rediseno.md` §3, «Reservar dentro, chispas y la car
 en Ochoa, **el teléfono y el Instagram como dos acciones**, en Visítanos y al pie del desplegable del
 móvil, y en los pies de página (mismo §3, «El teléfono y el Instagram»). **Y el Inicio, reordenado
 como pidió:** cuatro paneles —Imprescindibles primero, El producto, La sala y Ven, que junta Cokima y
-Ven con un texto para buscadores— (mismo §3, «El Inicio, reordenado»).
+Ven con un texto para buscadores— (mismo §3, «El Inicio, reordenado»). **Y lo último de la noche,
+ya en preview:** la entrada —«Cokima» se aviva con una bocanada de chispas y se enfría del rojo al
+hueso—, una bocanada de chispas más densa al cambiar de sección y los botones de neón, que se hunden y
+sueltan chispas al pulsarlos (mismo §3, «En preview: la entrada, la bocanada y el neón»).
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las
@@ -184,12 +187,9 @@ en `ochoa-inicio-vivo.md` §3.7.
   Nosotros y Visítanos, sobre la misma dirección.
 - **Revisar el texto para buscadores del último panel del Inicio**, «Ven» (`cokima-el-rediseno.md`
   §3, «El Inicio, reordenado»): lo escribió el agente con frases de la casa y datos comprobados.
-- **Ver el neón de los botones en la maqueta** https://claude.ai/artifact/9aLVRRLV8f3ZJWbYfStUSw
-  —sin el primer pulso y con el clic de la brasa que salta— y decir si se aplica así a la web: eligió
-  el neón entre tres (`cokima-el-rediseno.md` §3, «Los botones, con carácter»).
-- **Elegir la entrada y el cambio de sección** en la maqueta
-  https://claude.ai/artifact/Egejk8xKnrgLW7g5y3G9ia (`cokima-el-rediseno.md` §3, «La entrada y el
-  cambio de sección»). El agente recomienda B, el nombre se enfría, y C, una bocanada.
+- **Ver en preview la entrada, la bocanada y los botones de neón**, en el ordenador y en su iPhone
+  (`cokima-el-rediseno.md` §3, «En preview: la entrada, la bocanada y el neón»). La entrada solo sale
+  la primera vez de cada sesión: para volver a verla, una pestaña privada nueva.
 - **Decidir cómo va «Carta» en la barra del móvil**: cabe si la marca abre el menú y el desplegable
   deja de decir en qué sección estás (`cokima-el-rediseno.md` §3, «Reservar dentro, chispas y la
   carta a mano»).

@@ -50,13 +50,17 @@ salen de aquí:
 | `--dur-recogida` | `700ms` | Lo que la plancha de la entrada tarda en **recogerse hasta ser la barra**. No sale de `--dur-in`: ese mide un panel que aparece y esto recorre la pantalla entera. |
 | `--tuerce` | `4deg` | Cuánto se **tuerce** lo que llega antes de encajar. Es a la rotación lo que `--shift` es al desplazamiento: la medida de un gesto. Un rótulo de bar se monta pieza a pieza y nunca queda a plomo. |
 
-**Tres más, solo en Cokima**, para Brasa:
+**Siete más, solo en Cokima**, para Brasa:
 
 | Token | Cokima | Para qué |
 |---|---|---|
 | `--dur-revela` | `1100ms` | Lo que **aparece al bajar**: lento a propósito, como sube una brasa. |
 | `--dur-viaje` | `640ms` | Lo que tardan «Reservar» y «Ver carta» en **viajar entre la portada y la barra** (2026-11-02). |
 | `--ease-viaje` | `cubic-bezier(0.45, 0.02, 0.55, 1)` | La curva de ese viaje, que cruza de 280 a 670 px: la forma de `--ease-telon` (regla 9). Es también la del reparto de los paneles del Inicio. |
+| `--dur-encender` | `1120ms` | Lo que tarda el **neón de un botón en arrancar** con el ratón encima: a trompicones, en fundido, «como si le costase arrancar». Sin el primer pulso, que alargaba la espera. |
+| `--dur-neon-toque` | `1800ms` | Lo que el neón se queda **encendido tras un toque** en el móvil, que no tiene ratón que lo apague. |
+| `--dur-aviva` | `760ms` | Lo que tarda **«Cokima» en destaparse** de abajo arriba en la entrada. |
+| `--dur-enfria` | `1000ms` | Lo que tarda «Cokima» en **enfriarse del rojo al hueso** en la entrada; empieza a mitad del destape, con `--ease-viaje`, que lo reparte parejo. |
 
 Y una escala de curvatura, que no es movimiento pero sigue la misma disciplina de no escribir
 números sueltos en los componentes: `--r-chapa` 4px, `--r-btn` 7px, `--r-caja` 9px, `--r-marco`
@@ -104,7 +108,9 @@ más lejos; Ochoa es una tasca y es seca.
    *cómo* se mueve algo que va a estar ahí de todas formas; no vale cuando la pieza **solo
    existe para moverse**. Esas no se atenúan: no se pintan, y eso hay que decidirlo antes del
    primer pintado, en el script. Ver `intro.ts`.
-   **Brasa, la home de Cokima desde el 2026-10-31, no carga `global.css`** —es el de la web
+   **La entrada de Brasa (2026-11-02) es una de esas piezas:** la decide un script en el `<head>` de
+   `apps/cokima/src/pages/index.astro`, antes del primer pintado, y con «reducir movimiento» no la
+   pinta. **Brasa, la home de Cokima desde el 2026-10-31, no carga `global.css`** —es el de la web
    anterior— y lleva su propio apagado en `brasa.css`. Si Brasa pasa a componentes, el apagado
    vuelve a vivir en un sitio.
 6. **Nada que se mueva solo sigue moviéndose después de que alguien lo toque.** El mazo de
@@ -520,6 +526,9 @@ más lejos; Ochoa es una tasca y es seca.
 | Inicio de Brasa (Cokima) | Cuatro paneles (cinco hasta el 2026-11-02): al abrir uno, las franjas se reparten —columnas en el ordenador, bandas en el móvil— y su foto se recoloca. Si la zona cabe en la pantalla, se queda fija al bajar y cada tramo abre el siguiente; tocar uno lo abre y lleva la página a su tramo. Si no cabe, se abren al tocarlos. No pasan solos | `clip-path` y `transform` desde `brasa.js` en el mismo fotograma (regla 27), `--ease-viaje`, `--dur-viaje`; el texto entra con `opacity` tras `--dur-out`; la zona, `position: sticky`, que no es animación; cambia pasada la mitad del tramo con un 8 % de holgura; directo con «reducir movimiento» |
 | Barra del móvil de Brasa (Cokima) | El desplegable de secciones baja bajo la barra con un velo detrás, y la flecha gira | `opacity` + `translateY`, `--dur-in` al abrir y `--dur-out` al cerrar (regla 3); la flecha, `rotate`, `--dur-out`; sin transición con «reducir movimiento» |
 | Fondo de Brasa (Cokima) | Chispas de brasa que suben: salen de abajo empujadas por el aire caliente, frenan, dan bandazos, se enfrían de amarillo a rojo y se apagan; algunas aparecen ya en el aire, para que las haya en todo el alto. Un trazo fino a lo largo del vuelo, con la cabeza más clara mientras está caliente, sin halo; al bajar la página, las de cerca suben un poco más. Sustituyen al fuego de Rescoldo desde el 2026-11-02 | Lienzo 2D desde `brasa.js`, partículas con su física, a 30 fps, en cada fotograma mientras se ve (excepción de la regla 6); nada con la pestaña oculta; un fotograma quieto, sin seguir al scroll, con «reducir movimiento» |
+| Botones de Brasa (Cokima) | Un neón: el de borde es un tubo apagado; con el ratón encima arranca a trompicones y se queda encendido hasta que el ratón se va. Al pulsar, el botón se hunde un poco y salta un puñado de chispas, sin tocar el tubo. En el móvil, el toque lo enciende y se apaga solo | `opacity` del tubo (un pseudo con su sombra fija), `@keyframes encender`, `--dur-encender`, `ease-in-out`; al pulsar, `scale(.965)` con `--dur-out`, al menos `--dur-out`; las chispas, en el lienzo de delante; en el móvil, `--dur-neon-toque`; encendido sin arranque con «reducir movimiento» |
+| Entrada de Brasa (Cokima) | La primera vez de la sesión, al llegar al Inicio: sube una bocanada de chispas desde un fondo vacío, «Cokima» se destapa de abajo arriba al rojo y se enfría hasta el hueso; «Kitchen Madness», los botones y el vídeo entran detrás. Unos 1,5 s | `clip-path` y `transform` del nombre, `opacity` de una copia en degradado de brasa (`--calor`) y de lo demás, desde `brasa.js`; `--dur-aviva`, `--dur-enfria`, `--dur-in`, `--ease`, `--ease-viaje`; la decide el `<head>` antes del primer pintado; tocar, desplazar o una tecla la terminan; sin entrada con «reducir movimiento» (regla 5) |
+| Cambio de sección de Brasa (Cokima) | El fundido corto de siempre y, encima, una bocanada de chispas que sube desde abajo por toda la pantalla, bastante más densa que el fondo | la sección, `opacity` con `--dur-out` y `--dur-in`; las chispas, en el lienzo de delante (una por cada 6.000 px², entre 70 y 220); sin chispas con «reducir movimiento» |
 | Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |
 | Entrada (Cokima) | Una chispa baja por un riel, avisando de que hay más | `stroke-dashoffset`, 3,2s |
 | Entrada (Cokima) | La cabecera, el cartel de cookies y el aviso entran al deslizar | `opacity` + `visibility`, `--dur-in` / `--dur-out` |

@@ -105,6 +105,10 @@
   // El vídeo de la portada vive fuera de <main> para quedar debajo de las chispas, así que no se esconde
   // con la sección: se esconde aquí, y al esconderlo su observador lo pausa.
   const cine = document.querySelector(".cine");
+  // Las chispas de delante (2026-11-02): la bocanada al cambiar de sección y las que salta un botón al
+  // pulsarlo. Las pone en marcha el fondo, al final del archivo; hasta entonces, o con «reducir
+  // movimiento», no hacen nada. Y la densidad del fondo, que la entrada sube desde cero.
+  let rafaga = () => {}, soltar = () => {}, densidadFondo = 1;
   // El motor de reservas (2026-11-02) se monta la primera vez que se abre Reservar, y no antes: así el
   // Inicio no llama a covermanager.com. Primero la mitad del iframeResizer que va en esta página y luego
   // el iframe, porque su onload la necesita ya cargada; si no, el iframe se queda en 550px con scroll
@@ -134,8 +138,9 @@
       requestAnimationFrame(() => requestAnimationFrame(() => entra.classList.remove("entrando")));
       revelar(); alScroll();
     };
-    // El cambio de sección espera a que acabe el fundido de salida, que dura --dur-out.
-    if (instantaneo) cambiar(); else { sale.classList.add("saliendo"); setTimeout(cambiar, leeMs("--dur-out")); }
+    // El cambio de sección espera a que acabe el fundido de salida, que dura --dur-out. Y mientras, una
+    // bocanada de chispas (Mario, 2026-11-02, de la maqueta, «subiéndole la densidad»).
+    if (instantaneo) cambiar(); else { rafaga(); sale.classList.add("saliendo"); setTimeout(cambiar, leeMs("--dur-out")); }
   };
   // El desplegable del móvil (2026-11-02). Se cierra al elegir sección, al tocar fuera, con Escape,
   // al mover la página, al volver a la portada —donde no hay barra— y al pasar a ancho de ordenador.
@@ -148,6 +153,24 @@
   addEventListener("keydown", (e) => { if (e.key === "Escape" && abierto()) { menu(false); desp.focus(); } });
   matchMedia("(min-width: 900px)").addEventListener("change", () => menu(false));
   document.addEventListener("click", (e) => { const a = e.target.closest("[data-ir]"); if (!a) return; e.preventDefault(); menu(false); ir(a.dataset.ir); });
+
+  // Los botones son un neón (2026-11-02; el tubo y su arranque, en brasa.css). Al pulsar se hunde un poco
+  // —lo justo para verse, --dur-out como poco— y salta un puñado de chispas, sin tocar el tubo. En el
+  // móvil no hay ratón que lo encienda ni lo apague: el toque lo enciende y se apaga solo, pasado
+  // --dur-neon-toque.
+  document.addEventListener("pointerdown", (e) => {
+    const b = e.target.closest(".pill, .contacto a"); if (!b) return;
+    const desde = performance.now(); b.classList.add("tocando"); soltar(b);
+    if (e.pointerType !== "mouse") {
+      b.classList.add("encendido"); clearTimeout(b._apaga);
+      b._apaga = setTimeout(() => b.classList.remove("encendido"), leeMs("--dur-neon-toque"));
+    }
+    const fin = () => {
+      removeEventListener("pointerup", fin); removeEventListener("pointercancel", fin);
+      setTimeout(() => b.classList.remove("tocando"), Math.max(0, leeMs("--dur-out") - (performance.now() - desde)));
+    };
+    addEventListener("pointerup", fin); addEventListener("pointercancel", fin);
+  });
 
   // El viaje (2026-11-02). Al pasar el límite de la portada, «Reservar» y «Ver carta» viajan hasta su
   // sitio en la barra —«Ver carta» se vuelve «La carta», la del menú de arriba— y vuelven al subir. En
@@ -374,6 +397,48 @@
   const inicial = (location.hash || "").slice(1);
   if (inicial && inicial !== "inicio") ir(inicial, true); else { marcar(); revelar(); alScroll(); }
 
+  // La entrada (2026-11-02). Mario juntó dos de la maqueta —«que se enfríe tras avivarse»—: sube una
+  // bocanada de chispas desde un fondo vacío, «Cokima» se destapa de abajo arriba al rojo (--dur-aviva) y
+  // se enfría hasta el hueso (--dur-enfria, desde la mitad del destape); «Kitchen Madness», los botones y
+  // el vídeo entran detrás (--dur-in). Unos 1,5 s. La decide el <head> (data-entrada); aquí se suelta.
+  // Tocar, desplazar o una tecla la terminan al momento (regla 6), y si la página ya no está arriba del
+  // todo, no hay entrada.
+  const raiz = document.documentElement;
+  if (raiz.hasAttribute("data-entrada")) {
+    const nombre = document.querySelector(".portada h1 .nombre"), sub = document.querySelector(".portada h1 .sub"), acc = document.querySelector(".portada .acc");
+    const piezas = [nombre, sub, acc, cine].filter(Boolean), cortes = ["pointerdown", "wheel", "touchstart", "keydown", "scroll"];
+    let viva = true, t0 = 0;
+    const acabar = () => {
+      if (!viva) return; viva = false; densidadFondo = 1;
+      piezas.forEach((p) => { p.style.clipPath = ""; p.style.opacity = ""; p.style.transform = ""; p.style.removeProperty("--calor"); });
+      raiz.removeAttribute("data-entrada");
+      cortes.forEach((ev) => removeEventListener(ev, acabar));
+    };
+    cortes.forEach((ev) => addEventListener(ev, acabar, { passive: true }));
+    const curva = leeCurva("--ease"), reparte = leeCurva("--ease-viaje");
+    const aviva = leeMs("--dur-aviva"), enfria = leeMs("--dur-enfria"), dIn = leeMs("--dur-in");
+    if (scrollY > 10 || !nombre || !sub || !acc || !curva || !reparte || !(aviva > 0) || !(enfria > 0)) acabar();
+    else {
+      densidadFondo = 0;
+      const tramo = (t, desde, dura, f) => f(Math.min(1, Math.max(0, (t - desde) / dura)));
+      const paso = (ahora) => {
+        if (!viva) return;
+        if (!t0) { t0 = ahora; rafaga(0.6); }
+        const t = ahora - t0, n = tramo(t, 120, aviva, curva);
+        nombre.style.clipPath = `inset(${((1 - n) * 100).toFixed(2)}% -10% -10% -10%)`;
+        nombre.style.transform = `translateY(${((1 - n) * 14).toFixed(1)}px)`;
+        nombre.style.setProperty("--calor", (1 - tramo(t, 120 + aviva / 2, enfria, reparte)).toFixed(3));
+        const s = tramo(t, 120 + aviva * 0.65, dIn, curva), b = tramo(t, 120 + aviva * 0.75, dIn, curva);
+        sub.style.opacity = s; sub.style.transform = `translateY(${((1 - s) * 10).toFixed(1)}px)`;
+        acc.style.opacity = b; acc.style.transform = `translateY(${((1 - b) * 12).toFixed(1)}px)`;
+        if (cine) cine.style.opacity = tramo(t, 300, aviva + dIn, curva);
+        densidadFondo = tramo(t, aviva * 0.6, aviva + dIn, (x) => x);
+        if (t >= 120 + aviva / 2 + enfria) acabar(); else requestAnimationFrame(paso);
+      };
+      requestAnimationFrame(paso);
+    }
+  }
+
   // La cinta de la portada. Como en Entrada.astro: sin `autoplay` y con `preload="none"`, la arranca
   // esto, y no la arranca con «reducir movimiento» ni con ahorro de datos (regla 20 de
   // movimiento.md); entonces se queda el póster. Se carga la primera vez que se ve —quien entra por
@@ -407,29 +472,31 @@
   // a rojo y se apaga. Se pinta como se ve en una foto: un trazo fino a lo largo de su vuelo —lo que
   // recorre en un instante, más largo cuanto más rápida—, sin halo. Lienzo 2D, a 30 fotogramas por
   // segundo como mucho; transparente, y en la portada deja ver el vídeo debajo. La regla 6 de
-  // movimiento.md tiene su excepción escrita para este fondo.
+  // movimiento.md tiene su excepción escrita para este fondo. Delante de todo hay otro lienzo, el de las
+  // chispas que no son fondo: la bocanada al cambiar de sección y las que salta un botón al pulsarlo.
   const cv = document.querySelector(".fondo"), cx = cv.getContext("2d");
+  const cvD = document.querySelector(".chispazos"), cxD = cvD?.getContext("2d");
   if (!cx) return;
   const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let W = 0, H = 0;
   const size = () => {
     const d = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight;
-    cv.width = Math.round(W * d); cv.height = Math.round(H * d); cx.setTransform(d, 0, 0, d, 0, 0);
+    for (const [c, x] of [[cv, cx], [cvD, cxD]]) if (x) { c.width = Math.round(W * d); c.height = Math.round(H * d); x.setTransform(d, 0, 0, d, 0, 0); }
   };
   // Una por cada 12.000 px² de pantalla, entre 36 y 120. Eran 16.000, 28 y 90: Mario las pidió
-  // «ligeramente» más densas el 2026-11-02, y es un tercio más.
-  const cuantas = () => Math.max(36, Math.min(120, Math.round((W * H) / 12000)));
+  // «ligeramente» más densas el 2026-11-02, y es un tercio más. La entrada la sube desde cero.
+  const cuantas = () => Math.round(Math.max(36, Math.min(120, (W * H) / 12000)) * densidadFondo);
   const azar = (a, b) => a + Math.random() * (b - a);
   // z es lo cerca que está (1, delante): las de lejos son más finas, más lentas y más tenues. Seis de cada
   // diez nacen bajo el borde de abajo y entran subiendo; las demás aparecen ya en el aire, poco a poco,
   // como si entraran en foco, para que las haya en todo el alto de la pantalla.
-  const nueva = () => {
-    const z = azar(0.45, 1), abajo = Math.random() < 0.6;
-    return { z, x: azar(0, W), y: abajo ? H + azar(4, 40) : azar(H * 0.2, H), vx: azar(-15, 15), vy: -azar(70, 170) * z,
-      edad: 0, vida: azar(1.8, 4.6), entra: abajo ? 0.12 : 0.5, calor: azar(0.75, 1), grueso: Math.random() < 0.12 ? azar(2, 2.6) : azar(1.1, 1.6),
+  const nueva = (o = {}) => {
+    const z = azar(0.45, 1), abajo = o.abajo ?? Math.random() < 0.6;
+    return { z, x: azar(0, W), y: abajo ? H + azar(4, 40) : azar(H * 0.2, H), vx: azar(-15, 15), vy: -azar(70, 170) * z * (o.fuerza || 1),
+      edad: 0, vida: azar(1.8, 4.6) * (o.corta || 1), entra: abajo ? 0.12 : 0.5, calor: azar(0.75, 1), grueso: Math.random() < 0.12 ? azar(2, 2.6) : azar(1.1, 1.6),
       f1: azar(1.2, 2.6), f2: azar(3.2, 6.5), p1: azar(0, 6.3), p2: azar(0, 6.3), luz: azar(0, 100) };
   };
-  const chispas = [];
+  const chispas = [], delante = [];
   // El aire: un empujón hacia arriba que se gasta, un vaivén de dos ondas y, de vez en cuando, un bandazo.
   const mover = (c, dt, t) => {
     c.edad += dt;
@@ -446,13 +513,15 @@
     return a.map((v, n) => Math.round(v + (b[n] - v) * f)).join(",");
   };
   const suaveF = (x) => { const t = Math.min(1, Math.max(0, x)); return t * t * (3 - 2 * t); };
-  const pintar = (t) => {
+  // Pinta una lista de chispas en un lienzo: el fondo, o el de delante.
+  const pintarEn = (cx, lista, t) => {
     cx.clearRect(0, 0, W, H);
     cx.globalCompositeOperation = "lighter"; cx.lineCap = "round";
-    for (const c of chispas) {
+    for (const c of lista) {
       const vida = c.edad / c.vida, k = c.calor * Math.pow(1 - vida, 0.6);
       const parpadeo = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(t * 13 + c.luz)) * (0.5 + 0.5 * Math.sin(t * 29 + c.luz * 1.7));
-      const alfa = suaveF(c.edad / c.entra) * (1 - suaveF((vida - 0.7) / 0.3)) * suaveF(c.y / (H * 0.2)) * parpadeo * (0.5 + 0.5 * k) * (0.6 + 0.4 * c.z);
+      // Arriba se apagan, para no subir a la barra; las que salta un botón, no, que pueden salir de ella.
+      const alfa = suaveF(c.edad / c.entra) * (1 - suaveF((vida - 0.7) / 0.3)) * (c.salto ? 1 : suaveF(c.y / (H * 0.2))) * parpadeo * (0.5 + 0.5 * k) * (0.6 + 0.4 * c.z);
       if (alfa < 0.01) continue;
       // El trazo: lo que recorre en 50 ms, hacia atrás desde donde está. Y, mientras está caliente, la
       // cabeza más clara: es lo que la hace brasa y no una mota, sin halo.
@@ -472,24 +541,51 @@
     const d = scrollY - yAntes; yAntes = scrollY;
     if (Math.abs(d) < 300) for (const c of chispas) c.y -= d * 0.25 * c.z;
   };
+  const pintar = (t) => pintarEn(cx, chispas, t);
   const llenar = () => { while (chispas.length < cuantas()) chispas.push(nueva()); chispas.length = cuantas(); };
   const avanzar = (dt, t) => chispas.forEach((c, n) => {
     mover(c, dt, t);
     if (c.edad > c.vida || c.y < -30 || c.x < -40 || c.x > W + 40) chispas[n] = nueva();
   });
+  // Las de delante. Las de la bocanada vuelan como las del fondo, más deprisa y menos tiempo; las de un
+  // botón saltan de su borde de arriba y caen frenadas, como las que suelta una brasa al tocarla.
+  const avanzarDelante = (dt, t) => {
+    for (let i = delante.length - 1; i >= 0; i--) {
+      const c = delante[i];
+      if (c.salto) { c.edad += dt; c.vx *= Math.exp(-2.2 * dt); c.vy = c.vy * Math.exp(-1.6 * dt) + 140 * dt; c.x += c.vx * dt; c.y += c.vy * dt; }
+      else mover(c, dt, t);
+      if (c.edad > c.vida || c.y < -30) delante.splice(i, 1);
+    }
+  };
   size(); llenar();
   // Se arranca con tres segundos ya vividos, para que la pantalla no empiece vacía.
   for (let n = 0; n < 90; n++) avanzar(1 / 30, n / 30);
   // Cambiar el tamaño del lienzo lo borra: con «reducir movimiento», que no repinta solo, se repinta aquí.
   addEventListener("resize", () => { size(); llenar(); if (quieto) pintar(3); });
   if (quieto) { pintar(3); return; }
-  let ultimo = 0;
+  // La bocanada: bastante más densa que el fondo —Mario la quiso «un poquito más considerablemente»—,
+  // una por cada 6.000 px², entre 70 y 220, por lo que se le pida; nacen bajo el borde de abajo.
+  rafaga = (cuanto = 1) => {
+    if (!cxD) return;
+    const n = Math.round(Math.max(70, Math.min(220, (W * H) / 6000)) * cuanto);
+    for (let i = 0; i < n; i++) { const c = nueva({ abajo: true, fuerza: azar(1.6, 2.5), corta: 0.6 }); c.y = H + azar(0, 80); delante.push(c); }
+  };
+  // Las de un botón al pulsarlo: de cuatro a seis, de su borde de arriba.
+  soltar = (b) => {
+    if (!cxD) return;
+    const r = b.getBoundingClientRect(), n = 4 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < n; i++) delante.push({ salto: true, z: 1, x: r.left + r.width * azar(0.18, 0.82), y: r.top + azar(2, 6), vx: azar(-80, 80), vy: -azar(170, 330),
+      edad: 0, vida: azar(0.45, 0.95), entra: 0.04, calor: azar(0.85, 1), grueso: azar(1.2, 1.9), luz: azar(0, 100) });
+  };
+  let ultimo = 0, limpio = true;
   const frame = (ms) => {
     requestAnimationFrame(frame);
     if (ms - ultimo < 32) return;
     // Con la pestaña oculta no se pinta; al volver, el salto de tiempo se queda en un paso normal.
-    const dt = ultimo ? Math.min(0.05, (ms - ultimo) / 1000) : 1 / 30; ultimo = ms;
-    llevar(); avanzar(dt, ms / 1000); pintar(ms / 1000);
+    const dt = ultimo ? Math.min(0.05, (ms - ultimo) / 1000) : 1 / 30, t = ms / 1000; ultimo = ms;
+    llevar(); llenar(); avanzar(dt, t); pintar(t);
+    // El lienzo de delante solo se pinta mientras tiene algo, y una vez más para dejarlo limpio.
+    if (cxD && (delante.length || !limpio)) { avanzarDelante(dt, t); pintarEn(cxD, delante, t); limpio = !delante.length; }
   };
   requestAnimationFrame(frame);
 })();
