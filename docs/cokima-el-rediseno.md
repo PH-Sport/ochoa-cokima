@@ -527,6 +527,14 @@ que late, borde que gira— y valdrían para todos los botones; en el calendario
 CoverManager, solo entraría el aspecto en reposo. La maqueta se probó en WebKit y Chromium a 1280 y
 390, sin errores ni scroll lateral, en reposo, con el ratón y pulsando.
 
+**Mario se queda con el neón**, y lo pidió *«algo más pronunciado… que el parpadeo se note un poco
+más»*. En la segunda versión de la maqueta (mismo enlace) los parpadeos son **cortes secos**
+(`steps`), no fundidos: tres apagones enteros y un tartamudeo en unos 720 ms antes de quedarse
+encendido; al pulsar, se apaga del todo unos 160 ms y vuelve a arrancar, y «Reservar», que es
+macizo, se atenúa a la mitad sin desaparecer. El tubo encendido pasa a 2 px y con algo más de luz.
+Medido en WebKit y Chromium muestreando la opacidad del tubo cada 20 ms: la secuencia sale igual en
+los dos. **Falta que diga si así, y aplicarlo a la web.**
+
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
 rediseñan después, sobre esta dirección.**

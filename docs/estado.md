@@ -180,9 +180,9 @@ en `ochoa-inicio-vivo.md` §3.7.
   iPhone: si la zona se queda fija al bajar o se abren tocando**, que no se ha podido medir con las
   barras de Safari; y si el tramo de scroll de cada panel se hace corto o largo. Después vienen
   Nosotros y Visítanos, sobre la misma dirección.
-- **Elegir el carácter de los botones** entre las tres maneras de la maqueta
-  https://claude.ai/artifact/9aLVRRLV8f3ZJWbYfStUSw (`cokima-el-rediseno.md` §3, «Los botones, con
-  carácter»). El agente recomienda la primera, la brasa que salta.
+- **Ver el neón de los botones, más marcado, en la maqueta**
+  https://claude.ai/artifact/9aLVRRLV8f3ZJWbYfStUSw y decir si se aplica así a la web: eligió el
+  neón entre tres (`cokima-el-rediseno.md` §3, «Los botones, con carácter»).
 - **Decidir cómo va «Carta» en la barra del móvil**: cabe si la marca abre el menú y el desplegable
   deja de decir en qué sección estás (`cokima-el-rediseno.md` §3, «Reservar dentro, chispas y la
   carta a mano»).
