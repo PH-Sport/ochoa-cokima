@@ -106,17 +106,38 @@ main{position:relative;z-index:1}
 /* Cuando sale el menú, los dos botones de la portada se van: no hay dos «Reservar» a la vez */
 .portada .acc.oculta{opacity:0;pointer-events:none}
 .sigue{padding-block:clamp(40px,10vh,110px) 40px}
-.lema{margin:0;font:200 clamp(2.4rem,10vw,5rem)/1.02 var(--sans);letter-spacing:-.025em;text-wrap:balance}
 .estado{display:inline-flex;align-items:center;gap:10px;margin:22px 0 0;font:400 .9rem/1.3 var(--sans);color:var(--bone-2)}
 .estado::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--bone-3)}
 .estado.abierta::before{background:var(--ember);box-shadow:0 0 12px 2px rgba(255,120,40,.55)}
-.puertas{display:grid;gap:34px;margin-top:clamp(50px,9vh,90px)}
-.puerta{display:block;text-decoration:none}
-.puerta img{width:100%;aspect-ratio:4/3;object-fit:cover;
-  -webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent 100%);mask-image:linear-gradient(to bottom,#000 55%,transparent 100%)}
-.puerta .txt{margin-top:-14%;position:relative}
-.puerta .t{display:block;margin-top:8px;font:200 clamp(1.7rem,6.6vw,2.2rem)/1.08 var(--sans);letter-spacing:-.015em}
-.puerta .t::after{content:" →";color:var(--ember);font-weight:300}
+/* El Inicio por bloques (2026-11-02): cada uno cuenta una cosa de Cokima y adelanta una sección,
+   con la misma manera de presentarse —etiqueta brasa, título fino, voz en cursiva, fotos que se
+   funden en el negro y un enlace—. La dirección y lo descartado, en docs/cokima-el-rediseno.md §3. */
+.ini-bloque{margin-top:clamp(90px,16vh,190px)}
+.ini-bloque:first-child{margin-top:0}
+.ini-frase{margin:14px 0 0;max-width:15ch;font:200 clamp(2.5rem,9.6vw,6.2rem)/1.02 var(--sans);letter-spacing:-.025em;text-wrap:balance}
+.voz i{font-style:normal}
+.tit i{font-family:var(--voz);font-style:italic;font-weight:400}
+.ini-trio{list-style:none;margin:clamp(30px,6vh,56px) 0 0;padding:0;display:grid;gap:40px}
+.ini-trio img{width:100%;aspect-ratio:4/5;object-fit:cover;
+  -webkit-mask-image:linear-gradient(to bottom,#000 58%,transparent 100%);mask-image:linear-gradient(to bottom,#000 58%,transparent 100%)}
+.ini-trio p{position:relative;margin:-14% 0 0;font:200 clamp(1.8rem,7vw,2.5rem)/1.1 var(--sans);letter-spacing:-.015em;text-wrap:balance}
+/* Los imprescindibles: los pinta brasa.js con los platos y precios de la carta. En el móvil cada uno
+   lleva su foto en pequeño; en el ordenador, la foto grande de al lado cambia al pasar el ratón. */
+.ini-dest{margin-top:clamp(28px,5vh,48px)}
+.ini-dest ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.ini-dest li{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:4px 16px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
+.ini-dest .mini{grid-row:1/span 2;width:64px;height:64px;object-fit:cover;border-radius:4px}
+.ini-dest .n{font:200 clamp(1.4rem,5.4vw,2.2rem)/1.1 var(--sans);letter-spacing:-.015em}
+.ini-dest .p{font:500 .95rem/1 var(--sans);color:var(--ember);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ini-dest .d{grid-column:2/4;font:italic 400 1.02rem/1.4 var(--voz);color:var(--bone-2)}
+.ini-dest .foto{display:none}
+.ini-acc{display:flex;flex-wrap:wrap;gap:10px;margin:30px 0 0}
+.ini-muestra{display:grid}
+.ini-muestra>img{width:100%;aspect-ratio:4/3;object-fit:cover;
+  -webkit-mask-image:linear-gradient(to bottom,#000 58%,transparent 100%);mask-image:linear-gradient(to bottom,#000 58%,transparent 100%)}
+.ini-muestra .ini-txt{position:relative;margin-top:-10%}
+.ini-muestra .tit{font-size:clamp(2rem,8.4vw,3.4rem)}
+.ini-dato{margin:18px 0 0;font:400 .9rem/1.4 var(--sans);color:var(--bone-2)}
 
 /* ===== La carta ===== */
 .chips{position:sticky;top:calc(var(--barra) + var(--st));z-index:4;margin-top:30px;background:var(--panel);border-block:1px solid var(--line)}
@@ -180,8 +201,25 @@ main{position:relative;z-index:1}
   .secciones{display:flex}
   .barra{--barra:72px}
   :root{--barra:72px}
-  .puertas{grid-template-columns:repeat(3,1fr);gap:28px}
-  .puerta .t{font-size:1.9rem}
+  .ini-trio{grid-template-columns:repeat(3,1fr);gap:28px}
+  .ini-trio p{font-size:clamp(1.5rem,2.3vw,2.1rem)}
+  .ini-dest{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:56px;align-items:start}
+  .ini-dest li{grid-template-columns:minmax(0,1fr) auto;padding:20px 0}
+  .ini-dest .mini{display:none}
+  .ini-dest .d{grid-column:1/3}
+  .ini-dest .n{color:var(--bone-2);transition:color var(--dur-out) var(--ease)}
+  .ini-dest li.on .n{color:var(--bone)}
+  .ini-dest .foto{display:block;position:sticky;top:calc(var(--barra) + var(--st) + 40px);aspect-ratio:4/5}
+  .ini-dest figure{position:absolute;inset:0;margin:0;opacity:0;transition:opacity var(--dur-in) var(--ease)}
+  .ini-dest figure.on{opacity:1}
+  .ini-dest figure img{width:100%;height:100%;object-fit:cover;
+    -webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent 100%);mask-image:linear-gradient(to bottom,#000 55%,transparent 100%)}
+  .ini-dest figcaption{position:absolute;left:0;right:0;bottom:4%;padding:0 6%;font:italic 300 clamp(1.5rem,2.2vw,2.1rem)/1.15 var(--voz);text-wrap:balance}
+  .ini-muestra{grid-template-columns:repeat(12,1fr);align-items:center}
+  .ini-muestra>img{grid-column:1/8;grid-row:1;-webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);mask-image:radial-gradient(closest-side,#000 62%,transparent 100%)}
+  .ini-muestra .ini-txt{grid-column:8/13;grid-row:1;margin-top:0}
+  .ini-muestra.der>img{grid-column:6/13}
+  .ini-muestra.der .ini-txt{grid-column:1/6}
   .pf img{aspect-ratio:16/11;
     -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 16%,#000 58%,transparent 100%),linear-gradient(to right,transparent 0%,#000 14%,#000 86%,transparent 100%);
     -webkit-mask-composite:source-in;

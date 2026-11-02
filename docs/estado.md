@@ -42,6 +42,14 @@ estuvo en `preview` sin un plato a la vista; la trampa quedó escrita en `cokima
 tres fotos, `#carta-2` lleva a La carta, la foto nueva carga, y el desplegable y el viaje siguen
 igual. Sin mirar en un iPhone.
 
+**Y al final del día, una dirección para Brasa** (`cokima-el-rediseno.md` §3, «La dirección de
+Brasa»). Mario paró las ideas sueltas —*«estamos soltando parches»*— y descartó la maqueta *Brasa
+con sazón* entera, con su motivo escrito allí. Con una web de referencia que trajo él, se decidió
+que el Inicio cuente por bloques qué es Cokima y adelante cada sección, con los textos de la web
+del Grupo Tombo. **Está montado en `preview`:** la frase de la casa, el producto con tres fotos, los
+imprescindibles de la carta, y las muestras de Nosotros y Visítanos, cada una con su enlace.
+Medido sobre el build en WebKit y Chromium a 1440, 390 y 320; sin mirar en un iPhone.
+
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las
 legales siguen con su aspecto de antes. **Antes de producción falta lo que se dejó a propósito**:
@@ -148,21 +156,11 @@ en `ochoa-inicio-vivo.md` §3.7.
 
 - **Seguir con los retoques de Brasa**, en el alias de Cokima de `preview`, y decir si los
   nombres de las secciones valen (`cokima-el-rediseno.md` §3). Y si se borra `feat/cokima-brasa`, que ya sobra.
-- **Elegir entre las ideas para dar vida a Brasa** (2026-11-02). Mario: *«la estética en general,
-  textos y colores, muy guay, pero me falta algo de vida y sazón»*; el Inicio en el ordenador es
-  corto, y Nosotros y Visítanos, planos. Propuestas, con la recomendada primero: **en toda la web**,
-  que el fuego responda —se aviva al paso del ratón y al bajar deprisa con el dedo—; **Inicio**,
-  la frase de la casa que prende palabra a palabra al bajar y un bloque «Cokima ahora» con el
-  reloj de la cocina (lo que sobrevive del esqueleto 2, §3 de `cokima-el-rediseno.md`), y las
-  puertas que se encienden al pasar el ratón; **Nosotros**, la pared de polaroids del local, con
-  cada momento como una foto prendida que se levanta al acercarse (o, la otra, cada foto se
-  consume como papel en la brasa y deja ver la siguiente); **Visítanos**, la puerta de noche: el
-  rótulo a toda pantalla, los datos como el vinilo de un escaparate y un neón «Abierto» que se
-  enciende con el horario real (o, la otra, una franja de 24 horas con la cocina encendida y la
-  hora de ahora moviéndose). Ninguna es de Ochoa ni de lo ya descartado: *Comanda*, las fotos que
-  estallan y las pantallas como historias. **Las recomendadas, en una maqueta** con las fotos y los
-  textos reales, el fuego de verdad y un panel para apagar el fuego que responde y simular la hora:
-  https://claude.ai/artifact/9maPX8uKzqNrT3e6n3QFoa (2026-11-02).
+- **Ver el Inicio nuevo de Brasa** en el alias de Cokima de `preview` y seguir iterando sobre él
+  (`cokima-el-rediseno.md` §3, «La dirección de Brasa»). Después vienen Nosotros y Visítanos, sobre
+  la misma dirección.
+- **Contar de dónde viene Cokima:** quién está detrás y desde cuándo. Es lo que le falta a Nosotros
+  para tener historia y no solo concepto; ni el repo ni la web del grupo lo dicen.
 - **Ver en su móvil el desplegable de secciones y el viaje de «Reservar»**, y seguir iterando
   sobre ellos (`cokima-el-rediseno.md` §3). El desplegable salió de una maqueta de tres:
   https://claude.ai/artifact/TGPi5Le9WBSVTFXZGoLwhc.

@@ -11,7 +11,11 @@ se publica. Brasa usa quince fotos de la fototeca de @cokimamadrid, en `apps/cok
 tarta, torrija y vacio—, reducidas para el boceto y sin pasar por la optimización de Astro. **No
 quedó apuntado de qué publicación sale cada una**, y ya no coinciden con sus originales. Desde el
 2026-11-02 hay una dieciséis, `sala-entera.jpg`, que sí lo tiene: es *Cokima 5*, la sala entera de
-las seis del local de Mario (abajo), en sRGB y a 1400 px, en la puerta de Nosotros del Inicio. Detrás
+las seis del local de Mario (abajo), en sRGB y a 1400 px, en la muestra de Nosotros del Inicio. Y
+tres de producto de @cokimamadrid para el bloque del producto del Inicio, a 1100 px y en sRGB:
+`producto-atun.jpg` (`producto_atun-rojo__Da0Z4XRNpRS-1`), `producto-picana.jpg`
+(`producto_picana-madurada__DXwVOP3DeQO-2`) y `producto-tomates.jpg`
+(`producto_tomates__DYR0DNYjTQL-1`), las tres sobre negro y con guantes negros. Detrás
 de su portada va el vídeo de la entrada, con su póster.
 
 **Desde el 2026-08-14, Cokima tiene mejor material que Ochoa.** Aparecieron **diecinueve fotos
@@ -45,7 +49,7 @@ cuenta en ese reparto**, porque se hizo desde `preview` antes de juntarla con la
 que era la única que sabía de ellas. **Para la sala, `Cokima 5` —la sala entera, con el neón, el
 mural de *Madness* y las sillas ocre— encaja mejor que la mesa puesta que se usó**; está marcada
 como candidata en el catálogo y espera a Mario. **Desde el 2026-11-02 está en Brasa**, como
-`sala-entera.jpg`, en la puerta de Nosotros del Inicio (`cokima-el-rediseno.md` §3).
+`sala-entera.jpg`, en la muestra de Nosotros del Inicio (`cokima-el-rediseno.md` §3).
 
 En `para-el-video/` (en su iCloud y en `fototeca/icloud/cokima/`) hay cinco elegidas para el vídeo de la entrada,
 **todas sin manos a la vista**: los generadores de vídeo deforman dedos y en un plano cerrado de

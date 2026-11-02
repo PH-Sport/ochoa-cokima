@@ -241,6 +241,34 @@
   addEventListener("scroll", () => { alScroll(true); if (abierto() && Math.abs(scrollY - yMenu) > 8) menu(false); }, { passive: true });
 
   pintarCarta();
+
+  // El Inicio adelanta La carta con sus imprescindibles: los mismos platos y precios de la carta, y la
+  // foto y la frase de FOTOS. En el móvil cada uno lleva su foto en pequeño; en el ordenador hay una
+  // grande al lado que cambia al pasar el ratón. El que no tiene foto —el tataki— deja la de antes.
+  const destacados = document.querySelector("[data-destacados]");
+  if (destacados) {
+    const ul = el("ul"), marco = el("div", "foto");
+    MENU.filter((d) => d.featured).forEach((d) => {
+      const f = FOTOS[d.id], li = el("li"); li.dataset.id = d.id;
+      if (f) {
+        const m = el("img", "mini"); m.src = `/images/${f.img}.jpg`; m.alt = ""; m.width = f.w; m.height = f.h; m.loading = "lazy"; li.append(m);
+        const fig = el("figure"), im = el("img"); fig.dataset.id = d.id;
+        im.src = `/images/${f.img}.jpg`; im.alt = f.alt; im.width = f.w; im.height = f.h; im.loading = "lazy"; fig.append(im);
+        if (f.frase) fig.append(el("figcaption", null, f.frase));
+        marco.append(fig);
+      } else li.append(el("span", "mini"));
+      li.append(el("span", "n", d.name), el("b", "p", fmt(d.price)));
+      if (d.description) li.append(el("span", "d", d.description));
+      ul.append(li);
+    });
+    destacados.append(ul, marco);
+    const activar = (li) => {
+      ul.querySelectorAll("li").forEach((x) => x.classList.toggle("on", x === li));
+      if (marco.querySelector(`figure[data-id="${li.dataset.id}"]`)) marco.querySelectorAll("figure").forEach((x) => x.classList.toggle("on", x.dataset.id === li.dataset.id));
+    };
+    ul.querySelectorAll("li").forEach((li) => li.addEventListener("mouseenter", () => activar(li)));
+    activar(ul.querySelector("li"));
+  }
   const inicial = (location.hash || "").slice(1);
   if (inicial && inicial !== "inicio") ir(inicial, true); else { marcar(); revelar(); alScroll(); }
 

@@ -203,8 +203,9 @@ exclusiva para esta nueva versión»*. **Desde el 2026-10-31 Brasa es la web de 
   *abajo, plana*, de lado a lado y solo texto, porque sigue tapando abajo y en el iPhone se estira
   bajo la rayita de inicio; y la píldora, que es la que no le gustaba. Ninguna de las tres era un
   botón «Menú» con cortina, que es de Ochoa.
-- **El Inicio es corto:** la frase de la casa, si la cocina está abierta ahora (con su horario) y
-  tres puertas a las otras secciones.
+- **El Inicio va por bloques desde el 2026-11-02**, cada uno con una cosa de Cokima y el adelanto de
+  una sección (más abajo, «La dirección de Brasa»). Hasta entonces era corto: la frase de Instagram,
+  el estado de la cocina y tres accesos directos a las otras secciones.
 - **La carta tiene siempre los 21 platos en la misma lista, y cada parte se abre con uno de sus
   platos en foto** (*Portadilla*). Hubo tres maneras conmutables en una barra de boceto, y Mario
   eligió esta el 2026-11-02: *«me quedo con la foto que presenta la sección, con el resto de platos
@@ -238,10 +239,11 @@ exclusiva para esta nueva versión»*. **Desde el 2026-10-31 Brasa es la web de 
   boceto (de 62 a 258 KB). Salen de la fototeca de @cokimamadrid, reducidas para el boceto; **no
   quedó apuntado de qué publicación es cada una**, y ya no coinciden con sus originales. La
   dieciséis sí lo tiene: `sala-entera.jpg` es *Cokima 5*, una de las seis del local que trajo Mario
-  (`fototeca/icloud/cokima/`), pasada a sRGB y a 1400 px (206 KB). Es la puerta de Nosotros del
-  Inicio desde el 2026-11-02, cuando Mario pidió *«Quítame la foto de Nosotros y cámbiamela por
+  (`fototeca/icloud/cokima/`), pasada a sRGB y a 1400 px (206 KB). Entró como puerta de Nosotros del
+  Inicio el 2026-11-02, cuando Mario pidió *«Quítame la foto de Nosotros y cámbiamela por
   otra»*: era Martín, que en el ordenador quedaba en un primer plano de su cara. Martín sigue dentro
-  de Nosotros.
+  de Nosotros. Con el Inicio por bloques pasó a su muestra de Nosotros; las tres fotos de producto
+  del Inicio, con su origen, están en `fotografia.md`.
 - **El estado de la cocina** lleva su horario escrito en `brasa.js` (13:00–16:00 y 19:30–23:30),
   el mismo de `recursos.md` §4, todavía sin confirmar por el restaurante. `OpenState` no sirve aquí:
   calcula el horario del local, no el de la cocina.
@@ -258,6 +260,82 @@ exclusiva para esta nueva versión»*. **Desde el 2026-10-31 Brasa es la web de 
   el móvil se lo descarga entero; pedir otro ancho a Vercel da 400. Pasaba con los anchos que
   traía `Entrada.astro` (420, 720, 1080 y 1440), copiados al póster de Brasa; el póster va ahora
   con 480, 780, 1200 y 1600. `Entrada.astro` ya no se usa y se queda como estaba.
+
+### La dirección de Brasa (2026-11-02)
+
+**El problema real, en palabras de Mario:** *«ahora mismo estamos soltando parches y estamos
+tirándole cosas a la web con cualquier cosa que se nos ocurre, pero no estamos pensando en una
+dirección»*. Le gustaba la estética —*«textos y colores, muy guay»*— pero le faltaban *«vida y
+sazón»*: el Inicio en el ordenador era la portada, una frase y tres accesos directos; Nosotros,
+fotos con frases de Instagram que no cuentan nada del restaurante; Visítanos, plano. **La causa:**
+cada tanda se preguntó qué efecto ponerle a una sección, y no qué tiene que contar. Ningún efecto
+llena una sección que no dice nada.
+
+**Lo que se probó y se descartó ese día**, en la maqueta *Brasa con sazón*
+(https://claude.ai/artifact/9maPX8uKzqNrT3e6n3QFoa), con el motivo de Mario:
+
+- *El fuego que responde* al ratón y al dedo: sobra. *«No tenemos que hacer como en la otra web
+  del otro restaurante»*; el fuego se queda de fondo, sin reaccionar a nada.
+- *Cokima ahora*, un bloque con el reloj de la cocina: *«añaden ruido»*, *«contenido pobre»*. El
+  estado de la cocina es la línea pequeña de siempre.
+- *El Inicio más largo* con la frase que prendía palabra a palabra: más largo, pero sin resolver
+  que las tres secciones fueran accesos directos al final.
+- *La pared de polaroids* en Nosotros: *«muy pobre»*, *«no hay texto, no cuenta nada del
+  restaurante»*, fotos colgadas que no dicen nada.
+- *La puerta de noche* en Visítanos, con el neón «Abierto»: lo que más le cuadraba, pero pobre.
+
+**La referencia que trajo Mario: https://www.sqew.uk** (shawarma en Leeds y Manchester). Se cogió
+su manera de montar el Inicio: **cada bloque cuenta una cosa distinta y adelanta una sección**, con
+su enlace —por qué existen, qué prometen, qué se come, cómo es—. Y no se cogió: su estética de
+comida rápida (letra estrecha gigante, verde, fotos de producto recortadas, pegatinas), la banda de
+texto que corre —Ochoa ya tiene la suya—, la barra de acciones fija abajo en el móvil —se acababa de
+quitar la píldora— ni el equipo con nombres y fotos: Mario, *«Yo no pondría nombres en el Equipo.
+Incluso quitaría las fotos y pasaría a hablar directamente del restaurante en general»*.
+
+**La idea que lo ordena todo es la frase de la casa:** *«Puedes comer en cualquier sitio, pero
+será solo comer»* (la web del Grupo Tombo, `recursos.md` §3). La web tiene que demostrarla. La voz
+también es la de esa web —*«mandanga de la buena»*, carne de animales que *«viven mejor que tú»*,
+*«le dirás ciao a las croquetas de tu abuela»*—, canalla y con gracia, junto a las frases de
+@cokimamadrid. Brasa pone el ambiente; esa voz, la sazón.
+
+**El Inicio, por bloques** (por debajo de la portada, que no cambia):
+
+1. **Por qué existe Cokima.** La frase de la casa en grande, su explicación —*explosión de sabor,
+   compartir y desfasar*— y la línea pequeña del estado de la cocina.
+2. **El producto.** *«Buen producto. Malas intenciones.»* y la frase de la web del grupo partida en
+   tres: el pescado, la carne y las verduras, cada una con su foto de producto de Instagram.
+3. **La carta, de muestra.** La *cocina ecléctica* de la web del grupo y los cinco imprescindibles
+   de la carta, con precio y descripción; en el ordenador, la foto cambia al pasar el ratón por cada
+   uno. Enlace a la carta entera.
+4. **Nosotros, de muestra.** La sala entera y la entrada de Nosotros: *«Nacimos en Argüelles con
+   una misión»*. Enlace.
+5. **Visítanos, de muestra.** *«Ven a conocernos y le dirás ciao a las croquetas de tu abuela»*,
+   la dirección en pequeño, Reservar y el enlace.
+
+**Las reglas que no se mueven:**
+
+- **Una sección —o un bloque— solo existe si cuenta algo de Cokima.** Lo práctico (horario, si
+  está abierto, teléfono) va en pequeño donde hace falta y nunca es una sección por sí solo.
+- **El fuego se queda de fondo**, tal cual, sin reaccionar a nada.
+- **Una sola manera de presentar las cosas en toda la web:** etiqueta brasa, título fino, voz en
+  cursiva, fotos que se funden en el negro y un enlace. No un truco distinto por sección.
+- **Del Ochoa, la idea de que el Inicio adelante cada sección; ni sus piezas ni su orden** (§1, §7).
+- **Nada inventado.** Los textos son de la web del grupo y de @cokimamadrid.
+
+**Montado en `preview` el 2026-11-02**, en cuanto Mario dijo *«Vamos a probarlo»*: los cinco
+bloques en `index.astro`; los imprescindibles los pinta `brasa.js` desde la carta y `FOTOS`, con una
+foto pequeña por plato en el móvil y, en el ordenador, una grande al lado que cambia al pasar el
+ratón. Las tres fotos de producto —atún rojo, picaña madurada y tomates— son de @cokimamadrid
+(`fotografia.md`). La sala entera pasa a la muestra de Nosotros y el rótulo, a la de Visítanos.
+Medido sobre el build, en WebKit y Chromium a 1440, 390 y 320: los cinco bloques y los cinco
+imprescindibles con sus precios de la carta, todo revelado al bajar, todas las fotos cargadas, la
+foto grande sigue al ratón y no cambia con el tataki, que no tiene; cada enlace lleva a su sección;
+sin errores ni scroll lateral. La página del Inicio pasa a medir 4.820 px en el ordenador. Sin mirar
+en un iPhone, y **falta que lo vea Mario**.
+
+**Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
+Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
+rediseñan después, sobre esta dirección.**
 
 ---
 

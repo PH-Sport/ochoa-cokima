@@ -108,15 +108,54 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
           <h1><span class="nombre">Cokima</span><span class="sub">Kitchen Madness</span></h1>
           <div class="acc"><a class="pill" href="#carta" data-ir="carta">Ver carta</a><a class="pill solid" href="https://www.covermanager.com/reservation/module_restaurant/restaurante-cokima/spanish" target="_blank" rel="noopener">Reservar</a></div>
         </div>
+        <!-- Por debajo de la portada, el Inicio va por bloques: cada uno cuenta una cosa de Cokima y
+             adelanta una sección, con su enlace (docs/cokima-el-rediseno.md §3, «La dirección»). Los
+             textos son de la web del Grupo Tombo y de @cokimamadrid. -->
         <div class="wrap sigue">
-          <p class="etq rv">Kitchen Madness · Argüelles</p>
-          <p class="lema rv" style="margin-top:14px">Buen producto. Malas intenciones.</p>
-          <p class="estado rv" data-estado></p>
-          <div class="puertas">
-            <a class="puerta rv" href="#carta" data-ir="carta"><img src="/images/katsu.jpg" alt="" width="880" height="1100"><span class="txt"><span class="etq">La carta</span><span class="t">Para compartir y desfasar.</span></span></a>
-            <a class="puerta rv" href="#nosotros" data-ir="nosotros"><img src="/images/sala-entera.jpg" alt="" width="1400" height="931"><span class="txt"><span class="etq">Nosotros</span><span class="t">Trabajo serio. Cocina canalla.</span></span></a>
-            <a class="puerta rv" href="#visitanos" data-ir="visitanos"><img src="/images/puerta.jpg" alt="" width="1400" height="1400"><span class="txt"><span class="etq">Visítanos</span><span class="t">Andrés Mellado, 21.</span></span></a>
-          </div>
+          <section class="ini-bloque">
+            <p class="etq rv">Kitchen Madness · Argüelles</p>
+            <h2 class="ini-frase rv">Puedes comer en cualquier sitio, pero será solo comer.</h2>
+            <p class="voz rv">Cokima es una explosión de sabor, un concepto creado para compartir y desfasar, mandanga de la buena.</p>
+            <p class="estado rv" data-estado></p>
+          </section>
+
+          <section class="ini-bloque">
+            <p class="etq rv">Buen producto. Malas intenciones.</p>
+            <p class="voz rv">Elaboramos nuestros platos con los mejores productos frescos;</p>
+            <ol class="ini-trio">
+              <li class="rv"><img src="/images/producto-atun.jpg" alt="Un lomo de atún rojo en unas manos con guantes negros" width="1100" height="1100" loading="lazy"><p>pescado que casi aletea,</p></li>
+              <li class="rv"><img src="/images/producto-picana.jpg" alt="Una picaña madurada abierta por la mitad" width="1100" height="1100" loading="lazy"><p>carne de animales que viven mejor que tú</p></li>
+              <li class="rv"><img src="/images/producto-tomates.jpg" alt="Tres tomates apilados en unas manos con guantes negros" width="1100" height="1467" loading="lazy"><p>y verduras que saben a lo que tienen que saber.</p></li>
+            </ol>
+          </section>
+
+          <section class="ini-bloque">
+            <p class="etq rv">La carta · Imprescindibles</p>
+            <p class="voz rv">Cocina ecléctica con toques que van desde las recetas más castizas, de las que a los de <i>Madriz</i> les llena de orgullo, hasta los guiños más exóticos para los modernos gastronómicos.</p>
+            <div class="ini-dest rv" data-destacados></div>
+            <p class="ini-acc rv"><a class="pill" href="#carta" data-ir="carta">Ver la carta entera</a></p>
+          </section>
+
+          <section class="ini-bloque ini-muestra">
+            <img class="rv" src="/images/sala-entera.jpg" alt="La sala de Cokima: el neón, el mural de Madness y las mesas" width="1400" height="931" loading="lazy">
+            <div class="ini-txt rv">
+              <p class="etq">Nosotros</p>
+              <h2 class="tit">Nacimos en Argüelles con una misión.</h2>
+              <p class="voz">Romper las reglas, jugar con los sabores… y demostrar que la cocina, también puede ser una bomba.</p>
+              <p class="ini-acc"><a class="pill" href="#nosotros" data-ir="nosotros">Conócenos</a></p>
+            </div>
+          </section>
+
+          <section class="ini-bloque ini-muestra der">
+            <img class="rv" src="/images/puerta.jpg" alt="El rótulo de Cokima en la entrada" width="1400" height="1400" loading="lazy">
+            <div class="ini-txt rv">
+              <p class="etq">Visítanos</p>
+              <h2 class="tit">Ven a conocernos y le dirás <i>ciao</i> a las croquetas de tu abuela.</h2>
+              <p class="ini-dato">Calle de Andrés Mellado, 21 · Argüelles, Madrid</p>
+              <p class="ini-acc"><a class="pill solid" href="https://www.covermanager.com/reservation/module_restaurant/restaurante-cokima/spanish" target="_blank" rel="noopener">Reservar mesa</a><a class="pill" href="#visitanos" data-ir="visitanos">Cómo llegar y horario</a></p>
+            </div>
+          </section>
+
           <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><span>+34 915 98 94 01</span><span>Lunes a domingo, 9:00–00:00</span></footer>
         </div>
       </section>
