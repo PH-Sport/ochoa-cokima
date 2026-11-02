@@ -71,7 +71,8 @@ como pidió:** cuatro paneles —Imprescindibles primero, El producto, La sala y
 Ven con un texto para buscadores— (mismo §3, «El Inicio, reordenado»). **Y lo último de la noche,
 ya en preview:** la entrada —«Cokima» se aviva con una bocanada de chispas y se enfría del rojo al
 hueso—, una bocanada de chispas más densa al cambiar de sección y los botones de neón, que se hunden y
-sueltan chispas al pulsarlos (mismo §3, «En preview: la entrada, la bocanada y el neón»).
+sueltan chispas al pulsarlos (mismo §3, «En preview: la entrada, la bocanada y el neón»). En La carta,
+el plato de la foto de cada parte ya no se repite en la lista de debajo.
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las

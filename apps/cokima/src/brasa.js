@@ -45,16 +45,17 @@
     if (VOCES[d.id]) li.append(el("span", "vl", VOCES[d.id]));
     return li;
   };
-  const lista = (sec) => {
+  const lista = (sec, salvo) => {
     const ul = el("ul");
-    MENU.filter((d) => d.section === sec).forEach((d) => ul.append(fila(d)));
+    MENU.filter((d) => d.section === sec && d.id !== salvo).forEach((d) => ul.append(fila(d)));
     return ul;
   };
 
   const cuerpo = document.getElementById("carta-cuerpo");
-  // Cada parte de la carta se abre con uno de sus platos en foto y, debajo, todos en la misma lista,
-  // ese también: la foto ilustra la parte, no corona al plato. Mario la eligió entre tres maneras el
-  // 2026-11-02 (docs/cokima-el-rediseno.md §3); FOTOS guarda la foto y la frase de los ocho con foto.
+  // Cada parte de la carta se abre con uno de sus platos en foto —con su nombre, su precio y su frase— y,
+  // debajo, los demás. Mario la eligió entre tres maneras el 2026-11-02, «con el resto de platos abajo»;
+  // hasta que vio el plato de la foto repetido en la lista, que sobraba (docs/cokima-el-rediseno.md §3).
+  // FOTOS guarda la foto y la frase de los ocho con foto.
   const PORTADILLAS = { compartir: "compartir-04", terminar: "terminar-04", postres: "postres-02" };
   const pintarCarta = () => {
     PARTES.forEach(([sec, t]) => {
@@ -62,7 +63,7 @@
       const w = el("div", "wrap"); w.append(el("h3", "sec", t)); s.append(w);
       const pid = PORTADILLAS[sec];
       const p = foto(pid, POR_ID[pid].featured ? "Imprescindible" : null); p.classList.add("portadilla"); s.append(p);
-      const l = el("div", "wrap lista"); l.append(lista(sec)); s.append(l);
+      const l = el("div", "wrap lista"); l.append(lista(sec, pid)); s.append(l);
       cuerpo.append(s);
     });
   };

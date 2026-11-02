@@ -2,8 +2,7 @@
    Es el boceto que eligió Mario: de fondo, chispas de brasa que suben (eran un lecho de brasas hasta
    el 2026-11-02); la Bricolage fina en los títulos y la Cormorant en la voz; cuatro secciones
    —Inicio, La carta, Nosotros y Visítanos—, y Reservar, en una sola página; y en La carta la foto
-   de un plato abre cada parte, con todos
-   debajo (Mario eligió esa manera entre tres el 2026-11-02).
+   de un plato abre cada parte, con los demás debajo (Mario eligió esa manera entre tres el 2026-11-02).
    Colores, letras, curva y duraciones salen de tokens.css. Esta página no carga global.css, que
    es el de la web anterior: por eso declara aquí su letra y su apagado de movimiento. */
 @font-face{font-family:"Bricolage Grotesque";src:url("/fonts/bricolage-400.woff2") format("woff2");font-weight:200 800;font-display:swap}

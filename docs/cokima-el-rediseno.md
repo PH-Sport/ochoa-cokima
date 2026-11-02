@@ -206,10 +206,12 @@ exclusiva para esta nueva versión»*. **Desde el 2026-10-31 Brasa es la web de 
   de una sección (más abajo, «La dirección de Brasa»). Ese mismo día fue antes cinco bloques uno
   debajo de otro, y hasta entonces era corto: la frase de Instagram, el estado de la cocina y tres
   accesos directos a las otras secciones.
-- **La carta tiene siempre los 21 platos en la misma lista, y cada parte se abre con uno de sus
-  platos en foto** (*Portadilla*). Hubo tres maneras conmutables en una barra de boceto, y Mario
-  eligió esta el 2026-11-02: *«me quedo con la foto que presenta la sección, con el resto de platos
-  abajo»*. Las otras dos salieron del código con la barra: *Al tocar*, un punto en los que tienen
+- **Cada parte de la carta se abre con uno de sus platos en foto** —con su nombre, su precio y su
+  frase— **y debajo van los demás** (*Portadilla*): 3 en foto y 18 en las listas, los 21 una sola vez.
+  Hubo tres maneras conmutables en una barra de boceto, y Mario eligió esta el 2026-11-02: *«me quedo
+  con la foto que presenta la sección, con el resto de platos abajo»*. Al principio el plato de la foto
+  se repetía en la lista —se leyó «la foto ilustra la parte»—, y Mario lo vio: *«El mismo que es
+  portada, se repite entre el resto de platos… eliminaría el repetido de más abajo»*. Fuera. Las otras dos salieron del código con la barra: *Al tocar*, un punto en los que tienen
   foto que la desplegaban al tocarlos, con un lateral fijo que seguía al ratón en el ordenador; y
   *Pareja*, dos imprescindibles en foto arriba. Las direcciones `#carta-1`, `-2` y `-3` llevan a
   La carta. El tartar, sin foto, lleva su frase publicada en lugar de una foto.
