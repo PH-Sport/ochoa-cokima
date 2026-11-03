@@ -740,8 +740,8 @@ vídeos a la vez en un portátil modesto. Las tres trampas de esta tanda, en §5
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
 rediseñan después, sobre esta dirección.**
 
-**Nosotros, en maqueta: tres formatos descartados y lo que pide Mario (2026-11-03).** Sin tocar la
-web. Las tres maquetas usan los mismos cinco vídeos de @cokimamadrid, del local y del pase, sin
+**Nosotros, en maqueta: cinco formatos descartados y lo que pide Mario (2026-11-03).** Sin tocar
+la web. Todas las maquetas usan los mismos cinco vídeos de @cokimamadrid, del local y del pase, sin
 nombres ni caras, y las mismas frases suyas:
 
 - **Por capítulos** (https://claude.ai/artifact/R6WyWGtC61FNJxGF5TKZPJ): Argüelles, La cocina, El
@@ -755,8 +755,40 @@ nombres ni caras, y las mismas frases suyas:
   sección, **sin caer en el deslizamiento vertical que, con más contenido, se hace infinito**.
 - **Descartado antes de proponerlo**, porque ya lo había parado: los vídeos como historias de
   Instagram (§7) y la comanda como índice, que se parece a *Comanda* de la tanda 1.
+- **El texto delante y las cinco a la vez** (https://claude.ai/artifact/XquMCAM8MNnerQXakggqWo),
+  con cada título y su frase siempre a la vista. En la primera, los cinco capítulos escritos y
+  detrás el vídeo del encendido, que pasa al siguiente al acabar; en la segunda, cada vídeo con su
+  texto debajo, en cinco columnas en el ordenador y cinco filas en el móvil (algo más de una
+  pantalla). Mario: *«sigue sin convencerme ninguna»*, sin un motivo concreto. Para el móvil se
+  partió de un límite medido: cinco títulos, cinco descripciones y un vídeo grande no caben en una
+  pantalla a un tamaño que se lea.
+- **Se le planteó parar los formatos** y escribir primero qué cuenta Nosotros: los cinco son
+  eslóganes de Instagram, y en el material hay hechos que solo tiene Cokima y no se han usado —el
+  mural es de un artista, @villabrille; el neón *«Orgasm, at the first bite»*; la comanda que se
+  canta; los cinco años; *«restaurante de autor»*—. **Mario prefirió seguir con el formato**, con una
+  referencia suya: el mosaico vivo de La casa de Ochoa (`ochoa-inicio-vivo.md` §3.3). Lo que le gusta,
+  en sus palabras: fotos que enseñan facetas del sitio *«sin llegar a entrar en detalle»*, que se
+  redimensionan solas y *«también obedecían al clic»*, y que se muestran *«sin necesidad de que
+  hubiese un "esfuerzo" muy grande por parte del usuario»*.
 
-**Lo que se queda de las tres:** los cinco vídeos, con sus cortes, y la ficha «Qué es Cokima». Los
+**En maqueta desde ese día, el collage y el fuelle** (https://claude.ai/artifact/8otJqwkVntRJ1ummPx4768).
+De La casa se coge la idea —las piezas cambian de tamaño solas y obedecen al tocarlas— y no sus piezas,
+que es la regla de las dos casas (§7): aquí son vídeos y no fotos, están los cinco siempre a la vista
+(en La casa se turnan diez fotos en cuatro huecos), el grande lleva su nombre y su frase y no una
+chapa, sin sombra roja ni borde, y cambia más despacio. **El collage:** una rejilla de tres por dos
+en el ordenador y de dos por tres en el móvil; el grande ocupa dos celdas, y cada 2,3–3,4 s (sin
+compás) se encoge a una suya mientras una vecina crece en su sitio. Nunca se mueven más de tres
+piezas, y el que se encoge va encima y arranca antes, como en La casa. **El fuelle:** los cinco en
+fila, uno ancho con su nombre y su frase y los demás estrechos con su nombre de pie; se abre el
+siguiente cuando acaba el vídeo del ancho. En los dos, suena solo el grande; tocar uno lo pone grande
+y desde ahí no se mueve solo; con el ratón encima, el collage espera; y «Pausar» lo para todo.
+Medido en WebKit y Chromium a 390×664, 375×548, 430×739, 1440×900 y 1280×720: cabe en una pantalla
+sin el mando de la maqueta, el vídeo cubre su ventana también a mitad de los cambios, las piezas no
+se pisan, el texto del grande cabe en su pieza, y con «reducir movimiento» no se mueve ni se descarga
+nada. Al medir salió una trampa sin error, ya regla 31 de `movimiento.md`: los vídeos dejaban piezas en
+negro al rebobinarlos, al cargarlos o al arrancarlos. **Sin mirar en un iPhone.**
+
+**Lo que se queda de las tres primeras:** los cinco vídeos, con sus cortes, y la ficha «Qué es Cokima». Los
 cortes, de la fototeca, a 540×960, H.264 sin sonido y CRF 27 (el de la parrilla, 29), unos 3,4 MB los
 cinco: Argüelles, la entrada (`DHa2iMZNh8p`) de 1,6 a 7 s; La cocina, la sartén (`DZfAlbINfIO`) de
 1,5 a 9 s; El pase, el mural (`DJcFEQ-tunn`) de 2,5 a 8,5 s, solo manos; Las favoritas, las croquetas

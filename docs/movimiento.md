@@ -516,6 +516,16 @@ más lejos; Ochoa es una tasca y es seca.
     los 60 ms del clic la sección vieja ya estaba escondida; en WebKit, no—. Arreglado ese mismo
     día, a petición de Mario, con la misma lectura: medido, la sección vieja se esconde a los
     196–209 ms en los dos motores, a 390 y a 1440.
+31. **Un vídeo que cambia de sitio necesita su foto fija debajo.** Cazado el 2026-11-03 en la
+    maqueta del collage de Nosotros de Cokima, donde cinco vídeos cambian de tamaño solos, y sin
+    ningún error. Tres cosas dejan una pieza sin imagen durante uno o varios fotogramas: **rebobinar**
+    (`currentTime = 0`) la deja en negro mientras busca, en WebKit; **`load()`**, o pasar del póster
+    al primer fotograma, deja uno sin imagen en Chromium; y **arrancarlo** con `play()` dejó en
+    WebKit dos capturas seguidas sin pintar. La geometría medida decía que el vídeo cubría su
+    ventana en todos los fotogramas; solo las capturas lo enseñaron, midiendo si cada pieza era un
+    color plano. **Lo que se hace:** no rebobinar los que se paran, `play()` sin `load()`, y debajo de
+    cada vídeo su primer fotograma como `<img>`, con el mismo `transform` en el mismo fotograma
+    (regla 27). Medido así, 0 piezas planas en unas 1.100 capturas, en los dos motores, a 390 y a 1440.
 
 ## Qué se mueve hoy
 

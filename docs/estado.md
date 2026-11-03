@@ -107,13 +107,14 @@ La sartén en llamas, que era la de antes y cuadrada, se queda como foto del loc
 buscadores, en la home y en las legales. Cómo está hecha y lo descartado, en `fotografia.md` §Nota
 técnica. **Sin probar en WhatsApp de verdad.**
 
-**Y Nosotros, en maqueta, sin tocar la web:** tres formatos con los vídeos del local y el pase,
-descartados los tres —el primero por lineal; la escena con índice y el mosaico, porque hay que tocar
-para leer cada descripción—. Mario quiere ver cada título con su descripción *«de corrido»* sin caer
-en un scroll que se hace infinito. Por el camino salió lo que manda sobre el formato: **Nosotros no
-puede atraer búsquedas mientras sea `#nosotros` dentro de la portada.** Las maquetas, los motivos y
-la recomendación —una dirección propia para cada sección—, en `cokima-el-rediseno.md` §3, «Nosotros,
-en maqueta».
+**Y Nosotros, en maqueta, sin tocar la web:** cinco formatos con los vídeos del local y el pase,
+descartados los cinco —el primero por lineal; la escena con índice y el mosaico, porque hay que tocar
+para leer cada descripción; el texto delante y las cinco a la vez, sin motivo concreto—. **Ahora en
+maqueta, el collage y el fuelle**, con la idea del mosaico vivo de La casa de Ochoa, que trajo Mario
+como referencia, y piezas de Cokima. Por el camino salió lo que manda sobre el formato: **Nosotros
+no puede atraer búsquedas mientras sea `#nosotros` dentro de la portada.** Las maquetas, los motivos
+y la recomendación —una dirección propia para cada sección—, en `cokima-el-rediseno.md` §3,
+«Nosotros, en maqueta»; la trampa de los vídeos que salió al medir, regla 31 de `movimiento.md`.
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las
@@ -246,8 +247,9 @@ en `ochoa-inicio-vivo.md` §3.7.
   portada. Recomendado, y conservando `/carta` y `/reservas`, que son las de la web anterior; la
   almohadilla, solo para saltos dentro de una página, como las partes de La carta
   (`cokima-el-rediseno.md` §3, «Nosotros, en maqueta»).
-- **Elegir el formato de Nosotros** entre lo que se le proponga después de las tres maquetas
-  descartadas (mismo apartado).
+- **Elegir entre el collage y el fuelle para Nosotros**, o pedir otra vuelta:
+  https://claude.ai/artifact/8otJqwkVntRJ1ummPx4768 (mismo apartado, con las cinco maquetas
+  descartadas antes).
 - **Ver en su móvil el desplegable de secciones y el viaje de «Reservar»**, y seguir iterando
   sobre ellos (`cokima-el-rediseno.md` §3). El desplegable salió de una maqueta de tres:
   https://claude.ai/artifact/TGPi5Le9WBSVTFXZGoLwhc.
