@@ -14,13 +14,14 @@ quedó apuntado de qué publicación sale cada una**, y ya no coinciden con sus 
 las seis del local de Mario (abajo), en sRGB y a 1400 px, en la muestra de Nosotros del Inicio. Y
 tres de producto de @cokimamadrid para el panel del producto del Inicio, a 1100 px y en sRGB:
 `producto-atun.jpg` (`producto_atun-rojo__Da0Z4XRNpRS-1`), que es la de fondo del panel,
-`producto-tomates.jpg` (`producto_tomates__DYR0DNYjTQL-1`) y, desde el 2026-11-03,
-`producto-carabineros.jpg` (`producto_carabineros__DZr1F1IDXcF-1`) y `producto-aperitivo.jpg`
-(`producto_aperitivo-aceite__DWG1JUbjSVa-1`) en la fila de tres. Mario: el atún se repetía —de
-fondo y en la fila— y pidió cambiar las dos primeras de la fila. La carne fue primero la otra foto
-de la picaña, la pieza entera, porque la fototeca no tiene otra carne en crudo; tampoco le
-convenció, ni la foto ni el texto, y la sustituyó el aperitivo —el aceite cayendo en la bandeja, con
-la sal de remolacha—, con su propio texto de Instagram. Las dos de la picaña se quitaron. Y el panel de
+`producto-tomates.jpg` (`producto_tomates__DYR0DNYjTQL-1`) y, desde el 2026-11-03, la fila de
+tres es `producto-atun-marcado.jpg` (`producto_atun-marcado__DZZ8pJvDU6c-2`),
+`producto-steak-tartar.jpg` (`plato_steak-tartar__DYpmMUtjcoO-1`) y los tomates. **Llegó ahí en
+cuatro vueltas el mismo día**, todas de Mario: el atún se repetía (de fondo y en la fila); la carne
+fue la otra foto de la picaña, que no le convenció ni de foto ni de texto; el aperitivo —el aceite en
+la bandeja— tenía el texto largo en el móvil y no seguía los rojos; y de tres opciones probadas en la
+página quitó también los carabineros y se quedó con el atún marcado, el steak tartar y los tomates,
+**todas rojas y sobre fondo oscuro**. Las de la picaña, los carabineros y el aperitivo se quitaron. Y el panel de
 los imprescindibles lleva, desde el mismo día, `imprescindibles-arroz.jpg`
 (`plato_arroz-de-carabinero__DZM_hMUDRFG-1`, 1100 px, sRGB) en lugar del katsu con patatas, que a
 Mario no le parecía *«la más premium»*: el arroz de carabinero es el más caro de los cinco. Detrás

@@ -85,8 +85,8 @@ volver al Inicio con otro panel abierto (se corrige al primer scroll, con los pa
 pantalla). **No se ha tocado el código**: falta saber en qué Safari le pasa y qué hizo antes. Y, el
 mismo día, los textos: **nada inventado** —todos salen de la web original, de su carta o de su
 Instagram, salvo botones, etiquetas y tres textos del agente—; Nosotros pierde el nombre de Martín y
-el hueco de las reseñas, La carta gana al pie el pan y aperitivo de 3 € de la suya, la carne de El
-producto deja sitio al aperitivo y el último panel se llama Visítanos (`cokima-el-rediseno.md` §3,
+el hueco de las reseñas, La carta gana al pie el pan y aperitivo de 3 € de la suya, la fila de El
+producto pasa a ser el atún marcado, el steak tartar y los tomates, y el último panel se llama Visítanos (`cokima-el-rediseno.md` §3,
 «Textos, de dónde sale cada uno»).
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior

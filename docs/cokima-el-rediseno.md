@@ -655,16 +655,20 @@ del estado de la cocina. Los 21 platos casan uno a uno con su carta. Después, M
   reseñas se va. Lo de «la mejor crítica… un plato vacío» se queda.
 - **Lo de los 3 € de su carta:** al pie de La carta, como en la suya, una fila más sin parte:
   «Mantequilla, AOVE, pan y aperitivo · 3 €».
-- **La carne de El producto, foto y texto, fuera:** la sustituye el aperitivo —el aceite cayendo en
-  la bandeja, con la sal de remolacha— con su propio texto de Instagram, *«pan bien hecho,
-  mantequilla ahumada en casa»*. La frase de la fila sigue leyéndose de corrido: pescado que casi
-  aletea, pan bien hecho, mantequilla ahumada en casa y verduras que saben a lo que tienen que saber.
+- **La fila de El producto, rehecha:** la carne, foto y texto, no le convencía; el aperitivo que la
+  sustituyó tenía el texto demasiado largo en el móvil y no seguía los rojos. De tres opciones
+  probadas en la página, Mario quitó también los carabineros: *«dejamos, por orden: B, A y los
+  tomates»*. Queda **el atún marcado** con *«más cuchillo, más producto,»*, **el steak tartar** con
+  *«materia prima de primer nivel»* —de su publicación de la picaña madurada, de la que sale ese
+  plato— y **los tomates** con la frase de la web: todas rojas, sobre fondo oscuro, y con textos de
+  tres líneas como mucho en el móvil, salvo el de los tomates. «Más cuchillo. Más producto.» también
+  sale en Nosotros, que se rehace después.
 - **El último panel del Inicio se llama Visítanos**, no Ven, con «Andrés Mellado, 21» encima del
   nombre en el ordenador.
 
 Medido sobre el build, en WebKit y Chromium a 1440 y 390: Nosotros sin «Martín» ni hueco; los cuatro
-paneles, el último «Visítanos»; la fila del producto con carabineros, el aperitivo y los tomates,
-cargadas; La carta con los 21 platos una sola vez y la fila del pan y aperitivo al final; sin errores.
+paneles, el último «Visítanos»; la fila del producto con sus tres fotos cargadas (después, el atún
+marcado, el steak tartar y los tomates, con el texto del panel cabiendo en los seis tamaños); La carta con los 21 platos una sola vez y la fila del pan y aperitivo al final; sin errores.
 
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
