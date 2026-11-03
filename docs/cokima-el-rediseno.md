@@ -1,13 +1,14 @@
 # Cokima: el rediseño
 
-> **Estado: vivo** · el rediseño está en curso · revisado 2026-11-02
+> **Estado: vivo** · el rediseño está en curso · revisado 2026-11-03
 
-- **Abierto:** 2026-08-14 · **Última tanda:** 2026-11-02
+- **Abierto:** 2026-08-14 · **Última tanda:** 2026-11-03
 - **Rama:** `preview` desde el 2026-10-26, cuando Mario pidió trabajar solo en ella. Antes vivió en
   `tmp/entrada-cokima`
 - **Estado:** **desde el 2026-10-31 la web de Cokima en `preview` es Brasa** (§3), y se itera
   sobre ella con Mario. La entrada de §4 —el vídeo, el nombre y los dos botones— sigue como
-  portada de Brasa; lo de debajo es nuevo. Falta que Mario elija la manera de la carta.
+  portada de Brasa; lo de debajo es nuevo. El vídeo, desde el 2026-11-03, es de planos de su
+  Instagram y no el de IA (§3, «La portada con los vídeos de Instagram»).
 
 Este documento explica **por qué** Cokima se está rehaciendo y por qué se ha descartado casi todo
 lo que se propuso antes de llegar aquí. Si vas a seguir el trabajo, léelo entero antes de tocar
@@ -687,6 +688,54 @@ y se abren al tocarlos. La prueba entera de los paneles fijos, a esos altos y a 
 fallo en WebKit ni en Chromium. La trampa de medir con la pantalla entera es ya la 5 de `metodo.md`
 §2.3.
 
+**La portada con los vídeos de Instagram (2026-11-03).** El vídeo de detrás de la portada era el de
+Higgsfield, que Mario había dado por provisional (§4). Iba a rehacerlo con Seedance 2.5 —ocho fotos
+de la fototeca animadas por separado, con paneos y giros suaves— y llegó a generar cuatro tomas
+(*«no están mal… echo en falta algo más de dinamismo»*). Al ver los vídeos de @cokimamadrid en la
+maqueta de Nosotros lo paró: *«se me desmonta la idea de hacer el vídeo con IA, puesto que los de IG
+son mucho mejores»*. De la maqueta de la portada con ellos dijo *«me parece top»*, y está en
+`preview`.
+
+- **Qué es:** diez planos de 3 s, todos de la propia cuenta y de platos de la carta actual, sin
+  texto encima ni caras: el enoki humeando en la brasa, la leche de tigre sobre el ceviche, los
+  fideos cayendo a la sartén de la fideuá, el tataki, los dumplings, la gilda, el steak tartar, el
+  soft shell crab, la torrija con humo y el caramelo sobre la tarta. La lista, con su vídeo y su
+  segundo, está en `scripts/video-entrada.sh`, que los monta desde la fototeca.
+- **El reparto con Nosotros:** Nosotros usa los del local y el pase (mural, neón, entrada, comanda,
+  la sartén de los huevos, las croquetas abiertas a mano, la mesa). Quedaron fuera de la portada
+  todos los que su sesión llegó a mirar, así que la portada se queda con la cocina y los platos y
+  Nosotros con el local y el equipo. **Ninguno se repite.**
+- **En el móvil, un vertical de 30 s; en el ordenador apaisado, tres verticales en columnas.** Los de
+  Instagram son verticales: recortados a horizontal, como el de IA, se quedaban en un tercio de su
+  alto y ampliados. Tres juntos ocupan casi lo que una pantalla apaisada. La condición es `(min-width:
+  900px) and (min-aspect-ratio: 9/10)`, en `brasa.css` y en `brasa.js`: una tableta en vertical lleva
+  el vertical, porque tres columnas en una pantalla alta se quedan en tiras.
+- **Las columnas cortan a 1 s una de otra**, y nunca a la vez: el desfase va horneado (la segunda
+  empieza 1 s dentro de su primer plano, la tercera 2 s) y, como son bucles de 12, 9 y 9 s, cada una
+  con su reloj, `brasa.js` las arranca juntas y cada segundo recoloca la que se separe más de 0,3 s
+  de la primera. Es la regla 25 de `movimiento.md`, que ya decía que un desfase sin reloj común no
+  dura.
+- **El oscurecido es más suave que el del vídeo de IA.** Aquel grado se calibró para un material claro
+  y plano, de catálogo, y a estos los dejaba casi negros y sin color: se comparó en una hoja, con el
+  velo de la portada encima, y el suave es el de la maqueta.
+- **Peso:** el móvil, 2,14 MB en WebM (el de IA, 0,87); las tres columnas, 2,67 MB (el corte ancho
+  de IA, 1,40). Tienen más detalle y movimiento. El WebM pasó de CRF 36 a 40 porque a 36 pesaba más
+  que el MP4, y a tamaño real no se distingue. El corte horizontal (`entrada-ancho.*`) se borró.
+- **El póster se queda:** no es un fotograma del vídeo sino una foto tratada (§4), y es lo que se ve
+  con «reducir movimiento» y con el ahorro de energía.
+
+**Descartado, con su motivo:** el vídeo con IA de Seedance, porque los de Instagram son mejores, y
+reales; las ocho fotos que se prepararon para él, ya recortadas, se quedan en
+`fototeca/para-seedance/`, fuera de git. Y recortar los verticales a horizontal en el ordenador, por lo de arriba.
+
+Medido sobre el build, en WebKit y Chromium: a 1440×900 se piden y suenan solo las tres columnas,
+a 390×664 solo el vertical, y con «reducir movimiento», nada; las columnas, al alto exacto de la
+portada a 1280×720, 1440×900 y 2560×1440, y una tableta de 1024×1366 con el vertical; una columna
+adelantada 2 s a propósito vuelve a su sitio en 0,6 s y, pasadas las vueltas de 9 y 12 s, las tres
+siguen a menos de 2 centésimas de donde les toca; en La carta se paran y al volver siguen; sin
+errores ni scroll lateral. **Sin mirar en un iPhone**, y sin medir lo que cuesta decodificar tres
+vídeos a la vez en un portátil modesto. Las tres trampas de esta tanda, en §5.
+
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
 rediseñan después, sobre esta dirección.**
@@ -770,6 +819,13 @@ Antes había un `6px` plano, igual para un botón que para una tarjeta: un radio
 de todos los tamaños, que es justo lo que la escala de Ochoa evita. Era una deuda real.
 
 ### El vídeo, que ya está (2026-08-17)
+
+> **Desde el 2026-11-03 el vídeo es otro**: planos de los vídeos de Instagram de Cokima, verticales,
+> uno en el móvil y tres en columnas en el ordenador (§3, «La portada con los vídeos de Instagram»).
+> De aquí abajo, lo que cuenta del montaje de Higgsfield, de los dos cortes, del grado y de los pesos
+> es del vídeo de IA. **La doctrina de carga sigue igual y vale para los archivos nuevos:** sin
+> `autoplay`, `preload="none"`, `import.meta.glob`, pausa fuera de la vista y los cuatro casos en que
+> no se pide.
 
 Lo montó Mario en Higgsfield: **siete escenas de unos cuatro segundos** —la sala con el neón
 «Orgasm, at the first bite», la barra con el sol de COKIMA, y cinco platos—. Entregado en
@@ -939,6 +995,23 @@ no. Era el test: había tocado la animación por la Web Animations API y **eso l
 `animation-play-state` del CSS**. En página limpia funcionaba. Antes de creer un resultado raro,
 comprobar que el instrumento no lo está causando.
 
+**`preload="none"` y esperar a `canplay` no arrancan nunca (2026-11-03).** Las tres columnas de la
+portada se arrancan juntas cuando las tres pueden reproducirse. Pero con `preload="none"`, `load()`
+no pide un byte hasta el `play()`, así que `canplay` no llegaba y las columnas se quedaban en el
+póster, sin un error. Se arregla poniendo `preload = "auto"` desde `brasa.js` al cargarlas, no en la
+etiqueta, que competiría con el póster al abrir la página (regla 21 de `movimiento.md`).
+
+**La fila de un grid crece hasta el alto propio del vídeo (2026-11-03).** A 1280×720 cada columna
+medía 755 px dentro de una portada de 720, y el recorte se iba todo abajo en vez de quedar centrado.
+Se fija la fila: `grid-template-rows: minmax(0, 1fr)`. A 1440×900 no se veía, porque ahí el vídeo es
+más bajo que la portada y la fila se estira.
+
+**El servidor del build no sirve por rangos, y un vídeo sin rangos no se puede saltar (2026-11-03).**
+Con el `http.server` de Python de `cokima-build`, cada salto dentro de un vídeo cae en el segundo 0
+(`seekable` va de 0 a 0). El reloj común de las columnas lo destapó: recolocaba una y la clavaba en
+el 0, una y otra vez. Vercel sí sirve por rangos, pero el reloj solo salta ahora si `seekable` cubre
+el destino, y los saltos se probaron con un servidor con rangos (`metodo.md` §3).
+
 **El checkpoint de Vercel.** Sondear la preview en bucle (50 intentos) activó su anti-bot, y a
 partir de ahí devuelve `403` a curl y a Playwright. Los greps siguen «funcionando» —devuelven cero
 coincidencias— y eso se lee como «no se ha desplegado». El estado de un build se pregunta a la
@@ -948,24 +1021,20 @@ API (`list_deployments` → `state: READY`), no martilleando la URL.
 
 ## 6. Por dónde seguir
 
-1. **Iterar Brasa con Mario** (§3), que es la web en `preview` desde el 2026-10-31. Lo primero que
-   espera: que elija una de las tres maneras de la carta. Y antes de producción, lo que §3 deja
-   apartado a propósito: el cartel de cookies y la medición, la Cormorant servida desde la web, el
-   inglés y las legales con el aspecto nuevo.
+1. **Iterar Brasa con Mario** (§3), que es la web en `preview` desde el 2026-10-31. Antes de
+   producción, lo que §3 deja apartado a propósito: el cartel de cookies y la medición, la Cormorant
+   servida desde la web, el inglés y las legales con el aspecto nuevo.
 2. ~~Decidir si el rótulo del centro se queda al bajar.~~ En Brasa la barra solo aparece pasada
    la portada, así que los dos «Cokima» no coinciden.
-3. ~~El vídeo~~ **puesto el 2026-08-17** (§4), pero **el que hay es provisional y Mario lo dijo
-   expresamente**: lo pasó para ver cómo quedaba. **El pulido al 100% se hace cuando llegue el
-   definitivo**, y hasta entonces no merece la pena gastar en ello. Lo que queda para ese día,
-   anotado para no volver a razonarlo:
+3. ~~El vídeo~~ **puesto el 2026-08-17** (§4) y **sustituido el 2026-11-03 por los planos de
+   Instagram** (§3). Lo que queda de él, anotado para no volver a razonarlo:
 
-   - **AV1** en un tercer `<source>`. Ahorraría del orden de 300 KB sobre 1 MB, a cambio de
-     complicar la matriz de compatibilidad y de gastar batería en móviles que no lo decodifican por
-     hardware. Hoy no compensa; con el vídeo bueno y su peso real delante, se revisa.
-   - **El corte del bucle**, que vuelve al principio en seco. El montaje ya cambia de escena cada
-     cuatro segundos, así que no desentona, pero no está decidido si merece un fundido.
-   - **Repasar el encuadre y el grado** con `scripts/video-entrada.sh`: los dos están calibrados
-     para ESTE material, y el script explica cómo rehacerlos.
+   - **El peso**, que ha subido: 2,14 MB el del móvil y 2,67 MB las tres columnas. Se baja quitando
+     planos o comprimiendo más; Mario no lo ha pedido.
+   - **AV1** en un tercer `<source>`. Ahorraría peso a cambio de complicar la matriz de
+     compatibilidad y de gastar batería en móviles que no lo decodifican por hardware. Con el peso de
+     ahora delante, se puede revisar.
+   - **El corte del bucle** ya no destaca: los planos cambian cada 3 s y el bucle es un corte más.
 4. **`Hero.astro` y `Embers.astro` quedan huérfanos** a propósito. No se borran hasta que el
    rediseño cierre. **Desde el 2026-10-31 también** `Entrada.astro`, `Highlights.astro`,
    `MenuDeck.astro`, `AllergenFilter.astro`, `data/casa.ts`, `data/dish-images.ts` y la colección
@@ -986,3 +1055,4 @@ API (`list_deployments` → `state: READY`), no martilleando la URL.
 - Las fotos que estallan, las secuencias de pantallas como historias y las «extravagancias» en
   pantalla (§3, *Cokima a presión* y la tanda 1).
 - Una sola página eterna: Mario pidió menú por secciones (§3, tanda 2).
+- El vídeo de la portada hecho con IA: los de su Instagram son mejores (§3, 2026-11-03).

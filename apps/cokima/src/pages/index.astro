@@ -13,11 +13,12 @@ import Contacto from "../components/Contacto.astro";
 import { RESTAURANT, COVER_SLUG } from "../site.ts";
 import poster from "../assets/entrada-poster.jpg";
 
-// El vídeo de la entrada, detrás de la portada (Mario, 2026-10-31: «a modo provisional»). Se busca
-// con import.meta.glob por lo mismo que en Entrada.astro, que explica la trampa: la existencia la
-// resuelve el bundler, no el sistema de ficheros. Dos cortes: el vertical y, en el ordenador, el
-// ancho, que elige brasa.js al arrancar.
-const cintas = import.meta.glob<string>("../assets/video/entrada{,-ancho}.{mp4,webm}", {
+// El vídeo de la portada (2026-11-03): planos de los vídeos de Instagram de Cokima, que sustituyen
+// al vídeo hecho con IA (scripts/video-entrada.sh, docs/cokima-el-rediseno.md §3). Se busca con
+// import.meta.glob por lo mismo que en Entrada.astro, que explica la trampa: la existencia la
+// resuelve el bundler, no el sistema de ficheros. En el móvil, un vídeo vertical; en el ordenador
+// apaisado, tres verticales en columnas, que elige brasa.js al arrancar. Sin las tres, el vertical.
+const cintas = import.meta.glob<string>("../assets/video/entrada{,-col-1,-col-2,-col-3}.{mp4,webm}", {
   eager: true,
   query: "?url",
   import: "default",
@@ -26,8 +27,8 @@ const url = (nombre: string, ext: string) =>
   Object.entries(cintas).find(([ruta]) => ruta.endsWith(`/${nombre}.${ext}`))?.[1];
 const mp4 = url("entrada", "mp4");
 const webm = url("entrada", "webm");
-const mp4Ancho = url("entrada-ancho", "mp4");
-const webmAncho = url("entrada-ancho", "webm");
+const columnas = [1, 2, 3].map((n) => ({ mp4: url(`entrada-col-${n}`, "mp4"), webm: url(`entrada-col-${n}`, "webm") }));
+const hayColumnas = columnas.every((c) => c.mp4 || c.webm);
 
 // La piel de Brasa para el motor de CoverManager (ver pages/covermanager.css.ts). En local no se
 // aplica: el motor es https y no carga una hoja de http://localhost.
@@ -88,20 +89,20 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
     <div class="cine" aria-hidden="true">
       <Image src={poster} alt="" widths={[480, 780, 1200, 1600]} sizes="100vw" quality={74} loading="eager" fetchpriority="high" />
       {(mp4 || webm) && (
-        <video
-          muted
-          loop
-          playsinline
-          preload="none"
-          tabindex="-1"
-          disablepictureinpicture
-          disableremoteplayback
-          data-ancho-webm={webmAncho}
-          data-ancho-mp4={mp4Ancho}
-        >
+        <video class="uno" muted loop playsinline preload="none" tabindex="-1" disablepictureinpicture disableremoteplayback>
           {webm && <source src={webm} type="video/webm" />}
           {mp4 && <source src={mp4} type="video/mp4" />}
         </video>
+      )}
+      {hayColumnas && (
+        <div class="tres">
+          {columnas.map((c) => (
+            <video muted loop playsinline preload="none" tabindex="-1" disablepictureinpicture disableremoteplayback>
+              {c.webm && <source src={c.webm} type="video/webm" />}
+              {c.mp4 && <source src={c.mp4} type="video/mp4" />}
+            </video>
+          ))}
+        </div>
       )}
     </div>
     <canvas class="fondo" aria-hidden="true"></canvas>

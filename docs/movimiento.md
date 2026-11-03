@@ -1,6 +1,6 @@
 # Movimiento
 
-> **Estado: vivo** · revisado 2026-11-02
+> **Estado: vivo** · revisado 2026-11-03
 
 Pocas animaciones, concretas, y todas saliendo de los mismos cinco valores. **No hay un solo
 milisegundo suelto en los componentes**: si algo se mueve, su duración y su curva vienen de
@@ -380,6 +380,12 @@ más lejos; Ochoa es una tasca y es seca.
     `play()` se llama con `.catch()`: al deslizar rápido, la promesa se rechaza porque el elemento
     se pausa antes de arrancar, y eso no es un error sino el resultado correcto.
 
+    **Y su contracara (2026-11-03):** con `preload="none"`, esperar a `canplay` antes del `play()`
+    no acaba nunca, porque `load()` no pide un byte hasta el `play()`. Las columnas de la portada de
+    Cokima, que esperan a estar las tres listas para arrancar juntas, se quedaban en el póster sin un
+    error. Quien espera a `canplay` pone `preload = "auto"` desde el script en el momento de
+    cargar, no en la etiqueta (`cokima-el-rediseno.md` §5).
+
 21. **Lo que decide un estado visible no puede esperar a `astro:page-load`.** La entrada de Cokima
     colgaba de ese evento la marca que aparta la cabecera y el arranque de la cinta. El evento no
     llega hasta que han bajado y corrido los módulos de Astro, y **medido en carga fría eso fueron
@@ -427,6 +433,16 @@ más lejos; Ochoa es una tasca y es seca.
     lista (`--respiros-mosaico`). Las palabras del fondo sí pueden salir en la misma pantalla que
     el mazo o el mosaico, pero tampoco llevan compás —sus vidas y sus esperas son listas que no
     casan— y no cambian de golpe: se pintan en 1,7 s y se borran en 1,4.
+
+    **Y en Cokima, los vídeos de la portada (2026-11-03).** En el ordenador son tres columnas que
+    cortan a 1 s una de otra. El desfase va dentro de cada archivo, pero son bucles de 12, 9 y 9 s,
+    cada uno con el reloj de su `<video>`, y cada vuelta o cada parón puede separarlos. Arrancan
+    juntas, cuando las tres pueden reproducirse, y `brasa.js` toma la primera como reloj, con sus
+    vueltas contadas: cada segundo, la columna que se haya ido más de 0,3 s de donde le toca vuelve
+    a su sitio, y solo si `seekable` llega hasta ahí. Ese segundo y esos 0,3 s no son duraciones de
+    movimiento sino la cadencia de un control, y por eso no están en `tokens.css`. **Medido sobre el
+    build:** una columna adelantada 2 s a propósito volvió en 0,6 s, y pasadas las vueltas de 9 y
+    12 s las tres seguían a menos de 2 centésimas de donde les toca.
 
     **Y en un mazo, recolocar no es animar.** Hacia atrás el mazo solo se recolocaba, y la carta
     que volvía del fondo saltaba de capa en el primer fotograma: aparecía fundiéndose *encima* de
@@ -528,6 +544,7 @@ más lejos; Ochoa es una tasca y es seca.
 | Fondo de Brasa (Cokima) | Chispas de brasa que suben: salen de abajo empujadas por el aire caliente, frenan, dan bandazos, se enfrían de amarillo a rojo y se apagan; algunas aparecen ya en el aire, para que las haya en todo el alto. Un trazo fino a lo largo del vuelo, con la cabeza más clara mientras está caliente, sin halo; al bajar la página, las de cerca suben un poco más. Sustituyen al fuego de Rescoldo desde el 2026-11-02 | Lienzo 2D desde `brasa.js`, partículas con su física, a 30 fps, en cada fotograma mientras se ve (excepción de la regla 6); nada con la pestaña oculta; un fotograma quieto, sin seguir al scroll, con «reducir movimiento» |
 | Botones de Brasa (Cokima) | Un neón: el de borde es un tubo apagado; con el ratón encima arranca a trompicones y se queda encendido hasta que el ratón se va. Al pulsar, el botón se hunde un poco y salta un puñado de chispas, sin tocar el tubo. En el móvil, el toque lo enciende y se apaga solo | `opacity` del tubo (un pseudo con su sombra fija), `@keyframes encender`, `--dur-encender`, `ease-in-out`; al pulsar, `scale(.965)` con `--dur-out`, al menos `--dur-out`; las chispas, en el lienzo de delante; en el móvil, `--dur-neon-toque`; encendido sin arranque con «reducir movimiento» |
 | Entrada de Brasa (Cokima) | La primera vez de la sesión, al llegar al Inicio: sube una bocanada de chispas desde un fondo vacío, «Cokima» se destapa de abajo arriba al rojo y se enfría hasta el hueso; «Kitchen Madness», los botones y el vídeo entran detrás. Unos 1,5 s | `clip-path` y `transform` del nombre, `opacity` de una copia en degradado de brasa (`--calor`) y de lo demás, desde `brasa.js`; `--dur-aviva`, `--dur-enfria`, `--dur-in`, `--ease`, `--ease-viaje`; la decide el `<head>` antes del primer pintado; tocar, desplazar o una tecla la terminan; sin entrada con «reducir movimiento» (regla 5) |
+| Vídeo de la portada de Brasa (Cokima) | En el móvil, un vertical de diez planos de 3 s; en el ordenador apaisado, tres verticales en columnas que cortan a 1 s una de otra | el vídeo, horneado (`scripts/video-entrada.sh`); entra con la entrada (`opacity`, `--dur-in`); se pausa fuera de la vista y con la pestaña oculta (regla 6); no se pide con «reducir movimiento» ni con ahorro de datos (regla 20); las columnas, con reloj común (regla 25) |
 | Cambio de sección de Brasa (Cokima) | El fundido corto de siempre y, encima, una bocanada de chispas que sube desde abajo por toda la pantalla, bastante más densa que el fondo | la sección, `opacity` con `--dur-out` y `--dur-in`; las chispas, en el lienzo de delante (una por cada 6.000 px², entre 70 y 220); sin chispas con «reducir movimiento» |
 | Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |
 | Entrada (Cokima) | Una chispa baja por un riel, avisando de que hay más | `stroke-dashoffset`, 3,2s |

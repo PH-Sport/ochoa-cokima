@@ -30,6 +30,18 @@ main{position:relative;z-index:1}
 .cine img,.cine video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .cine video{opacity:0;transition:opacity var(--dur-in) var(--ease)}
 .cine video.puesta{opacity:1}
+/* En el ordenador apaisado, tres vídeos verticales en columnas en lugar de uno (2026-11-03): los de
+   Instagram son verticales, y recortados a horizontal se quedaban en un tercio de su alto. Cada vídeo
+   se recorta en su columna; la raya entre ellas es el suelo. La misma condición está en brasa.js, que
+   decide cuál se descarga. La fila va fija al alto de la portada: si no, crece hasta el alto propio
+   del vídeo —755 px en una pantalla de 1280×720— y el recorte se va todo abajo en vez de quedar
+   centrado. */
+.cine .tres{position:absolute;inset:0;display:none;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:3px}
+.cine .tres video{position:relative;inset:auto;min-height:0}
+@media (min-width:900px) and (min-aspect-ratio:9/10){
+  .cine .tres{display:grid}
+  .cine:has(.tres) video.uno{display:none}
+}
 .cine::after{content:"";position:absolute;inset:0;
   background:linear-gradient(to bottom,rgba(14,9,7,.42) 0%,rgba(14,9,7,.5) 45%,rgba(14,9,7,.86) 78%,var(--ground) 100%)}
 .wrap{padding-left:var(--gl);padding-right:var(--gr);max-width:1160px;margin-left:auto;margin-right:auto}

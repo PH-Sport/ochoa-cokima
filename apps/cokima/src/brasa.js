@@ -447,27 +447,51 @@
   // La cinta de la portada. Como en Entrada.astro: sin `autoplay` y con `preload="none"`, la arranca
   // esto, y no la arranca con «reducir movimiento» ni con ahorro de datos (regla 20 de
   // movimiento.md); entonces se queda el póster. Se carga la primera vez que se ve —quien entra por
-  // #carta no la descarga— y se pausa fuera de la vista y con la pestaña oculta (regla 6). En el
-  // ordenador, el corte ancho.
-  const cinta = cine?.querySelector("video");
-  if (cinta && !matchMedia("(prefers-reduced-motion: reduce)").matches && navigator.connection?.saveData !== true) {
-    let cargada = false;
+  // #carta no la descarga— y se pausa fuera de la vista y con la pestaña oculta (regla 6), y sigue al
+  // volver. En el ordenador apaisado son tres vídeos en columnas (2026-11-03), con la misma condición
+  // que brasa.css; se decide una vez, al cargar, y no al redimensionar (cokima-el-rediseno.md §4).
+  const uno = cine?.querySelector("video.uno"), tres = [...(cine?.querySelectorAll(".tres video") ?? [])];
+  const cintas = tres.length === 3 && matchMedia("(min-width: 900px) and (min-aspect-ratio: 9/10)").matches ? tres : [uno].filter(Boolean);
+  if (cintas.length && !matchMedia("(prefers-reduced-motion: reduce)").matches && navigator.connection?.saveData !== true) {
+    let cargada = false, aLaVista = false;
+    const listas = () => Promise.all(cintas.map((v) => (v.readyState >= 3 ? 0 : new Promise((r) => v.addEventListener("canplay", r, { once: true })))));
+    const parar = () => cintas.forEach((v) => v.pause());
+    // Las columnas arrancan a la vez, cuando las tres pueden reproducirse. En un iPhone con ahorro de
+    // energía, play() se rechaza: no es un error, se queda el póster.
+    const seguir = () => listas().then(() => {
+      if (aLaVista && document.visibilityState === "visible") cintas.forEach((v) => v.play().then(() => v.classList.add("puesta"), () => {}));
+    });
     new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) { cinta.pause(); return; }
-      if (!cargada) {
-        cargada = true;
-        if (matchMedia("(min-width: 900px)").matches) {
-          cinta.querySelectorAll("source").forEach((f) => {
-            const ancha = f.type === "video/webm" ? cinta.dataset.anchoWebm : cinta.dataset.anchoMp4;
-            if (ancha) f.src = ancha;
-          });
-        }
-        cinta.load();
-      }
-      // En un iPhone con ahorro de energía, play() se rechaza: no es un error, se queda el póster.
-      cinta.play().then(() => cinta.classList.add("puesta"), () => {});
-    }).observe(cinta);
-    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") cinta.pause(); });
+      aLaVista = e.isIntersecting;
+      if (!aLaVista) { parar(); return; }
+      // Con preload="none", load() no pide un byte hasta el play(), y aquí se espera a «canplay» para
+      // arrancar las columnas juntas: sin el preload="auto" de ahora, esa espera no acabaría nunca. No va
+      // en la etiqueta para no competir con el póster al cargar la página (regla 21).
+      if (!cargada) { cargada = true; cintas.forEach((v) => { v.preload = "auto"; v.load(); }); }
+      seguir();
+    }).observe(cine);
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") parar(); else if (aLaVista) seguir(); });
+    // Las tres cortan a 1 s una de otra porque el desfase va dentro de cada archivo, y eso solo se
+    // sostiene con un reloj común (regla 25): son bucles de 12, 9 y 9 s, cada uno con el suyo, y cada
+    // vuelta o cada parón puede separarlos. El reloj es la primera columna, con sus vueltas contadas;
+    // cada segundo, la que se haya ido más de 0,3 s de donde le toca vuelve a su sitio. Solo si se
+    // puede saltar a ese punto (`seekable`): un servidor que no sirve por rangos —el http.server de
+    // Python con el que se prueba el build— manda cada salto al segundo 0, y la columna se quedaría ahí.
+    if (cintas.length === 3) {
+      const [guia, ...otras] = cintas;
+      let vueltas = 0, antes = 0;
+      setInterval(() => {
+        if (guia.paused || !(guia.duration > 0)) return;
+        if (guia.currentTime < antes - 1) vueltas++;
+        antes = guia.currentTime;
+        const t = vueltas * guia.duration + guia.currentTime;
+        otras.forEach((v) => {
+          if (v.paused || v.seeking || !(v.duration > 0)) return;
+          const debe = t % v.duration, lejos = Math.abs(v.currentTime - debe), s = v.seekable;
+          if (Math.min(lejos, v.duration - lejos) > 0.3 && s.length && s.start(0) <= debe && s.end(0) >= debe) v.currentTime = debe;
+        });
+      }, 1000);
+    }
   }
 
   // Fondo: chispas de brasa que suben, como en una barbacoa (Mario, 2026-11-02, en lugar del lecho de

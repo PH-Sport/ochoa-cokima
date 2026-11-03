@@ -88,6 +88,18 @@ el hueco de las reseñas, La carta gana al pie el pan y aperitivo de 3 € de la
 producto pasa a ser el atún marcado, el steak tartar y los tomates, y el último panel se llama Visítanos (`cokima-el-rediseno.md` §3,
 «Textos, de dónde sale cada uno»).
 
+**Y ese día, la portada estrena vídeo: planos de su Instagram, no el de IA.** Mario iba a rehacerlo
+con Seedance y lo paró al ver los vídeos de @cokimamadrid —*«los de IG son mucho mejores»*—; de la
+maqueta dijo *«me parece top»*. Son diez planos de 3 s de platos de la carta actual, sin texto ni
+caras y sin repetir ninguno de Nosotros, que se queda con el local y el equipo. **En el móvil, un
+vertical de 30 s; en el ordenador apaisado, tres verticales en columnas** que cortan a 1 s una de
+otra, con un reloj común que las recoloca si se separan (regla 25 de `movimiento.md`). Van menos
+oscurecidos que el de IA, que a estos los dejaba negros, y pesan más: 2,14 MB el del móvil y 2,67 MB
+las tres columnas. La receta, `scripts/video-entrada.sh`, los monta ahora desde la fototeca
+(`cokima-el-rediseno.md` §3, «La portada con los vídeos de Instagram»). Medido sobre el build en
+WebKit y Chromium, del móvil con las barras de Safari a 2560×1440, y con «reducir movimiento» sin
+descargar nada; **sin mirar en un iPhone**.
+
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las
 legales siguen con su aspecto de antes. **Antes de producción falta lo que se dejó a propósito**:
@@ -382,7 +394,8 @@ conversación con él, no una tarea que ejecutar por cuenta propia.**
 
 **Lo que espera a Mario:**
 
-1. ~~El vídeo de la entrada.~~ **Entregado y puesto el 2026-08-17.** Vino de Higgsfield en
+1. ~~El vídeo de la entrada.~~ **Entregado y puesto el 2026-08-17, y sustituido el 2026-11-03 por
+   planos de Instagram (§0).** Lo que sigue es del de entonces. Vino de Higgsfield en
    horizontal (1920x1080, 27 s, 18,5 MB) y claro; se recortó a vertical `608x1080` y se le horneó
    el grado de la casa para que case con el póster, que es casi negro. Pesa **1,05 MB en MP4 y
    0,87 MB en WebM** (y 1,51 / 1,40 el corte de escritorio), y vive en `src/assets/video/`, no en

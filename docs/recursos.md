@@ -1,6 +1,6 @@
 # Recursos: identificadores, accesos y material
 
-> **Estado: vivo** · revisado 2026-10-31
+> **Estado: vivo** · revisado 2026-11-03
 
 **Lo que cuesta recuperar y no se deduce del código.** URLs, slugs, IDs de proyecto y dónde vive
 el material que entrega Mario. Todo lo de aquí está verificado; cada bloque dice cuándo y cómo.
@@ -160,10 +160,11 @@ No están confirmados por el restaurante. **No publicar sin confirmación**; ver
   PATH solo se actualiza en shells nuevos; la ruta directa es
   `%LOCALAPPDATA%\Microsoft\WinGet\Packages\Gyan.FFmpeg_*\ffmpeg-*_full_build\bin\`.
 
-**Lo que sí es del repo y no de la máquina:** la receta de conversión del vídeo de la entrada vive
-en `scripts/video-entrada.sh`, con el porqué de cada parámetro en `cokima-el-rediseno.md` §4.
-Mario avisó de que ese vídeo es **provisional**, así que cambiarlo es ejecutar el comando y revisar
-que el grado le siente bien al material nuevo.
+**Lo que sí es del repo y no de la máquina:** la receta del vídeo de la portada vive en
+`scripts/video-entrada.sh`. Desde el 2026-11-03 ya no convierte el montaje de Higgsfield: monta los
+diez planos de 3 s desde los vídeos de Instagram de `fototeca/instagram/cokimamadrid/`, que no van
+en git y se bajan con `scripts/fototeca.py` en cualquiera de las dos máquinas. El porqué, en
+`cokima-el-rediseno.md` §3, «La portada con los vídeos de Instagram».
 
 El script y ese documento vivían solo en `tmp/entrada-cokima` y **están en `preview` desde el
 2026-10-26**, y la rama se borró ese mismo día.

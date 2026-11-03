@@ -1,6 +1,6 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-11-02 · Ochoa tiene foto en sus diez destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las de Brasa (dieciséis desde el 2026-11-02)
+> **Estado: vivo** · revisado 2026-11-03 · Ochoa tiene foto en sus diez destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las de Brasa (dieciséis desde el 2026-11-02)
 
 ## Estado
 
@@ -25,7 +25,7 @@ página quitó también los carabineros y se quedó con el atún marcado, el ste
 los imprescindibles lleva, desde el mismo día, `imprescindibles-arroz.jpg`
 (`plato_arroz-de-carabinero__DZM_hMUDRFG-1`, 1100 px, sRGB) en lugar del katsu con patatas, que a
 Mario no le parecía *«la más premium»*: el arroz de carabinero es el más caro de los cinco. Detrás
-de su portada va el vídeo de la entrada, con su póster.
+de su portada va el vídeo, con su póster; desde el 2026-11-03, de planos de su Instagram (abajo).
 
 **Desde el 2026-08-14, Cokima tiene mejor material que Ochoa.** Aparecieron **diecinueve fotos
 suyas** en la misma web vieja del grupo, que nadie había mirado, y Mario aportó **seis más del
@@ -62,7 +62,11 @@ como candidata en el catálogo y espera a Mario. **Desde el 2026-11-02 está en 
 
 En `para-el-video/` (en su iCloud y en `fototeca/icloud/cokima/`) hay cinco elegidas para el vídeo de la entrada,
 **todas sin manos a la vista**: los generadores de vídeo deforman dedos y en un plano cerrado de
-comida eso canta.
+comida eso canta. **Desde el 2026-11-03 no hacen falta:** la portada ya no lleva un vídeo hecho
+con IA sino diez planos de los vídeos de Instagram de Cokima, y en vídeo real las manos y los
+guantes del pase sí valen. Los planos, con su vídeo y su segundo, están en
+`scripts/video-entrada.sh`; el porqué, en `cokima-el-rediseno.md` §3. Las ocho fotos que se
+prepararon para hacerlo con Seedance, recortadas a 16:9, se quedaron en `fototeca/para-seedance/`.
 
 ---
 

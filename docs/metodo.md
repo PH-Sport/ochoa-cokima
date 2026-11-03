@@ -84,6 +84,11 @@ está en `visibilityState: "hidden"`, y eso rompe tres cosas:
    parecen «sin salto» cuando en realidad **no se ha medido nada**.
 2. **Las animaciones CSS se congelan.** Las capturas salen a medias y no reflejan el movimiento.
 3. **Chrome no registra FCP ni LCP.** Las métricas de pintado salen vacías.
+4. **`IntersectionObserver` no avisa hasta que se pinta un fotograma.** Con el panel del navegador
+   de la app de escritorio oculto, la portada de Cokima no se enteraba de que estaba a la vista y
+   sus vídeos no arrancaban; se pasaron quince segundos midiendo `readyState: 0` como si fuera un
+   fallo (2026-11-03). Una captura de pantalla fuerza el fotograma. **Antes de dar por roto algo que
+   cuelga de un observador, forzar un pintado y volver a medir.**
 
 **El ritmo de una animación y su LCP los juzga Mario. El agente mide geometría y estado.** Decirlo
 así es más útil que entregar un número que no significa nada.
@@ -232,6 +237,13 @@ el dedo encima no prueba nada en un móvil.**
   pestañas de Mario.
 - **`claude-in-chrome` sirve de alternativa, con un aviso:** ahí `resize_window` **no cambia el
   viewport**, así que no vale para verificar móvil.
+- **El servidor de `cokima-build` y `ochoa-build` no sirve por rangos** (es el `http.server` de
+  Python), y sin rangos **no se puede saltar dentro de un vídeo**: `seekable` va de 0 a 0 y todo
+  `currentTime = x` cae en el segundo 0. Vercel sí sirve por rangos. Para probar algo que salta
+  —el reloj común de las columnas de Cokima—, hace falta un servidor que los sirva; el del
+  2026-11-03 fue un `SimpleHTTPRequestHandler` con respuesta `206`, de cuarenta líneas. Como hacía
+  `chdir` a la carpeta del build, al volver a construir se quedaba en la borrada y daba error en
+  cada petición: hay que reiniciarlo después de cada build.
 - **No sondear las previews de Vercel en bucle.** Activa el checkpoint anti-bot y a partir de ahí
   todo devuelve `403` a curl y a Playwright: los `grep` empiezan a dar cero y parece que el
   despliegue ha fallado. El estado se pregunta a la API de Vercel (`list_deployments` →
