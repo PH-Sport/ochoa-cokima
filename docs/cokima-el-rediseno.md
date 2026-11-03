@@ -740,6 +740,42 @@ vídeos a la vez en un portátil modesto. Las tres trampas de esta tanda, en §5
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
 rediseñan después, sobre esta dirección.**
 
+**Nosotros, en maqueta: tres formatos descartados y lo que pide Mario (2026-11-03).** Sin tocar la
+web. Las tres maquetas usan los mismos cinco vídeos de @cokimamadrid, del local y del pase, sin
+nombres ni caras, y las mismas frases suyas:
+
+- **Por capítulos** (https://claude.ai/artifact/R6WyWGtC61FNJxGF5TKZPJ): Argüelles, La cocina, El
+  pase, Las favoritas y La mesa, uno debajo de otro, cada uno con su vídeo, y un cierre con *«Si lo
+  entiendes, ya eres parte»*. Mario: le gustan los vídeos, pero quiere *«una experiencia dinámica y
+  no lineal»*, distinta a deslizar hacia abajo para ver la sección entera.
+- **La escena con índice y el mosaico vivo** (https://claude.ai/artifact/PaWoBtYZysSmVyFr6KxAAe),
+  las dos en una sola pantalla. En la escena se elige el capítulo y cambia el vídeo; en el mosaico
+  suenan los cinco y se abre uno. Descartadas las dos por lo mismo: el título va sin su descripción
+  y hay que tocar para leerla. Mario quiere que se vea *«de corrido»* qué descripción es de cada
+  sección, **sin caer en el deslizamiento vertical que, con más contenido, se hace infinito**.
+- **Descartado antes de proponerlo**, porque ya lo había parado: los vídeos como historias de
+  Instagram (§7) y la comanda como índice, que se parece a *Comanda* de la tanda 1.
+
+**Lo que se queda de las tres:** los cinco vídeos, con sus cortes, y la ficha «Qué es Cokima». Los
+cortes, de la fototeca, a 540×960, H.264 sin sonido y CRF 27 (el de la parrilla, 29), unos 3,4 MB los
+cinco: Argüelles, la entrada (`DHa2iMZNh8p`) de 1,6 a 7 s; La cocina, la sartén (`DZfAlbINfIO`) de
+1,5 a 9 s; El pase, el mural (`DJcFEQ-tunn`) de 2,5 a 8,5 s, solo manos; Las favoritas, las croquetas
+(`C6tJ19ktThn`) enteras; La mesa, la entrada otra vez, de 12 a 19 s. **La ficha** es texto del agente,
+solo con datos comprobados: la web del grupo, su Instagram (*cocina fusión*, *junto a Plaza de España
+y Moncloa*), la carta (los imprescindibles y los precios) y los datos del local. El año de apertura va
+como hueco hasta que Mario lo confirme.
+
+**Lo que salió por el camino, y manda sobre el formato: tal como está, Nosotros no puede atraer
+búsquedas.** Brasa es una sola página, y Nosotros es `#nosotros` dentro de la portada: lo que va tras
+la almohadilla no llega al servidor y Google lo trata como la portada, con su título y su
+descripción. Las redirecciones de `/carta` y `/reservas` (`astro.config.mjs`) no lo arreglan, al
+revés: le dicen a Google que esas páginas ya no existen y que vaya a la portada. **Recomendado, y
+espera a Mario:** una dirección propia para cada sección —`/carta`, `/nosotros`, `/visitanos` y
+`/reservas`—, conservando las dos de la web anterior y sin cambiar la experiencia (el menú y la
+bocanada siguen igual); la almohadilla, solo para saltos dentro de una página, como las partes de La
+carta. Para medir qué se busca de verdad hacen falta datos que no hay: Search Console de la web actual
+o una herramienta de palabras clave.
+
 ---
 
 ## 4. La landing, y por qué cada cosa está donde está

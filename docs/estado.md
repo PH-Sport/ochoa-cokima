@@ -100,6 +100,14 @@ las tres columnas. La receta, `scripts/video-entrada.sh`, los monta ahora desde 
 WebKit y Chromium, del móvil con las barras de Safari a 2560×1440, y con «reducir movimiento» sin
 descargar nada; **sin mirar en un iPhone**.
 
+**Y Nosotros, en maqueta, sin tocar la web:** tres formatos con los vídeos del local y el pase,
+descartados los tres —el primero por lineal; la escena con índice y el mosaico, porque hay que tocar
+para leer cada descripción—. Mario quiere ver cada título con su descripción *«de corrido»* sin caer
+en un scroll que se hace infinito. Por el camino salió lo que manda sobre el formato: **Nosotros no
+puede atraer búsquedas mientras sea `#nosotros` dentro de la portada.** Las maquetas, los motivos y
+la recomendación —una dirección propia para cada sección—, en `cokima-el-rediseno.md` §3, «Nosotros,
+en maqueta».
+
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las
 legales siguen con su aspecto de antes. **Antes de producción falta lo que se dejó a propósito**:
@@ -223,8 +231,16 @@ en `ochoa-inicio-vivo.md` §3.7.
 - **Abrir Reservar en `preview`, en el ordenador y en su iPhone**, y ver que el motor sale con la
   piel de Brasa: en el navegador de pruebas no se deja cargar (403), y la piel solo la enlaza desde
   el despliegue. Y decir si las chispas del fondo se quedan así de sutiles.
-- **Contar de dónde viene Cokima:** quién está detrás y desde cuándo. Es lo que le falta a Nosotros
-  para tener historia y no solo concepto; ni el repo ni la web del grupo lo dicen.
+- **Contar de dónde viene Cokima:** desde cuándo. Su Instagram dijo el 2025-10-23 que cumplía cinco
+  años, lo que apunta a 2020, y falta que Mario lo confirme; las maquetas de Nosotros lo llevan como
+  hueco marcado. Quién está detrás, no: Mario pidió no poner nombres.
+- **Decidir si las secciones de Cokima tienen dirección propia** (`/carta`, `/nosotros`,
+  `/visitanos`, `/reservas`) en lugar de `#carta`, `#nosotros`…, que Google no distingue de la
+  portada. Recomendado, y conservando `/carta` y `/reservas`, que son las de la web anterior; la
+  almohadilla, solo para saltos dentro de una página, como las partes de La carta
+  (`cokima-el-rediseno.md` §3, «Nosotros, en maqueta»).
+- **Elegir el formato de Nosotros** entre lo que se le proponga después de las tres maquetas
+  descartadas (mismo apartado).
 - **Ver en su móvil el desplegable de secciones y el viaje de «Reservar»**, y seguir iterando
   sobre ellos (`cokima-el-rediseno.md` §3). El desplegable salió de una maqueta de tres:
   https://claude.ai/artifact/TGPi5Le9WBSVTFXZGoLwhc.
@@ -253,6 +269,14 @@ en `ochoa-inicio-vivo.md` §3.7.
   `LosOchoa-5`) es de 2021:** sale alguien con mascarilla y la pizarra del desayuno con el precio de
   entonces. Hay que pedirle una actual al restaurante; mientras tanto vale el cartel colgante de
   cerca (`DWUBtsWiBZK-1`, de 2026). La sección de la home se queda como está.
+- **Revisar en Ochoa, cuando toque, lo mismo que en Cokima: qué dirección tiene cada página y qué
+  ve Google de ella.** Lo pidió Mario el 2026-11-03, al ver que Nosotros de Cokima no podía atraer
+  búsquedas por ser `#nosotros`. Ochoa está mejor de partida: La carta, Conócenos y Reservas ya son
+  páginas, con su título y su descripción, en los dos idiomas. Lo que va con almohadilla es «Dónde
+  estamos» (`#visita`, el punto de arriba), y Conócenos sigue fuera de Google a propósito
+  (`noindex`) mientras `EN_OBRAS` esté en `true` (`src/conocenos.ts`). Falta repasar los títulos y
+  las descripciones pensando en lo que se busca, y si a Ochoa le hace falta una ficha con datos
+  comprobados para los asistentes de IA, como la que se preparó para Cokima.
 - **Decir si se montan en el probador las tres maneras nuevas de «Conócenos».** La que hay en
   `preview` (abajo) la vio Mario el mismo 2026-10-30 y pidió darle una vuelta: *«hay algunas fotos
   en Conócenos que vuelve a repetirse, o que directamente son muy parecidas al resto»* —solo le
