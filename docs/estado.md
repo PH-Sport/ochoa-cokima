@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-11-02 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-11-03 · **el punto de entrada del repo**
 
-- **Corte:** 2026-11-02
+- **Corte:** 2026-11-03
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
   nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
   de decidir, que no se fusionan: `feat/inicio-paralaje`, el Inicio de Ochoa en paralaje, parada,
@@ -73,6 +73,16 @@ ya en preview:** la entrada —«Cokima» se aviva con una bocanada de chispas y
 hueso—, una bocanada de chispas más densa al cambiar de sección y los botones de neón, que se hunden y
 sueltan chispas al pulsarlos (mismo §3, «En preview: la entrada, la bocanada y el neón»). En La carta,
 el plato de la foto de cada parte ya no se repite en la lista de debajo.
+
+**El 2026-11-03**, tres fotos del Inicio cambiadas por Mario: el panel de los imprescindibles lleva
+el arroz de carabinero en lugar del katsu con patatas, que no le parecía *«la más premium»*, y en El
+producto el atún ya no se repite —se queda de fondo— y la fila de tres es carabineros, la otra foto de
+la picaña y los tomates (`fotografia.md`, arriba). **Un fallo que contó y que no se ha podido
+reproducir:** en Safari, *«tras navegar durante un rato»*, bajar deja de ir abriendo los paneles.
+1.360 pasos de navegación al azar en WebKit —rueda, saltos, secciones, paneles, botones, cambios de
+tamaño, ida y vuelta a una legal—, a 1440 y a 390, sin un solo fallo; descartado también que sea
+volver al Inicio con otro panel abierto (se corrige al primer scroll, con los paneles aún fuera de la
+pantalla). **No se ha tocado el código**: falta saber en qué Safari le pasa y qué hizo antes.
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las
@@ -186,6 +196,8 @@ en `ochoa-inicio-vivo.md` §3.7.
   iPhone: si la zona se queda fija al bajar o se abren tocando**, que no se ha podido medir con las
   barras de Safari; y si el tramo de scroll de cada panel se hace corto o largo. Después vienen
   Nosotros y Visítanos, sobre la misma dirección.
+- **Contar cómo le falla el scroll de los paneles en Safari** —en el Mac o en el iPhone, qué hizo antes
+  y qué vio—, que no se ha podido reproducir (§0, el 2026-11-03).
 - **Revisar el texto para buscadores del último panel del Inicio**, «Ven» (`cokima-el-rediseno.md`
   §3, «El Inicio, reordenado»): lo escribió el agente con frases de la casa y datos comprobados.
 - **Ver en preview la entrada, la bocanada y los botones de neón**, en el ordenador y en su iPhone

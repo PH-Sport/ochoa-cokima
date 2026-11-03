@@ -12,10 +12,16 @@ tarta, torrija y vacio—, reducidas para el boceto y sin pasar por la optimizac
 quedó apuntado de qué publicación sale cada una**, y ya no coinciden con sus originales. Desde el
 2026-11-02 hay una dieciséis, `sala-entera.jpg`, que sí lo tiene: es *Cokima 5*, la sala entera de
 las seis del local de Mario (abajo), en sRGB y a 1400 px, en la muestra de Nosotros del Inicio. Y
-tres de producto de @cokimamadrid para el bloque del producto del Inicio, a 1100 px y en sRGB:
-`producto-atun.jpg` (`producto_atun-rojo__Da0Z4XRNpRS-1`), `producto-picana.jpg`
-(`producto_picana-madurada__DXwVOP3DeQO-2`) y `producto-tomates.jpg`
-(`producto_tomates__DYR0DNYjTQL-1`), las tres sobre negro y con guantes negros. Detrás
+tres de producto de @cokimamadrid para el panel del producto del Inicio, a 1100 px y en sRGB:
+`producto-atun.jpg` (`producto_atun-rojo__Da0Z4XRNpRS-1`), que es la de fondo del panel,
+`producto-tomates.jpg` (`producto_tomates__DYR0DNYjTQL-1`) y, desde el 2026-11-03,
+`producto-carabineros.jpg` (`producto_carabineros__DZr1F1IDXcF-1`) y `producto-picana-pieza.jpg`
+(`producto_picana-madurada__DXwVOP3DeQO-1`) en la fila de tres. Mario: el atún se repetía —de fondo
+y en la fila— y pidió cambiar las dos primeras de la fila. Para la carne, la fototeca solo tiene la
+picaña: va la otra foto de la pieza; la de antes, abierta por la mitad (`-2`), se quitó. Y el panel de
+los imprescindibles lleva, desde el mismo día, `imprescindibles-arroz.jpg`
+(`plato_arroz-de-carabinero__DZM_hMUDRFG-1`, 1100 px, sRGB) en lugar del katsu con patatas, que a
+Mario no le parecía *«la más premium»*: el arroz de carabinero es el más caro de los cinco. Detrás
 de su portada va el vídeo de la entrada, con su póster.
 
 **Desde el 2026-08-14, Cokima tiene mejor material que Ochoa.** Aparecieron **diecinueve fotos
