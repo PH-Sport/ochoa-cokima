@@ -643,6 +643,29 @@ llamar e Instagram y Reservar, igual. Sin errores. **La prueba vieja del viaje y
 la píldora de abajo, que quitó el desplegable— y se sustituyó por una que mira el viajero y el final.
 Sin mirar en un iPhone, ni lo que cuesta en un móvil modesto.
 
+**Textos, de dónde sale cada uno, y cuatro retoques (2026-11-03).** Mario preguntó si había algo
+inventado. Cotejados todos con la web original del grupo, la carta del restaurante (la imagen de
+marzo de 2026 de su web) y los textos de @cokimamadrid: **nada inventado sobre Cokima**. Lo único
+escrito por el agente: el párrafo para buscadores del último panel, el título y la descripción para
+Google, «Reserva tu mesa» y «Si no encuentras hueco, llámanos al…», y los botones, etiquetas y avisos
+del estado de la cocina. Los 21 platos casan uno a uno con su carta. Después, Mario pidió:
+
+- **Quitar los nombres y el hueco de las reseñas de Nosotros:** «Martín, en la cocina» pasa a «El
+  equipo de cocina» (y el texto alternativo de su foto, sin nombre), y el hueco marcado de las
+  reseñas se va. Lo de «la mejor crítica… un plato vacío» se queda.
+- **Lo de los 3 € de su carta:** al pie de La carta, como en la suya, una fila más sin parte:
+  «Mantequilla, AOVE, pan y aperitivo · 3 €».
+- **La carne de El producto, foto y texto, fuera:** la sustituye el aperitivo —el aceite cayendo en
+  la bandeja, con la sal de remolacha— con su propio texto de Instagram, *«pan bien hecho,
+  mantequilla ahumada en casa»*. La frase de la fila sigue leyéndose de corrido: pescado que casi
+  aletea, pan bien hecho, mantequilla ahumada en casa y verduras que saben a lo que tienen que saber.
+- **El último panel del Inicio se llama Visítanos**, no Ven, con «Andrés Mellado, 21» encima del
+  nombre en el ordenador.
+
+Medido sobre el build, en WebKit y Chromium a 1440 y 390: Nosotros sin «Martín» ni hueco; los cuatro
+paneles, el último «Visítanos»; la fila del producto con carabineros, el aperitivo y los tomates,
+cargadas; La carta con los 21 platos una sola vez y la fila del pan y aperitivo al final; sin errores.
+
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
 rediseñan después, sobre esta dirección.**

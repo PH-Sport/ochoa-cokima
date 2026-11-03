@@ -82,7 +82,12 @@ reproducir:** en Safari, *«tras navegar durante un rato»*, bajar deja de ir ab
 1.360 pasos de navegación al azar en WebKit —rueda, saltos, secciones, paneles, botones, cambios de
 tamaño, ida y vuelta a una legal—, a 1440 y a 390, sin un solo fallo; descartado también que sea
 volver al Inicio con otro panel abierto (se corrige al primer scroll, con los paneles aún fuera de la
-pantalla). **No se ha tocado el código**: falta saber en qué Safari le pasa y qué hizo antes.
+pantalla). **No se ha tocado el código**: falta saber en qué Safari le pasa y qué hizo antes. Y, el
+mismo día, los textos: **nada inventado** —todos salen de la web original, de su carta o de su
+Instagram, salvo botones, etiquetas y tres textos del agente—; Nosotros pierde el nombre de Martín y
+el hueco de las reseñas, La carta gana al pie el pan y aperitivo de 3 € de la suya, la carne de El
+producto deja sitio al aperitivo y el último panel se llama Visítanos (`cokima-el-rediseno.md` §3,
+«Textos, de dónde sale cada uno»).
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las

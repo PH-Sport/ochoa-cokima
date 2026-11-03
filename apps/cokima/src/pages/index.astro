@@ -155,7 +155,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
                 <p class="voz">Elaboramos nuestros platos con los mejores productos frescos;</p>
                 <ul class="pan-trio">
                   <li><img src="/images/producto-carabineros.jpg" alt="Carabineros crudos, muy de cerca" width="1100" height="1375" loading="lazy"><p>pescado que casi aletea,</p></li>
-                  <li><img src="/images/producto-picana-pieza.jpg" alt="La pieza de picaña madurada en crudo, sobre negro" width="1100" height="1100" loading="lazy"><p>carne de animales que viven mejor que tú</p></li>
+                  <li><img src="/images/producto-aperitivo.jpg" alt="El aceite cae en la bandeja del aperitivo, junto a la sal de remolacha" width="1100" height="1100" loading="lazy"><p>pan bien hecho, mantequilla ahumada en casa</p></li>
                   <li><img src="/images/producto-tomates.jpg" alt="Tres tomates apilados en unas manos con guantes negros" width="1100" height="1467" loading="lazy"><p>y verduras que saben a lo que tienen que saber.</p></li>
                 </ul>
                 <p class="pan-acc"><a class="pill" href="#carta" data-ir="carta">Ver la carta</a></p>
@@ -173,7 +173,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
             </div>
             <div class="pan" data-panel>
               <img class="pan-foto" src="/images/puerta.jpg" alt="" width="1400" height="1400" loading="lazy">
-              <button type="button" class="pan-abrir" aria-expanded="false"><span class="pan-rotulo"><small>Visítanos</small>Ven</span></button>
+              <button type="button" class="pan-abrir" aria-expanded="false"><span class="pan-rotulo"><small>Andrés Mellado, 21</small>Visítanos</span></button>
               <div class="pan-cont">
                 <p class="etq">Kitchen Madness · Argüelles</p>
                 <h2 class="pan-tit">Puedes comer en cualquier sitio, pero será solo comer.</h2>
@@ -200,6 +200,8 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
         </div>
         <nav class="chips" aria-label="Partes de la carta"><div class="wrap"><a href="#p-compartir" data-a="compartir">Compartir es vivir</a><a href="#p-terminar" data-a="terminar">Para terminar o no…</a><a href="#p-postres" data-a="postres">Los postres</a></div></nav>
         <div id="carta-cuerpo"></div>
+        {/* Como al pie de su carta (Mario, 2026-11-03: «Añade lo de los 3 € de la carta»). */}
+        <div class="wrap lista aperitivo"><ul><li class="pl"><span class="ln"><span>Mantequilla, AOVE, pan y aperitivo</span><b>3 €</b></span></li></ul></div>
         <div class="wrap"><footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><a href="tel:+34915989401">+34 915 98 94 01</a><a href="https://instagram.com/cokimamadrid" rel="me noopener" target="_blank">@cokimamadrid</a></footer></div>
       </section>
 
@@ -213,8 +215,8 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
         <div class="wrap">
           <article class="relato rv"><figure><img src="/images/bomba.jpg" alt="El mural de la bomba sobre las mesas" width="1400" height="1400" style="aspect-ratio:1"></figure>
             <div class="txt"><p class="etq">La cocina</p><p class="tit">Aquí no cocinamos para que se vea bonito…</p><p class="voz">Cocinamos para que deje huella.</p></div></article>
-          <article class="relato der rv"><figure><img src="/images/martin.jpg" alt="Martín, del equipo de cocina" width="825" height="1100"></figure>
-            <div class="txt"><p class="etq">Martín, en la cocina</p><p class="tit">Trabajo serio. Cocina canalla.</p><p class="voz">Más cuchillo. Más producto.</p></div></article>
+          <article class="relato der rv"><figure><img src="/images/martin.jpg" alt="Un cocinero del equipo, en la cocina" width="825" height="1100"></figure>
+            <div class="txt"><p class="etq">El equipo de cocina</p><p class="tit">Trabajo serio. Cocina canalla.</p><p class="voz">Más cuchillo. Más producto.</p></div></article>
           <article class="relato rv"><figure><img src="/images/neon.jpg" alt="El neón «Orgasm, at the first bite» sobre la pared de fotos" width="1400" height="1283" style="aspect-ratio:1"></figure>
             <div class="txt"><p class="etq">La sala</p><p class="tit">Perseguimos una sensación muy concreta.</p><p class="voz">Ese <i>Orgasm at firstbite</i> del que habla nuestra pared.</p></div></article>
           <article class="relato der rv"><figure><img src="/images/sala.jpg" alt="Dos personas ríen en una mesa de la sala" width="880" height="1100"></figure>
@@ -222,7 +224,7 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
           <article class="relato rv"><figure><img src="/images/manos.jpg" alt="Un cliente muerde un bocado con las manos" width="880" height="1100"></figure>
             <div class="txt"><p class="etq">Compartir es vivir</p><p class="tit">Hay platos que no necesitan cubiertos.</p><p class="voz">Solo ganas. Buen rollo. Y alguien con quien compartir.</p></div></article>
           <article class="relato der rv"><figure><div class="par"><img src="/images/tarta.jpg" alt="Una mujer se come la tarta de queso" width="1100" height="1100"><img src="/images/vacio.jpg" alt="El plato vacío" width="1100" height="1100"></div></figure>
-            <div class="txt" style="margin-top:28px"><p class="etq">Lo que dicen</p><p class="tit">La mejor crítica nunca ha necesitado palabras.</p><p class="voz">Solo un plato vacío.</p><p class="hueco">Hueco: reseñas reales de clientes. Falta el material.</p></div></article>
+            <div class="txt" style="margin-top:28px"><p class="etq">Lo que dicen</p><p class="tit">La mejor crítica nunca ha necesitado palabras.</p><p class="voz">Solo un plato vacío.</p></div></article>
           <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><a href="tel:+34915989401">+34 915 98 94 01</a><a href="https://instagram.com/cokimamadrid" rel="me noopener" target="_blank">@cokimamadrid</a></footer>
         </div>
       </section>
