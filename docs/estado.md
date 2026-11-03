@@ -100,6 +100,13 @@ las tres columnas. La receta, `scripts/video-entrada.sh`, los monta ahora desde 
 WebKit y Chromium, del móvil con las barras de Safari a 2560×1440, y con «reducir movimiento» sin
 descargar nada; **sin mirar en un iPhone**.
 
+**Y la imagen al compartir el enlace de Cokima es, desde ese día, la portada en pequeño:** tres planos
+del vídeo en columnas, «Cokima» con un naranja incandescente suave encima y chispas, a 1200×630.
+Mario la eligió entre tres y pidió más calor en el nombre —sin llegar al de la entrada— y más chispas.
+La sartén en llamas, que era la de antes y cuadrada, se queda como foto del local para los
+buscadores, en la home y en las legales. Cómo está hecha y lo descartado, en `fotografia.md` §Nota
+técnica. **Sin probar en WhatsApp de verdad.**
+
 **Y Nosotros, en maqueta, sin tocar la web:** tres formatos con los vídeos del local y el pase,
 descartados los tres —el primero por lineal; la escena con índice y el mosaico, porque hay que tocar
 para leer cada descripción—. Mario quiere ver cada título con su descripción *«de corrido»* sin caer

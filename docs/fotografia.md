@@ -103,7 +103,7 @@ mayor resolución disponible.
 
 | Destino | Qué buscamos |
 |---|---|
-| `apps/cokima/src/assets/hero.jpg` | ✅ **`DepAPTwNTvJ-1`, puesta el 2026-10-26**: la sartén en llamas en el fogón (cuadrada, 1440), con su copia a 1200 en `public/images/` para las redes. Sustituye a la burrata de 2021. Es la misma foto que el pase de «la casa», pero **en pantalla no se repite: la portada con foto (`Hero.astro`) quedó huérfana al entrar el rediseño en `preview` el 2026-10-26**, y la cabecera es el vídeo. Esta foto se veía solo al compartir el enlace; **el 2026-11-02 su copia de `public/images/` fue la foto del primer panel del Inicio de Brasa**, «Cokima», hasta que ese mismo día el panel se fundió con «Ven», que lleva la de la puerta; vuelve a verse solo al compartir el enlace. Mientras la portada vieja estuvo puesta, a 390px el tramo rojo del titular caía sobre el fuego y se leía mal; con la burrata pasaba lo mismo o peor (titular blanco sobre la burrata blanca), y otras dos fotos oscuras tampoco lo resolvían. Era el velo de esa portada, no la foto. **Si `Hero.astro` vuelve a usarse, revisar eso antes.** |
+| `apps/cokima/src/assets/hero.jpg` | ✅ **`DepAPTwNTvJ-1`, puesta el 2026-10-26**: la sartén en llamas en el fogón (cuadrada, 1440), con su copia a 1200 en `public/images/` para las redes. Sustituye a la burrata de 2021. Es la misma foto que el pase de «la casa», pero **en pantalla no se repite: la portada con foto (`Hero.astro`) quedó huérfana al entrar el rediseño en `preview` el 2026-10-26**, y la cabecera es el vídeo. Esta foto se veía solo al compartir el enlace; **el 2026-11-02 su copia de `public/images/` fue la foto del primer panel del Inicio de Brasa**, «Cokima», hasta que ese mismo día el panel se fundió con «Ven», que lleva la de la puerta. **Desde el 2026-11-03 tampoco es la imagen al compartir el enlace** (lo es `compartir.jpg`, §Nota técnica): se queda como foto del local para los buscadores. Mientras la portada vieja estuvo puesta, a 390px el tramo rojo del titular caía sobre el fuego y se leía mal; con la burrata pasaba lo mismo o peor (titular blanco sobre la burrata blanca), y otras dos fotos oscuras tampoco lo resolvían. Era el velo de esa portada, no la foto. **Si `Hero.astro` vuelve a usarse, revisar eso antes.** |
 | `apps/ochoa/src/assets/portada/*.jpg` | ✅ **Desde el 2026-10-29, ocho fotos de Instagram que no salen en el resto de la home** (la serie, sus encuadres y sus textos, en `src/data/portada.ts`; en el móvil, telón; en el ordenador, la tira, `ochoa-inicio-vivo.md`). En orden: `brindis.jpg` (`DMsOEbToHc4-1`, brindis con vino y caña), `clienta.jpg` (`DPeYU5ziIo6-2`), `brioche.jpg` (`C66BbqHtC1M-1`, el camarero con un brioche; la única a 2060 px), `vermu-gilda.jpg` (`DHQbxoKiBLd-1`), `brindis-barra.jpg` (`DPyg6SPCGH5-3`, caña y vermú), `cana.jpg` (`DLAgINkIMFS-1`, tirando una caña), `cristal.jpg` (`C2Pz8szNUrq-10`, el rótulo del cristal) y `vino.jpg` (`DNF9_F0IzXV-1`). Copiadas de la fototeca tal cual, a su tamaño de Instagram. Mario las eligió en la tercera ronda del probador: la serie anterior no le convencía, *«principalmente por las fotos»*. Fuera de la elección, con su motivo: las de Navidad, que caducan; la de la camiseta del Madrid, que es de un equipo; y la del guante de Spiderman, que es más de Cokima. **Las seis de antes salen de la portada y sus archivos se quedan sin uso, sin borrar:** `sala.jpg` (`DHdb1_hCOls-1`), `barra-clientas.jpg` (`DQe2dPqiJwV-1`), `cocinero.jpg` (`DQB1FAiCKup-1`), `barra-rotulos.jpg` (`DV_ZtJHCPRQ-1`), `sirviendo.jpg` (`DPeYU5ziIo6-1`) y `rotulo-exterior.jpg` (`DPyg6SPCGH5-1`); fueron la portada del 2026-10-27 al 29. La fachada (`hero.jpg`, `LosOchoa-5`) tampoco se ve en la portada desde el 2026-10-27, y **desde el 2026-10-30 ya no es la imagen al compartir el enlace**: se queda como foto del local para los buscadores (§Nota técnica). El archivo de `src/assets/hero.jpg` sigue sin uso y sin borrar. |
 
 **El encuadre de la portada de Ochoa solo cuenta en el móvil.** Ahí la portada llena la pantalla
@@ -369,7 +369,7 @@ mármol, la fuente de letra»*. Se le enseñaron tres: el titular de la portada 
 este toldo y el nombre con las palabras de la barra alrededor. Eligió el toldo, con las vetas *«un
 poquiiiito»* más blancas. **La fachada sigue siendo la foto del local para los buscadores:** el
 `image` del JSON-LD sale de `schemaImage` y no de `ogImage` (`Seo.astro`), porque a un buscador se
-le enseña el sitio y no un cartel. Cokima no pasa `schemaImage` y sigue con una sola imagen.
+le enseña el sitio y no un cartel. **Cokima hace lo mismo desde el 2026-11-03** (abajo).
 
 **Cómo está hecha, para rehacerla.** 1200×630, que es lo que WhatsApp enseña en grande, en JPEG de
 calidad 86: 59 KB (para WhatsApp se suelen recomendar menos de 300; la fachada pesa 428). Fondo
@@ -381,4 +381,30 @@ y «Madrid», en Archivo 700 al 84 % de ancho, a 36 px y con 0,34 em de espaciad
 que no está en el repo: con estos números se rehace. No lleva texto que traducir, así que es la
 misma en los dos idiomas. WhatsApp recuerda la vista previa de un enlace ya compartido (sabido, no
 comprobado aquí): para ver la nueva en uno que ya se mandó, añadirle `?v=2`.
+
+**En Cokima, desde el 2026-11-03, la imagen al compartir el enlace es `/images/compartir.jpg`:** la
+portada de Brasa en pequeño, con tres planos del vídeo en columnas y «Cokima» encima con algo de calor.
+Hasta entonces era la sartén en llamas (`/images/hero.jpg`), cuadrada, que los chats suelen enseñar
+pequeña al lado del texto; **se queda como foto del local para los buscadores** (`schemaImage`), en la
+home y en las legales, como la fachada en Ochoa. Se le enseñaron tres en un artifact: esta, «Al rojo»
+—el nombre en el degradado de la entrada, sin fotos— y «Brasa» —el nombre en hueso con chispas, el
+equivalente al cartel de Ochoa—. Eligió esta y pidió dos cosas: *«un poco más de ese naranja
+incandescente, pero sin llegar a ser tan exagerado como el de "Al rojo"»*, y más densidad de chispas,
+que *«apenas se aprecian»*. **Lo descartado del ajuste:** poner encima, a media opacidad, el degradado
+de «Al rojo» tal cual: sus rojos oscuros de arriba, mezclados con el hueso, daban un rosa salmón y no
+un naranja.
+
+**Cómo está hecha, para rehacerla.** 1200×630, JPEG de calidad 86, 76 KB; pintada con Chromium a
+densidad 1 desde un HTML de una sola vez que no está en el repo. Tres columnas de 400×630 con 3 px de
+`--ground` entre ellas, de fotogramas de los planos de `scripts/video-entrada.sh` con su mismo
+oscurecido: el ceviche en su segundo 1,6, el enoki en el 0,8 y la tarta en el 1,6 (contados desde el
+principio de cada plano), escalados a 400 de ancho y recortados al centro. Encima, un velo como el
+de la portada, de `--ground` de arriba abajo al 42 %, al 50 % a media altura, al 80 % al 85 % y al
+92 % abajo, y un óvalo de `--ground` al 50 % detrás del nombre, para que se lea en pequeño. «Cokima», en Bricolage 200 a 196 px, en `--bone`, con una copia
+encima en degradado de abajo arriba `#ffd890` → `#ffa94e` (45 %) → `#ff7f2a` a opacidad 0,85; «Kitchen
+Madness», en Bricolage 500 a 23 px, mayúsculas, 0,32 em de espaciado, `--bone-2`. Las chispas son las
+del fondo de `brasa.js` quietas, con un azar fijo (semilla 7) y 150 pasos de 1/30 s: 132 (2,1 veces la
+densidad de la web), con el trazo un 60 % más largo y un 20 % más grueso, porque en una imagen quieta
+es lo que dice que vuelan. Lleva el nombre en el centro para que aguante si alguna app la recorta en
+cuadrado. No lleva texto que traducir.
 `/images/mesa.jpg` es el cenital de la mesa, que sirve la sección «la tasca».
