@@ -77,12 +77,11 @@ el plato de la foto de cada parte ya no se repite en la lista de debajo.
 **El 2026-11-03**, tres fotos del Inicio cambiadas por Mario: el panel de los imprescindibles lleva
 el arroz de carabinero en lugar del katsu con patatas, que no le parecía *«la más premium»*, y en El
 producto el atún ya no se repite —se queda de fondo— y la fila de tres es carabineros, la otra foto de
-la picaña y los tomates (`fotografia.md`, arriba). **Un fallo que contó y que no se ha podido
-reproducir:** en Safari, *«tras navegar durante un rato»*, bajar deja de ir abriendo los paneles.
-1.360 pasos de navegación al azar en WebKit —rueda, saltos, secciones, paneles, botones, cambios de
-tamaño, ida y vuelta a una legal—, a 1440 y a 390, sin un solo fallo; descartado también que sea
-volver al Inicio con otro panel abierto (se corrige al primer scroll, con los paneles aún fuera de la
-pantalla). **No se ha tocado el código**: falta saber en qué Safari le pasa y qué hizo antes. Y, el
+la picaña y los tomates (`fotografia.md`, arriba). **El fallo que contó en Safari —bajar no abría los paneles— no era un fallo:** en un iPhone, con las
+barras de Safari, la zona no cabía y caía siempre en «se abren al tocarlos»; se había medido con la
+pantalla entera. Ahora, en el móvil fijo, todo va más junto y sin dos párrafos largos, y se fija del XS
+al Pro Max; en el SE, no (`cokima-el-rediseno.md` §3, «El "fallo" del scroll en el iPhone»; la trampa,
+en `metodo.md` §2.3). Y, el
 mismo día, los textos: **nada inventado** —todos salen de la web original, de su carta o de su
 Instagram, salvo botones, etiquetas y tres textos del agente—; Nosotros pierde el nombre de Martín y
 el hueco de las reseñas, La carta gana al pie el pan y aperitivo de 3 € de la suya, la fila de El
@@ -198,11 +197,9 @@ en `ochoa-inicio-vivo.md` §3.7.
 - **Ver los paneles del Inicio en su móvil y en el ordenador** y seguir iterando sobre ellos
   (`cokima-el-rediseno.md` §3, «La dirección de Brasa» y «Se abren al bajar»). Salieron de una
   maqueta de tres maneras: https://claude.ai/artifact/VM1QDA4nP7nzN9NFVjZpPm. **Lo primero, en su
-  iPhone: si la zona se queda fija al bajar o se abren tocando**, que no se ha podido medir con las
-  barras de Safari; y si el tramo de scroll de cada panel se hace corto o largo. Después vienen
+  iPhone XS: que ahora la zona se queda fija al bajar** —medido con el alto de Safari, no en un iPhone
+  de verdad—; y si el tramo de scroll de cada panel se hace corto o largo. Después vienen
   Nosotros y Visítanos, sobre la misma dirección.
-- **Contar cómo le falla el scroll de los paneles en Safari** —en el Mac o en el iPhone, qué hizo antes
-  y qué vio—, que no se ha podido reproducir (§0, el 2026-11-03).
 - **Revisar el texto para buscadores del último panel del Inicio**, «Ven» (`cokima-el-rediseno.md`
   §3, «El Inicio, reordenado»): lo escribió el agente con frases de la casa y datos comprobados.
 - **Ver en preview la entrada, la bocanada y los botones de neón**, en el ordenador y en su iPhone

@@ -303,8 +303,10 @@
     // Lo que pesa el abierto frente a uno cerrado, el hueco entre franjas y el alto de una banda del móvil,
     // suelta o fija. TRAMO es el scroll que abre el siguiente, en partes del alto de la zona; HOLGURA, lo
     // que hay que pasarse de la mitad del tramo para cambiar, para que un temblor del dedo en la frontera no
-    // abra y cierre; MARGEN, lo que queda entre la barra y la zona fija (los 16px de .fija en brasa.css).
-    const PESO = 6.5, HUECO = 8, BANDA = 68, HUECO_FIJA = 6, BANDA_FIJA = 40, TRAMO = 0.75, HOLGURA = 0.08, MARGEN = 8;
+    // abra y cierre; MARGEN, lo que queda entre la barra y la zona fija (los 8px de .fija en brasa.css).
+    // Fija, en el móvil, va todo más junto —hueco de 4 y márgenes de 4—, para que quepa en un iPhone con
+    // las barras de Safari a la vista; la banda se queda en 40, que se pueda tocar.
+    const PESO = 6.5, HUECO = 8, BANDA = 68, HUECO_FIJA = 4, BANDA_FIJA = 40, TRAMO = 0.75, HOLGURA = 0.08, MARGEN = 4;
     let abiertoP = 0, franjas = null, animP = 0, clave = "", tam = 0, hueco = HUECO, banda = BANDA;
     let fija = false, tramo = 0, arriba = 0, relleno = 0, pendiente = 0;
     // Dónde va cada franja con el panel i abierto: [inicio, tamaño] a lo largo del eje que toca.
@@ -341,7 +343,8 @@
       };
       paso(t0);
     };
-    // Lo que mide el texto de un panel, de la primera línea a la última.
+    // Lo que mide el texto de un panel, de la primera línea a la última, y el aire de su caja por dentro.
+    const aire = (p) => { const cs = getComputedStyle(p.querySelector(".pan-cont")); return parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom); };
     const texto = (p) => { const k = [...p.querySelector(".pan-cont").children]; return k[k.length - 1].getBoundingClientRect().bottom - k[0].getBoundingClientRect().top; };
     // Lo que se ha bajado desde que la zona se quedó fija: 0 al fijarse y (N-1)·tramo al soltarse.
     const bajado = () => arriba - (zona.getBoundingClientRect().top + relleno);
@@ -361,7 +364,8 @@
       zona.classList.add("fija"); paneles.style.removeProperty("--alto-paneles");
       hueco = h ? HUECO : HUECO_FIJA; banda = h ? BANDA : BANDA_FIJA;
       const z = paneles.clientHeight;
-      fija = h ? z + alto + 2 * MARGEN <= innerHeight : Math.max(...ps.map(texto)) + 64 <= z - (banda + hueco) * (N - 1);
+      // En el móvil, el texto más largo con el aire de su caja y 16 px de holgura tiene que caber en la banda abierta.
+      fija = h ? z + alto + 2 * MARGEN <= innerHeight : Math.max(...ps.map((p) => texto(p) + aire(p))) + 16 <= z - (banda + hueco) * (N - 1);
       if (fija) {
         tramo = Math.round(z * TRAMO); relleno = parseFloat(getComputedStyle(zona).paddingTop);
         arriba = alto + (h ? Math.max(MARGEN, (innerHeight - alto - z) / 2) : MARGEN);

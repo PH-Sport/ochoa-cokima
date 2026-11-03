@@ -1,6 +1,6 @@
 # Método: cómo se decide y cómo se verifica
 
-> **Estado: vivo** · revisado 2026-10-29
+> **Estado: vivo** · revisado 2026-11-03
 
 **Las dos técnicas que este repo ya ha pagado caras.** Decidir lo visual enseñando variantes en
 vez de describirlas, y sostener toda afirmación sobre cómo se ve la web en una medición hecha en
@@ -101,7 +101,7 @@ así es más útil que entregar un número que no significa nada.
 - **Las capturas *fullPage* de Playwright no son fiables** para elementos `position: fixed`: pueden
   no aparecer aunque estén en pantalla.
 
-### 2.3 Las cuatro trampas de método
+### 2.3 Las cinco trampas de método
 
 1. **Medir a una sola altura de scroll.** El 2026-08-01 dos tandas enteras se midieron a
    `scrollY 0` y dieron por limpia la portada, que era la culpable. Al medir a cuatro alturas
@@ -120,6 +120,13 @@ así es más útil que entregar un número que no significa nada.
    frame de 88 ms que no se reproducía (era el instrumental compitiendo con la animación), un
    «salto» que era el `scroll-behavior: smooth` aún llegando a destino, y un scroll horizontal que
    era la tira de platos, preexistente y por diseño. **Medir dos veces antes de tocar.**
+5. **Medir el móvil con la pantalla entera.** Los paneles fijos del Inicio de Cokima se dieron por
+   buenos a 390×844 y 430×932, que son las pantallas de un iPhone; pero Safari, con sus barras a la
+   vista, deja entre 548 y 739 px de alto, y ahí no cabían en ninguno. En un iPhone de verdad nunca
+   se fijaban, y Mario lo vio como un fallo («no bajaba»), que además no salía en 1.360 pasos de
+   navegación al azar porque el navegador de pruebas tenía la pantalla entera. **Lo que dependa del
+   alto se mide con el alto de Safari con las barras** —el `100svh`—: SE 375×548, XS/11 Pro 375×635,
+   12-14 390×664, 15-16 393×659, Plus/Pro Max 430×739 (2026-11-03).
 
 ### 2.4 `dev` no es lo que se despliega
 

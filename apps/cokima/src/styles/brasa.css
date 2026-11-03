@@ -145,14 +145,18 @@ html[data-entrada] .portada h1 .sub,html[data-entrada] .portada .acc,html[data-e
    Si la zona cabe en la pantalla bajo la barra, brasa.js le pone .fija: se queda quieta mientras se baja
    (sticky, a --fijo-arriba) y cada tramo abre el panel siguiente. El recorrido lo pone el ::after, que es
    lo que deja viajar al sticky dentro de su padre. En el móvil, fija, la zona llena la pantalla —el
-   pequeño, 100svh, que no se mueve con la barra del navegador (regla 15)— menos la barra y 8px arriba y
-   abajo (los MARGEN de brasa.js), y los imprescindibles van sin descripción, que no caben: están en La carta. */
+   pequeño, 100svh, que no se mueve con la barra del navegador (regla 15)— menos la barra y 4px arriba y
+   abajo (los MARGEN de brasa.js), y va más justa: los imprescindibles sin descripción, que están en La
+   carta, y sin los dos párrafos largos (.pan-largo), el de los imprescindibles y el de buscadores de
+   Visítanos. Sin eso no cabía en ningún iPhone con las barras de Safari a la vista (2026-11-03: en un
+   XS faltaban 184 px); se quedan en el HTML, en el ordenador y en el móvil con los paneles sueltos. */
 .pan-zona{padding:clamp(40px,8vh,90px) var(--gr) 0 var(--gl)}
-.pan-zona.fija{--alto-paneles:calc(100svh - var(--barra) - var(--st) - 16px)}
+.pan-zona.fija{--alto-paneles:calc(100svh - var(--barra) - var(--st) - 8px)}
 .pan-zona.fija::after{content:"";display:block;height:var(--recorrido,0px)}
 .paneles{position:relative;height:var(--alto-paneles,640px)}
 .pan-zona.fija .paneles{position:sticky;top:var(--fijo-arriba,0px)}
-.pan-zona.fija .pan-platos small{display:none}
+.pan-zona.fija .pan-platos small,.pan-zona.fija .pan-largo{display:none}
+.pan-zona.fija .pan-cont{padding-block:16px}
 .pan{position:absolute;inset:0;overflow:hidden;clip-path:inset(0 0 100% 0);background:#160f0c}
 .pan-foto{position:absolute;left:0;top:0;width:100%;height:var(--tam-abierto,100%);object-fit:cover;opacity:.55;transition:opacity var(--dur-in) var(--ease)}
 .pan.abierto .pan-foto{opacity:.9}
@@ -273,7 +277,8 @@ html[data-entrada] .portada h1 .sub,html[data-entrada] .portada .acc,html[data-e
   :root{--barra:72px}
   .pan-zona{padding-top:clamp(50px,10vh,110px)}
   .paneles{height:clamp(600px,84vh,800px)}
-  .pan-zona.fija .pan-platos small{display:block}
+  .pan-zona.fija .pan-platos small,.pan-zona.fija .pan-largo{display:block}
+  .pan-zona.fija .pan-cont{padding:40px 44px}
   .pan-foto{width:var(--tam-abierto,100%);height:100%}
   .pan-cont{width:min(700px,var(--tam-abierto,100%));height:100%;padding:40px 44px}
   .pan-rotulo{left:0;top:auto;bottom:30px;writing-mode:vertical-rl;font-size:2rem}

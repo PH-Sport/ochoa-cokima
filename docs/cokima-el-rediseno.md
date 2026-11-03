@@ -670,6 +670,23 @@ Medido sobre el build, en WebKit y Chromium a 1440 y 390: Nosotros sin «Martín
 paneles, el último «Visítanos»; la fila del producto con sus tres fotos cargadas (después, el atún
 marcado, el steak tartar y los tomates, con el texto del panel cabiendo en los seis tamaños); La carta con los 21 platos una sola vez y la fila del pan y aperitivo al final; sin errores.
 
+**El «fallo» del scroll en el iPhone, que no era un fallo (2026-11-03).** Mario: *«Justo revisándolo
+en un iPhone XS, me ha vuelto a pasar lo de que las secciones no se abran automáticamente… nada más
+entrar a la web y bajar»*. Antes lo había contado en Safari *«tras navegar durante un rato»*, y 1.360
+pasos de navegación al azar en WebKit no lo reprodujeron. **La causa:** la zona solo se fija si cabe, y
+se había medido en pantallas enteras de iPhone (390×844); con las barras de Safari a la vista, que es
+el `100svh` con el que se mide, un iPhone deja de 548 a 739 px, y **no cabía en ninguno**: faltaban de
+65 px (Pro Max) a 184 (XS). Todos caían en «se abren al tocarlos», que es justo lo que vio. **El
+arreglo, solo en el móvil con la zona fija:** hueco entre bandas de 6 a 4, márgenes de 8 a 4, aire de la
+caja abierta de 24 a 16 —y la comprobación de si cabe mide ese aire en vez de suponer 48—, y fuera los
+dos párrafos largos (`.pan-largo`): *«Cocina ecléctica…»* de los imprescindibles y el de buscadores de
+Visítanos. Siguen en el HTML, en el ordenador y en el móvil con los paneles sueltos. Las bandas se
+quedan en 40 px, para que se puedan tocar. Medido sobre el build con los altos de Safari: **se fija en
+el XS (25 px de sobra), 12-14 (57), 15-16 (52) y Pro Max (123)**; en el SE sigue sin caber (faltan 62)
+y se abren al tocarlos. La prueba entera de los paneles fijos, a esos altos y a 1440 y 1280×720, sin un
+fallo en WebKit ni en Chromium. La trampa de medir con la pantalla entera es ya la 5 de `metodo.md`
+§2.3.
+
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
 rediseñan después, sobre esta dirección.**
