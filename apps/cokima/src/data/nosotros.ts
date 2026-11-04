@@ -55,7 +55,7 @@ export const FACETAS = [
     // DPWxadCjVrg
     voz: "Plato a plato, creamos hits que hoy son parte de nuestra historia.",
     textos: [
-      // C6tJ19ktThn, de mayo de 2024: Mario tiene que confirmar que siguen siendo así (docs/estado.md).
+      // C6tJ19ktThn, de mayo de 2024. Mario decidió que se queda (2026-11-04): sale en su Instagram.
       "Nuestras croquetas semilíquidas son una obra de arte culinaria que debes probar al menos una vez en tu vida.",
       // De la carta, menu-es.json: los que llevan `featured`.
       "Los imprescindibles de la carta: gyozas de langostino, tataki de atún, tacos del gobernador de gambón, katsu sando de solomillo de ternera y arroz meloso de carabinero a la brasa.",

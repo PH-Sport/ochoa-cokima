@@ -259,8 +259,7 @@ en `ochoa-inicio-vivo.md` §3.7.
   portada. Recomendado, y conservando `/carta` y `/reservas`, que son las de la web anterior; la
   almohadilla, solo para saltos dentro de una página, como las partes de La carta
   (`cokima-el-rediseno.md` §3, «Nosotros, en maqueta»).
-- **Ver el collage de Nosotros en `preview`**, en el ordenador y en su iPhone (mismo apartado). Y un
-  dato que solo puede dar él: si la frase de las croquetas semilíquidas, de 2024, sigue valiendo. El fuelle sigue de reserva en la maqueta:
+- **Ver el collage de Nosotros en `preview`**, en el ordenador y en su iPhone (mismo apartado). El fuelle sigue de reserva en la maqueta:
   https://claude.ai/artifact/8otJqwkVntRJ1ummPx4768.
 - **Ver en su móvil el desplegable de secciones y el viaje de «Reservar»**, y seguir iterando
   sobre ellos (`cokima-el-rediseno.md` §3). El desplegable salió de una maqueta de tres:

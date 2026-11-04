@@ -835,8 +835,8 @@ collage pidió tres cambios, primero en la misma maqueta y ese mismo día en la 
   texto. En el ordenador, el vídeo en la mitad izquierda, porque a toda la caja habría que ampliarlo 2,2 veces
   (calculado, no probado); en el móvil, de fondo, con el texto abajo. Se cierra con el mismo botón o con Escape, y
   la tarjeta se queda ampliada en su sitio. Los textos son suyos, con la fuente de cada uno en las notas de
-  la maqueta, salvo la lista de imprescindibles, que sale de la carta. **La frase de las croquetas
-  semilíquidas es de mayo de 2024**, y hay que confirmar que sigue valiendo. **Al pasarlo a la web, este
+  la maqueta, salvo la lista de imprescindibles, que sale de la carta. La frase de las croquetas
+  semilíquidas es de mayo de 2024, y Mario decidió que se queda: sale en su Instagram. **Al pasarlo a la web, este
   texto tiene que ir en el HTML**: en la maqueta va en un `<template>`, que los buscadores no leen.
 
 **«Los vídeos no parecen reproducirse»: no se ha podido reproducir.** En WebKit y Chromium los dos
