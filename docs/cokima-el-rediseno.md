@@ -812,6 +812,56 @@ se pisan, el texto del grande cabe en su pieza, y con «reducir movimiento» no 
 nada. Al medir salió una trampa sin error, ya regla 31 de `movimiento.md`: los vídeos dejaban piezas en
 negro al rebobinarlos, al cargarlos o al arrancarlos. **Sin mirar en un iPhone.**
 
+**Elegido el collage, con el fuelle de reserva (2026-11-04).** Mario: *«Me quedo con el collage (pero por
+si acaso, no descartemos el fuelle de momento)»*. El fuelle sigue en la maqueta tal como estaba. Sobre el
+collage pidió tres cambios, ya en la misma maqueta y aún no en la web:
+
+- **Dos ampliadas a la vez en automático, rotando cada 3 s.** Su dibujo, en el móvil: en la primera columna
+  una alta y una pequeña debajo; en la segunda, una pequeña y una alta debajo. Son cuatro a la vista y la
+  quinta fuera, y lo dijo él: *«Ya sé que habría una tarjeta que saldría de la pantalla»*. Se montó por
+  carriles (columnas en el móvil, filas en el ordenador, el mismo dibujo girado), con un solo carril
+  moviéndose cada vez y el orden cinta, cinta, tamaño, tamaño. En la cinta entra la de fuera, pequeña; la
+  alta avanza una celda sin encogerse, y la pequeña del otro extremo sale y queda fuera. En el cambio de
+  tamaño, la pequeña crece y la alta se encoge compartiendo el borde. Como todo va con la misma curva y
+  duración, los huecos no cambian y nada se cruza, y por eso no hace falta el truco de La casa de que
+  una arranque antes. **El periodo es de 2,8 a 3,2 s**, no 3 s clavados, para que no se le oiga el compás
+  (regla 18). Suenan las dos ampliadas.
+- **Al tocar una, solo esa ampliada y las cinco a la vista**, y deja de moverse sola. La de fuera entra por
+  el otro carril, que pasa a tres pequeñas. «Pausar» ya no apaga el automático: «Reproducir» sigue en el
+  modo en que estaba.
+- **Leer más: un botón redondo con una flecha**, arriba a la derecha de cada ampliada, para no pisar el
+  texto. Trae la tarjeta al primer plano sobre todo el collage, sin cambiar de pantalla, con algo más de
+  texto. En el ordenador, el vídeo en la mitad izquierda, porque a toda la caja se ampliaba más del doble y
+  se veía borroso; en el móvil, de fondo, con el texto abajo. Se cierra con el mismo botón o con Escape, y
+  la tarjeta se queda ampliada en su sitio. Los textos son suyos, con la fuente de cada uno en las notas de
+  la maqueta, salvo la lista de imprescindibles, que sale de la carta. **La frase de las croquetas
+  semilíquidas es de mayo de 2024**, y hay que confirmar que sigue valiendo. **Al pasarlo a la web, este
+  texto tiene que ir en el HTML**: en la maqueta va en un `<template>`, que los buscadores no leen.
+
+**«Los vídeos no parecen reproducirse»: no se ha podido reproducir.** En WebKit y Chromium los dos
+vídeos de las ampliadas avanzan y están silenciados, también con la política de reproducción más estricta
+de Chromium y sirviendo el mp4 sin peticiones de rango. El visor real no se pudo abrir desde el navegador del
+agente, que pide iniciar sesión. **Lo más probable, sin demostrar:** en la versión que vio solo sonaba una,
+unos 3 s cada vez, y las otras cuatro estaban quietas a propósito. Por si es otra cosa, la maqueta ya hace
+tres cosas: silencia cada vídeo por código, porque en Safari una copia de plantilla puede no quedar
+silenciada; si el navegador no lo deja arrancar, «Pausar» pasa a «Reproducir»; y si un vídeo da error, se
+descarga entero y se reproduce desde memoria. Y en sus notas hay una línea que dice qué hace cada vídeo en
+ese navegador: es lo que falta leer en el de Mario. Si las ampliadas se mueven y le sabe a poco, el
+siguiente paso es que suenen todas las visibles, a costa de batería y de lo que no se ha medido en un móvil.
+
+Medido en WebKit y Chromium, con y sin el mando, a 390×664, 375×548, 430×739, 1440×900 y 1280×720: en
+automático, dos ampliadas, cuatro a la vista y una fuera; sin pisarse y con el vídeo cubriendo su
+ventana en las cerca de 2.500 muestras por tamaño tomadas a mitad de cambio; periodo de 2,88 a 3,11 s. Con
+el tiempo acelerado, de 77 a 93 turnos seguidos sin un reposo mal, con las cuatro composiciones y las cinco
+tarjetas pasando por ampliada y por fuera. Al tocar, una ampliada y cinco a la vista, igual 4 s después. El
+leer más abre y cierra en las cinco, con el texto dentro: en el iPhone SE necesita scroll interno en
+tres de las cinco sin el mando (hasta 378 px de texto en 408 de caja) y en las cinco con él. La alta más
+estrecha, 165×225 en el SE con el mando, lleva hasta 158 px de texto sin tocar el botón. Con «reducir
+movimiento», nada se mueve ni se descarga. **Control de la regla 31:** en unas 1.400 capturas salieron dos
+piezas planas, y las dos casi negras (media de 0,7 y 1,1 sobre 255). La identificada era Las favoritas en su
+tramo oscuro del segundo 2; la otra no se identificó, pero una pieza sin pintar daría el color del suelo o
+del fondo del vídeo, 10 o 23. **Sin mirar en un iPhone.**
+
 **Lo que se queda de las tres primeras:** los cinco vídeos, con sus cortes, y la ficha «Qué es Cokima». Los
 cortes, de la fototeca, a 540×960, H.264 sin sonido y CRF 27 (el de la parrilla, 29), unos 3,4 MB los
 cinco: Argüelles, la entrada (`DHa2iMZNh8p`) de 1,6 a 7 s; La cocina, la sartén (`DZfAlbINfIO`) de

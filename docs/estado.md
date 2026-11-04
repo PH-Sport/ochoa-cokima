@@ -109,9 +109,11 @@ técnica. **Sin probar en WhatsApp de verdad.**
 
 **Y Nosotros, en maqueta, sin tocar la web:** cinco formatos con los vídeos del local y el pase,
 descartados los cinco —el primero por lineal; la escena con índice y el mosaico, porque hay que tocar
-para leer cada descripción; el texto delante y las cinco a la vez, sin motivo concreto—. **Ahora en
-maqueta, el collage y el fuelle**, con la idea del mosaico vivo de La casa de Ochoa, que trajo Mario
-como referencia, y piezas de Cokima. Por el camino salió lo que manda sobre el formato: **Nosotros
+para leer cada descripción; el texto delante y las cinco a la vez, sin motivo concreto—. **El
+2026-11-04 eligió el collage, con el fuelle de reserva**: la idea del mosaico vivo de La casa de Ochoa,
+que trajo él como referencia, con piezas de Cokima. En la maqueta, y aún no en la web, ya lleva dos
+ampliadas que rotan cada 3 s, una sola al tocar y un botón de leer más que trae la tarjeta al primer
+plano. Por el camino salió lo que manda sobre el formato: **Nosotros
 no puede atraer búsquedas mientras sea `#nosotros` dentro de la portada.** Las maquetas, los motivos
 y la recomendación —una dirección propia para cada sección—, en `cokima-el-rediseno.md` §3,
 «Nosotros, en maqueta»; la trampa de los vídeos que salió al medir, regla 31 de `movimiento.md`.
@@ -253,9 +255,12 @@ en `ochoa-inicio-vivo.md` §3.7.
   portada. Recomendado, y conservando `/carta` y `/reservas`, que son las de la web anterior; la
   almohadilla, solo para saltos dentro de una página, como las partes de La carta
   (`cokima-el-rediseno.md` §3, «Nosotros, en maqueta»).
-- **Elegir entre el collage y el fuelle para Nosotros**, o pedir otra vuelta:
-  https://claude.ai/artifact/8otJqwkVntRJ1ummPx4768 (mismo apartado, con las cinco maquetas
-  descartadas antes).
+- **Ver la maqueta del collage de Nosotros**, elegido, con el fuelle de reserva:
+  https://claude.ai/artifact/8otJqwkVntRJ1ummPx4768 (mismo apartado). Decir si le valen las dos
+  ampliadas, el toque y el leer más, y **leer en las notas de la maqueta la línea que dice qué hace cada
+  vídeo en su navegador**: dijo que no parecían reproducirse y aquí no se ha podido reproducir. También,
+  si la frase de las croquetas semilíquidas, de 2024, sigue valiendo. Nosotros no pasa a la web hasta que lo
+  dé por bueno.
 - **Ver en su móvil el desplegable de secciones y el viaje de «Reservar»**, y seguir iterando
   sobre ellos (`cokima-el-rediseno.md` §3). El desplegable salió de una maqueta de tres:
   https://claude.ai/artifact/TGPi5Le9WBSVTFXZGoLwhc.
