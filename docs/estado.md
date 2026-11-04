@@ -249,17 +249,18 @@ en `ochoa-inicio-vivo.md` §3.7.
 - **Abrir Reservar en `preview`, en el ordenador y en su iPhone**, y ver que el motor sale con la
   piel de Brasa: en el navegador de pruebas no se deja cargar (403), y la piel solo la enlaza desde
   el despliegue. Y decir si las chispas del fondo se quedan así de sutiles.
-- **Contar de dónde viene Cokima:** desde cuándo. Su Instagram dijo el 2025-10-23 que cumplía cinco
-  años, lo que apunta a 2020, y falta que Mario lo confirme; la ficha de Nosotros no lo dice hasta
-  entonces. Quién está detrás, no: Mario pidió no poner nombres.
+- **De dónde viene Cokima: el año de apertura no sale.** Su Instagram dijo el 2025-10-23 que cumplía cinco
+  años, lo que apunta a 2020, pero Mario no está seguro y su criterio, del 2026-11-04, es que solo va si lo pone
+  su Instagram: *«Si lo pone en su Instagram si, sino no»*. No lo pone: en las 232 publicaciones de la
+  fototeca, de febrero de 2024 a octubre de 2026, habla de los cinco años y nunca del año. Las anteriores no están en
+  la fototeca, así que si aparece ahí, se puede poner. Quién está detrás, no: Mario pidió no poner nombres.
 - **Decidir si las secciones de Cokima tienen dirección propia** (`/carta`, `/nosotros`,
   `/visitanos`, `/reservas`) en lugar de `#carta`, `#nosotros`…, que Google no distingue de la
   portada. Recomendado, y conservando `/carta` y `/reservas`, que son las de la web anterior; la
   almohadilla, solo para saltos dentro de una página, como las partes de La carta
   (`cokima-el-rediseno.md` §3, «Nosotros, en maqueta»).
-- **Ver el collage de Nosotros en `preview`**, en el ordenador y en su iPhone (mismo apartado). Y dos
-  datos que solo puede dar él: si la frase de las croquetas semilíquidas, de 2024, sigue valiendo, y el año
-  de apertura, que la ficha no dice hasta que lo confirme. El fuelle sigue de reserva en la maqueta:
+- **Ver el collage de Nosotros en `preview`**, en el ordenador y en su iPhone (mismo apartado). Y un
+  dato que solo puede dar él: si la frase de las croquetas semilíquidas, de 2024, sigue valiendo. El fuelle sigue de reserva en la maqueta:
   https://claude.ai/artifact/8otJqwkVntRJ1ummPx4768.
 - **Ver en su móvil el desplegable de secciones y el viaje de «Reservar»**, y seguir iterando
   sobre ellos (`cokima-el-rediseno.md` §3). El desplegable salió de una maqueta de tres:

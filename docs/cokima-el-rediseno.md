@@ -879,8 +879,11 @@ pasarlo, y que la maqueta no tenía:
   el automático ya no espera indefinidamente con el ratón encima, sino 6 s desde que se movió por última vez.
 - **Sin fuelle, sin notas ni la línea que decía qué hacía cada vídeo.** El fuelle sigue de reserva en la maqueta,
   que no lleva la vuelta a los 6 s.
-- **Sin el hueco del año de apertura.** En la maqueta iba marcado; en la web la fila no sale hasta que Mario
-  lo confirme, porque ya pidió quitar el otro hueco de esta sección.
+- **Sin el año de apertura.** En la maqueta iba como hueco; en la web la fila no sale, porque ya pidió quitar el
+  otro hueco de esta sección. Y al preguntarle si abrió en 2020: *«De momento quitémoslo. No estoy completamente
+  seguro. Si lo pone en su Instagram si, sino no»*. **No lo pone:** en las 232 publicaciones de la fototeca, de
+  febrero de 2024 a octubre de 2026, solo dice que cumplió cinco años el 2025-10-23. Lo de 2020 es una
+  deducción, y no se escribe.
 - **Todo el texto va en el HTML**, también el de leer más, aunque no se vea hasta abrirlo: se comprobó en el
   `index.html` del build. Y **el Inicio no descarga nada de Nosotros**: los vídeos llevan `preload="none"`,
   las fotos van en diferido y se piden a mano al abrir la sección (regla 28).
@@ -918,8 +921,8 @@ cinco: Argüelles, la entrada (`DHa2iMZNh8p`) de 1,6 a 7 s; La cocina, la sarté
 1,5 a 9 s; El pase, el mural (`DJcFEQ-tunn`) de 2,5 a 8,5 s, solo manos; Las favoritas, las croquetas
 (`C6tJ19ktThn`) enteras; La mesa, la entrada otra vez, de 12 a 19 s. **La ficha** es texto del agente,
 solo con datos comprobados: la web del grupo, su Instagram (*cocina fusión*, *junto a Plaza de España
-y Moncloa*), la carta (los imprescindibles y los precios) y los datos del local. El año de apertura va
-como hueco hasta que Mario lo confirme.
+y Moncloa*), la carta (los imprescindibles y los precios) y los datos del local. El año de apertura iba
+como hueco en la maqueta; en la web no sale (abajo).
 
 **Lo que salió por el camino, y manda sobre el formato: tal como está, Nosotros no puede atraer
 búsquedas.** Brasa es una sola página, y Nosotros es `#nosotros` dentro de la portada: lo que va tras
