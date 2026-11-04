@@ -831,8 +831,8 @@ collage pidió tres cambios, ya en la misma maqueta y aún no en la web:
   modo en que estaba.
 - **Leer más: un botón redondo con una flecha**, arriba a la derecha de cada ampliada, para no pisar el
   texto. Trae la tarjeta al primer plano sobre todo el collage, sin cambiar de pantalla, con algo más de
-  texto. En el ordenador, el vídeo en la mitad izquierda, porque a toda la caja se ampliaba más del doble y
-  se veía borroso; en el móvil, de fondo, con el texto abajo. Se cierra con el mismo botón o con Escape, y
+  texto. En el ordenador, el vídeo en la mitad izquierda, porque a toda la caja habría que ampliarlo 2,2 veces
+  (calculado, no probado); en el móvil, de fondo, con el texto abajo. Se cierra con el mismo botón o con Escape, y
   la tarjeta se queda ampliada en su sitio. Los textos son suyos, con la fuente de cada uno en las notas de
   la maqueta, salvo la lista de imprescindibles, que sale de la carta. **La frase de las croquetas
   semilíquidas es de mayo de 2024**, y hay que confirmar que sigue valiendo. **Al pasarlo a la web, este
