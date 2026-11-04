@@ -537,6 +537,14 @@ más lejos; Ochoa es una tasca y es seca.
     desde el 2026-11-04 (`apps/cokima/src/collage.js`). **Ojo al medirlo:** un vídeo con un tramo muy oscuro también
     da una pieza plana (media de 0,7 sobre 255); una sin pintar da el color de lo que tiene detrás, 10 o 23.
 
+32. **El tiempo de una animación se cuenta desde que se ve, no desde que arranca.** Cazado el 2026-11-04 en La mecha de
+    Visítanos, por Mario en el móvil, antes que por ninguna medida: *«tarda un poquito en aparecer»*. El código decía que
+    todo duraba 3,5 s y era verdad, pero la mecha más larga salía de un metro que en el móvil queda fuera de la pantalla, y
+    las que se ven no arrancaban hasta el final, para llegar a la vez. Mirando los píxeles del lienzo, 1,17 s sin ver nada en
+    el móvil y 0,52 s en el ordenador: **el mismo código, y el doble de espera según lo que quepa en la pantalla.** Ahora el
+    reparto se calcula con el tramo que queda a la vista en esa pantalla (`mecha.js`), y lo tapado arde a su paso sin contar.
+    **Lo que se mide es el primer píxel que cambia donde se mira, no el `currentTime` de nada.**
+
 ## Qué se mueve hoy
 
 | Dónde | Qué | Con qué |
@@ -568,6 +576,7 @@ más lejos; Ochoa es una tasca y es seca.
 | Vídeo de la portada de Brasa (Cokima) | En el móvil, un vertical de diez planos de 3 s; en el ordenador apaisado, tres verticales en columnas que cortan a 1 s una de otra | el vídeo, horneado (`scripts/video-entrada.sh`); entra con la entrada (`opacity`, `--dur-in`); se pausa fuera de la vista y con la pestaña oculta (regla 6); no se pide con «reducir movimiento» ni con ahorro de datos (regla 20); las columnas, con reloj común (regla 25) |
 | Cambio de sección de Brasa (Cokima) | El fundido corto de siempre y, encima, una bocanada de chispas que sube desde abajo por toda la pantalla, bastante más densa que el fondo | la sección, `opacity` con `--dur-out` y `--dur-in`; las chispas, en el lienzo de delante (una por cada 6.000 px², entre 70 y 220); sin chispas con «reducir movimiento» |
 | Línea de progreso de Brasa (Cokima) | Al pie de la barra de arriba, se llena de izquierda a derecha según se baja. Sustituye a la barra del navegador. No se mueve sola: la mueve quien baja, así que no le aplica la regla 6 y sigue igual con «reducir movimiento» | `transform: scaleX`, sin transición, desde `brasa.js`; se quita con `opacity` y `--dur-out` si se abre el desplegable |
+| La mecha de Visítanos (Cokima) | Al abrir la sección, cuatro mechas arden por las calles reales desde los metros más cercanos, sueltan chispas y llegan a la vez a Cokima; entonces la luz se abre por el barrio y aparece su nombre. Una vez por cada vez que se abre y solo a la vista: si se baja hasta perderla, se pone el final (regla 6). Con «reducir movimiento», el final | lienzo 2D, `--dur-mecha`, `--dur-mecha-barrio`; el nombre, `opacity`, `--dur-in` |
 | Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |
 | Entrada (Cokima) | Una chispa baja por un riel, avisando de que hay más | `stroke-dashoffset`, 3,2s |
 | Entrada (Cokima) | La cabecera, el cartel de cookies y el aviso entran al deslizar | `opacity` + `visibility`, `--dur-in` / `--dur-out` |

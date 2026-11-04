@@ -2,12 +2,19 @@
 // 2026-10-31 (docs/cokima-el-rediseno.md §3).
 import { RUTAS } from "./rutas.js";
 import { montarCollage } from "./collage.js";
+import { montarMecha } from "./mecha.js";
 
 (() => {
   // Los tokens de tokens.css se leen al usarlos y con su unidad: el build reescribe 180ms como .18s,
   // y WebKit los devuelve vacíos mientras carga la página (regla 30 de movimiento.md).
   const token = (t) => getComputedStyle(document.documentElement).getPropertyValue(t).trim();
   const leeMs = (t) => { const v = token(t); return v.endsWith("ms") ? parseFloat(v) : parseFloat(v) * 1000; };
+  // Del amarillo al rojo apagado según se enfría (k: 1, recién salida; 0, fría). Las chispas y la mecha.
+  const TONOS = [[110, 22, 8], [214, 62, 18], [255, 140, 45], [255, 214, 140]];
+  const tono = (k) => {
+    const x = Math.min(0.999, Math.max(0, k)) * 3, i = Math.floor(x), f = x - i, a = TONOS[i], b = TONOS[i + 1];
+    return a.map((v, n) => Math.round(v + (b[n] - v) * f)).join(",");
+  };
   const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
   document.addEventListener("click", (e) => {
     const a = e.target.closest(".chips a"); if (!a) return;
@@ -57,7 +64,7 @@ import { montarCollage } from "./collage.js";
   // Las chispas de delante (2026-11-02): la bocanada al cambiar de sección y las que salta un botón al
   // pulsarlo. Las pone en marcha el fondo, al final del archivo; hasta entonces, o con «reducir
   // movimiento», no hacen nada. Y la densidad del fondo, que la entrada sube desde cero.
-  let rafaga = () => {}, soltar = () => {}, densidadFondo = 1;
+  let rafaga = () => {}, soltar = () => {}, brotar = () => {}, densidadFondo = 1;
   // El motor de reservas (2026-11-02) se monta la primera vez que se abre Reservar, y no antes: así el
   // Inicio no llama a covermanager.com. Primero la mitad del iframeResizer que va en esta página y luego
   // el iframe, porque su onload la necesita ya cargada; si no, el iframe se queda en 550px con scroll
@@ -93,10 +100,14 @@ import { montarCollage } from "./collage.js";
   }).catch((e) => { delete traidas[v]; throw e; }));
   // El collage de Nosotros (collage.js) corre solo con su sección abierta, y hasta entonces no descarga nada.
   let collage = { activar() {} };
+  // La mecha de Visítanos (mecha.js): igual, corre solo con su sección abierta.
+  let mecha = { activar() {} };
+  const ponerMecha = () => { mecha = montarMecha({ leeMs, token, tono, brotar: (...a) => brotar(...a) }); };
   const montar = (v, s) => {
     const n = document.importNode(s, true); n.hidden = true; main.append(n); vistas[v] = n;
     if (v === "inicio") { montarPortada(); montarPaneles(); }
     if (v === "nosotros") collage = montarCollage({ leeMs, leeCurva, token });
+    if (v === "visitanos") ponerMecha();
     estado();
   };
   // Una sección puede tardar un par de fotogramas en tener su alto (los paneles se colocan así).
@@ -128,6 +139,7 @@ import { montarCollage } from "./collage.js";
       if (cine) cine.hidden = v !== "inicio";
       entra.classList.add("entrando"); entra.hidden = false; aY(y);
       collage.activar(v === "nosotros");
+      mecha.activar(v === "visitanos");
       if (v === "reservar") montarMotor();
       ponerCabecera(v);
       requestAnimationFrame(() => requestAnimationFrame(() => entra.classList.remove("entrando")));
@@ -422,6 +434,7 @@ import { montarCollage } from "./collage.js";
 
   if (vistas.inicio) { montarPortada(); montarPaneles(); }
   if (vistas.nosotros) { collage = montarCollage({ leeMs, leeCurva, token }); collage.activar(true); }
+  if (vistas.visitanos) { ponerMecha(); mecha.activar(true); }
   if (actual === "reservar") montarMotor();
   marcar(); revelar(); alScroll();
 
@@ -579,12 +592,6 @@ import { montarCollage } from "./collage.js";
     c.vy = (c.vy - 25 * c.z * dt) * Math.exp(-0.45 * dt);
     c.x += c.vx * dt; c.y += c.vy * dt;
   };
-  // Del amarillo al rojo apagado según se enfría (k: 1, recién salida; 0, fría).
-  const TONOS = [[110, 22, 8], [214, 62, 18], [255, 140, 45], [255, 214, 140]];
-  const tono = (k) => {
-    const x = Math.min(0.999, Math.max(0, k)) * 3, i = Math.floor(x), f = x - i, a = TONOS[i], b = TONOS[i + 1];
-    return a.map((v, n) => Math.round(v + (b[n] - v) * f)).join(",");
-  };
   const suaveF = (x) => { const t = Math.min(1, Math.max(0, x)); return t * t * (3 - 2 * t); };
   // Pinta una lista de chispas en un lienzo: el fondo, o el de delante.
   const pintarEn = (cx, lista, t) => {
@@ -642,6 +649,11 @@ import { montarCollage } from "./collage.js";
     if (!cxD) return;
     const n = Math.round(Math.max(70, Math.min(220, (W * H) / 6000)) * cuanto);
     for (let i = 0; i < n; i++) { const c = nueva({ abajo: true, fuerza: azar(1.6, 2.5), corta: 0.6 }); c.y = H + azar(0, 80); delante.push(c); }
+  };
+  // Las que suelta un punto de la pantalla: la cabeza de una mecha, y Cokima al llegar las cuatro.
+  brotar = (x, y, n, fuerza = 1, ancho = 30) => {
+    if (!cxD) return;
+    for (let i = 0; i < n; i++) { const c = nueva({ abajo: false, fuerza: azar(0.9, 1.7) * fuerza, corta: 0.42 }); c.x = x + azar(-ancho, ancho); c.y = y + azar(-ancho * 0.4, ancho * 0.4); c.vx = azar(-70, 70); c.entra = 0.04; delante.push(c); }
   };
   // Las de un botón al pulsarlo: de cuatro a seis, de su borde de arriba.
   soltar = (b) => {

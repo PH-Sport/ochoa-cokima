@@ -134,6 +134,15 @@ todos los platos escritos, que antes pintaba JavaScript. Los enlaces viejos con 
 **Los títulos y las descripciones los escribió el agente, y falta que los revise Mario.** Medido sobre el
 build; **sin mirar en un iPhone** (`cokima-el-rediseno.md` §3, «Una dirección para cada sección»).
 
+**Y Visítanos, desde el 2026-11-04, es La mecha, ya en `preview`.** Mario la veía *«muy plana»* y la eligió entre tres en
+una maqueta. Las calles reales de Argüelles a oscuras, y desde los cuatro metros más cercanos, una mecha por el camino de
+verdad que llega a la vez a Cokima; entonces la luz se abre por el barrio. La foto del rótulo sale de esta sección, y los
+textos y los datos siguen, debajo. **Su primera corrección ya está:** *«tarda un poquito en aparecer»*, y medido, 1,17 s en
+el móvil sin ver nada; ahora, entre 0,22 y 0,37 s desde que se pulsa, y dura 2,6 s en vez de 3,9. **Espera a que la vea en el móvil
+y la ajuste.** Medido sobre el build en WebKit y Chromium, en once tamaños y entrando por las dos vías; **sin mirar en un
+iPhone**. Lo descartado, de dónde sale cada dato y las trampas, en `cokima-el-rediseno.md` §3, «Visítanos: La mecha»; la
+regla que dejó, la 32 de `movimiento.md`.
+
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta` y `/reservas` son ahora las de Brasa, y el inglés lleva a ellas— y las
 legales siguen con su aspecto de antes. **Antes de producción falta lo que se dejó a propósito**:

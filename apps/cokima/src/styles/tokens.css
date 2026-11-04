@@ -106,6 +106,14 @@
   --dur-cambio: 1100ms;
   --pausas-collage: 1.7s 2.1s 1.8s 2s 1.9s;
   --espera-vuelta: 6s;
+  /* La mecha de Visítanos (2026-11-04, mecha.js): lo que tarda desde que se ve la primera hasta que llegan a
+     Cokima, contado desde que se ven y no desde que arrancan (regla 32 de movimiento.md), y lo que tarda la luz
+     en abrirse por el barrio. Y el color del barrio encendido, una luz de brasa sobre las casas y más clara en
+     las calles. */
+  --dur-mecha: 2600ms;
+  --dur-mecha-barrio: 1500ms;
+  --mecha-casa: #ff8c3c;
+  --mecha-calle: #ffc48c;
 
   --t-heading-font: var(--serif);
   --t-menu-title-size: 1.6rem;

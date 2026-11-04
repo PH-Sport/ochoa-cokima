@@ -1,6 +1,6 @@
 # Cokima: el rediseño
 
-> **Estado: vivo** · el rediseño está en curso · revisado 2026-11-03
+> **Estado: vivo** · el rediseño está en curso · revisado 2026-11-04
 
 - **Abierto:** 2026-08-14 · **Última tanda:** 2026-11-03
 - **Rama:** `preview` desde el 2026-10-26, cuando Mario pidió trabajar solo en ella. Antes vivió en
@@ -822,8 +822,8 @@ con su caso en los dos motores. También «Dónde estamos» del menú de las leg
 Ochoa) es el de la página en la que está, y no el del restaurante; y la carta no lleva datos estructurados de menú.
 
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
-Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Visítanos se rediseña después, sobre
-esta dirección.**
+Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Visítanos se rediseñó después, sobre
+esta dirección** (más abajo, «Visítanos: La mecha»).
 
 **Nosotros, en maqueta: cinco formatos descartados y lo que pide Mario (2026-11-03).** Sin tocar
 la web. Todas las maquetas usan los mismos cinco vídeos de @cokimamadrid, del local y del pase, sin
@@ -993,6 +993,60 @@ revés: le dicen a Google que esas páginas ya no existen y que vaya a la portad
 dirección propia para cada sección, y Mario la pidió el 2026-11-04:** hecho, más arriba, «Una dirección para
 cada sección». Para medir qué se busca de verdad hacen falta datos que no hay: Search Console de la web actual
 o una herramienta de palabras clave.
+
+**Visítanos: La mecha (2026-11-04).** Mario: *«la sección de Visítanos está muy plana, quisiera darle algo de
+dinamismo»*, con el mapa de Ochoa como medida del efecto y *«sin ser demasiado extravagante»*. Se le enseñaron tres en
+una maqueta, junto a la de entonces (https://claude.ai/artifact/23pGxYr81RwxQYFWAS1XeK), y eligió **La mecha**: *«Me
+quedo con la de "La mecha", pero vamos a ajustarla»*. **Lo que es:** la primera pantalla son las calles reales de
+Argüelles a oscuras, con el título encima; desde los cuatro metros más cercanos arde una mecha por el camino de verdad, y
+llegan a la vez a Cokima, en Andrés Mellado, 21. Entonces salta un puñado de chispas, aparece el nombre con «Cómo llegar»
+y la luz se abre por el barrio y se queda baja. La voz en cursiva, el teléfono, el Instagram y los datos van debajo, con
+los mismos textos. La foto del rótulo sale de esta sección y sigue en el último panel del Inicio.
+
+**Lo que se propuso y no se eligió** (no dio motivo; el material sigue en la maqueta):
+
+- *Cruzar la puerta*, la que recomendaba el agente, porque cumple el título: se encienden las luces del rótulo una a una
+  y, al bajar, se avanza hasta atravesar la cristalera de la foto; dentro prenden «Orgasm,» y «at the first bite» por
+  separado, se ilumina la sala y se llega al mural.
+- *El rótulo*: solo ese encendido, sin avanzar. La más sencilla, y prima de *La puerta de noche*, que ya le pareció pobre.
+- **Ni se propusieron**, porque ya estaban parados arriba: el fuego que reacciona al dedo y el reloj de la cocina.
+
+**Se le avisó de que La mecha es un mapa, como en Ochoa, y la eligió sabiéndolo.** Las piezas no se comparten: allí es un
+dibujo quieto de la manzana en perspectiva, en SVG, y aquí un lienzo que arde. Lo único en común es de dónde salen los
+datos.
+
+**De dónde sale cada cosa, porque nada es inventado.** `scripts/mapa-barrio.py` baja las calles y los edificios de
+OpenStreetMap y calcula el camino más corto desde las bocas de los seis metros cercanos: **Argüelles 256 m, Moncloa 375,
+Islas Filipinas 742 y Quevedo 917**; se quedan fuera San Bernardo (970) y Canal (1.427). **Lo que es inferencia:** OSM no
+dice de qué estación es cada boca, así que se les asignó por cercanía. Los caminos van por el centro de las calles
+dibujadas, no por las aceras, para que la mecha no vaya por al lado. Son 622 calles y 1.893 edificios en 173 KB (63 KB
+comprimidos, menos que los 72 de la foto que sustituye). El crédito de OSM va en la esquina, como pide su licencia.
+
+**La primera corrección, nada más elegirla:** *«creo que la mecha como tal tarda un poquito en aparecer»*. **Era real, y
+medirlo dio la causa:** mirando los píxeles del lienzo, en la maqueta la primera mecha no se veía hasta los **1,17 s en el
+móvil** (0,52 s en el ordenador). El tiempo contaba desde que arrancaba y la más larga, la de Quevedo, arranca fuera de la
+pantalla. Ahora cuenta desde que se ve (regla 32 de `movimiento.md`), y las demás se reparten para llegar a la vez: la
+primera se ve a los **entre 0,22 y 0,37 s** de pulsar en otra sección, con el fundido de salida de la que se deja incluido, y a
+los **entre 0,18 y 0,54 s** de empezar a cargar `/visitanos`. Todo el recorrido baja de 3,88 s a **2,6 s** (`--dur-mecha`). De lo
+demás no se ha tocado nada: si cambia el ritmo o la luz, lo decide Mario al verlo en el móvil.
+
+**Trampas sin error:**
+
+- **En la maqueta, Cruzar la puerta salió con dos bandas negras en el ordenador**, de 100 px cada una, porque su escena se
+  llamaba `.escena`, como la del collage de Nosotros, y heredó su tope de 1240 px. Es la misma trampa del desplegable que
+  se llamó como la lista de La carta: **antes de nombrar una clase, buscarla en `brasa.css`**.
+- **Un `<link rel="preload">` de los datos hacía que WebKit los bajara dos veces**, 63 KB de más. Ahora los pide un script
+  en el HTML, mientras se lee la página.
+- **La barra de Safari dispara `resize` sin que cambie nada que cuelgue de `100svh`:** volver a medir el barrio por eso sería
+  repintarlo entero a cada deslizamiento. `mecha.js` compara el tamaño antes de hacer nada.
+- **El Python del Mac no llega a negociar el cifrado con el servidor de OSM**, y el script usa `curl`.
+
+**Medido sobre el build, en WebKit y Chromium**, en once tamaños, del móvil con las barras de Safari a 2560×1440: entrando
+directo y llegando desde otra sección, volviendo atrás y adelante y yéndose a mitad de arder; y a 390 y a 1440, además,
+bajando a mitad de arder, con «reducir movimiento» y sin JavaScript. En todos: sin scroll lateral a cuatro alturas, sin
+errores, los datos pedidos una sola vez, la foto del rótulo sin descargarse y el nombre de Cokima dentro de la pantalla.
+Una medida se salió de la horquilla, 0,75 s en Chromium a 1280×720, y no se repitió: 0,29 s al volver a medirla. **Sin mirar en un iPhone:** ni el ritmo ni lo que le cuesta a su
+procesador, que aquí se mide con el del Mac. **Espera a Mario**, que la ve en el móvil y la ajusta.
 
 ---
 
