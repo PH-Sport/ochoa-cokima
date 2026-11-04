@@ -736,6 +736,30 @@ siguen a menos de 2 centésimas de donde les toca; en La carta se paran y al vol
 errores ni scroll lateral. **Sin mirar en un iPhone**, y sin medir lo que cuesta decodificar tres
 vídeos a la vez en un portátil modesto. Las tres trampas de esta tanda, en §5.
 
+**La línea de progreso (2026-11-04).** Mario, viendo los paneles del Inicio en el ordenador: *«podrías
+aplicar una barra horizontal, que indique el scroll? Eliminaría la típica barra del navegador»*, porque
+*«se navega un poco "a ciegas", y cualquier usuario que no entienda que la navegación es horizontal,
+puede liarse»*: los paneles se bajan en vertical y se abren en horizontal. **Lo que hay:** una línea de
+2 px al pie de la barra de arriba, a todo lo ancho y en todas las secciones, con el brasa que marca la
+sección actual, que se llena de izquierda a derecha. Va dentro de la barra para aparecer con ella, así
+que la portada sigue sin nada encima (§7); en el Inicio cuenta desde donde aparece la barra. Solo indica:
+no se pulsa ni se arrastra, y sigue al scroll sin transición. Con el desplegable del móvil abierto se
+quita, y si una sección cabe en la pantalla no sale. **La barra del navegador** se esconde con
+`scrollbar-width: none` y `::-webkit-scrollbar`, solo en Brasa: las legales siguen con la suya.
+
+**Decidido por el agente, y fácil de cambiar:** el sitio (bajo la barra de arriba, y no al pie de la
+pantalla, donde en el móvil choca con la barra de Safari, ni bajo los paneles, que no valdría para las
+otras secciones) y que la línea sea continua, sin marcas por panel.
+
+Medido sobre el build, en WebKit y Chromium a 1440×900, 1280×720, 390×664, 375×548 y 430×739: en la
+portada no se ve; al aparecer la barra está a menos del 1 %; solo sube al bajar y acaba al 100 %, con
+las secciones de arriba abajo de 0 a 100 %; a 1440, los paneles se abren al 1, 33, 59 y 84 %; sin scroll
+lateral ni errores, y 100 pasos de navegación al azar por los paneles en WebKit sin fallos. **La barra
+del navegador tiene una trampa de método:** el navegador de pruebas usa la que se superpone, y mide
+0 px con y sin el CSS, así que no prueba nada. Simulando una clásica de 12 px en Chromium, pasa de 12 a
+0 px; en WebKit no se dejó simular, y allí solo está medido que la regla se aplica. **Sin mirar en un
+iPhone**, donde Safari puede enseñar su indicador al deslizar.
+
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
 rediseñan después, sobre esta dirección.**

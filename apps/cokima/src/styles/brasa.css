@@ -12,6 +12,9 @@
   --barra:60px;
 }
 html,body{margin:0;background:var(--ground);color:var(--bone)}
+/* Sin la barra del navegador: la sustituye la línea de progreso, al pie de la barra de arriba (.progreso) */
+html{scrollbar-width:none}
+html::-webkit-scrollbar{display:none}
 body{font:300 17px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:var(--sb)}
 img{max-width:100%;height:auto;display:block}
 a{color:inherit}
@@ -72,6 +75,12 @@ main{position:relative;z-index:1}
   height:var(--barra);padding:var(--st) var(--gr) 0 var(--gl);
   background:linear-gradient(to bottom,rgba(14,9,7,.92) 0%,rgba(14,9,7,.7) 60%,rgba(14,9,7,0) 100%);
   transition:opacity var(--dur-in) var(--ease),transform var(--dur-in) var(--ease)}
+/* La línea de progreso (Mario, 2026-11-04): de izquierda a derecha según se baja, con el mismo brasa que
+   marca la sección actual. Va dentro de la barra para aparecer con ella: en la portada no hay nada encima.
+   Con el desplegable abierto se quita, porque barra y lista son una pieza. brasa.js la pinta. */
+.progreso{position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--line);pointer-events:none;transition:opacity var(--dur-out) var(--ease)}
+.progreso i{display:block;height:100%;background:var(--ember);transform:scaleX(0);transform-origin:left}
+.progreso.sin,.menu-abierto .progreso{opacity:0}
 .marca{font:300 1.45rem/1 var(--sans);letter-spacing:-.01em;text-decoration:none}
 .secciones{display:none;gap:30px}
 .secciones a{text-decoration:none;position:relative}

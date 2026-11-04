@@ -1,6 +1,6 @@
 # Movimiento
 
-> **Estado: vivo** · revisado 2026-11-03
+> **Estado: vivo** · revisado 2026-11-04
 
 Pocas animaciones, concretas, y todas saliendo de los mismos cinco valores. **No hay un solo
 milisegundo suelto en los componentes**: si algo se mueve, su duración y su curva vienen de
@@ -556,6 +556,7 @@ más lejos; Ochoa es una tasca y es seca.
 | Entrada de Brasa (Cokima) | La primera vez de la sesión, al llegar al Inicio: sube una bocanada de chispas desde un fondo vacío, «Cokima» se destapa de abajo arriba al rojo y se enfría hasta el hueso; «Kitchen Madness», los botones y el vídeo entran detrás. Unos 1,5 s | `clip-path` y `transform` del nombre, `opacity` de una copia en degradado de brasa (`--calor`) y de lo demás, desde `brasa.js`; `--dur-aviva`, `--dur-enfria`, `--dur-in`, `--ease`, `--ease-viaje`; la decide el `<head>` antes del primer pintado; tocar, desplazar o una tecla la terminan; sin entrada con «reducir movimiento» (regla 5) |
 | Vídeo de la portada de Brasa (Cokima) | En el móvil, un vertical de diez planos de 3 s; en el ordenador apaisado, tres verticales en columnas que cortan a 1 s una de otra | el vídeo, horneado (`scripts/video-entrada.sh`); entra con la entrada (`opacity`, `--dur-in`); se pausa fuera de la vista y con la pestaña oculta (regla 6); no se pide con «reducir movimiento» ni con ahorro de datos (regla 20); las columnas, con reloj común (regla 25) |
 | Cambio de sección de Brasa (Cokima) | El fundido corto de siempre y, encima, una bocanada de chispas que sube desde abajo por toda la pantalla, bastante más densa que el fondo | la sección, `opacity` con `--dur-out` y `--dur-in`; las chispas, en el lienzo de delante (una por cada 6.000 px², entre 70 y 220); sin chispas con «reducir movimiento» |
+| Línea de progreso de Brasa (Cokima) | Al pie de la barra de arriba, se llena de izquierda a derecha según se baja. Sustituye a la barra del navegador. No se mueve sola: la mueve quien baja, así que no le aplica la regla 6 y sigue igual con «reducir movimiento» | `transform: scaleX`, sin transición, desde `brasa.js`; se quita con `opacity` y `--dur-out` si se abre el desplegable |
 | Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |
 | Entrada (Cokima) | Una chispa baja por un riel, avisando de que hay más | `stroke-dashoffset`, 3,2s |
 | Entrada (Cokima) | La cabecera, el cartel de cookies y el aviso entran al deslizar | `opacity` + `visibility`, `--dur-in` / `--dur-out` |

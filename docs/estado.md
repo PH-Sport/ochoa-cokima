@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-11-03 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-11-04 · **el punto de entrada del repo**
 
-- **Corte:** 2026-11-03
+- **Corte:** 2026-11-04
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
   nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
   de decidir, que no se fusionan: `feat/inicio-paralaje`, el Inicio de Ochoa en paralaje, parada,
@@ -115,6 +115,12 @@ como referencia, y piezas de Cokima. Por el camino salió lo que manda sobre el 
 no puede atraer búsquedas mientras sea `#nosotros` dentro de la portada.** Las maquetas, los motivos
 y la recomendación —una dirección propia para cada sección—, en `cokima-el-rediseno.md` §3,
 «Nosotros, en maqueta»; la trampa de los vídeos que salió al medir, regla 31 de `movimiento.md`.
+
+**El 2026-11-04, una línea de progreso en vez de la barra del navegador.** Mario, viendo los paneles
+del Inicio: *«se navega un poco "a ciegas"»*. Es una línea fina al pie de la barra de arriba, en todas
+las secciones, que se llena de izquierda a derecha al bajar; la barra del navegador ya no sale. La
+portada sigue sin nada encima. Medido sobre el build; **sin mirar en un iPhone**
+(`cokima-el-rediseno.md` §3, «La línea de progreso»).
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las

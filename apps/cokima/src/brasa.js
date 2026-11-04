@@ -261,8 +261,28 @@
   // Con margen: la portada se deja al pasar el 60% de la pantalla y se recupera por debajo del 50%,
   // para que quien se pare justo en el límite no ponga los botones a ir y venir.
   let enPortada = null;
+  const DEJA_PORTADA = 0.6;
+  // La línea de progreso, al pie de la barra (Mario, 2026-11-04: «se navega un poco a ciegas», sobre todo
+  // en los paneles del Inicio, que se bajan en vertical y se abren en horizontal). Sustituye a la barra del
+  // navegador, que brasa.css esconde. En el Inicio cuenta desde donde aparece la barra: en la portada no
+  // hay nada encima. Solo indica: sigue al scroll sin transición y no se pulsa.
+  const progreso = barra.querySelector(".progreso"), llenado = progreso.firstElementChild;
+  let pideProgreso = 0;
+  const pintaProgreso = () => {
+    pideProgreso = 0;
+    const desde = actual === "inicio" ? innerHeight * DEJA_PORTADA : 0, total = html.scrollHeight - innerHeight - desde;
+    // Si la sección cabe en la pantalla no hay nada que indicar.
+    progreso.classList.toggle("sin", total < 8);
+    llenado.style.transform = `scaleX(${total > 0 ? Math.min(1, Math.max(0, (scrollY - desde) / total)).toFixed(4) : 0})`;
+  };
+  const pedirProgreso = () => { if (!pideProgreso) pideProgreso = requestAnimationFrame(pintaProgreso); };
+  // La página también cambia de alto sin mover el scroll: al cambiar de sección, al fijarse los paneles o
+  // al crecer el motor de reservas.
+  new ResizeObserver(pedirProgreso).observe(document.body);
+  addEventListener("resize", pedirProgreso);
   const alScroll = (desdeScroll) => {
-    const portada = actual === "inicio" && scrollY < innerHeight * (enPortada === false ? 0.5 : 0.6);
+    pedirProgreso();
+    const portada = actual === "inicio" && scrollY < innerHeight * (enPortada === false ? 0.5 : DEJA_PORTADA);
     if (portada !== enPortada) {
       const viajar = desdeScroll === true && enPortada !== null && !matchMedia("(prefers-reduced-motion: reduce)").matches;
       enPortada = portada;
