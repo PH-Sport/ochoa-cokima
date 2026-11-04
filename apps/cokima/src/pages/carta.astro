@@ -1,0 +1,56 @@
+---
+// La carta de Brasa. Los platos salen de menu-es.json en el build y van escritos en el HTML: es lo primero
+// que se busca de un restaurante, y los asistentes de IA no ejecutan JavaScript.
+import Brasa from "../layouts/Brasa.astro";
+import { FOTOS, PARTES, PORTADILLAS, VOCES, platosDeLaCarta, precio } from "../carta.ts";
+
+const platos = await platosDeLaCarta();
+const porId = Object.fromEntries(platos.map((d) => [d.id, d]));
+---
+
+<Brasa
+  vista="carta"
+  title="La carta · Cokima, restaurante en Argüelles (Madrid)"
+  description="La carta de Cokima para compartir: gyozas de langostino, tataki de atún, tacos del gobernador, katsu sando y arroz meloso de carabinero a la brasa. Argüelles, Madrid."
+>
+  <section class="vista" data-vista="carta">
+    <div class="wrap cab-vista">
+      <p class="etq">La carta</p>
+      <h1 class="tit">Para compartir y desfasar.</h1>
+    </div>
+    <nav class="chips" aria-label="Partes de la carta"><div class="wrap"><a href="#p-compartir" data-a="compartir">Compartir es vivir</a><a href="#p-terminar" data-a="terminar">Para terminar o no…</a><a href="#p-postres" data-a="postres">Los postres</a></div></nav>
+    <div id="carta-cuerpo">
+      {PARTES.map(([sec, titulo]) => {
+        const pid = PORTADILLAS[sec], p = porId[pid], f = FOTOS[pid];
+        return (
+          <section class="parte" id={`p-${sec}`} data-parte={sec}>
+            <div class="wrap"><h2 class="sec">{titulo}</h2></div>
+            <figure class="pf portadilla">
+              <img src={`/images/${f.img}.jpg`} alt={f.alt} width={f.w} height={f.h} loading="lazy" />
+              <figcaption class="wrap">
+                {p.featured && <p class="etq">Imprescindible</p>}
+                <p class="vg">{f.frase || p.description}</p>
+                <p class="linea"><span>{p.name}</span><b>{precio(p.price)}</b></p>
+                {f.frase && p.description && <p class="d">{p.description}</p>}
+              </figcaption>
+            </figure>
+            <div class="wrap lista">
+              <ul>
+                {platos.filter((d) => d.section === sec && d.id !== pid).map((d) => (
+                  <li class="pl" data-id={d.id}>
+                    <span class="ln"><span>{d.name}{d.featured && <span class="imp">Imprescindible</span>}</span><b>{precio(d.price)}</b></span>
+                    {d.description && <span class="d">{d.description}</span>}
+                    {VOCES[d.id] && <span class="vl">{VOCES[d.id]}</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        );
+      })}
+    </div>
+    {/* Como al pie de su carta (Mario, 2026-11-03: «Añade lo de los 3 € de la carta»). */}
+    <div class="wrap lista aperitivo"><ul><li class="pl"><span class="ln"><span>Mantequilla, AOVE, pan y aperitivo</span><b>3 €</b></span></li></ul></div>
+    <div class="wrap"><footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><a href="tel:+34915989401">+34 915 98 94 01</a><a href="https://instagram.com/cokimamadrid" rel="me noopener" target="_blank">@cokimamadrid</a></footer></div>
+  </section>
+</Brasa>

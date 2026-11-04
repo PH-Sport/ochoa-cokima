@@ -1,7 +1,7 @@
 /* Brasa: la web de Cokima desde el 2026-10-31 (docs/cokima-el-rediseno.md §3).
    Es el boceto que eligió Mario: de fondo, chispas de brasa que suben (eran un lecho de brasas hasta
    el 2026-11-02); la Bricolage fina en los títulos y la Cormorant en la voz; cuatro secciones
-   —Inicio, La carta, Nosotros y Visítanos—, y Reservar, en una sola página; y en La carta la foto
+   —Inicio, La carta, Nosotros y Visítanos—, y Reservar, cada una en su página; y en La carta la foto
    de un plato abre cada parte, con los demás debajo (Mario eligió esa manera entre tres el 2026-11-02).
    Colores, letras, curva y duraciones salen de tokens.css. Esta página no carga global.css, que
    es el de la web anterior: por eso declara aquí su letra y su apagado de movimiento. */
@@ -214,7 +214,7 @@ html[data-entrada] .portada h1 .sub,html[data-entrada] .portada .acc,html[data-e
 .chips a{flex:none;font:500 .82rem/1 var(--sans);color:var(--bone-2);text-decoration:none;padding:9px 13px;border-radius:999px;border:1px solid transparent}
 .chips a.on{color:var(--bone);border-color:var(--line);background:rgba(243,234,221,.07)}
 .parte{scroll-margin-top:calc(var(--barra) + var(--st) + 70px);padding-top:clamp(40px,8vh,80px)}
-.parte>.wrap>h3,.parte h3.sec{margin:0;font:200 clamp(1.9rem,7vw,2.8rem)/1.05 var(--sans);letter-spacing:-.02em}
+.parte>.wrap>h2,.parte h2.sec{margin:0;font:200 clamp(1.9rem,7vw,2.8rem)/1.05 var(--sans);letter-spacing:-.02em}
 .lista ul{max-width:760px}
 /* La última parte llega arriba aunque la carta se acabe: si no, el atajo de los postres se queda corto */
 .parte:last-of-type{min-height:calc(100svh - var(--barra) - 140px)}

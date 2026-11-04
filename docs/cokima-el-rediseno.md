@@ -760,6 +760,67 @@ del navegador tiene una trampa de método:** el navegador de pruebas usa la que 
 0 px; en WebKit no se dejó simular, y allí solo está medido que la regla se aplica. **Sin mirar en un
 iPhone**, donde Safari puede enseñar su indicador al deslizar.
 
+**Una dirección para cada sección (2026-11-04).** Salió de Nosotros (más abajo, «Nosotros, en maqueta»), y
+Mario lo pidió al notarlo navegando: *«es bastante molesto por el hecho de que no puedes "volver atrás" en el
+navegador... Así que, si todo son beneficios (SEO, navegación del usuario, orden en la web...), vayamos adelante
+con ello»*. **Lo que hay:** cinco páginas, `/`, `/carta`, `/nosotros`, `/visitanos` y `/reservas` (`src/rutas.js`),
+cada una con solo su sección en el HTML, y con su título, su descripción, su canónica y un `h1`. El marco común
+—la cabecera, el vídeo, las chispas, la barra y el desplegable— está en `layouts/Brasa.astro`. **A la vista no
+cambia nada:** `brasa.js` trae la otra página con `fetch` al apuntar a un enlace o al pulsarlo, mete su sección en
+`<main>` y se queda allí, así que se cambia sin recargar, con la bocanada y con el fondo y el vídeo en marcha.
+Volver y avanzar van con `pushState` y `popstate`, y la altura de cada sección se guarda en el historial. Si no
+llega la sección, se navega de verdad; y sin JavaScript los enlaces son enlaces.
+
+**Lo que se descartó:**
+
+- **La misma página con todas las secciones en cada dirección**, que era lo fácil. Cada dirección llevaría el
+  texto entero de la web, escondido: para un buscador o un asistente de IA, cinco copias de lo mismo y ninguna
+  sobre nada en concreto. Es lo contrario de lo que se buscaba.
+- **Páginas normales con recarga.** Es lo más sencillo y el botón de volver sale gratis, pero cada cambio reinicia
+  las chispas y el vídeo y corta la bocanada, que Mario eligió, y se le había dicho que la experiencia no cambiaría.
+
+**También, porque sin esto la dirección propia no servía de mucho:** los platos de La carta y los imprescindibles
+del Inicio se escriben en el build (`src/carta.ts`), y `brasa.js` ya no los pinta: antes, sin ejecutar JavaScript,
+`/carta` habría sido una página sin un plato, y los asistentes de IA no lo ejecutan. El HTML de `/carta` lleva ya
+los 21 platos.
+
+**Las direcciones viejas:** `/#carta`, `/#carta-1`, `/#nosotros`… llevan a su página desde la cabecera del Inicio,
+antes de pintar. `/carta` y `/reservas`, que redirigían a la portada, vuelven a ser páginas, las mismas de la web
+en producción. `/en/menu` y `/en/reservations` llevan a ellas. Las direcciones van sin barra al final
+(`trailingSlash: "never"`): `/carta/` redirige a `/carta`, y la canónica y el sitemap dicen lo mismo. La almohadilla
+se queda para saltar dentro de una página, como las partes de La carta.
+
+**Una trampa sin error, que es de este montaje:** lo que entra después de cargar no pasa por lo que se hacía al
+arrancar. El collage se monta al montar su sección, y los estilos del motor de reservas, que van en un `<style>` solo
+en `/reservas`, se copian al traerla (`traer`, en `brasa.js`). **Una sección nueva que necesite arrancar algo se
+añade en `montar`**, y también en el arranque, porque se puede entrar por las dos vías.
+
+**Otra trampa sin error: Chrome no guarda lo que se escribe en el historial al recargar.** Apuntar la altura solo al
+salir (`pagehide`) funcionaba en WebKit, y en Chrome recargar devolvía la página arriba. Y al volver con el botón ya no
+se puede escribir en la entrada que se deja, así que avanzar también la perdía. Por eso se apunta al pararse el scroll,
+y solo si la sección que se ve es adonde se va: a mitad de un cambio, el scroll aún es de la otra.
+
+**Títulos y descripciones:** los escribió el agente con datos comprobados, y **falta que los revise Mario**. El de
+Nosotros es el que vio en la maqueta; el del Inicio no cambia. El `h1` de Nosotros es «Cokima · Restaurante en
+Argüelles, Madrid», con aspecto de etiqueta.
+
+Medido sobre el build, en WebKit y Chromium, a 1440×900 y 390×664, contra el build de antes: el mismo texto, ninguna
+pieza movida y el mismo alto de página en las cuatro secciones comparadas (Inicio, La carta, Nosotros y Visítanos). Sin
+recargar: de `/nosotros` al Inicio, de ahí a La carta, dos veces atrás y dos adelante, con cada sección a su altura
+(1.368 de 1.368 px y 1.500 de 1.500 a 1440), su título y su sección marcada. Los paneles traídos se abren al bajar; el
+collage arranca entrando por su página y llegando desde otra, se calla al irse y suena al volver; Reservar monta el motor
+con sus estilos; el vídeo de la portada no se pide entrando por otra sección; si falla traer una sección, navega; y sin
+JavaScript, los enlaces funcionan. La línea de progreso y 80 pasos de navegación al azar por los paneles, sin fallos.
+**Una revisión con contexto limpio encontró ocho casos que fallaban**, todos en los bordes: recargar y avanzar perdían la
+altura; un fallo de red ya viejo navegaba igualmente; la altura de una sección se apuntaba en otra a mitad de un cambio;
+la altura se reponía tarde con las letras lentas; `/#visita`, `/#toString` y escribir `#carta` estando ya en el Inicio; dos
+«Reservar» a la vez al volver a un Inicio traído; y el desplegable abierto al volver atrás. Arreglados, y cada uno medido
+con su caso en los dos motores. También «Dónde estamos» del menú de las legales, que iba a `/#visita`.
+**Sin mirar en un iPhone**, donde lo que queda por ver es el gesto de volver con el dedo, y sin medir en una red lenta.
+
+**Lo que no se ha tocado, y mira al SEO:** el `url` de la ficha de datos para buscadores (`Seo.astro`, compartido con
+Ochoa) es el de la página en la que está, y no el del restaurante; y la carta no lleva datos estructurados de menú.
+
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
 Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Visítanos se rediseña después, sobre
 esta dirección.**
@@ -928,11 +989,9 @@ como hueco en la maqueta; en la web no sale (abajo).
 búsquedas.** Brasa es una sola página, y Nosotros es `#nosotros` dentro de la portada: lo que va tras
 la almohadilla no llega al servidor y Google lo trata como la portada, con su título y su
 descripción. Las redirecciones de `/carta` y `/reservas` (`astro.config.mjs`) no lo arreglan, al
-revés: le dicen a Google que esas páginas ya no existen y que vaya a la portada. **Recomendado, y
-espera a Mario:** una dirección propia para cada sección —`/carta`, `/nosotros`, `/visitanos` y
-`/reservas`—, conservando las dos de la web anterior y sin cambiar la experiencia (el menú y la
-bocanada siguen igual); la almohadilla, solo para saltos dentro de una página, como las partes de La
-carta. Para medir qué se busca de verdad hacen falta datos que no hay: Search Console de la web actual
+revés: le dicen a Google que esas páginas ya no existen y que vaya a la portada. **Se recomendó una
+dirección propia para cada sección, y Mario la pidió el 2026-11-04:** hecho, más arriba, «Una dirección para
+cada sección». Para medir qué se busca de verdad hacen falta datos que no hay: Search Console de la web actual
 o una herramienta de palabras clave.
 
 ---

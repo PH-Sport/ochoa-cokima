@@ -26,14 +26,14 @@ export default defineConfig({
     },
   }),
   integrations: [sitemap()],
-  // Desde el 2026-10-31 la web es Brasa, una sola página con secciones, y las páginas de la web
-  // anterior ya no se publican (docs/cokima-el-rediseno.md §3). Sus direcciones llevan a la
-  // sección que las sustituye. La home inglesa va aparte, en src/pages/en/index.astro.
+  // Las direcciones, sin barra al final: /carta, y no /carta/, también en la canónica y en el sitemap.
+  trailingSlash: "never",
+  // La web es Brasa, y desde el 2026-11-04 cada sección tiene su página: /carta y /reservas vuelven a ser
+  // las de la web anterior (docs/cokima-el-rediseno.md §3). Las inglesas llevan a la suya en español
+  // hasta que haya inglés. La home inglesa va aparte, en src/pages/en/index.astro.
   redirects: {
-    "/carta": "/#carta",
-    "/reservas": "/#reservar",
-    "/en/menu": "/#carta",
-    "/en/reservations": "/#reservar",
+    "/en/menu": "/carta",
+    "/en/reservations": "/reservas",
   },
   i18n: {
     defaultLocale: "es",

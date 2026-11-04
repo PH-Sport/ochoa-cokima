@@ -1,0 +1,31 @@
+---
+// La sección se llama «reservar», y su dirección es /reservas, la de la web anterior.
+import Brasa from "../layouts/Brasa.astro";
+import BookingEmbed from "@tombo/ui/BookingEmbed.astro";
+import { COVER_SLUG } from "../site.ts";
+
+// La piel de Brasa para el motor de CoverManager (ver pages/covermanager.css.ts). En local no se
+// aplica: el motor es https y no carga una hoja de http://localhost.
+const coverTemplate = new URL("/covermanager.css", Astro.site).href;
+---
+
+<Brasa
+  vista="reservar"
+  title="Reservar mesa · Cokima, restaurante en Argüelles (Madrid)"
+  description="Reserva tu mesa en Cokima, calle de Andrés Mellado, 21 (Argüelles, Madrid). Lunes a domingo, 9:00–00:00. Si no encuentras hueco, llámanos al 915 98 94 01."
+>
+<!-- El motor de CoverManager dentro de la web, como en Ochoa (Mario, 2026-11-02), con la piel de Brasa.
+     Va en un <template>: brasa.js lo monta al abrir esta sección, sin llamar antes a covermanager.com.
+     No está en el menú de secciones: se llega por los «Reservar». -->
+  <section class="vista" data-vista="reservar">
+    <div class="wrap cab-vista reserva">
+      <div>
+        <p class="etq">Reservas</p>
+        <h1 class="tit">Reserva tu mesa</h1>
+        <p class="reserva-txt">Lunes a domingo, 9:00–00:00. Si no encuentras hueco, llámanos al <a href="tel:+34915989401">+34 915 98 94 01</a>.</p>
+      </div>
+      <template data-motor><BookingEmbed slug={COVER_SLUG} locale="es" title="Reservas Cokima" template={coverTemplate} /></template>
+    </div>
+    <div class="wrap"><footer class="pie"><a href="/aviso-legal">Aviso legal</a><a href="/privacidad">Privacidad</a><a href="/cookies">Cookies</a></footer></div>
+  </section>
+</Brasa>

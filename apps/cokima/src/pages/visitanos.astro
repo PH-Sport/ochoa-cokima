@@ -1,0 +1,31 @@
+---
+import Brasa from "../layouts/Brasa.astro";
+import Contacto from "../components/Contacto.astro";
+---
+
+<Brasa
+  vista="visitanos"
+  title="Visítanos · Cokima, Andrés Mellado 21 (Argüelles, Madrid)"
+  description="Calle de Andrés Mellado, 21, 28015 Madrid, en Argüelles. Abierto de lunes a domingo, de 9:00 a 00:00; cocina de 13:00 a 16:00 y de 19:30 a 23:30. Teléfono: 915 98 94 01."
+>
+  <section class="vista" data-vista="visitanos">
+    <div class="wrap cab-vista">
+      <p class="etq">Visítanos</p>
+      <h1 class="tit">Si alguna vez has cruzado esta puerta, ya sabes por qué siempre apetece volver.</h1>
+      <p class="voz">Y si todavía no lo has hecho, te estamos esperando.</p>
+    </div>
+    <div class="wrap visita">
+      <img src="/images/puerta.jpg" alt="El rótulo de Cokima en la entrada" width="1400" height="1400">
+      <div class="visita-datos">
+        <Contacto />
+        <dl class="datos">
+          <div><dt>Dónde</dt><dd>Calle de Andrés Mellado, 21</dd><dd>28015 Madrid · Argüelles</dd>
+            <dd><a class="enlace" href="https://www.google.com/maps/search/?api=1&amp;query=Calle%20de%20Andr%C3%A9s%20Mellado%2021%2C%2028015%20Madrid" target="_blank" rel="noopener">Cómo llegar ↗</a></dd></div>
+          <div><dt>Cuándo</dt><dd>Lunes a domingo, 9:00–00:00</dd><dd>Cocina 13:00–16:00 y 19:30–23:30</dd><dd class="estado" data-estado></dd></div>
+          <div><dt>Reservas</dt><dd><a class="pill solid" href="/reservas" data-ir="reservar" style="margin-top:4px">Reservar mesa</a></dd></div>
+        </dl>
+      </div>
+    </div>
+    <div class="wrap"><footer class="pie"><a href="/aviso-legal">Aviso legal</a><a href="/privacidad">Privacidad</a><a href="/cookies">Cookies</a></footer></div>
+  </section>
+</Brasa>

@@ -1,77 +1,18 @@
-// Brasa: las secciones, La carta con la foto de cada parte, el estado de la cocina y el fondo de chispas.
-// Es el código del boceto que eligió Mario el 2026-10-31, pasado tal cual (docs/cokima-el-rediseno.md §3).
-// La carta llega del build, de menu-es.json, en el JSON de #carta-datos: no hay copia aquí.
+// Brasa: las secciones, el estado de la cocina y el fondo de chispas. Salió del boceto que eligió Mario el
+// 2026-10-31 (docs/cokima-el-rediseno.md §3).
+import { RUTAS } from "./rutas.js";
 import { montarCollage } from "./collage.js";
 
 (() => {
-  const MENU = JSON.parse(document.getElementById("carta-datos").textContent);
   // Los tokens de tokens.css se leen al usarlos y con su unidad: el build reescribe 180ms como .18s,
   // y WebKit los devuelve vacíos mientras carga la página (regla 30 de movimiento.md).
   const token = (t) => getComputedStyle(document.documentElement).getPropertyValue(t).trim();
   const leeMs = (t) => { const v = token(t); return v.endsWith("ms") ? parseFloat(v) : parseFloat(v) * 1000; };
-  const POR_ID = Object.fromEntries(MENU.map((d) => [d.id, d]));
-  const fmt = (p) => (Number.isInteger(p) ? p + " €" : p.toFixed(2).replace(".", ",") + " €");
-  // Los platos con foto en la fototeca, y la frase que la casa ha publicado de cada uno.
-  const FOTOS = {
-    "compartir-01": { img: "croquetas", w: 825, h: 1100, alt: "Una croqueta con su velo de papada", frase: "Han pasado por casi todas nuestras cartas. Y siguen aquí" },
-    "compartir-04": { img: "gyozas", w: 1100, h: 1100, alt: "Gyozas de langostino con salsa de chorizo", frase: "Compartir es vivir." },
-    "compartir-06": { img: "dumpling", w: 880, h: 1100, alt: "Dumpling de chipirones", frase: "Madrid cabe en un dumpling." },
-    "compartir-10": { img: "tacos", w: 1100, h: 1100, alt: "Una mano sostiene un taco de gambón", frase: null },
-    "terminar-02": { img: "katsu", w: 880, h: 1100, alt: "Katsu sando con patatas", frase: "Hay dos tipos de clientes en Cokima." },
-    "terminar-04": { img: "arroz", w: 720, h: 1280, alt: "Arroz meloso de carabinero", frase: "Este plato cambia el ritmo de la mesa…" },
-    "postres-01": { img: "tarta", w: 1100, h: 1100, alt: "Una mujer se come la tarta de queso", frase: "La mejor crítica nunca ha necesitado palabras." },
-    "postres-02": { img: "torrija", w: 880, h: 1100, alt: "La torrija servida bajo el neón", frase: "Un postre que no se comparte, se saborea lento." },
-  };
-  // Platos sin foto que también tienen frase propia publicada: llevan la voz en vez de la foto.
-  const VOCES = { "terminar-05": "Hay platos que entran en carta. Y otros que se agarran a ella." };
-  const PARTES = [["compartir", "Compartir es vivir"], ["terminar", "Para terminar o no…"], ["postres", "Y por fin, los postres"]];
-
   const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
-  const foto = (id, etiqueta) => {
-    const d = POR_ID[id], f = FOTOS[id];
-    const fig = el("figure", "pf");
-    const img = el("img"); img.src = `/images/${f.img}.jpg`; img.alt = f.alt; img.width = f.w; img.height = f.h; img.loading = "lazy";
-    const cap = el("figcaption", "wrap");
-    if (etiqueta) cap.append(el("p", "etq", etiqueta));
-    cap.append(el("p", "vg", f.frase || d.description));
-    const ln = el("p", "linea"); ln.append(el("span", null, d.name), el("b", null, fmt(d.price))); cap.append(ln);
-    if (f.frase && d.description) cap.append(el("p", "d", d.description));
-    fig.append(img, cap); return fig;
-  };
-  const fila = (d) => {
-    const li = el("li", "pl"); li.dataset.id = d.id;
-    const ln = el("span", "ln"), n = el("span", null, d.name);
-    if (d.featured) n.append(el("span", "imp", "Imprescindible"));
-    ln.append(n, el("b", null, fmt(d.price))); li.append(ln);
-    if (d.description) li.append(el("span", "d", d.description));
-    if (VOCES[d.id]) li.append(el("span", "vl", VOCES[d.id]));
-    return li;
-  };
-  const lista = (sec, salvo) => {
-    const ul = el("ul");
-    MENU.filter((d) => d.section === sec && d.id !== salvo).forEach((d) => ul.append(fila(d)));
-    return ul;
-  };
-
-  const cuerpo = document.getElementById("carta-cuerpo");
-  // Cada parte de la carta se abre con uno de sus platos en foto —con su nombre, su precio y su frase— y,
-  // debajo, los demás. Mario la eligió entre tres maneras el 2026-11-02, «con el resto de platos abajo»;
-  // hasta que vio el plato de la foto repetido en la lista, que sobraba (docs/cokima-el-rediseno.md §3).
-  // FOTOS guarda la foto y la frase de los ocho con foto.
-  const PORTADILLAS = { compartir: "compartir-04", terminar: "terminar-04", postres: "postres-02" };
-  const pintarCarta = () => {
-    PARTES.forEach(([sec, t]) => {
-      const s = el("section", "parte"); s.id = "p-" + sec; s.dataset.parte = sec;
-      const w = el("div", "wrap"); w.append(el("h3", "sec", t)); s.append(w);
-      const pid = PORTADILLAS[sec];
-      const p = foto(pid, POR_ID[pid].featured ? "Imprescindible" : null); p.classList.add("portadilla"); s.append(p);
-      const l = el("div", "wrap lista"); l.append(lista(sec, pid)); s.append(l);
-      cuerpo.append(s);
-    });
-  };
-  document.querySelectorAll(".chips a").forEach((a) => a.addEventListener("click", (e) => {
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest(".chips a"); if (!a) return;
     e.preventDefault(); document.getElementById("p-" + a.dataset.a)?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-  }));
+  });
 
   // Estado de la cocina, a la hora de Madrid. Horario real: cocina 13:00–16:00 y 19:30–23:30, todos los días.
   const estado = () => {
@@ -87,17 +28,22 @@ import { montarCollage } from "./collage.js";
   };
   estado(); setInterval(estado, 60000);
 
-  // Secciones: una a la vista cada vez, con un fundido corto al cambiar.
-  const vistas = Object.fromEntries([...document.querySelectorAll(".vista")].map((v) => [v.dataset.vista, v]));
+  // Secciones: una a la vista cada vez, con un fundido corto al cambiar. Cada una es su propia página, con su
+  // dirección (rutas.js), y en su HTML solo va lo suyo (2026-11-04, docs/cokima-el-rediseno.md §3). Las demás
+  // se traen de su página la primera vez que se va a ellas y se quedan aquí: se cambia sin recargar, con el
+  // fondo y el vídeo en marcha. Los enlaces son de verdad: sin esto, o si falla la red, navegan sin más.
+  const main = document.querySelector("main"), primera = main.querySelector(".vista");
+  const vistas = { [primera.dataset.vista]: primera };
   const barra = document.querySelector(".barra"), desp = document.querySelector(".desp");
-  let actual = "inicio";
+  // `actual` es adonde se va; `visible`, la que se ve: durante el fundido de salida no son la misma.
+  let actual = primera.dataset.vista, visible = actual;
   // Marca la sección en las del ordenador y en la lista del móvil, y pone su nombre en el desplegable.
   const marcar = () => {
     document.querySelectorAll(".secciones [data-ir], .desplegable [data-ir]").forEach((a) => {
       if (a.dataset.ir === actual) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
     });
-    // Reservar no está en el menú: su nombre lo lleva la sección (data-nombre).
-    const nombre = document.querySelector(`.desplegable [data-ir="${actual}"]`)?.textContent || vistas[actual].dataset.nombre || "";
+    // Reservar no está en el menú: su nombre lo lleva su botón de la barra.
+    const nombre = document.querySelector(`.desplegable [data-ir="${actual}"], .barra .pill[data-ir="${actual}"]`)?.textContent || "";
     desp.querySelector("[data-actual]").textContent = nombre;
     desp.setAttribute("aria-label", `Secciones. Estás en ${nombre}`);
   };
@@ -116,8 +62,8 @@ import { montarCollage } from "./collage.js";
   // Inicio no llama a covermanager.com. Primero la mitad del iframeResizer que va en esta página y luego
   // el iframe, porque su onload la necesita ya cargada; si no, el iframe se queda en 550px con scroll
   // propio (recursos.md §2). Si el script no llega, el iframe se monta igual, y reserva igual.
-  const motor = document.querySelector("template[data-motor]");
   const montarMotor = () => {
+    const motor = vistas.reservar?.querySelector("template[data-motor]");
     if (!motor || motor.dataset.montado) return;
     motor.dataset.montado = "1";
     const frag = motor.content.cloneNode(true), viejo = frag.querySelector("script"), js = document.createElement("script");
@@ -125,26 +71,72 @@ import { montarCollage } from "./collage.js";
     js.onload = js.onerror = () => motor.replaceWith(frag);
     document.head.append(js);
   };
-  const ir = (destino, instantaneo) => {
-    // Las direcciones de cuando La carta tenía tres maneras (#carta-1, -2 y -3) llevan a La carta.
-    let v = /^carta-[123]$/.test(destino) ? "carta" : destino;
-    if (!vistas[v]) v = "inicio";
-    try { history.replaceState(null, "", "#" + v); } catch (e) {}
-    if (v === actual) { scrollTo(0, 0); return; }
-    const sale = vistas[actual], entra = vistas[v];
+  // Lo que dice la cabecera de cada sección, para ponerlo al cambiar: la pestaña y el historial lo enseñan.
+  const descripcion = document.querySelector('meta[name="description"]'), canonica = document.querySelector('link[rel="canonical"]');
+  const cabeceras = { [actual]: { titulo: document.title, descripcion: descripcion?.content } };
+  const ponerCabecera = (v) => {
+    const c = cabeceras[v]; if (!c) return;
+    document.title = c.titulo;
+    if (descripcion && c.descripcion) descripcion.content = c.descripcion;
+    if (canonica) canonica.href = new URL(RUTAS[v], canonica.href).href;
+  };
+  // Trae una sección de su página, una sola vez, sin ponerla aún: así sus fotos no se piden hasta que toca.
+  // Con ella, los estilos que solo lleva esa página, como los del motor de reservas.
+  const traidas = {}, firma = (n) => n.getAttribute("href") || n.textContent;
+  const traer = (v) => (traidas[v] ??= fetch(RUTAS[v]).then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); }).then((t) => {
+    const doc = new DOMParser().parseFromString(t, "text/html"), s = doc.querySelector(`.vista[data-vista="${v}"]`);
+    if (!s) throw new Error(v);
+    cabeceras[v] = { titulo: doc.title, descripcion: doc.querySelector('meta[name="description"]')?.content };
+    const hay = new Set([...document.head.querySelectorAll('link[rel="stylesheet"],style')].map(firma));
+    doc.head.querySelectorAll('link[rel="stylesheet"],style').forEach((n) => { if (!hay.has(firma(n))) document.head.append(document.importNode(n, true)); });
+    return s;
+  }).catch((e) => { delete traidas[v]; throw e; }));
+  // El collage de Nosotros (collage.js) corre solo con su sección abierta, y hasta entonces no descarga nada.
+  let collage = { activar() {} };
+  const montar = (v, s) => {
+    const n = document.importNode(s, true); n.hidden = true; main.append(n); vistas[v] = n;
+    if (v === "inicio") { montarPortada(); montarPaneles(); }
+    if (v === "nosotros") collage = montarCollage({ leeMs, leeCurva, token });
+    estado();
+  };
+  // Una sección puede tardar un par de fotogramas en tener su alto (los paneles se colocan así).
+  const aY = (y, n = 8) => { scrollTo(0, y); if (n && Math.abs(scrollY - y) > 2) requestAnimationFrame(() => aY(y, n - 1)); };
+  // La altura se apunta en la entrada del historial de la sección que se ve: a mitad de un cambio no se apunta,
+  // porque el scroll aún es de la que se va. Safari limita estas llamadas, y de ahí el try.
+  const guardarY = () => { if (visible === actual) try { history.replaceState({ y: scrollY }, ""); } catch (e) {} };
+  let turno = 0;
+  // Con `historia` viene del botón de volver o de avanzar: la dirección ya es esa, y `y` es donde se dejó.
+  const ir = (destino, { historia = false, y = 0 } = {}) => {
+    const v = RUTAS[destino] ? destino : "inicio";
+    if (v === actual) { if (!historia) scrollTo(0, 0); return; }
+    menu(false);
+    if (!historia) { guardarY(); history.pushState({ y: 0 }, "", RUTAS[v]); }
     actual = v; marcar();
-    const cambiar = () => {
-      sale.hidden = true; sale.classList.remove("saliendo");
+    const mio = ++turno, sale = vistas[visible];
+    // Se vuelve a la que aún se estaba yendo.
+    if (v === visible) { sale.classList.remove("saliendo"); ponerCabecera(v); alScroll(); return; }
+    // El cambio de sección espera a que acabe el fundido de salida, que dura --dur-out, y a que haya llegado
+    // lo que va a entrar. Y mientras, una bocanada de chispas (Mario, 2026-11-02, de la maqueta, «subiéndole
+    // la densidad»). Si no llega, se navega de verdad: la dirección ya es la buena.
+    rafaga(); sale.classList.add("saliendo");
+    const fuera = new Promise((r) => setTimeout(r, leeMs("--dur-out")));
+    Promise.all([vistas[v] ? null : traer(v), fuera]).then(([traida]) => {
+      if (mio !== turno) return;
+      if (traida && !vistas[v]) montar(v, traida);
+      const entra = vistas[v];
+      sale.hidden = true; sale.classList.remove("saliendo"); visible = v;
       if (cine) cine.hidden = v !== "inicio";
-      entra.classList.add("entrando"); entra.hidden = false; scrollTo(0, 0);
-      if (v === "reservar") montarMotor();
+      entra.classList.add("entrando"); entra.hidden = false; aY(y);
       collage.activar(v === "nosotros");
+      if (v === "reservar") montarMotor();
+      ponerCabecera(v);
       requestAnimationFrame(() => requestAnimationFrame(() => entra.classList.remove("entrando")));
       revelar(); alScroll();
-    };
-    // El cambio de sección espera a que acabe el fundido de salida, que dura --dur-out. Y mientras, una
-    // bocanada de chispas (Mario, 2026-11-02, de la maqueta, «subiéndole la densidad»).
-    if (instantaneo) cambiar(); else { rafaga(); sale.classList.add("saliendo"); setTimeout(cambiar, leeMs("--dur-out")); }
+    }, () => {
+      // Un momento después y solo si sigue siendo adonde se va: al irse de la web también se corta la petición,
+      // y esto no puede pisar esa navegación.
+      setTimeout(() => { if (mio === turno) location.replace(RUTAS[v]); }, 300);
+    });
   };
   // El desplegable del móvil (2026-11-02). Se cierra al elegir sección, al tocar fuera, con Escape,
   // al mover la página, al volver a la portada —donde no hay barra— y al pasar a ancho de ordenador.
@@ -156,7 +148,15 @@ import { montarCollage } from "./collage.js";
   document.querySelector(".velo").addEventListener("click", () => menu(false));
   addEventListener("keydown", (e) => { if (e.key === "Escape" && abierto()) { menu(false); desp.focus(); } });
   matchMedia("(min-width: 900px)").addEventListener("change", () => menu(false));
-  document.addEventListener("click", (e) => { const a = e.target.closest("[data-ir]"); if (!a) return; e.preventDefault(); menu(false); ir(a.dataset.ir); });
+  // Con una tecla pulsada (abrir en otra pestaña) el enlace hace lo suyo.
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("[data-ir]");
+    if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault(); menu(false); ir(a.dataset.ir);
+  });
+  // Se trae en cuanto se apunta al enlace, para que el fundido no tenga que esperar a la red.
+  const adelantar = (e) => { const a = e.target.closest?.("[data-ir]"); if (a && !vistas[a.dataset.ir]) traer(a.dataset.ir).catch(() => {}); };
+  ["pointerover", "pointerdown", "focusin"].forEach((t) => document.addEventListener(t, adelantar, { passive: true }));
 
   // Los botones son un neón (2026-11-02; el tubo y su arranque, en brasa.css). Al pulsar se hunde un poco
   // —lo justo para verse, --dur-out como poco— y salta un puñado de chispas, sin tocar el tubo. En el
@@ -254,13 +254,19 @@ import { montarCollage } from "./collage.js";
     };
   };
   const secciones = document.querySelector(".secciones");
-  const viajes = [
-    viaje(document.querySelector(".portada .acc .pill.solid"), () => document.querySelector(".barra .pill")),
-    viaje(document.querySelector('.portada .acc [data-ir="carta"]'), () =>
-      getComputedStyle(secciones).display === "none" ? null : secciones.querySelector('[data-ir="carta"]')),
-  ];
+  // Los botones de la portada solo existen donde está el Inicio: al cargar su página, o al ir a él.
+  let viajes = [], accPortada = null;
+  const montarPortada = () => {
+    // Que el siguiente alScroll los deje como toque aunque la página ya no esté en la portada.
+    enPortada = null;
+    accPortada = document.querySelector(".portada .acc");
+    viajes = [
+      viaje(document.querySelector(".portada .acc .pill.solid"), () => document.querySelector(".barra .pill")),
+      viaje(document.querySelector('.portada .acc [data-ir="carta"]'), () =>
+        getComputedStyle(secciones).display === "none" ? null : secciones.querySelector('[data-ir="carta"]')),
+    ];
+  };
 
-  const chips = [...document.querySelectorAll(".chips a")], accPortada = document.querySelector(".portada .acc");
   // Con margen: la portada se deja al pasar el 60% de la pantalla y se recupera por debajo del 50%,
   // para que quien se pare justo en el límite no ponga los botones a ir y venir.
   let enPortada = null;
@@ -289,7 +295,7 @@ import { montarCollage } from "./collage.js";
     if (portada !== enPortada) {
       const viajar = desdeScroll === true && enPortada !== null && !matchMedia("(prefers-reduced-motion: reduce)").matches;
       enPortada = portada;
-      barra.classList.toggle("oculta", portada); accPortada.classList.toggle("oculta", !portada);
+      barra.classList.toggle("oculta", portada); accPortada?.classList.toggle("oculta", !portada);
       if (portada) menu(false);
       viajes.forEach((v) => v(!portada, viajar));
     }
@@ -297,12 +303,10 @@ import { montarCollage } from "./collage.js";
       let on = "compartir";
       document.querySelectorAll(".parte").forEach((p) => { if (p.getBoundingClientRect().top < innerHeight * 0.35) on = p.dataset.parte; });
       if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) on = "postres";
-      chips.forEach((c) => c.classList.toggle("on", c.dataset.a === on));
+      document.querySelectorAll(".chips a").forEach((c) => c.classList.toggle("on", c.dataset.a === on));
     }
   };
   addEventListener("scroll", () => { alScroll(true); if (abierto() && Math.abs(scrollY - yMenu) > 8) menu(false); }, { passive: true });
-
-  pintarCarta();
 
   // El Inicio: los paneles, cuatro (2026-11-02). Ninguno cambia de tamaño —recalcularía la página en cada
   // fotograma (regla 2)—: todos ocupan la zona entera y cada uno se deja ver por su franja,
@@ -312,15 +316,9 @@ import { montarCollage } from "./collage.js";
   // cada tramo de scroll abre el siguiente; tocar uno lo abre y lleva la página a su tramo, para que el
   // scroll y el panel abierto nunca se contradigan. Si no cabe —los móviles pequeños—, se abren al
   // tocarlos. Ya no pasan solos: con el scroll mandando, un reloj se pelearía con él.
-  const paneles = document.querySelector("[data-paneles]");
-  if (paneles) {
-    // Los imprescindibles: los mismos platos y precios de la carta.
-    const ulDest = paneles.querySelector("[data-destacados]");
-    MENU.filter((d) => d.featured).forEach((d) => {
-      const li = el("li"), n = el("span", null, d.name);
-      if (d.description) n.append(el("small", null, d.description));
-      li.append(n, el("b", null, fmt(d.price))); ulDest.append(li);
-    });
+  const montarPaneles = () => {
+    const paneles = document.querySelector("[data-paneles]");
+    if (!paneles) return;
     const ps = [...paneles.querySelectorAll("[data-panel]")], N = ps.length, zona = paneles.parentElement;
     const ancho = matchMedia("(min-width: 900px)"), sinMov = matchMedia("(prefers-reduced-motion: reduce)");
     // Lo que pesa el abierto frente a uno cerrado, el hueco entre franjas y el alto de una banda del móvil,
@@ -420,12 +418,33 @@ import { montarCollage } from "./collage.js";
       if (fija) scrollTo(0, scrollY + j * tramo - bajado());
     }));
     abrirP(0, false);
-  }
+  };
 
-  // El collage de Nosotros (collage.js) corre solo con su sección abierta, y hasta entonces no descarga nada.
-  const collage = montarCollage({ leeMs, leeCurva, token });
-  const inicial = (location.hash || "").slice(1);
-  if (inicial && inicial !== "inicio") ir(inicial, true); else { marcar(); revelar(); alScroll(); }
+  if (vistas.inicio) { montarPortada(); montarPaneles(); }
+  if (vistas.nosotros) { collage = montarCollage({ leeMs, leeCurva, token }); collage.activar(true); }
+  if (actual === "reservar") montarMotor();
+  marcar(); revelar(); alScroll();
+
+  // Volver y avanzar. La altura de cada sección la lleva esto, en el historial: el navegador solo sabe de
+  // páginas, y aquí una sola carga recorre varias. Se apunta al pararse el scroll, y no solo al salir: al volver
+  // con el botón ya no se puede escribir en la entrada que se deja, y Chrome no guarda lo escrito al recargar.
+  try { history.scrollRestoration = "manual"; } catch (e) {}
+  const yAlCargar = history.state?.y, vistaAlCargar = actual;
+  history.replaceState({ y: yAlCargar || 0 }, "");
+  if (yAlCargar) {
+    aY(yAlCargar);
+    // Los paneles toman su alto al llegar las letras. Si para entonces ya se ha movido algo, se deja.
+    let tocada = false;
+    ["wheel", "touchstart", "keydown", "pointerdown"].forEach((t) => addEventListener(t, () => { tocada = true; }, { once: true, passive: true }));
+    document.fonts?.ready.then(() => { if (!tocada && visible === vistaAlCargar) aY(yAlCargar); });
+  }
+  let apuntar = 0;
+  addEventListener("scroll", () => { clearTimeout(apuntar); apuntar = setTimeout(guardarY, 300); }, { passive: true });
+  addEventListener("pagehide", guardarY);
+  addEventListener("popstate", (e) => {
+    const ruta = location.pathname.replace(/\/+$/, "") || "/", v = Object.keys(RUTAS).find((k) => RUTAS[k] === ruta);
+    if (v) ir(v, { historia: true, y: e.state?.y || 0 });
+  });
 
   // La entrada (2026-11-02). Mario juntó dos de la maqueta —«que se enfríe tras avivarse»—: sube una
   // bocanada de chispas desde un fondo vacío, «Cokima» se destapa de abajo arriba al rojo (--dur-aviva) y
@@ -472,7 +491,7 @@ import { montarCollage } from "./collage.js";
   // La cinta de la portada. Como en Entrada.astro: sin `autoplay` y con `preload="none"`, la arranca
   // esto, y no la arranca con «reducir movimiento» ni con ahorro de datos (regla 20 de
   // movimiento.md); entonces se queda el póster. Se carga la primera vez que se ve —quien entra por
-  // #carta no la descarga— y se pausa fuera de la vista y con la pestaña oculta (regla 6), y sigue al
+  // otra sección no la descarga— y se pausa fuera de la vista y con la pestaña oculta (regla 6), y sigue al
   // volver. En el ordenador apaisado son tres vídeos en columnas (2026-11-03), con la misma condición
   // que brasa.css; se decide una vez, al cargar, y no al redimensionar (cokima-el-rediseno.md §4).
   const uno = cine?.querySelector("video.uno"), tres = [...(cine?.querySelectorAll(".tres video") ?? [])];

@@ -1,0 +1,144 @@
+---
+// El marco de Brasa: la cabecera de cada página, el vídeo de la portada, las chispas, la barra y el
+// desplegable. No usa Base.astro: es el marco de la web anterior —su cabecera, su pie, su cartel de cookies
+// y el router de transiciones—, y Brasa trae su propia barra y cambia de sección sin recargar (brasa.js).
+// Las legales siguen con Base. Cada sección es una página con su dirección (rutas.js) y solo lleva su
+// contenido en el HTML; las demás las trae brasa.js al ir a ellas (docs/cokima-el-rediseno.md §3).
+import "../styles/tokens.css";
+import "../styles/brasa.css";
+import { Image } from "astro:assets";
+import Seo from "@tombo/ui/Seo.astro";
+import Contacto from "../components/Contacto.astro";
+import { RESTAURANT } from "../site.ts";
+import { RUTAS } from "../rutas.js";
+import poster from "../assets/entrada-poster.jpg";
+
+interface Props {
+  vista: keyof typeof RUTAS;
+  title: string;
+  description: string;
+}
+const { vista, title, description } = Astro.props;
+const enInicio = vista === "inicio";
+// Lo que la barra y el desplegable dicen ya en el HTML; al cambiar de sección lo actualiza brasa.js.
+const NOMBRES = { inicio: "Inicio", carta: "La carta", nosotros: "Nosotros", visitanos: "Visítanos", reservar: "Reservar" };
+const secciones = (["inicio", "carta", "nosotros", "visitanos"] as const).map((v) => ({ v, href: RUTAS[v], nombre: NOMBRES[v], actual: v === vista ? ("page" as const) : undefined }));
+
+// El vídeo de la portada (2026-11-03): planos de los vídeos de Instagram de Cokima, que sustituyen
+// al vídeo hecho con IA (scripts/video-entrada.sh, docs/cokima-el-rediseno.md §3). Se busca con
+// import.meta.glob por lo mismo que en Entrada.astro, que explica la trampa: la existencia la
+// resuelve el bundler, no el sistema de ficheros. En el móvil, un vídeo vertical; en el ordenador
+// apaisado, tres verticales en columnas, que elige brasa.js al arrancar. Sin las tres, el vertical.
+const cintas = import.meta.glob<string>("../assets/video/entrada{,-col-1,-col-2,-col-3}.{mp4,webm}", {
+  eager: true,
+  query: "?url",
+  import: "default",
+});
+const url = (nombre: string, ext: string) =>
+  Object.entries(cintas).find(([ruta]) => ruta.endsWith(`/${nombre}.${ext}`))?.[1];
+const mp4 = url("entrada", "mp4");
+const webm = url("entrada", "webm");
+const columnas = [1, 2, 3].map((n) => ({ mp4: url(`entrada-col-${n}`, "mp4"), webm: url(`entrada-col-${n}`, "webm") }));
+const hayColumnas = columnas.every((c) => c.mp4 || c.webm);
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    {/* La entrada de Brasa (2026-11-02) se decide aquí, antes del primer pintado, y no en brasa.js: si
+        no, la portada asomaría un fotograma ya puesta. Solo la primera vez de la sesión, al llegar al
+        Inicio, y nunca con «reducir movimiento», con lo que no se pinta (regla 5 de movimiento.md). Si
+        brasa.js no llegara, a los 4 s se retira sola: la portada no se puede quedar tapada. Y antes, las
+        direcciones de cuando todo era una página (/#carta, /#carta-1, /#visita…): los enlaces que ya
+        circulan llevan a la página de esa sección, sin llegar a pintar el Inicio; y también si se escribe
+        una estando ya en el Inicio, que no vuelve a cargar la página. */}
+    {enInicio && (
+      <script is:inline define:vars={{ RUTAS }}>
+        (() => { try {
+          const vieja = () => {
+            const h = location.hash.slice(1).replace(/^carta-[123]$/, "carta").replace(/^visita$/, "visitanos");
+            if (h === "inicio" || !Object.hasOwn(RUTAS, h)) return false;
+            location.replace(RUTAS[h]); return true;
+          };
+          addEventListener("hashchange", vieja);
+          if (vieja()) return;
+          if (matchMedia("(prefers-reduced-motion: reduce)").matches || sessionStorage.getItem("brasa-entrada")) return;
+          sessionStorage.setItem("brasa-entrada", "1");
+          const r = document.documentElement; r.setAttribute("data-entrada", "");
+          setTimeout(() => r.removeAttribute("data-entrada"), 4000);
+        } catch (e) {} })();
+      </script>
+    )}
+    {/* Los dos metas del esquema oscuro, por lo mismo que en Base.astro; el tono es el --ground. */}
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0e0907" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/bricolage-400.woff2" as="font" type="font/woff2" crossorigin />
+    {/* La Cormorant viene de Google Fonts, como en el boceto. Antes de producción se sirve desde
+        la web, como la Bricolage: pedirla a Google le pasa la IP de cada visita. */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,300;1,400&display=swap" />
+    <Seo
+      title={title}
+      description={description}
+      locale="es"
+      restaurant={RESTAURANT}
+      ogImage="/images/compartir.jpg"
+      schemaImage="/images/hero.jpg"
+    />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+  </head>
+  <body>
+    {/* El vídeo va antes que el fondo y fuera de <main>: así las chispas se pintan ENCIMA del vídeo
+        y el texto encima de los dos. El póster manda mientras no hay cinta —con «reducir
+        movimiento», con ahorro de datos o si el iPhone no deja reproducir—. Sin `autoplay`: la
+        arranca brasa.js, que es quien sabe qué ha pedido quien mira (regla 20 de movimiento.md). */}
+    <div class="cine" aria-hidden="true" hidden={!enInicio}>
+      <Image src={poster} alt="" widths={[480, 780, 1200, 1600]} sizes="100vw" quality={74} loading={enInicio ? "eager" : "lazy"} fetchpriority={enInicio ? "high" : undefined} />
+      {(mp4 || webm) && (
+        <video class="uno" muted loop playsinline preload="none" tabindex="-1" disablepictureinpicture disableremoteplayback>
+          {webm && <source src={webm} type="video/webm" />}
+          {mp4 && <source src={mp4} type="video/mp4" />}
+        </video>
+      )}
+      {hayColumnas && (
+        <div class="tres">
+          {columnas.map((c) => (
+            <video muted loop playsinline preload="none" tabindex="-1" disablepictureinpicture disableremoteplayback>
+              {c.webm && <source src={c.webm} type="video/webm" />}
+              {c.mp4 && <source src={c.mp4} type="video/mp4" />}
+            </video>
+          ))}
+        </div>
+      )}
+    </div>
+    <canvas class="fondo" aria-hidden="true"></canvas>
+    <canvas class="chispazos" aria-hidden="true"></canvas>
+
+    <header class:list={["barra", { oculta: enInicio }]}>
+      <a class="marca" href="/" data-ir="inicio">Cokima</a>
+      <nav class="secciones" aria-label="Secciones">
+        {secciones.map((s) => <a href={s.href} data-ir={s.v} aria-current={s.actual}>{s.nombre}</a>)}
+      </nav>
+      <button type="button" class="desp" aria-expanded="false" aria-controls="desplegable-secciones"><span data-actual>{NOMBRES[vista]}</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.2 6 8l4-3.8" /></svg></button>
+      <a class="pill solid peq" href="/reservas" data-ir="reservar">Reservar</a>
+      <span class="progreso" aria-hidden="true"><i></i></span>
+    </header>
+
+    <div class="velo" aria-hidden="true"></div>
+    <nav class="desplegable" id="desplegable-secciones" aria-label="Secciones">
+      {secciones.map((s) => <a href={s.href} data-ir={s.v} aria-current={s.actual}>{s.nombre}</a>)}
+      <div class="desp-pie"><Contacto /></div>
+    </nav>
+
+    <main>
+      <slot />
+    </main>
+
+    <script>
+      import "../brasa.js";
+    </script>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+---
+// Nosotros de Brasa: el collage (src/collage.js, con los textos en src/data/nosotros.ts), la ficha y el cierre.
+import Brasa from "../layouts/Brasa.astro";
+import { FACETAS } from "../data/nosotros";
+import { RUTAS } from "../rutas.js";
+
+// Los vídeos del collage de Nosotros y su primer fotograma (scripts/video-nosotros.sh), con la misma búsqueda que los de
+// la portada. Nada de esto se descarga hasta abrir Nosotros: los vídeos van con preload="none" y las fotos, en diferido.
+const medios = import.meta.glob<string>("../assets/video/nosotros-*.{mp4,jpg}", { eager: true, query: "?url", import: "default" });
+const medio = (id: string, ext: string) => Object.entries(medios).find(([ruta]) => ruta.endsWith(`/nosotros-${id}.${ext}`))?.[1];
+---
+
+<Brasa
+  vista="nosotros"
+  title="Cokima, restaurante en Argüelles (Madrid) · Nosotros"
+  description="Cokima es cocina fusión para compartir en Andrés Mellado, 21, en Argüelles (Madrid): de lo más castizo a lo más exótico. Abierto todos los días."
+>
+  <section class="vista" data-vista="nosotros">
+    <!-- El collage (src/collage.js, textos en src/data/nosotros.ts). Todo el texto está aquí escrito, también el de
+         «leer más», aunque no se vea hasta abrirlo: esta sección es la de captar búsquedas. -->
+    <div class="escena" data-collage>
+      <div class="cabeza">
+        <h1 class="etq">Cokima · Restaurante en Argüelles, Madrid</h1>
+        <button class="pill pausar" type="button" aria-pressed="false">Pausar</button>
+      </div>
+      <div class="collage">
+        {FACETAS.map((f) => (
+          <article class="pieza" tabindex="0">
+            <img class="pieza-foto" src={medio(f.id, "jpg")} alt={f.alt} width="540" height="960" loading="lazy" />
+            <video src={medio(f.id, "mp4")} muted playsinline loop preload="none" width="540" height="960" aria-hidden="true"></video>
+            <span class="pieza-velo"></span>
+            <p class="etq pieza-nombre">{f.nombre}</p>
+            <div class="pieza-txt"><h2 class="pieza-tit">{f.nombre}</h2><p class="pieza-frase">{f.frase}</p></div>
+            <span class="pieza-oscuro"></span>
+            <div class="pieza-leer">
+              <p class="leer-tit">{f.nombre}</p>
+              <p class="leer-voz">{f.voz}</p>
+              {f.textos.map((t) => <p>{t}</p>)}
+              <a class="leer-enlace" href={RUTAS[f.enlace.ir]} data-ir={f.enlace.ir}>{f.enlace.texto} →</a>
+            </div>
+            <span class="pieza-boton"><button class="mas" type="button" aria-expanded="false" aria-label={`Leer más sobre ${f.nombre}`}>
+              <svg class="abre" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+              <svg class="cierra" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+            </button></span>
+          </article>
+        ))}
+      </div>
+    </div>
+    <div class="wrap">
+      <!-- La ficha, para quien quiera leer más y para los buscadores y los asistentes: solo datos comprobados. El año de
+           apertura no sale hasta que Mario lo confirme (docs/estado.md). -->
+      <section class="ficha" aria-labelledby="ficha-tit">
+        <p class="etq">La ficha</p>
+        <h2 class="tit" id="ficha-tit">Qué es Cokima</h2>
+        <div class="ficha-cuerpo">
+          <p class="ficha-txt">Cokima Kitchen Madness es un restaurante de cocina fusión para compartir en Argüelles, Madrid, en la calle de Andrés Mellado, 21, junto a Plaza de España y Moncloa. Su carta va de las recetas más castizas a los guiños más exóticos, con producto fresco: pescado que casi aletea, carne de animales que viven mejor que tú y verduras que saben a lo que tienen que saber.</p>
+          <dl class="datos">
+            <div><dt>Dónde</dt><dd>Calle de Andrés Mellado, 21 · 28015 Madrid (Argüelles)</dd></div>
+            <div><dt>Qué pedir</dt><dd>Los imprescindibles de la carta: gyozas de langostino, tataki de atún, tacos del gobernador de gambón, katsu sando de solomillo de ternera y arroz meloso de carabinero a la brasa.</dd></div>
+            <div><dt>Precios</dt><dd>Para compartir, de 3 a 18 €; para terminar, de 20 a 30 €; postres, 7,50 y 8,50 €.</dd></div>
+            <div><dt>Horario</dt><dd>Lunes a domingo, de 9:00 a 00:00. Cocina, de 13:00 a 16:00 y de 19:30 a 23:30.</dd></div>
+            <div><dt>Reservas</dt><dd>En la web o en el <a href="tel:+34915989401">+34 915 98 94 01</a>.</dd></div>
+          </dl>
+        </div>
+      </section>
+      <section class="cierre">
+        <p class="etq">Cokima · Kitchen Madness</p>
+        <h2 class="tit">Si lo entiendes, ya eres parte.</h2>
+        <p class="voz">Si no, todavía no estás listo.</p>
+        <p class="cierre-nota">Acceso bajo reserva</p>
+        <div class="acc"><a class="pill solid" href="/reservas" data-ir="reservar">Reservar mesa</a><a class="pill" href="/carta" data-ir="carta">Ver la carta</a></div>
+      </section>
+      <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><a href="tel:+34915989401">+34 915 98 94 01</a><a href="https://instagram.com/cokimamadrid" rel="me noopener" target="_blank">@cokimamadrid</a></footer>
+    </div>
+  </section>
+</Brasa>

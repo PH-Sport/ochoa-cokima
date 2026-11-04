@@ -1,322 +1,83 @@
 ---
-// La home de Cokima es Brasa desde el 2026-10-31: el boceto que eligió Mario, en una sola página
-// con cuatro secciones y Reservar (docs/cokima-el-rediseno.md §3). No usa Base.astro: es el marco de la
-// web anterior —su cabecera, su pie, su cartel de cookies y el router de transiciones—, y Brasa
-// trae su propia barra y cambia de sección sin recargar. Las legales siguen con Base.
-import "../styles/tokens.css";
-import "../styles/brasa.css";
-import { getCollection } from "astro:content";
-import { Image } from "astro:assets";
-import Seo from "@tombo/ui/Seo.astro";
-import BookingEmbed from "@tombo/ui/BookingEmbed.astro";
-import Contacto from "../components/Contacto.astro";
-import { RESTAURANT, COVER_SLUG } from "../site.ts";
-import poster from "../assets/entrada-poster.jpg";
-import { FACETAS } from "../data/nosotros";
+// El Inicio de Brasa. Cada sección de la web es su propia página desde el 2026-11-04: el marco —la barra,
+// las chispas, el vídeo— está en layouts/Brasa.astro, y cada página trae solo lo suyo
+// (docs/cokima-el-rediseno.md §3, «Una dirección para cada sección»).
+import Brasa from "../layouts/Brasa.astro";
+import { platosDeLaCarta, precio } from "../carta.ts";
 
-// El vídeo de la portada (2026-11-03): planos de los vídeos de Instagram de Cokima, que sustituyen
-// al vídeo hecho con IA (scripts/video-entrada.sh, docs/cokima-el-rediseno.md §3). Se busca con
-// import.meta.glob por lo mismo que en Entrada.astro, que explica la trampa: la existencia la
-// resuelve el bundler, no el sistema de ficheros. En el móvil, un vídeo vertical; en el ordenador
-// apaisado, tres verticales en columnas, que elige brasa.js al arrancar. Sin las tres, el vertical.
-const cintas = import.meta.glob<string>("../assets/video/entrada{,-col-1,-col-2,-col-3}.{mp4,webm}", {
-  eager: true,
-  query: "?url",
-  import: "default",
-});
-const url = (nombre: string, ext: string) =>
-  Object.entries(cintas).find(([ruta]) => ruta.endsWith(`/${nombre}.${ext}`))?.[1];
-const mp4 = url("entrada", "mp4");
-const webm = url("entrada", "webm");
-const columnas = [1, 2, 3].map((n) => ({ mp4: url(`entrada-col-${n}`, "mp4"), webm: url(`entrada-col-${n}`, "webm") }));
-const hayColumnas = columnas.every((c) => c.mp4 || c.webm);
-
-// Los vídeos del collage de Nosotros y su primer fotograma (scripts/video-nosotros.sh), con la misma búsqueda que los de
-// la portada. Nada de esto se descarga hasta abrir Nosotros: los vídeos van con preload="none" y las fotos, en diferido.
-const medios = import.meta.glob<string>("../assets/video/nosotros-*.{mp4,jpg}", { eager: true, query: "?url", import: "default" });
-const medio = (id: string, ext: string) => Object.entries(medios).find(([ruta]) => ruta.endsWith(`/nosotros-${id}.${ext}`))?.[1];
-
-// La piel de Brasa para el motor de CoverManager (ver pages/covermanager.css.ts). En local no se
-// aplica: el motor es https y no carga una hoja de http://localhost.
-const coverTemplate = new URL("/covermanager.css", Astro.site).href;
-
-// La carta entra en la página como datos, y la pinta brasa.js según la manera elegida.
-const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
-  id,
-  section: data.section,
-  name: data.name,
-  description: data.description ?? null,
-  price: data.price,
-  featured: data.featured ?? null,
-}));
+const destacados = (await platosDeLaCarta()).filter((d) => d.featured);
 ---
 
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    {/* La entrada de Brasa (2026-11-02) se decide aquí, antes del primer pintado, y no en brasa.js: si
-        no, la portada asomaría un fotograma ya puesta. Solo la primera vez de la sesión, al llegar al
-        Inicio, y nunca con «reducir movimiento», con lo que no se pinta (regla 5 de movimiento.md). Si
-        brasa.js no llegara, a los 4 s se retira sola: la portada no se puede quedar tapada. */}
-    <script is:inline>
-      (() => { try {
-        const h = location.hash.slice(1);
-        if ((h && h !== "inicio") || matchMedia("(prefers-reduced-motion: reduce)").matches || sessionStorage.getItem("brasa-entrada")) return;
-        sessionStorage.setItem("brasa-entrada", "1");
-        const r = document.documentElement; r.setAttribute("data-entrada", "");
-        setTimeout(() => r.removeAttribute("data-entrada"), 4000);
-      } catch (e) {} })();
-    </script>
-    {/* Los dos metas del esquema oscuro, por lo mismo que en Base.astro; el tono es el --ground. */}
-    <meta name="color-scheme" content="dark" />
-    <meta name="theme-color" content="#0e0907" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preload" href="/fonts/bricolage-400.woff2" as="font" type="font/woff2" crossorigin />
-    {/* La Cormorant viene de Google Fonts, como en el boceto. Antes de producción se sirve desde
-        la web, como la Bricolage: pedirla a Google le pasa la IP de cada visita. */}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,300;1,400&display=swap" />
-    <Seo
-      title="Cokima — Kitchen Madness · Restaurante en Madrid"
-      description="Una explosión de sabor en Andrés Mellado 21, Madrid. Cocina para compartir: de la receta madrileña de siempre a la más exótica. Reserva tu mesa."
-      locale="es"
-      restaurant={RESTAURANT}
-      ogImage="/images/compartir.jpg"
-      schemaImage="/images/hero.jpg"
-    />
-    <link rel="sitemap" href="/sitemap-index.xml" />
-  </head>
-  <body>
-    {/* El vídeo va antes que el fondo y fuera de <main>: así las chispas se pintan ENCIMA del vídeo
-        y el texto encima de los dos. El póster manda mientras no hay cinta —con «reducir
-        movimiento», con ahorro de datos o si el iPhone no deja reproducir—. Sin `autoplay`: la
-        arranca brasa.js, que es quien sabe qué ha pedido quien mira (regla 20 de movimiento.md). */}
-    <div class="cine" aria-hidden="true">
-      <Image src={poster} alt="" widths={[480, 780, 1200, 1600]} sizes="100vw" quality={74} loading="eager" fetchpriority="high" />
-      {(mp4 || webm) && (
-        <video class="uno" muted loop playsinline preload="none" tabindex="-1" disablepictureinpicture disableremoteplayback>
-          {webm && <source src={webm} type="video/webm" />}
-          {mp4 && <source src={mp4} type="video/mp4" />}
-        </video>
-      )}
-      {hayColumnas && (
-        <div class="tres">
-          {columnas.map((c) => (
-            <video muted loop playsinline preload="none" tabindex="-1" disablepictureinpicture disableremoteplayback>
-              {c.webm && <source src={c.webm} type="video/webm" />}
-              {c.mp4 && <source src={c.mp4} type="video/mp4" />}
-            </video>
-          ))}
-        </div>
-      )}
+<Brasa
+  vista="inicio"
+  title="Cokima — Kitchen Madness · Restaurante en Madrid"
+  description="Una explosión de sabor en Andrés Mellado 21, Madrid. Cocina para compartir: de la receta madrileña de siempre a la más exótica. Reserva tu mesa."
+>
+  <section class="vista" data-vista="inicio">
+    <div class="portada">
+      <h1><span class="nombre" data-texto="Cokima">Cokima</span><span class="sub">Kitchen Madness</span></h1>
+      <div class="acc"><a class="pill" href="/carta" data-ir="carta">Ver carta</a><a class="pill solid" href="/reservas" data-ir="reservar">Reservar</a></div>
     </div>
-    <canvas class="fondo" aria-hidden="true"></canvas>
-    <canvas class="chispazos" aria-hidden="true"></canvas>
-
-    <header class="barra oculta">
-      <a class="marca" href="#inicio" data-ir="inicio">Cokima</a>
-      <nav class="secciones" aria-label="Secciones">
-        <a href="#inicio" data-ir="inicio">Inicio</a><a href="#carta" data-ir="carta">La carta</a><a href="#nosotros" data-ir="nosotros">Nosotros</a><a href="#visitanos" data-ir="visitanos">Visítanos</a>
-      </nav>
-      <button type="button" class="desp" aria-expanded="false" aria-controls="desplegable-secciones"><span data-actual>Inicio</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.2 6 8l4-3.8" /></svg></button>
-      <a class="pill solid peq" href="#reservar" data-ir="reservar">Reservar</a>
-      <span class="progreso" aria-hidden="true"><i></i></span>
-    </header>
-
-    <div class="velo" aria-hidden="true"></div>
-    <nav class="desplegable" id="desplegable-secciones" aria-label="Secciones">
-      <a href="#inicio" data-ir="inicio">Inicio</a><a href="#carta" data-ir="carta">La carta</a><a href="#nosotros" data-ir="nosotros">Nosotros</a><a href="#visitanos" data-ir="visitanos">Visítanos</a>
-      <div class="desp-pie"><Contacto /></div>
-    </nav>
-
-    <main>
-      <!-- ===== Inicio ===== -->
-      <section class="vista" data-vista="inicio">
-        <div class="portada">
-          <h1><span class="nombre" data-texto="Cokima">Cokima</span><span class="sub">Kitchen Madness</span></h1>
-          <div class="acc"><a class="pill" href="#carta" data-ir="carta">Ver carta</a><a class="pill solid" href="#reservar" data-ir="reservar">Reservar</a></div>
-        </div>
-        <!-- Por debajo de la portada, el Inicio son cuatro paneles a todo lo ancho: cada uno cuenta una
-             cosa de Cokima y adelanta una sección. Mario los eligió entre tres maneras el 2026-11-02, y
-             el mismo día los reordenó: primero los platos, como «Lo que más sale» en Ochoa; luego el
-             producto y la sala; y al final Cokima y Ven en uno, con un texto para buscadores
-             (docs/cokima-el-rediseno.md §3). Los textos son de la web del Grupo Tombo y de
-             @cokimamadrid; los coloca y los abre brasa.js. -->
-        <div class="pan-zona">
-          <div class="paneles rv" data-paneles>
-            <div class="pan" data-panel>
-              <img class="pan-foto" src="/images/imprescindibles-arroz.jpg" alt="" width="1100" height="1375" loading="lazy">
-              <button type="button" class="pan-abrir" aria-expanded="false"><span class="pan-rotulo"><small>La carta</small>Imprescindibles</span></button>
-              <div class="pan-cont">
-                <p class="etq">La carta · Imprescindibles</p>
-                <p class="voz pan-largo">Cocina ecléctica con toques que van desde las recetas más castizas, de las que a los de <i>Madriz</i> les llena de orgullo, hasta los guiños más exóticos para los modernos gastronómicos.</p>
-                <ul class="pan-platos" data-destacados></ul>
-                <p class="pan-acc"><a class="pill" href="#carta" data-ir="carta">Ver la carta entera</a></p>
-              </div>
-            </div>
-            <div class="pan" data-panel>
-              <img class="pan-foto" src="/images/producto-atun.jpg" alt="" width="1100" height="1100" loading="lazy">
-              <button type="button" class="pan-abrir" aria-expanded="false"><span class="pan-rotulo"><small>Buen producto. Malas intenciones.</small>El producto</span></button>
-              <div class="pan-cont">
-                <p class="etq">Buen producto. Malas intenciones.</p>
-                <p class="voz">Elaboramos nuestros platos con los mejores productos frescos;</p>
-                <ul class="pan-trio">
-                  <li><img src="/images/producto-atun-marcado.jpg" alt="Un lomo de atún marcado cortándose con el cuchillo" width="1100" height="1465" loading="lazy"><p>más cuchillo, más producto,</p></li>
-                  <li><img src="/images/producto-steak-tartar.jpg" alt="El steak tartar de picaña madurada sobre el tuétano" width="1100" height="1100" loading="lazy"><p>materia prima de primer nivel</p></li>
-                  <li><img src="/images/producto-tomates.jpg" alt="Tres tomates apilados en unas manos con guantes negros" width="1100" height="1467" loading="lazy"><p>y verduras que saben a lo que tienen que saber.</p></li>
-                </ul>
-                <p class="pan-acc"><a class="pill" href="#carta" data-ir="carta">Ver la carta</a></p>
-              </div>
-            </div>
-            <div class="pan" data-panel>
-              <img class="pan-foto" src="/images/sala-entera.jpg" alt="" width="1400" height="931" loading="lazy">
-              <button type="button" class="pan-abrir" aria-expanded="false"><span class="pan-rotulo"><small>Nosotros</small>La sala</span></button>
-              <div class="pan-cont">
-                <p class="etq">Nosotros</p>
-                <h2 class="pan-tit">Nacimos en Argüelles con una misión.</h2>
-                <p class="voz">Romper las reglas, jugar con los sabores… y demostrar que la cocina, también puede ser una bomba.</p>
-                <p class="pan-acc"><a class="pill" href="#nosotros" data-ir="nosotros">Conócenos</a></p>
-              </div>
-            </div>
-            <div class="pan" data-panel>
-              <img class="pan-foto" src="/images/puerta.jpg" alt="" width="1400" height="1400" loading="lazy">
-              <button type="button" class="pan-abrir" aria-expanded="false"><span class="pan-rotulo"><small>Andrés Mellado, 21</small>Visítanos</span></button>
-              <div class="pan-cont">
-                <p class="etq">Kitchen Madness · Argüelles</p>
-                <h2 class="pan-tit">Puedes comer en cualquier sitio, pero será solo comer.</h2>
-                <!-- El texto para buscadores que pidió Mario (2026-11-02): solo datos comprobados (site.ts y
-                     Visítanos) y frases de la casa, a la espera de que lo revise. -->
-                <p class="pan-seo pan-largo">Cokima es una explosión de sabor en Argüelles, Madrid: cocina ecléctica para compartir, de las recetas más castizas a los guiños más exóticos. Estamos en la calle de Andrés Mellado, 21, y abrimos de lunes a domingo, de 9:00 a 00:00.</p>
-                <p class="voz">Ven a conocernos y le dirás <i>ciao</i> a las croquetas de tu abuela.</p>
-                <p class="estado" data-estado></p>
-                <p class="pan-acc"><a class="pill solid" href="#reservar" data-ir="reservar">Reservar mesa</a><a class="pill" href="#visitanos" data-ir="visitanos">Cómo llegar y horario</a></p>
-              </div>
-            </div>
+    <!-- Por debajo de la portada, el Inicio son cuatro paneles a todo lo ancho: cada uno cuenta una
+         cosa de Cokima y adelanta una sección. Mario los eligió entre tres maneras el 2026-11-02, y
+         el mismo día los reordenó: primero los platos, como «Lo que más sale» en Ochoa; luego el
+         producto y la sala; y al final Cokima y Ven en uno, con un texto para buscadores
+         (docs/cokima-el-rediseno.md §3). Los textos son de la web del Grupo Tombo y de
+         @cokimamadrid; los coloca y los abre brasa.js. -->
+    <div class="pan-zona">
+      <div class="paneles rv" data-paneles>
+        <div class="pan" data-panel>
+          <img class="pan-foto" src="/images/imprescindibles-arroz.jpg" alt="" width="1100" height="1375" loading="lazy">
+          <button type="button" class="pan-abrir" aria-expanded="false"><span class="pan-rotulo"><small>La carta</small>Imprescindibles</span></button>
+          <div class="pan-cont">
+            <p class="etq">La carta · Imprescindibles</p>
+            <p class="voz pan-largo">Cocina ecléctica con toques que van desde las recetas más castizas, de las que a los de <i>Madriz</i> les llena de orgullo, hasta los guiños más exóticos para los modernos gastronómicos.</p>
+            <ul class="pan-platos" data-destacados>{destacados.map((d) => <li><span>{d.name}{d.description && <small>{d.description}</small>}</span><b>{precio(d.price)}</b></li>)}</ul>
+            <p class="pan-acc"><a class="pill" href="/carta" data-ir="carta">Ver la carta entera</a></p>
           </div>
         </div>
-        <div class="wrap">
-          <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><a href="tel:+34915989401">+34 915 98 94 01</a><a href="https://instagram.com/cokimamadrid" rel="me noopener" target="_blank">@cokimamadrid</a><span>Lunes a domingo, 9:00–00:00</span></footer>
-        </div>
-      </section>
-
-      <!-- ===== La carta ===== -->
-      <section class="vista" data-vista="carta" hidden>
-        <div class="wrap cab-vista">
-          <p class="etq">La carta</p>
-          <h2 class="tit">Para compartir y desfasar.</h2>
-        </div>
-        <nav class="chips" aria-label="Partes de la carta"><div class="wrap"><a href="#p-compartir" data-a="compartir">Compartir es vivir</a><a href="#p-terminar" data-a="terminar">Para terminar o no…</a><a href="#p-postres" data-a="postres">Los postres</a></div></nav>
-        <div id="carta-cuerpo"></div>
-        {/* Como al pie de su carta (Mario, 2026-11-03: «Añade lo de los 3 € de la carta»). */}
-        <div class="wrap lista aperitivo"><ul><li class="pl"><span class="ln"><span>Mantequilla, AOVE, pan y aperitivo</span><b>3 €</b></span></li></ul></div>
-        <div class="wrap"><footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><a href="tel:+34915989401">+34 915 98 94 01</a><a href="https://instagram.com/cokimamadrid" rel="me noopener" target="_blank">@cokimamadrid</a></footer></div>
-      </section>
-
-      <!-- ===== Nosotros ===== -->
-      <section class="vista" data-vista="nosotros" hidden>
-        <!-- El collage (src/collage.js, textos en src/data/nosotros.ts). Todo el texto está aquí escrito, también el de
-             «leer más», aunque no se vea hasta abrirlo: esta sección es la de captar búsquedas. -->
-        <div class="escena" data-collage>
-          <div class="cabeza">
-            <h2 class="etq">Cokima · Restaurante en Argüelles, Madrid</h2>
-            <button class="pill pausar" type="button" aria-pressed="false">Pausar</button>
-          </div>
-          <div class="collage">
-            {FACETAS.map((f) => (
-              <article class="pieza" tabindex="0">
-                <img class="pieza-foto" src={medio(f.id, "jpg")} alt={f.alt} width="540" height="960" loading="lazy" />
-                <video src={medio(f.id, "mp4")} muted playsinline loop preload="none" width="540" height="960" aria-hidden="true"></video>
-                <span class="pieza-velo"></span>
-                <p class="etq pieza-nombre">{f.nombre}</p>
-                <div class="pieza-txt"><h3 class="pieza-tit">{f.nombre}</h3><p class="pieza-frase">{f.frase}</p></div>
-                <span class="pieza-oscuro"></span>
-                <div class="pieza-leer">
-                  <p class="leer-tit">{f.nombre}</p>
-                  <p class="leer-voz">{f.voz}</p>
-                  {f.textos.map((t) => <p>{t}</p>)}
-                  <a class="leer-enlace" href={`#${f.enlace.ir}`} data-ir={f.enlace.ir}>{f.enlace.texto} →</a>
-                </div>
-                <span class="pieza-boton"><button class="mas" type="button" aria-expanded="false" aria-label={`Leer más sobre ${f.nombre}`}>
-                  <svg class="abre" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
-                  <svg class="cierra" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
-                </button></span>
-              </article>
-            ))}
+        <div class="pan" data-panel>
+          <img class="pan-foto" src="/images/producto-atun.jpg" alt="" width="1100" height="1100" loading="lazy">
+          <button type="button" class="pan-abrir" aria-expanded="false"><span class="pan-rotulo"><small>Buen producto. Malas intenciones.</small>El producto</span></button>
+          <div class="pan-cont">
+            <p class="etq">Buen producto. Malas intenciones.</p>
+            <p class="voz">Elaboramos nuestros platos con los mejores productos frescos;</p>
+            <ul class="pan-trio">
+              <li><img src="/images/producto-atun-marcado.jpg" alt="Un lomo de atún marcado cortándose con el cuchillo" width="1100" height="1465" loading="lazy"><p>más cuchillo, más producto,</p></li>
+              <li><img src="/images/producto-steak-tartar.jpg" alt="El steak tartar de picaña madurada sobre el tuétano" width="1100" height="1100" loading="lazy"><p>materia prima de primer nivel</p></li>
+              <li><img src="/images/producto-tomates.jpg" alt="Tres tomates apilados en unas manos con guantes negros" width="1100" height="1467" loading="lazy"><p>y verduras que saben a lo que tienen que saber.</p></li>
+            </ul>
+            <p class="pan-acc"><a class="pill" href="/carta" data-ir="carta">Ver la carta</a></p>
           </div>
         </div>
-        <div class="wrap">
-          <!-- La ficha, para quien quiera leer más y para los buscadores y los asistentes: solo datos comprobados. El año de
-               apertura no sale hasta que Mario lo confirme (docs/estado.md). -->
-          <section class="ficha" aria-labelledby="ficha-tit">
-            <p class="etq">La ficha</p>
-            <h2 class="tit" id="ficha-tit">Qué es Cokima</h2>
-            <div class="ficha-cuerpo">
-              <p class="ficha-txt">Cokima Kitchen Madness es un restaurante de cocina fusión para compartir en Argüelles, Madrid, en la calle de Andrés Mellado, 21, junto a Plaza de España y Moncloa. Su carta va de las recetas más castizas a los guiños más exóticos, con producto fresco: pescado que casi aletea, carne de animales que viven mejor que tú y verduras que saben a lo que tienen que saber.</p>
-              <dl class="datos">
-                <div><dt>Dónde</dt><dd>Calle de Andrés Mellado, 21 · 28015 Madrid (Argüelles)</dd></div>
-                <div><dt>Qué pedir</dt><dd>Los imprescindibles de la carta: gyozas de langostino, tataki de atún, tacos del gobernador de gambón, katsu sando de solomillo de ternera y arroz meloso de carabinero a la brasa.</dd></div>
-                <div><dt>Precios</dt><dd>Para compartir, de 3 a 18 €; para terminar, de 20 a 30 €; postres, 7,50 y 8,50 €.</dd></div>
-                <div><dt>Horario</dt><dd>Lunes a domingo, de 9:00 a 00:00. Cocina, de 13:00 a 16:00 y de 19:30 a 23:30.</dd></div>
-                <div><dt>Reservas</dt><dd>En la web o en el <a href="tel:+34915989401">+34 915 98 94 01</a>.</dd></div>
-              </dl>
-            </div>
-          </section>
-          <section class="cierre">
-            <p class="etq">Cokima · Kitchen Madness</p>
-            <h2 class="tit">Si lo entiendes, ya eres parte.</h2>
-            <p class="voz">Si no, todavía no estás listo.</p>
-            <p class="cierre-nota">Acceso bajo reserva</p>
-            <div class="acc"><a class="pill solid" href="#reservar" data-ir="reservar">Reservar mesa</a><a class="pill" href="#carta" data-ir="carta">Ver la carta</a></div>
-          </section>
-          <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><a href="tel:+34915989401">+34 915 98 94 01</a><a href="https://instagram.com/cokimamadrid" rel="me noopener" target="_blank">@cokimamadrid</a></footer>
-        </div>
-      </section>
-
-      <!-- ===== Visítanos ===== -->
-      <section class="vista" data-vista="visitanos" hidden>
-        <div class="wrap cab-vista">
-          <p class="etq">Visítanos</p>
-          <h2 class="tit">Si alguna vez has cruzado esta puerta, ya sabes por qué siempre apetece volver.</h2>
-          <p class="voz">Y si todavía no lo has hecho, te estamos esperando.</p>
-        </div>
-        <div class="wrap visita">
-          <img src="/images/puerta.jpg" alt="El rótulo de Cokima en la entrada" width="1400" height="1400">
-          <div class="visita-datos">
-            <Contacto />
-            <dl class="datos">
-              <div><dt>Dónde</dt><dd>Calle de Andrés Mellado, 21</dd><dd>28015 Madrid · Argüelles</dd>
-                <dd><a class="enlace" href="https://www.google.com/maps/search/?api=1&amp;query=Calle%20de%20Andr%C3%A9s%20Mellado%2021%2C%2028015%20Madrid" target="_blank" rel="noopener">Cómo llegar ↗</a></dd></div>
-              <div><dt>Cuándo</dt><dd>Lunes a domingo, 9:00–00:00</dd><dd>Cocina 13:00–16:00 y 19:30–23:30</dd><dd class="estado" data-estado></dd></div>
-              <div><dt>Reservas</dt><dd><a class="pill solid" href="#reservar" data-ir="reservar" style="margin-top:4px">Reservar mesa</a></dd></div>
-            </dl>
+        <div class="pan" data-panel>
+          <img class="pan-foto" src="/images/sala-entera.jpg" alt="" width="1400" height="931" loading="lazy">
+          <button type="button" class="pan-abrir" aria-expanded="false"><span class="pan-rotulo"><small>Nosotros</small>La sala</span></button>
+          <div class="pan-cont">
+            <p class="etq">Nosotros</p>
+            <h2 class="pan-tit">Nacimos en Argüelles con una misión.</h2>
+            <p class="voz">Romper las reglas, jugar con los sabores… y demostrar que la cocina, también puede ser una bomba.</p>
+            <p class="pan-acc"><a class="pill" href="/nosotros" data-ir="nosotros">Conócenos</a></p>
           </div>
         </div>
-        <div class="wrap"><footer class="pie"><a href="/aviso-legal">Aviso legal</a><a href="/privacidad">Privacidad</a><a href="/cookies">Cookies</a></footer></div>
-      </section>
-
-      <!-- ===== Reservar ===== -->
-      <!-- El motor de CoverManager dentro de la web, como en Ochoa (Mario, 2026-11-02), con la piel de
-           Brasa. Va en un <template>: brasa.js lo monta la primera vez que se abre esta sección, y así
-           el Inicio no llama a covermanager.com (docs/cokima-el-rediseno.md §3). No está en el menú de
-           secciones: se llega por los «Reservar». -->
-      <section class="vista" data-vista="reservar" data-nombre="Reservar" hidden>
-        <div class="wrap cab-vista reserva">
-          <div>
-            <p class="etq">Reservas</p>
-            <h2 class="tit">Reserva tu mesa</h2>
-            <p class="reserva-txt">Lunes a domingo, 9:00–00:00. Si no encuentras hueco, llámanos al <a href="tel:+34915989401">+34 915 98 94 01</a>.</p>
+        <div class="pan" data-panel>
+          <img class="pan-foto" src="/images/puerta.jpg" alt="" width="1400" height="1400" loading="lazy">
+          <button type="button" class="pan-abrir" aria-expanded="false"><span class="pan-rotulo"><small>Andrés Mellado, 21</small>Visítanos</span></button>
+          <div class="pan-cont">
+            <p class="etq">Kitchen Madness · Argüelles</p>
+            <h2 class="pan-tit">Puedes comer en cualquier sitio, pero será solo comer.</h2>
+            <!-- El texto para buscadores que pidió Mario (2026-11-02): solo datos comprobados (site.ts y
+                 Visítanos) y frases de la casa, a la espera de que lo revise. -->
+            <p class="pan-seo pan-largo">Cokima es una explosión de sabor en Argüelles, Madrid: cocina ecléctica para compartir, de las recetas más castizas a los guiños más exóticos. Estamos en la calle de Andrés Mellado, 21, y abrimos de lunes a domingo, de 9:00 a 00:00.</p>
+            <p class="voz">Ven a conocernos y le dirás <i>ciao</i> a las croquetas de tu abuela.</p>
+            <p class="estado" data-estado></p>
+            <p class="pan-acc"><a class="pill solid" href="/reservas" data-ir="reservar">Reservar mesa</a><a class="pill" href="/visitanos" data-ir="visitanos">Cómo llegar y horario</a></p>
           </div>
-          <template data-motor><BookingEmbed slug={COVER_SLUG} locale="es" title="Reservas Cokima" template={coverTemplate} /></template>
         </div>
-        <div class="wrap"><footer class="pie"><a href="/aviso-legal">Aviso legal</a><a href="/privacidad">Privacidad</a><a href="/cookies">Cookies</a></footer></div>
-      </section>
-    </main>
-
-    <script type="application/json" id="carta-datos" set:html={JSON.stringify(carta)} />
-    <script>
-      import "../brasa.js";
-    </script>
-  </body>
-</html>
+      </div>
+    </div>
+    <div class="wrap">
+      <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><a href="tel:+34915989401">+34 915 98 94 01</a><a href="https://instagram.com/cokimamadrid" rel="me noopener" target="_blank">@cokimamadrid</a><span>Lunes a domingo, 9:00–00:00</span></footer>
+    </div>
+  </section>
+</Brasa>

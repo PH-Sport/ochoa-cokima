@@ -126,8 +126,16 @@ las secciones, que se llena de izquierda a derecha al bajar; la barra del navega
 portada sigue sin nada encima. Medido sobre el build; **sin mirar en un iPhone**
 (`cokima-el-rediseno.md` §3, «La línea de progreso»).
 
+**Y una dirección para cada sección: `/`, `/carta`, `/nosotros`, `/visitanos` y `/reservas`.** Mario, al ver
+que no se podía volver atrás: *«vayamos adelante con ello»*. A la vista no cambia nada: se cambia de sección
+sin recargar, con la misma bocanada. Cambia que volver y avanzar funcionan, cada sección a la altura en que
+se dejó, y que cada página lleva en su HTML solo lo suyo, con su título, su descripción y su `h1`; la carta, con
+todos los platos escritos, que antes pintaba JavaScript. Los enlaces viejos con almohadilla llevan a su página.
+**Los títulos y las descripciones los escribió el agente, y falta que los revise Mario.** Medido sobre el
+build; **sin mirar en un iPhone** (`cokima-el-rediseno.md` §3, «Una dirección para cada sección»).
+
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
-dejaron de publicarse** —`/carta`, `/reservas` y el inglés llevan a su sección de Brasa— y las
+dejaron de publicarse** —`/carta` y `/reservas` son ahora las de Brasa, y el inglés lleva a ellas— y las
 legales siguen con su aspecto de antes. **Antes de producción falta lo que se dejó a propósito**:
 el cartel de cookies y la medición, que en la home no están; la Cormorant servida desde la web y
 no desde Google; el inglés; y las legales con el aspecto nuevo. La lista y el porqué, en
@@ -254,11 +262,8 @@ en `ochoa-inicio-vivo.md` §3.7.
   su Instagram: *«Si lo pone en su Instagram si, sino no»*. No lo pone: en las 232 publicaciones de la
   fototeca, de febrero de 2024 a octubre de 2026, habla de los cinco años y nunca del año. Las anteriores no están en
   la fototeca, así que si aparece ahí, se puede poner. Quién está detrás, no: Mario pidió no poner nombres.
-- **Decidir si las secciones de Cokima tienen dirección propia** (`/carta`, `/nosotros`,
-  `/visitanos`, `/reservas`) en lugar de `#carta`, `#nosotros`…, que Google no distingue de la
-  portada. Recomendado, y conservando `/carta` y `/reservas`, que son las de la web anterior; la
-  almohadilla, solo para saltos dentro de una página, como las partes de La carta
-  (`cokima-el-rediseno.md` §3, «Nosotros, en maqueta»).
+- **Revisar los títulos y las descripciones de cada sección de Cokima**, que es lo que sale en un
+  buscador, y volver atrás en su iPhone (`cokima-el-rediseno.md` §3, «Una dirección para cada sección»).
 - **Ver el collage de Nosotros en `preview`**, en el ordenador y en su iPhone (mismo apartado). El fuelle sigue de reserva en la maqueta:
   https://claude.ai/artifact/8otJqwkVntRJ1ummPx4768.
 - **Ver en su móvil el desplegable de secciones y el viaje de «Reservar»**, y seguir iterando
@@ -296,7 +301,9 @@ en `ochoa-inicio-vivo.md` §3.7.
   estamos» (`#visita`, el punto de arriba), y Conócenos sigue fuera de Google a propósito
   (`noindex`) mientras `EN_OBRAS` esté en `true` (`src/conocenos.ts`). Falta repasar los títulos y
   las descripciones pensando en lo que se busca, y si a Ochoa le hace falta una ficha con datos
-  comprobados para los asistentes de IA, como la que se preparó para Cokima.
+  comprobados para los asistentes de IA, como la que se preparó para Cokima. Y una cosa medida en su
+  build: la canónica de sus páginas lleva barra al final (`/carta/`) y sus enlaces no (`/carta`); en
+  Cokima se resolvió con `trailingSlash: "never"`, que además deja `/carta/` redirigiendo a `/carta`.
 - **Decir si se montan en el probador las tres maneras nuevas de «Conócenos».** La que hay en
   `preview` (abajo) la vio Mario el mismo 2026-10-30 y pidió darle una vuelta: *«hay algunas fotos
   en Conócenos que vuelve a repetirse, o que directamente son muy parecidas al resto»* —solo le
