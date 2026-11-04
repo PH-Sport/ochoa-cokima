@@ -1,12 +1,15 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-11-03 · Ochoa tiene foto en sus diez destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las de Brasa (dieciséis desde el 2026-11-02)
+> **Estado: vivo** · revisado 2026-11-04 · Ochoa tiene foto en sus diez destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las de Brasa (dieciséis desde el 2026-11-02)
 
 ## Estado
 
 **Cokima, desde el 2026-10-31: la web es Brasa** (`cokima-el-rediseno.md` §3), y lo que este
 documento cuenta de su portada con foto, sus destacados y su casa es de la web anterior, que ya no
-se publica. Brasa usa quince fotos de la fototeca de @cokimamadrid, en `apps/cokima/public/images/`
+se publica. **El collage de Nosotros, desde el 2026-11-04, no usa fotos: cinco cortes de vídeo de
+@cokimamadrid con su primer fotograma, en `apps/cokima/src/assets/video/`, con el tramo de cada uno en
+`scripts/video-nosotros.sh`.** Con eso se quedan sin uso, sin borrar, `bomba`, `manos`, `martin`, `neon`, `sala`
+y `vacio`. Brasa usa quince fotos de la fototeca de @cokimamadrid, en `apps/cokima/public/images/`
 —arroz, bomba, croquetas, dumpling, gyozas, katsu, manos, martin, neon, puerta, sala, tacos,
 tarta, torrija y vacio—, reducidas para el boceto y sin pasar por la optimización de Astro. **No
 quedó apuntado de qué publicación sale cada una**, y ya no coinciden con sus originales. Desde el

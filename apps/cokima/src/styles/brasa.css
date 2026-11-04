@@ -59,15 +59,15 @@ main{position:relative;z-index:1}
    encendido hasta que el ratón se va. Al pulsar se hunde un poco y salta un puñado de chispas (brasa.js),
    sin tocar el tubo. En el móvil no hay ratón: el toque lo enciende (.encendido) y se apaga solo. Solo
    opacidad y transform; el brillo del tubo es una sombra fija que se enciende con la opacidad. */
-.pill,.contacto a{position:relative;transition:transform var(--dur-out) var(--ease)}
+.pill,.contacto a,.mas{position:relative;transition:transform var(--dur-out) var(--ease)}
 .pill:not(.solid),.contacto a{border-color:rgba(243,234,221,.16)}
-.pill::after,.contacto a::after{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;border:1.5px solid var(--neon);
+.pill::after,.contacto a::after,.mas::after{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;border:1.5px solid var(--neon);
   box-shadow:0 0 7px var(--neon-luz),inset 0 0 5px var(--neon-luz);opacity:0;transition:opacity var(--dur-out) var(--ease)}
 .pill.solid::after{border-color:var(--ember)}
 @keyframes encender{0%{opacity:0}8.75%{opacity:.55}15%{opacity:.18}23.75%{opacity:.48}31.25%{opacity:.1}43.75%{opacity:.1}53.75%{opacity:.72}60%{opacity:.45}71.25%{opacity:.88}78.75%{opacity:.68}91.25%,100%{opacity:1}}
-@media (hover:hover){.pill:hover::after,.contacto a:hover::after{animation:encender var(--dur-encender) ease-in-out forwards}}
-.pill.encendido::after,.contacto a.encendido::after{animation:encender var(--dur-encender) ease-in-out forwards}
-.pill.tocando,.contacto a.tocando{transform:scale(.965)}
+@media (hover:hover){.pill:hover::after,.contacto a:hover::after,.mas:hover::after{animation:encender var(--dur-encender) ease-in-out forwards}}
+.pill.encendido::after,.contacto a.encendido::after,.mas.encendido::after{animation:encender var(--dur-encender) ease-in-out forwards}
+.pill.tocando,.contacto a.tocando,.mas.tocando{transform:scale(.965)}
 .hueco{margin:18px 0 0;max-width:36ch;padding:10px 14px;border:1px dashed rgba(243,234,221,.3);border-radius:10px;font:400 .8rem/1.4 var(--sans);color:var(--bone-3)}
 
 /* Barra de arriba: la marca, las secciones (ordenador) y Reservar */
@@ -242,14 +242,68 @@ html[data-entrada] .portada h1 .sub,html[data-entrada] .portada .acc,html[data-e
 /* La foto que abre cada parte de la carta */
 .portadilla{margin-top:6px}
 
-/* ===== Nosotros ===== */
-.relato{display:grid;margin-top:clamp(70px,13vh,150px)}
-.relato img{width:100%;aspect-ratio:4/5;object-fit:cover;
-  -webkit-mask-image:linear-gradient(to bottom,#000 50%,transparent 100%);mask-image:linear-gradient(to bottom,#000 50%,transparent 100%)}
-.relato .txt{position:relative;margin-top:-26%}
-.relato .tit{font-size:clamp(2rem,8.4vw,3.4rem)}
-.par{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.par img{aspect-ratio:1}
+/* ===== Nosotros (2026-11-04): el collage, la ficha y el cierre =====
+   Lo eligió Mario en una maqueta, con la idea del mosaico vivo de La casa de Ochoa y piezas de esta casa
+   (docs/cokima-el-rediseno.md §3, «Nosotros, en maqueta»). El collage ocupa una pantalla; lo mueve collage.js.
+   Cada pieza es una capa del tamaño de la caja, recortada a su hueco con clip-path, y lo de dentro se coloca con transform. */
+.escena{box-sizing:border-box;height:100svh;min-height:460px;max-height:1040px;max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:12px;
+  padding:calc(var(--barra) + var(--st) + 14px) var(--gr) calc(14px + var(--sb)) var(--gl)}
+.cabeza{display:flex;align-items:center;justify-content:space-between;gap:16px;flex:none}
+.cabeza .etq{max-width:calc(100% - 130px)}
+.pausar{min-height:44px;padding:0 16px;font-size:.8rem;flex:none}
+.collage{position:relative;flex:1 1 auto;min-height:0;overflow:hidden}
+.pieza{position:absolute;inset:0;cursor:pointer;-webkit-tap-highlight-color:transparent;clip-path:inset(50% 50% 50% 50%)}
+.pieza video,.pieza-foto{position:absolute;left:0;top:0;width:540px;height:960px;max-width:none;transform-origin:0 0}
+.pieza-foto{background:var(--ground-2)}
+.pieza-velo{position:absolute;left:0;top:0;width:100px;height:100px;transform-origin:0 0;pointer-events:none;
+  background:linear-gradient(to top,rgba(14,9,7,.94) 0%,rgba(14,9,7,.8) 30%,rgba(14,9,7,.42) 48%,rgba(14,9,7,0) 68%)}
+.pieza-nombre{position:absolute;left:0;top:0;white-space:nowrap;color:var(--bone);transition:opacity var(--dur-out) var(--ease)}
+.pieza-txt{position:absolute;left:0;top:0;box-sizing:border-box;padding:0 18px 16px;opacity:0;transition:opacity var(--dur-in) var(--ease);pointer-events:none}
+.pieza.grande .pieza-txt{opacity:1}
+.pieza.grande .pieza-nombre{opacity:0}
+.pieza-tit{margin:0;font:200 clamp(1.5rem,3.6vh,2.3rem)/1.08 var(--sans);letter-spacing:-.01em}
+.pieza-frase{margin:6px 0 0;max-width:34ch;font:italic 400 clamp(1rem,2.3vh,1.25rem)/1.32 var(--voz);color:rgba(243,234,221,.86);text-wrap:pretty}
+/* Leer más: el botón redondo va arriba a la derecha de la ampliada, para no pisar el texto, y sigue a su ventana.
+   Es un neón como los demás botones; el sitio lo lleva su envoltorio, porque el botón se hunde con transform. */
+.pieza-boton{position:absolute;left:0;top:0;width:44px;height:44px;opacity:0;visibility:hidden;transition:opacity var(--dur-out) var(--ease),visibility 0s linear var(--dur-out)}
+.pieza.grande .pieza-boton{opacity:1;visibility:visible;transition:opacity var(--dur-in) var(--ease)}
+.mas{width:44px;height:44px;padding:0;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(243,234,221,.32);background:rgba(14,9,7,.55);color:var(--bone);cursor:pointer;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.mas svg{width:18px;height:18px}
+.mas .cierra{display:none}
+.pieza.leyendo .mas .abre{display:none}
+.pieza.leyendo .mas .cierra{display:block}
+/* El bloque: la ventana crece hasta toda la caja, y encima se funde una capa oscura y entra el texto largo. El texto
+   está en el HTML desde el principio, para los buscadores: esta sección es la de captar búsquedas. */
+.pieza.desplegada{background:var(--ground);cursor:default}
+.pieza-oscuro{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity var(--dur-in) var(--ease);
+  background:linear-gradient(to top,var(--ground) 0%,rgba(14,9,7,.93) 52%,rgba(14,9,7,.5) 100%)}
+.pieza.leyendo .pieza-oscuro{opacity:1}
+.pieza.leyendo .pieza-txt,.pieza.leyendo .pieza-nombre{opacity:0}
+.pieza-leer{position:absolute;left:0;right:0;bottom:0;max-height:calc(100% - 60px);box-sizing:border-box;overflow-y:auto;overscroll-behavior:contain;padding:0 20px 20px;cursor:auto;
+  opacity:0;visibility:hidden;transition:opacity var(--dur-out) var(--ease),visibility 0s linear var(--dur-out)}
+.pieza.leyendo .pieza-leer{opacity:1;visibility:visible;transition:opacity var(--dur-in) var(--ease) calc(var(--dur-viaje) * .55)}
+.leer-tit{margin:0;font:200 clamp(1.9rem,8vw,3rem)/1.06 var(--sans);letter-spacing:-.02em}
+.pieza-leer p:not(.leer-tit){margin:12px 0 0;max-width:52ch;font:300 1rem/1.58 var(--sans);color:var(--bone-2);text-wrap:pretty}
+.pieza-leer p.leer-voz{font:italic 400 clamp(1.15rem,4.4vw,1.4rem)/1.36 var(--voz);color:rgba(243,234,221,.9)}
+.leer-enlace{display:inline-block;margin-top:18px;font:500 .9rem/1 var(--sans);color:var(--ember);text-decoration:none;border-bottom:1px solid rgba(255,154,82,.4);padding-bottom:3px}
+/* En el ordenador, y en un móvil tumbado, el vídeo en la mitad izquierda y el texto a la derecha, sobre el negro. La misma
+   condición que en collage.js. */
+@media (min-width:900px),(min-width:640px) and (orientation:landscape){
+  .pieza-oscuro{background:linear-gradient(to right,rgba(14,9,7,.1) 0%,rgba(14,9,7,.3) 34%,var(--ground) 50%)}
+  .pieza-leer{left:50%;top:0;max-height:none;display:flex;flex-direction:column;padding:60px clamp(28px,4vw,64px) 24px clamp(20px,3vw,48px)}
+  /* Centrado, pero si no cabe se puede subir hasta el principio */
+  .pieza-leer>:first-child{margin-top:auto}
+  .pieza-leer>:last-child{margin-bottom:auto;align-self:flex-start}
+}
+.ficha{padding-top:clamp(56px,10vh,110px)}
+.ficha .tit{font-size:clamp(1.9rem,6vw,2.8rem)}
+.ficha-txt{margin:16px 0 0;max-width:62ch;font:300 1.08rem/1.65 var(--sans);color:var(--bone-2)}
+.ficha .datos{margin-top:34px;max-width:62ch}
+@media (min-width:900px){.ficha-cuerpo{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:0 64px;align-items:start}.ficha .datos{margin-top:16px}}
+.cierre{margin-top:clamp(80px,13vh,150px)}
+.cierre .acc{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.cierre-nota{margin:26px 0 0;font:500 .64rem/1.2 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--bone-3)}
 
 /* ===== Visítanos ===== */
 .visita{display:grid;gap:34px;margin-top:40px}
@@ -288,7 +342,8 @@ html[data-entrada] .portada h1 .sub,html[data-entrada] .portada .acc,html[data-e
 .rv{opacity:0;transform:translateY(22px);transition:opacity var(--dur-revela) var(--ease),transform var(--dur-revela) var(--ease)}
 .rv.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.rv,.vista,.vista.entrando{opacity:1;transform:none;transition:none}.desplegable,.velo,.menu-abierto .desplegable,.menu-abierto .velo,.desp svg{transition:none}
-  .pill,.contacto a,.pill::after,.contacto a::after{transition:none;animation:none!important}.pill:hover::after,.contacto a:hover::after,.pill.encendido::after,.contacto a.encendido::after{opacity:1}}
+  .pill,.contacto a,.mas,.pill::after,.contacto a::after,.mas::after{transition:none;animation:none!important}.pill:hover::after,.contacto a:hover::after,.mas:hover::after,.pill.encendido::after,.contacto a.encendido::after,.mas.encendido::after{opacity:1}
+  .pieza-nombre,.pieza-txt,.pieza-boton,.pieza-oscuro,.pieza-leer,.pieza.leyendo .pieza-leer{transition:none}}
 
 @media (min-width:900px){
   body{padding-bottom:0}
@@ -313,12 +368,6 @@ html[data-entrada] .portada h1 .sub,html[data-entrada] .portada .acc,html[data-e
   .pf figcaption{margin-top:-24%;padding-left:8%}
   .portadilla{max-width:1160px;margin-left:auto;margin-right:auto}
   .portadilla figcaption{padding-left:0}
-  .relato{grid-template-columns:repeat(12,1fr);align-items:center}
-  .relato figure{grid-column:1/7;grid-row:1;margin:0}
-  .relato .txt{grid-column:7/12;grid-row:1;margin-top:0}
-  .relato.der figure{grid-column:7/13}
-  .relato.der .txt{grid-column:2/7}
-  .relato img{-webkit-mask-image:radial-gradient(closest-side,#000 60%,transparent 100%);mask-image:radial-gradient(closest-side,#000 60%,transparent 100%)}
   .visita{grid-template-columns:7fr 5fr;gap:56px;align-items:center}
   .reserva{grid-template-columns:minmax(0,1fr) minmax(0,44rem);column-gap:clamp(40px,5vw,96px);align-items:start}
 }

@@ -12,6 +12,7 @@ import BookingEmbed from "@tombo/ui/BookingEmbed.astro";
 import Contacto from "../components/Contacto.astro";
 import { RESTAURANT, COVER_SLUG } from "../site.ts";
 import poster from "../assets/entrada-poster.jpg";
+import { FACETAS } from "../data/nosotros";
 
 // El vídeo de la portada (2026-11-03): planos de los vídeos de Instagram de Cokima, que sustituyen
 // al vídeo hecho con IA (scripts/video-entrada.sh, docs/cokima-el-rediseno.md §3). Se busca con
@@ -29,6 +30,11 @@ const mp4 = url("entrada", "mp4");
 const webm = url("entrada", "webm");
 const columnas = [1, 2, 3].map((n) => ({ mp4: url(`entrada-col-${n}`, "mp4"), webm: url(`entrada-col-${n}`, "webm") }));
 const hayColumnas = columnas.every((c) => c.mp4 || c.webm);
+
+// Los vídeos del collage de Nosotros y su primer fotograma (scripts/video-nosotros.sh), con la misma búsqueda que los de
+// la portada. Nada de esto se descarga hasta abrir Nosotros: los vídeos van con preload="none" y las fotos, en diferido.
+const medios = import.meta.glob<string>("../assets/video/nosotros-*.{mp4,jpg}", { eager: true, query: "?url", import: "default" });
+const medio = (id: string, ext: string) => Object.entries(medios).find(([ruta]) => ruta.endsWith(`/nosotros-${id}.${ext}`))?.[1];
 
 // La piel de Brasa para el motor de CoverManager (ver pages/covermanager.css.ts). En local no se
 // aplica: el motor es https y no carga una hoja de http://localhost.
@@ -210,24 +216,60 @@ const carta = (await getCollection("menu-es")).map(({ id, data }) => ({
 
       <!-- ===== Nosotros ===== -->
       <section class="vista" data-vista="nosotros" hidden>
-        <div class="wrap cab-vista">
-          <p class="etq">Nosotros</p>
-          <h2 class="tit">Nacimos en Argüelles con una misión.</h2>
-          <p class="voz">Romper las reglas, jugar con los sabores… y demostrar que la cocina, también puede ser una bomba.</p>
+        <!-- El collage (src/collage.js, textos en src/data/nosotros.ts). Todo el texto está aquí escrito, también el de
+             «leer más», aunque no se vea hasta abrirlo: esta sección es la de captar búsquedas. -->
+        <div class="escena" data-collage>
+          <div class="cabeza">
+            <h2 class="etq">Cokima · Restaurante en Argüelles, Madrid</h2>
+            <button class="pill pausar" type="button" aria-pressed="false">Pausar</button>
+          </div>
+          <div class="collage">
+            {FACETAS.map((f) => (
+              <article class="pieza" tabindex="0">
+                <img class="pieza-foto" src={medio(f.id, "jpg")} alt={f.alt} width="540" height="960" loading="lazy" />
+                <video src={medio(f.id, "mp4")} muted playsinline loop preload="none" width="540" height="960" aria-hidden="true"></video>
+                <span class="pieza-velo"></span>
+                <p class="etq pieza-nombre">{f.nombre}</p>
+                <div class="pieza-txt"><h3 class="pieza-tit">{f.nombre}</h3><p class="pieza-frase">{f.frase}</p></div>
+                <span class="pieza-oscuro"></span>
+                <div class="pieza-leer">
+                  <p class="leer-tit">{f.nombre}</p>
+                  <p class="leer-voz">{f.voz}</p>
+                  {f.textos.map((t) => <p>{t}</p>)}
+                  <a class="leer-enlace" href={`#${f.enlace.ir}`} data-ir={f.enlace.ir}>{f.enlace.texto} →</a>
+                </div>
+                <span class="pieza-boton"><button class="mas" type="button" aria-expanded="false" aria-label={`Leer más sobre ${f.nombre}`}>
+                  <svg class="abre" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+                  <svg class="cierra" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                </button></span>
+              </article>
+            ))}
+          </div>
         </div>
         <div class="wrap">
-          <article class="relato rv"><figure><img src="/images/bomba.jpg" alt="El mural de la bomba sobre las mesas" width="1400" height="1400" style="aspect-ratio:1"></figure>
-            <div class="txt"><p class="etq">La cocina</p><p class="tit">Aquí no cocinamos para que se vea bonito…</p><p class="voz">Cocinamos para que deje huella.</p></div></article>
-          <article class="relato der rv"><figure><img src="/images/martin.jpg" alt="Un cocinero del equipo, en la cocina" width="825" height="1100"></figure>
-            <div class="txt"><p class="etq">El equipo de cocina</p><p class="tit">Trabajo serio. Cocina canalla.</p><p class="voz">Más cuchillo. Más producto.</p></div></article>
-          <article class="relato rv"><figure><img src="/images/neon.jpg" alt="El neón «Orgasm, at the first bite» sobre la pared de fotos" width="1400" height="1283" style="aspect-ratio:1"></figure>
-            <div class="txt"><p class="etq">La sala</p><p class="tit">Perseguimos una sensación muy concreta.</p><p class="voz">Ese <i>Orgasm at firstbite</i> del que habla nuestra pared.</p></div></article>
-          <article class="relato der rv"><figure><img src="/images/sala.jpg" alt="Dos personas ríen en una mesa de la sala" width="880" height="1100"></figure>
-            <div class="txt"><p class="etq">Quien te lo sirve</p><p class="tit">El plato es importante, pero quien te lo sirve también.</p><p class="voz">En Cokima no solo servimos comida… Servimos momentos. Sonrisas. Y el deseo de volver.</p></div></article>
-          <article class="relato rv"><figure><img src="/images/manos.jpg" alt="Un cliente muerde un bocado con las manos" width="880" height="1100"></figure>
-            <div class="txt"><p class="etq">Compartir es vivir</p><p class="tit">Hay platos que no necesitan cubiertos.</p><p class="voz">Solo ganas. Buen rollo. Y alguien con quien compartir.</p></div></article>
-          <article class="relato der rv"><figure><div class="par"><img src="/images/tarta.jpg" alt="Una mujer se come la tarta de queso" width="1100" height="1100"><img src="/images/vacio.jpg" alt="El plato vacío" width="1100" height="1100"></div></figure>
-            <div class="txt" style="margin-top:28px"><p class="etq">Lo que dicen</p><p class="tit">La mejor crítica nunca ha necesitado palabras.</p><p class="voz">Solo un plato vacío.</p></div></article>
+          <!-- La ficha, para quien quiera leer más y para los buscadores y los asistentes: solo datos comprobados. El año de
+               apertura no sale hasta que Mario lo confirme (docs/estado.md). -->
+          <section class="ficha" aria-labelledby="ficha-tit">
+            <p class="etq">La ficha</p>
+            <h2 class="tit" id="ficha-tit">Qué es Cokima</h2>
+            <div class="ficha-cuerpo">
+              <p class="ficha-txt">Cokima Kitchen Madness es un restaurante de cocina fusión para compartir en Argüelles, Madrid, en la calle de Andrés Mellado, 21, junto a Plaza de España y Moncloa. Su carta va de las recetas más castizas a los guiños más exóticos, con producto fresco: pescado que casi aletea, carne de animales que viven mejor que tú y verduras que saben a lo que tienen que saber.</p>
+              <dl class="datos">
+                <div><dt>Dónde</dt><dd>Calle de Andrés Mellado, 21 · 28015 Madrid (Argüelles)</dd></div>
+                <div><dt>Qué pedir</dt><dd>Los imprescindibles de la carta: gyozas de langostino, tataki de atún, tacos del gobernador de gambón, katsu sando de solomillo de ternera y arroz meloso de carabinero a la brasa.</dd></div>
+                <div><dt>Precios</dt><dd>Para compartir, de 3 a 18 €; para terminar, de 20 a 30 €; postres, 7,50 y 8,50 €.</dd></div>
+                <div><dt>Horario</dt><dd>Lunes a domingo, de 9:00 a 00:00. Cocina, de 13:00 a 16:00 y de 19:30 a 23:30.</dd></div>
+                <div><dt>Reservas</dt><dd>En la web o en el <a href="tel:+34915989401">+34 915 98 94 01</a>.</dd></div>
+              </dl>
+            </div>
+          </section>
+          <section class="cierre">
+            <p class="etq">Cokima · Kitchen Madness</p>
+            <h2 class="tit">Si lo entiendes, ya eres parte.</h2>
+            <p class="voz">Si no, todavía no estás listo.</p>
+            <p class="cierre-nota">Acceso bajo reserva</p>
+            <div class="acc"><a class="pill solid" href="#reservar" data-ir="reservar">Reservar mesa</a><a class="pill" href="#carta" data-ir="carta">Ver la carta</a></div>
+          </section>
           <footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><a href="tel:+34915989401">+34 915 98 94 01</a><a href="https://instagram.com/cokimamadrid" rel="me noopener" target="_blank">@cokimamadrid</a></footer>
         </div>
       </section>

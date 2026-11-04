@@ -1,6 +1,8 @@
 // Brasa: las secciones, La carta con la foto de cada parte, el estado de la cocina y el fondo de chispas.
 // Es el código del boceto que eligió Mario el 2026-10-31, pasado tal cual (docs/cokima-el-rediseno.md §3).
 // La carta llega del build, de menu-es.json, en el JSON de #carta-datos: no hay copia aquí.
+import { montarCollage } from "./collage.js";
+
 (() => {
   const MENU = JSON.parse(document.getElementById("carta-datos").textContent);
   // Los tokens de tokens.css se leen al usarlos y con su unidad: el build reescribe 180ms como .18s,
@@ -136,6 +138,7 @@
       if (cine) cine.hidden = v !== "inicio";
       entra.classList.add("entrando"); entra.hidden = false; scrollTo(0, 0);
       if (v === "reservar") montarMotor();
+      collage.activar(v === "nosotros");
       requestAnimationFrame(() => requestAnimationFrame(() => entra.classList.remove("entrando")));
       revelar(); alScroll();
     };
@@ -160,7 +163,7 @@
   // móvil no hay ratón que lo encienda ni lo apague: el toque lo enciende y se apaga solo, pasado
   // --dur-neon-toque.
   document.addEventListener("pointerdown", (e) => {
-    const b = e.target.closest(".pill, .contacto a"); if (!b) return;
+    const b = e.target.closest(".pill, .contacto a, .mas"); if (!b) return;
     const desde = performance.now(); b.classList.add("tocando"); soltar(b);
     if (e.pointerType !== "mouse") {
       b.classList.add("encendido"); clearTimeout(b._apaga);
@@ -419,6 +422,8 @@
     abrirP(0, false);
   }
 
+  // El collage de Nosotros (collage.js) corre solo con su sección abierta, y hasta entonces no descarga nada.
+  const collage = montarCollage({ leeMs, leeCurva, token });
   const inicial = (location.hash || "").slice(1);
   if (inicial && inicial !== "inicio") ir(inicial, true); else { marcar(); revelar(); alScroll(); }
 

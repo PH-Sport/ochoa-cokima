@@ -100,6 +100,12 @@
      tarda en enfriarse del rojo al hueso, que empieza a mitad del destape. */
   --dur-aviva: 760ms;
   --dur-enfria: 1000ms;
+  /* El collage de Nosotros (2026-11-04): lo que tarda un cambio y las pausas entre uno y otro, que suman
+     unos 3 s, los que pidió Mario, con unas décimas de diferencia para que no se le oiga el compás (regla
+     18 de movimiento.md). Y lo que tarda en volver el automático tras tocar una tarjeta sin hacer nada más. */
+  --dur-cambio: 1100ms;
+  --pausas-collage: 1.7s 2.1s 1.8s 2s 1.9s;
+  --espera-vuelta: 6s;
 
   --t-heading-font: var(--serif);
   --t-menu-title-size: 1.6rem;

@@ -50,7 +50,7 @@ salen de aquí:
 | `--dur-recogida` | `700ms` | Lo que la plancha de la entrada tarda en **recogerse hasta ser la barra**. No sale de `--dur-in`: ese mide un panel que aparece y esto recorre la pantalla entera. |
 | `--tuerce` | `4deg` | Cuánto se **tuerce** lo que llega antes de encajar. Es a la rotación lo que `--shift` es al desplazamiento: la medida de un gesto. Un rótulo de bar se monta pieza a pieza y nunca queda a plomo. |
 
-**Siete más, solo en Cokima**, para Brasa:
+**Diez más, solo en Cokima**, para Brasa:
 
 | Token | Cokima | Para qué |
 |---|---|---|
@@ -60,6 +60,9 @@ salen de aquí:
 | `--dur-encender` | `1120ms` | Lo que tarda el **neón de un botón en arrancar** con el ratón encima: a trompicones, en fundido, «como si le costase arrancar». Sin el primer pulso, que alargaba la espera. |
 | `--dur-neon-toque` | `1800ms` | Lo que el neón se queda **encendido tras un toque** en el móvil, que no tiene ratón que lo apague. |
 | `--dur-aviva` | `760ms` | Lo que tarda **«Cokima» en destaparse** de abajo arriba en la entrada. |
+| `--dur-cambio` | `1100ms` | Lo que tarda **un cambio del collage** de Nosotros. |
+| `--pausas-collage` | `1.7s 2.1s 1.8s 2s 1.9s` | Las **pausas entre cambios** del collage. Con el cambio, unos 3 s, los que pidió Mario, con unas décimas de diferencia para que no se le oiga el compás (regla 18). |
+| `--espera-vuelta` | `6s` | Lo que tarda en **volver el automático del collage** tras tocar una tarjeta sin hacer nada más. |
 | `--dur-enfria` | `1000ms` | Lo que tarda «Cokima» en **enfriarse del rojo al hueso** en la entrada; empieza a mitad del destape, con `--ease-viaje`, que lo reparte parejo. |
 
 Y una escala de curvatura, que no es movimiento pero sigue la misma disciplina de no escribir
@@ -133,6 +136,11 @@ más lejos; Ochoa es una tasca y es seca.
    quieto y solo lo repite al bajar o al cambiar el tamaño, y al salir de la home suelta la GPU.
    Lo que cuesta en un móvil modesto **no está medido**; si se nota, la palanca es la densidad
    a la que pinta (`MAX_DPR` y `ESCALA`).
+
+   **Excepción, decidida por Mario el 2026-11-04: el collage de Nosotros de Cokima** (`collage.js`). Tocar una
+   tarjeta lo para, pero no para siempre: *«Podrías hacer que se reanudase a los 6s de inactividad?»*. Vuelve a
+   los 6 s (`--espera-vuelta`) sin un toque ni el ratón en movimiento, y no cuenta mientras se lee, en pausa o
+   fuera de la vista. «Pausar» sí lo para hasta que se pulse «Reproducir», y con «reducir movimiento» no vuelve.
 
    **Excepción, decidida por Mario el 2026-10-31: el fondo de Brasa** (`apps/cokima/src/brasa.js`).
    Era el fuego de Rescoldo, que eligió él de entre los bocetos; **desde el 2026-11-02 son chispas
@@ -525,7 +533,9 @@ más lejos; Ochoa es una tasca y es seca.
     ventana en todos los fotogramas; solo las capturas lo enseñaron, midiendo si cada pieza era un
     color plano. **Lo que se hace:** no rebobinar los que se paran, `play()` sin `load()`, y debajo de
     cada vídeo su primer fotograma como `<img>`, con el mismo `transform` en el mismo fotograma
-    (regla 27). Medido así, 0 piezas planas en unas 1.100 capturas, en los dos motores, a 390 y a 1440.
+    (regla 27). Medido así, 0 piezas planas en unas 1.100 capturas, en los dos motores, a 390 y a 1440. En la web
+    desde el 2026-11-04 (`apps/cokima/src/collage.js`). **Ojo al medirlo:** un vídeo con un tramo muy oscuro también
+    da una pieza plana (media de 0,7 sobre 255); una sin pintar da el color de lo que tiene detrás, 10 o 23.
 
 ## Qué se mueve hoy
 
@@ -553,6 +563,7 @@ más lejos; Ochoa es una tasca y es seca.
 | Barra del móvil de Brasa (Cokima) | El desplegable de secciones baja bajo la barra con un velo detrás, y la flecha gira | `opacity` + `translateY`, `--dur-in` al abrir y `--dur-out` al cerrar (regla 3); la flecha, `rotate`, `--dur-out`; sin transición con «reducir movimiento» |
 | Fondo de Brasa (Cokima) | Chispas de brasa que suben: salen de abajo empujadas por el aire caliente, frenan, dan bandazos, se enfrían de amarillo a rojo y se apagan; algunas aparecen ya en el aire, para que las haya en todo el alto. Un trazo fino a lo largo del vuelo, con la cabeza más clara mientras está caliente, sin halo; al bajar la página, las de cerca suben un poco más. Sustituyen al fuego de Rescoldo desde el 2026-11-02 | Lienzo 2D desde `brasa.js`, partículas con su física, a 30 fps, en cada fotograma mientras se ve (excepción de la regla 6); nada con la pestaña oculta; un fotograma quieto, sin seguir al scroll, con «reducir movimiento» |
 | Botones de Brasa (Cokima) | Un neón: el de borde es un tubo apagado; con el ratón encima arranca a trompicones y se queda encendido hasta que el ratón se va. Al pulsar, el botón se hunde un poco y salta un puñado de chispas, sin tocar el tubo. En el móvil, el toque lo enciende y se apaga solo | `opacity` del tubo (un pseudo con su sombra fija), `@keyframes encender`, `--dur-encender`, `ease-in-out`; al pulsar, `scale(.965)` con `--dur-out`, al menos `--dur-out`; las chispas, en el lienzo de delante; en el móvil, `--dur-neon-toque`; encendido sin arranque con «reducir movimiento» |
+| Nosotros de Brasa (Cokima), el collage | Automático: dos ampliadas, cuatro tarjetas a la vista y una fuera; cada 3 s más o menos se mueve un carril (columna en el móvil, fila en el ordenador): o entra la de fuera empujando a las demás, o la pequeña crece y la ampliada se encoge. Suenan las ampliadas. Al tocar una, solo esa ampliada y las cinco a la vista; a los 6 s sin hacer nada, vuelve (excepción de la regla 6). El botón redondo trae la tarjeta al primer plano sobre todo el collage | `collage.js`: ventana con `clip-path` y vídeo con `transform` en el mismo fotograma (reglas 2 y 27), con `--dur-cambio`, `--pausas-collage`, `--espera-vuelta` y, al abrir el bloque, `--dur-viaje`; todo con `--ease-viaje`. Su foto fija debajo (regla 31). Nada con la sección cerrada, la zona fuera de la vista o la pestaña oculta; «Pausar» lo para. Con «reducir movimiento», una ampliada y las cinco a la vista, sin animar, sin que suene ni se descargue nada hasta pulsar «Reproducir» |
 | Entrada de Brasa (Cokima) | La primera vez de la sesión, al llegar al Inicio: sube una bocanada de chispas desde un fondo vacío, «Cokima» se destapa de abajo arriba al rojo y se enfría hasta el hueso; «Kitchen Madness», los botones y el vídeo entran detrás. Unos 1,5 s | `clip-path` y `transform` del nombre, `opacity` de una copia en degradado de brasa (`--calor`) y de lo demás, desde `brasa.js`; `--dur-aviva`, `--dur-enfria`, `--dur-in`, `--ease`, `--ease-viaje`; la decide el `<head>` antes del primer pintado; tocar, desplazar o una tecla la terminan; sin entrada con «reducir movimiento» (regla 5) |
 | Vídeo de la portada de Brasa (Cokima) | En el móvil, un vertical de diez planos de 3 s; en el ordenador apaisado, tres verticales en columnas que cortan a 1 s una de otra | el vídeo, horneado (`scripts/video-entrada.sh`); entra con la entrada (`opacity`, `--dur-in`); se pausa fuera de la vista y con la pestaña oculta (regla 6); no se pide con «reducir movimiento» ni con ahorro de datos (regla 20); las columnas, con reloj común (regla 25) |
 | Cambio de sección de Brasa (Cokima) | El fundido corto de siempre y, encima, una bocanada de chispas que sube desde abajo por toda la pantalla, bastante más densa que el fondo | la sección, `opacity` con `--dur-out` y `--dur-in`; las chispas, en el lienzo de delante (una por cada 6.000 px², entre 70 y 220); sin chispas con «reducir movimiento» |

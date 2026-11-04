@@ -761,8 +761,8 @@ del navegador tiene una trampa de método:** el navegador de pruebas usa la que 
 iPhone**, donde Safari puede enseñar su indicador al deslizar.
 
 **Lo que falta y solo puede dar Mario:** de dónde viene Cokima —quién está detrás y desde cuándo—.
-Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Nosotros y Visítanos se
-rediseñan después, sobre esta dirección.**
+Sin eso, Nosotros puede contar qué es Cokima pero no su historia. **Visítanos se rediseña después, sobre
+esta dirección.**
 
 **Nosotros, en maqueta: cinco formatos descartados y lo que pide Mario (2026-11-03).** Sin tocar
 la web. Todas las maquetas usan los mismos cinco vídeos de @cokimamadrid, del local y del pase, sin
@@ -814,7 +814,7 @@ negro al rebobinarlos, al cargarlos o al arrancarlos. **Sin mirar en un iPhone.*
 
 **Elegido el collage, con el fuelle de reserva (2026-11-04).** Mario: *«Me quedo con el collage (pero por
 si acaso, no descartemos el fuelle de momento)»*. El fuelle sigue en la maqueta tal como estaba. Sobre el
-collage pidió tres cambios, ya en la misma maqueta y aún no en la web:
+collage pidió tres cambios, primero en la misma maqueta y ese mismo día en la web (abajo):
 
 - **Dos ampliadas a la vez en automático, rotando cada 3 s.** Su dibujo, en el móvil: en la primera columna
   una alta y una pequeña debajo; en la segunda, una pequeña y una alta debajo. Son cuatro a la vista y la
@@ -826,7 +826,8 @@ collage pidió tres cambios, ya en la misma maqueta y aún no en la web:
   duración, los huecos no cambian y nada se cruza, y por eso no hace falta el truco de La casa de que
   una arranque antes. **El periodo es de 2,8 a 3,2 s**, no 3 s clavados, para que no se le oiga el compás
   (regla 18). Suenan las dos ampliadas.
-- **Al tocar una, solo esa ampliada y las cinco a la vista**, y deja de moverse sola. La de fuera entra por
+- **Al tocar una, solo esa ampliada y las cinco a la vista**, y deja de moverse sola hasta que pasan 6 s
+  sin hacer nada (abajo). La de fuera entra por
   el otro carril, que pasa a tres pequeñas. «Pausar» ya no apaga el automático: «Reproducir» sigue en el
   modo en que estaba.
 - **Leer más: un botón redondo con una flecha**, arriba a la derecha de cada ampliada, para no pisar el
@@ -848,6 +849,8 @@ silenciada; si el navegador no lo deja arrancar, «Pausar» pasa a «Reproducir�
 descarga entero y se reproduce desde memoria. Y en sus notas hay una línea que dice qué hace cada vídeo en
 ese navegador: es lo que falta leer en el de Mario. Si las ampliadas se mueven y le sabe a poco, el
 siguiente paso es que suenen todas las visibles, a costa de batería y de lo que no se ha medido en un móvil.
+**Mario, ya con esos cambios: *«Correcto, ahora se mueven»*.** Cuál de ellos lo arregló no se sabe: lo que
+cambió a la vista es que ahora suenan dos, y mucho más tiempo cada una.
 
 Medido en WebKit y Chromium, con y sin el mando, a 390×664, 375×548, 430×739, 1440×900 y 1280×720: en
 automático, dos ampliadas, cuatro a la vista y una fuera; sin pisarse y con el vídeo cubriendo su
@@ -861,6 +864,53 @@ movimiento», nada se mueve ni se descarga. **Control de la regla 31:** en unas 
 piezas planas, y las dos casi negras (media de 0,7 y 1,1 sobre 255). La identificada era Las favoritas en su
 tramo oscuro del segundo 2; la otra no se identificó, pero una pieza sin pintar daría el color del suelo o
 del fondo del vídeo, 10 o 23. **Sin mirar en un iPhone.**
+
+**En la web desde el 2026-11-04.** Mario: *«cuando lo tengas terminado, publícalo en preview directamente»*.
+Nosotros deja de ser los seis bloques de fotos con frases: es el collage (`src/collage.js`, con sus textos en
+`src/data/nosotros.ts` y sus vídeos en `scripts/video-nosotros.sh`), la ficha y el cierre. Lo que se decidió al
+pasarlo, y que la maqueta no tenía:
+
+- **A los 6 s sin hacer nada vuelve el automático.** Mario: *«cuando se clica voluntariamente, el movimiento
+  automático desaparece. Podrías hacer que se reanudase a los 6s de inactividad?»*. Es una excepción a la regla
+  6 de `movimiento.md`, escrita allí. La última tocada sigue ampliada; en el otro carril queda otra, y la que
+  sobra sale por su lado de salida. No cuenta leyendo, en pausa ni fuera de la vista: al cerrar el bloque
+  o al pulsar «Reproducir», empieza a contar. **Con ratón, moverlo encima reinicia la cuenta y estar quieto no**:
+  tras un clic el cursor se queda sobre la tarjeta, y si estar encima contara, no volvería nunca. Por lo mismo,
+  el automático ya no espera indefinidamente con el ratón encima, sino 6 s desde que se movió por última vez.
+- **Sin fuelle, sin notas ni la línea que decía qué hacía cada vídeo.** El fuelle sigue de reserva en la maqueta,
+  que no lleva la vuelta a los 6 s.
+- **Sin el hueco del año de apertura.** En la maqueta iba marcado; en la web la fila no sale hasta que Mario
+  lo confirme, porque ya pidió quitar el otro hueco de esta sección.
+- **Todo el texto va en el HTML**, también el de leer más, aunque no se vea hasta abrirlo: se comprobó en el
+  `index.html` del build. Y **el Inicio no descarga nada de Nosotros**: los vídeos llevan `preload="none"`,
+  las fotos van en diferido y se piden a mano al abrir la sección (regla 28).
+- **Un móvil tumbado va como el ordenador, y una tableta en vertical como el móvil**, con la misma condición en
+  `collage.js` y en `brasa.css`.
+- **El botón redondo es un neón como los demás**, con su hundimiento y sus chispas: Mario pidió que lo fueran
+  *«todos, en general»*.
+
+**Cuántos movimientos son verticales y cuántos horizontales**, que preguntó Mario, medido en la maqueta, con el
+mismo motor, con 100 de cada y a tiempo acelerado. En automático depende de la pantalla y no de la tarjeta: **en el móvil, 100 de 100
+verticales; en el ordenador, 100 de 100 horizontales** (en una tanda salió uno distinto, que es de cómo se
+mide y no del collage: nada mueve una tarjeta de lado en un carril vertical). Lo que mezcla son los toques, porque la tarjeta crece hacia la vecina
+que mueva menos cosas: en el móvil crece 57 veces en vertical y 43 en horizontal; en el ordenador, de 30 a 35 en
+vertical y de 65 a 70 en horizontal.
+
+Medido sobre el build, en WebKit y Chromium, a 390×664, 375×548, 430×739, 844×390, 1024×1366, 1440×900 y
+1280×720. En el Inicio no se pide nada de Nosotros; al abrirla cargan las cinco fotos y suenan dos vídeos; al
+salir se callan. Periodo de 2,90 a 3,17 s. El vídeo cubre su ventana y nada se pisa también a mitad de los
+cambios. Al tocar, una ampliada y cinco a la vista, y **vuelve a los 6,0 s** en todos los tamaños y los dos motores,
+con la tocada aún ampliada. En la maqueta, con el mismo motor y el tiempo acelerado, 160 vueltas desde tocados al azar,
+también con la ampliada de través, sin un reposo mal. Leyendo 7 s no vuelve; el enlace del bloque lleva a su sección y al volver está cerrado. El
+leer más abre y cierra en las cinco, con scroll interno en tres de las cinco en el SE y en las cinco con el móvil
+tumbado (hasta 460 px de texto). La alta más estrecha, 165×267 en el SE, lleva hasta 175 px de texto sin tocar el botón,
+**medido sin la Cormorant, que en la prueba no se descarga y cae en una letra más ancha**: con ella cabe de sobra. Con «reducir movimiento»
+no se mueve ni se descarga ningún vídeo y no vuelve nunca. Regla 31: una pieza plana en 550 capturas, casi negra
+(media de 0,7), como las de la maqueta. Tests de los paquetes, en verde. **Sin mirar en un iPhone**, y sin medir lo que
+cuesta decodificar dos vídeos a la vez en un móvil modesto.
+
+**Sin uso desde ese día, y sin borrar:** `bomba`, `manos`, `martin`, `neon`, `sala` y `vacio`, de
+`public/images/`. Eran las de los seis bloques de antes.
 
 **Lo que se queda de las tres primeras:** los cinco vídeos, con sus cortes, y la ficha «Qué es Cokima». Los
 cortes, de la fototeca, a 540×960, H.264 sin sonido y CRF 27 (el de la parrilla, 29), unos 3,4 MB los

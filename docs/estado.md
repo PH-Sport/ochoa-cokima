@@ -107,13 +107,15 @@ La sartén en llamas, que era la de antes y cuadrada, se queda como foto del loc
 buscadores, en la home y en las legales. Cómo está hecha y lo descartado, en `fotografia.md` §Nota
 técnica. **Sin probar en WhatsApp de verdad.**
 
-**Y Nosotros, en maqueta, sin tocar la web:** cinco formatos con los vídeos del local y el pase,
-descartados los cinco —el primero por lineal; la escena con índice y el mosaico, porque hay que tocar
-para leer cada descripción; el texto delante y las cinco a la vez, sin motivo concreto—. **El
-2026-11-04 eligió el collage, con el fuelle de reserva**: la idea del mosaico vivo de La casa de Ochoa,
-que trajo él como referencia, con piezas de Cokima. En la maqueta, y aún no en la web, ya lleva dos
-ampliadas que rotan cada 3 s, una sola al tocar y un botón de leer más que trae la tarjeta al primer
-plano. Por el camino salió lo que manda sobre el formato: **Nosotros
+**Y Nosotros, desde el 2026-11-04, es el collage, ya en `preview`.** Salió de cinco formatos descartados
+en maqueta —el primero por lineal; la escena con índice y el mosaico, porque hay que tocar para leer cada
+descripción; el texto delante y las cinco a la vez, sin motivo concreto—. **Mario eligió el collage, con
+el fuelle de reserva en la maqueta**: la idea del mosaico vivo de La casa de Ochoa, que trajo él como
+referencia, con piezas de Cokima. Dos ampliadas que rotan cada 3 s, cuatro tarjetas a la vista y la quinta
+fuera; al tocar una, solo esa ampliada y las cinco a la vista, y a los 6 s sin hacer nada vuelve el
+automático; y un botón redondo de leer más que trae la tarjeta al primer plano. Debajo, una ficha con datos
+comprobados para los buscadores y los asistentes, y un cierre. Medido sobre el build en WebKit y Chromium,
+en siete tamaños; **sin mirar en un iPhone**. Por el camino salió lo que manda sobre el formato: **Nosotros
 no puede atraer búsquedas mientras sea `#nosotros` dentro de la portada.** Las maquetas, los motivos
 y la recomendación —una dirección propia para cada sección—, en `cokima-el-rediseno.md` §3,
 «Nosotros, en maqueta»; la trampa de los vídeos que salió al medir, regla 31 de `movimiento.md`.
@@ -234,8 +236,8 @@ en `ochoa-inicio-vivo.md` §3.7.
   (`cokima-el-rediseno.md` §3, «La dirección de Brasa» y «Se abren al bajar»). Salieron de una
   maqueta de tres maneras: https://claude.ai/artifact/VM1QDA4nP7nzN9NFVjZpPm. **Lo primero, en su
   iPhone XS: que ahora la zona se queda fija al bajar** —medido con el alto de Safari, no en un iPhone
-  de verdad—; y si el tramo de scroll de cada panel se hace corto o largo. Después vienen
-  Nosotros y Visítanos, sobre la misma dirección.
+  de verdad—; y si el tramo de scroll de cada panel se hace corto o largo. Después viene
+  Visítanos, sobre la misma dirección.
 - **Revisar el texto para buscadores del último panel del Inicio**, «Ven» (`cokima-el-rediseno.md`
   §3, «El Inicio, reordenado»): lo escribió el agente con frases de la casa y datos comprobados.
 - **Ver en preview la entrada, la bocanada y los botones de neón**, en el ordenador y en su iPhone
@@ -248,19 +250,17 @@ en `ochoa-inicio-vivo.md` §3.7.
   piel de Brasa: en el navegador de pruebas no se deja cargar (403), y la piel solo la enlaza desde
   el despliegue. Y decir si las chispas del fondo se quedan así de sutiles.
 - **Contar de dónde viene Cokima:** desde cuándo. Su Instagram dijo el 2025-10-23 que cumplía cinco
-  años, lo que apunta a 2020, y falta que Mario lo confirme; las maquetas de Nosotros lo llevan como
-  hueco marcado. Quién está detrás, no: Mario pidió no poner nombres.
+  años, lo que apunta a 2020, y falta que Mario lo confirme; la ficha de Nosotros no lo dice hasta
+  entonces. Quién está detrás, no: Mario pidió no poner nombres.
 - **Decidir si las secciones de Cokima tienen dirección propia** (`/carta`, `/nosotros`,
   `/visitanos`, `/reservas`) en lugar de `#carta`, `#nosotros`…, que Google no distingue de la
   portada. Recomendado, y conservando `/carta` y `/reservas`, que son las de la web anterior; la
   almohadilla, solo para saltos dentro de una página, como las partes de La carta
   (`cokima-el-rediseno.md` §3, «Nosotros, en maqueta»).
-- **Ver la maqueta del collage de Nosotros**, elegido, con el fuelle de reserva:
-  https://claude.ai/artifact/8otJqwkVntRJ1ummPx4768 (mismo apartado). Decir si le valen las dos
-  ampliadas, el toque y el leer más, y **leer en las notas de la maqueta la línea que dice qué hace cada
-  vídeo en su navegador**: dijo que no parecían reproducirse y aquí no se ha podido reproducir. También,
-  si la frase de las croquetas semilíquidas, de 2024, sigue valiendo. Nosotros no pasa a la web hasta que lo
-  dé por bueno.
+- **Ver el collage de Nosotros en `preview`**, en el ordenador y en su iPhone (mismo apartado). Y dos
+  datos que solo puede dar él: si la frase de las croquetas semilíquidas, de 2024, sigue valiendo, y el año
+  de apertura, que la ficha no dice hasta que lo confirme. El fuelle sigue de reserva en la maqueta:
+  https://claude.ai/artifact/8otJqwkVntRJ1ummPx4768.
 - **Ver en su móvil el desplegable de secciones y el viaje de «Reservar»**, y seguir iterando
   sobre ellos (`cokima-el-rediseno.md` §3). El desplegable salió de una maqueta de tres:
   https://claude.ai/artifact/TGPi5Le9WBSVTFXZGoLwhc.
