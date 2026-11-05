@@ -1,17 +1,21 @@
 ---
 // La carta de Brasa. Los platos salen de menu-es.json en el build y van escritos en el HTML: es lo primero
 // que se busca de un restaurante, y los asistentes de IA no ejecutan JavaScript.
+import { allergenNumber, usedAllergens } from "@tombo/content";
 import Brasa from "../layouts/Brasa.astro";
+import NumerosAlergenos from "../components/NumerosAlergenos.astro";
 import { FOTOS, PARTES, PORTADILLAS, VOCES, platosDeLaCarta, precio } from "../carta.ts";
+import { ALLERGEN_LABELS } from "../site.ts";
 
 const platos = await platosDeLaCarta();
 const porId = Object.fromEntries(platos.map((d) => [d.id, d]));
+const leyenda = usedAllergens(platos);
 ---
 
 <Brasa
   vista="carta"
   title="La carta · Cokima, restaurante en Argüelles (Madrid)"
-  description="La carta de Cokima para compartir: gyozas de langostino, tataki de atún, tacos del gobernador, katsu sando y arroz meloso de carabinero a la brasa. Argüelles, Madrid."
+  description="La carta de Cokima para compartir: gyozas de langostino, tacos del gobernador, katsu sando y arroz meloso de carabinero a la brasa. Argüelles, Madrid."
 >
   <section class="vista" data-vista="carta">
     <div class="wrap cab-vista">
@@ -32,6 +36,7 @@ const porId = Object.fromEntries(platos.map((d) => [d.id, d]));
                 <p class="vg">{f.frase || p.description}</p>
                 <p class="linea"><span>{p.name}</span><b>{precio(p.price)}</b></p>
                 {f.frase && p.description && <p class="d">{p.description}</p>}
+                <NumerosAlergenos plato={p} />
               </figcaption>
             </figure>
             <div class="wrap lista">
@@ -40,6 +45,7 @@ const porId = Object.fromEntries(platos.map((d) => [d.id, d]));
                   <li class="pl" data-id={d.id}>
                     <span class="ln"><span>{d.name}{d.featured && <span class="imp">Imprescindible</span>}</span><b>{precio(d.price)}</b></span>
                     {d.description && <span class="d">{d.description}</span>}
+                    <NumerosAlergenos plato={d} />
                     {VOCES[d.id] && <span class="vl">{VOCES[d.id]}</span>}
                   </li>
                 ))}
@@ -51,6 +57,15 @@ const porId = Object.fromEntries(platos.map((d) => [d.id, d]));
     </div>
     {/* Como al pie de su carta (Mario, 2026-11-03: «Añade lo de los 3 € de la carta»). */}
     <div class="wrap lista aperitivo"><ul><li class="pl"><span class="ln"><span>Mantequilla, AOVE, pan y aperitivo</span><b>3 €</b></span></li></ul></div>
+    {/* La leyenda solo lista los números que usa la carta, como en Ochoa. El pan y el aperitivo no llevan
+        número porque su fila del PDF no trae ningún icono: no se rellena por deducción. */}
+    <div class="wrap">
+      <section class="chuleta">
+        <h2 class="chuleta-tit">Alérgenos</h2>
+        <dl>{leyenda.map((a) => <div><dt>{allergenNumber(a)}</dt><dd>{ALLERGEN_LABELS.es[a] ?? a}</dd></div>)}</dl>
+        <p class="chuleta-nota">Según la información facilitada por el restaurante. Ante cualquier duda, pregunta al personal.</p>
+      </section>
+    </div>
     <div class="wrap"><footer class="pie"><span>Calle de Andrés Mellado, 21 · 28015 Madrid</span><a href="tel:+34915989401">+34 915 98 94 01</a><a href="https://instagram.com/cokimamadrid" rel="me noopener" target="_blank">@cokimamadrid</a></footer></div>
   </section>
 </Brasa>

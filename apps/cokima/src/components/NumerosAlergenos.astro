@@ -1,0 +1,20 @@
+---
+// Los números de alérgenos de un plato, como en la carta de Ochoa: los mismos números del Anexo II, y la
+// leyenda al pie de La carta los traduce. Mario prefirió los números a los iconos el 2026-11-04: «los iconos
+// desentonarían bastante». Quien no ve los números oye el nombre entero.
+import { allergenNumber, dishAllergens, type Dish } from "@tombo/content";
+import { ALLERGEN_LABELS } from "../site.ts";
+
+interface Props {
+  plato: Dish;
+}
+const alergenos = dishAllergens(Astro.props.plato);
+const nombres = alergenos.map((a) => ALLERGEN_LABELS.es[a] ?? a).join(", ");
+---
+
+{alergenos.length > 0 && (
+  <span class="al">
+    <span class="al-oculto">Alérgenos: {nombres}.</span>
+    {alergenos.map((a) => <span aria-hidden="true">{allergenNumber(a)}</span>)}
+  </span>
+)}

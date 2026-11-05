@@ -145,7 +145,6 @@ copiar de ahí.
 | App | Plato | Archivo |
 |---|---|---|
 | Cokima | Gyozas de langostino | `gyozas-de-langostino.jpg` |
-| Cokima | Tataki de atún | `tataki-de-atun.jpg` |
 | Cokima | Tacos del gobernador de gambón | `tacos-del-gobernador-de-gambon.jpg` |
 | Cokima | Katsu sando de solomillo de ternera | `katsu-sando-de-solomillo-de-ternera.jpg` |
 | Cokima | Arroz meloso de carabinero a la brasa | `arroz-meloso-de-carabinero-a-la-brasa.jpg` |
@@ -325,10 +324,9 @@ años):
   cocinero, Guille poniéndose el delantal, clientes viendo el fútbol. Seis de ellas fueron la
   portada de Ochoa del 2026-10-27 al 29; desde entonces la portada es otra serie de ocho (tabla de
   portadas).
-- **Dos señales de que la carta transcrita puede estar desfasada:** Cokima publica una pannacotta
-  andina que no está en `menu-es.json`, y una «nueva versión de oreja» con alioli y chips de
-  boniato, cuando la carta dice milhojas de patata y salsa brava. Hay que preguntarlo al
-  restaurante antes de tocar nada.
+- **La pannacotta andina y la «nueva versión de oreja» de su Instagram ya están en la carta**
+  desde el 2026-11-04: lo confirmó el PDF oficial (`cokima-el-rediseno.md` §3). Ninguna de las dos
+  tiene foto puesta en la web, y `torrija.jpg` se queda sin usar.
 
 ## Las rejillas guía
 

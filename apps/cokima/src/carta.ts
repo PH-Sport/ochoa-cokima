@@ -15,7 +15,6 @@ export const FOTOS: Record<string, { img: string; w: number; h: number; alt: str
   "terminar-02": { img: "katsu", w: 880, h: 1100, alt: "Katsu sando con patatas", frase: "Hay dos tipos de clientes en Cokima." },
   "terminar-04": { img: "arroz", w: 720, h: 1280, alt: "Arroz meloso de carabinero", frase: "Este plato cambia el ritmo de la mesa…" },
   "postres-01": { img: "tarta", w: 1100, h: 1100, alt: "Una mujer se come la tarta de queso", frase: "La mejor crítica nunca ha necesitado palabras." },
-  "postres-02": { img: "torrija", w: 880, h: 1100, alt: "La torrija servida bajo el neón", frase: "Un postre que no se comparte, se saborea lento." },
 };
 // Platos sin foto que también tienen frase propia publicada: llevan la voz en vez de la foto.
 export const VOCES: Record<string, string> = { "terminar-05": "Hay platos que entran en carta. Y otros que se agarran a ella." };
@@ -23,4 +22,5 @@ export const PARTES = [["compartir", "Compartir es vivir"], ["terminar", "Para t
 // Cada parte de la carta se abre con uno de sus platos en foto —con su nombre, su precio y su frase— y,
 // debajo, los demás. Mario la eligió entre tres maneras el 2026-11-02, «con el resto de platos abajo»;
 // hasta que vio el plato de la foto repetido en la lista, que sobraba (docs/cokima-el-rediseno.md §3).
-export const PORTADILLAS: Record<(typeof PARTES)[number][0], string> = { compartir: "compartir-04", terminar: "terminar-04", postres: "postres-02" };
+// Los postres abren con la tarta desde el 2026-11-04: la torrija salió de la carta y su foto bajo otro nombre sería mentira.
+export const PORTADILLAS: Record<(typeof PARTES)[number][0], string> = { compartir: "compartir-04", terminar: "terminar-04", postres: "postres-01" };

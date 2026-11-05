@@ -58,7 +58,7 @@ export const FACETAS = [
       // C6tJ19ktThn, de mayo de 2024. Mario decidió que se queda (2026-11-04): sale en su Instagram.
       "Nuestras croquetas semilíquidas son una obra de arte culinaria que debes probar al menos una vez en tu vida.",
       // De la carta, menu-es.json: los que llevan `featured`.
-      "Los imprescindibles de la carta: gyozas de langostino, tataki de atún, tacos del gobernador de gambón, katsu sando de solomillo de ternera y arroz meloso de carabinero a la brasa.",
+      "Los imprescindibles de la carta: gyozas de langostino, tacos del gobernador de gambón, katsu sando de solomillo de ternera y arroz meloso de carabinero a la brasa.",
     ],
     enlace: { texto: "Ver la carta", ir: "carta" },
   },

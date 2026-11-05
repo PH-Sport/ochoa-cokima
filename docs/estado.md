@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-11-04 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-11-05 · **el punto de entrada del repo**
 
-- **Corte:** 2026-11-04
+- **Corte:** 2026-11-05
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
   nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
   de decidir, que no se fusionan: `feat/inicio-paralaje`, el Inicio de Ochoa en paralaje, parada,
@@ -142,6 +142,17 @@ el móvil sin ver nada; ahora, entre 0,22 y 0,37 s desde que se pulsa, y dura 2,
 y la ajuste.** Medido sobre el build en WebKit y Chromium, en once tamaños y entrando por las dos vías; **sin mirar en un
 iPhone**. Lo descartado, de dónde sale cada dato y las trampas, en `cokima-el-rediseno.md` §3, «Visítanos: La mecha»; la
 regla que dejó, la 32 de `movimiento.md`.
+
+**Y las cartas, desde el 2026-11-04, siguen los PDF oficiales del restaurante.** Mario: *«Ambos PDFs son
+oficiales del restaurante si, debemos seguir la información que indican»*. Están en `docs/`, como
+`carta-alergenos-cokima-oficial-2026-11-04.pdf` y `alergenos-ochoa-oficial-2026-11-04.pdf`. **Cokima** cambia la
+carta (entran los tacos de tartar de atún, la «oreja brava» y la panna cotta; salen el tataki, los minutejos, la
+torrija y el soft shell crab; el ceviche pasa a 21 € y los huevos rotos a 26 €) y enseña por primera vez sus
+alérgenos, **en números y no en iconos** (*«los iconos desentonarían bastante»*), los mismos de Ochoa, con leyenda
+al pie. **Ochoa** solo tenía un error: la cesta de pan decía sulfitos y la hoja no los marca. Eran 89 números en
+la carta y son 88; el «cuadra con la hoja» del 2026-09-19, más abajo, era ese error. **Espera al restaurante, no a
+Mario:** el 2026-11-05 dijo *«no tengo la info»* de lo que queda abierto en las dos casas, y que se suba lo que se
+pueda. Lo abierto y lo que no se comprobó, en `cokima-el-rediseno.md` §3, «La carta del PDF oficial», y en §4 de aquí.
 
 Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
 dejaron de publicarse** —`/carta` y `/reservas` son ahora las de Brasa, y el inglés lleva a ellas— y las
@@ -733,8 +744,9 @@ de fusión, sin tocar nada más.
   no muestran nada. La duda concreta es si los montados heredan del bocata del mismo relleno
   o hay que pedirle la fila al restaurante. Y cinco platos llevan el gluten marcado en
   amarillo sin decir por qué; hasta saberlo salen con «\*» y «pendiente de confirmar». **Mario
-  lo dejó «en el aire» el 2026-09-19 para revisarlo cuanto antes.** Es dato de salud: no se
-  rellena por deducción (§0, §3).
+  lo dejó «en el aire» el 2026-09-19 para revisarlo cuanto antes**, y el PDF del 2026-11-04 no
+  lo resuelve. **Él no tiene el dato (2026-11-05): hay que pedírselo al restaurante.** Es dato de
+  salud: no se rellena por deducción (§0, §3).
 
 ### Lo cerrado en agosto, por si hace falta el contexto
 
@@ -1514,10 +1526,14 @@ desmenuzar a fondo.
 
 ## 4. Decisiones abiertas (de Mario)
 
-- [ ] **Filtro de alérgenos de Cokima.** Construido y apagado
-      (`ALLERGEN_DATA_CONFIRMED = false` en `apps/cokima/src/site.ts`). No se enciende
-      hasta que el restaurante firme los datos: un filtro "sin gluten" en el que una
-      persona celíaca confía con datos orientativos es un problema de salud, no de UX.
+- [ ] **Filtro de alérgenos de Cokima.** Sigue apagado (`ALLERGEN_DATA_CONFIRMED = false` en
+      `apps/cokima/src/site.ts`) y ninguna página de Brasa lo pinta. Los datos ya son oficiales desde
+      el 2026-11-04, pero un filtro "sin gluten" en el que una persona celíaca confía es una decisión
+      aparte, y nadie lo ha pedido.
+- [ ] **Lo que dejó abierto la carta del PDF de Cokima** (2026-11-04): el pan y el aperitivo sin
+      alérgenos, sulfitos y mostaza sin marcar en ningún plato, quién hereda «Imprescindible» y el
+      vídeo de portada. Mario no tiene estos datos (2026-11-05): dependen del restaurante. El
+      detalle, en `cokima-el-rediseno.md` §3, «La carta del PDF oficial».
 - [ ] **Texto del cartel de cookies.** Es lo que más altura le da. No se ha tocado porque
       es contenido de consentimiento y acortarlo tiene matiz legal.
 - [ ] **El rojo del titular de Cokima.** Con `#ed1c24` no hay forma de pasar de 4,26:1
@@ -1529,7 +1545,7 @@ desmenuzar a fondo.
       la carta, dijo «bien respecto a lo del 90%» y pidió extenderlo a toda la web (§0). El tope
       de 1140px no vuelve.
 - [ ] **Los 12 platos de Ochoa sin alérgenos y el gluten en amarillo** (§3). Es dato de salud:
-      no se rellena por deducción.
+      no se rellena por deducción. Mario no lo tiene (2026-11-05): depende del restaurante.
 
 **Cerradas el 2026-07-29:** el verde oliva del estado de apertura (retirado con la piel
 nueva de Ochoa), las dos ramas muertas —que ya no existen— y **el push de `preview`**, que

@@ -16,16 +16,16 @@ export const RESTAURANT: RestaurantInfo = {
 export const COVER_SLUG = import.meta.env.PUBLIC_COVERMANAGER_SLUG ?? "restaurante-cokima";
 
 /**
- * Los alérgenos de la carta son orientativos hasta que el restaurante firme la
- * documentación oficial (spec 2026-07-27 §5.3 y §8). Con la bandera en false el
- * filtro no se renderiza: solo se muestran los iconos y la nota de aviso.
- * NO cambiar a true sin confirmación escrita del cliente: un filtro "sin
- * gluten" en el que una persona celíaca confía con datos sin confirmar es un
- * problema de salud, no de UX.
+ * Los alérgenos de la carta salen del PDF oficial del restaurante (Mario,
+ * 2026-11-04: «Ambos PDFs son oficiales») y se ven en números en La carta. Esta
+ * bandera solo gobierna el filtro de MenuDeck, que ninguna página de Brasa pinta
+ * y que nadie ha pedido recuperar: sigue en false para que no se encienda solo.
+ * Un filtro "sin gluten" en el que una persona celíaca confía es un problema de
+ * salud, no de UX, y encenderlo es una decisión aparte.
  */
 export const ALLERGEN_DATA_CONFIRMED = false;
 
-/** Etiquetas de alérgenos por idioma (iconos de @tombo/ui). */
+/** Etiquetas de alérgenos por idioma: la leyenda de La carta y lo que oye quien no ve los números. */
 export const ALLERGEN_LABELS: Record<"es" | "en", Record<string, string>> = {
   es: {
     gluten: "Gluten",

@@ -47,7 +47,7 @@
   { "id": "rac-19", "section": "raciones", "order": 19, "name": "Grandma's Idiazabal fritters", "description": "With piquillo pepper jam.", "price": 14, "allergens": ["gluten", "huevo", "lacteos"] },
   { "id": "rac-20", "section": "raciones", "order": 20, "name": "Grilled octopus", "description": "With patatas revolconas and txistorra.", "price": 22, "featured": true, "image": "pulpo-a-la-plancha" },
   { "id": "rac-21", "section": "raciones", "order": 21, "name": "Oxtail croissant", "description": "With its own jus and Idiazabal cheese.", "price": 17, "featured": true, "image": "croissant-de-rabo-de-toro", "allergens": ["gluten", "lacteos", "sulfitos"] },
-  { "id": "rac-22", "section": "raciones", "order": 22, "name": "Bread basket with olive oil", "price": 3, "allergens": ["gluten", "sulfitos"] },
+  { "id": "rac-22", "section": "raciones", "order": 22, "name": "Bread basket with olive oil", "price": 3, "allergens": ["gluten"] },
 
   { "id": "pos-01", "section": "postres", "order": 1, "name": "BRUTAL cheesecake with Idiazabal ice cream", "price": 7, "featured": true, "image": "tarta-de-queso-brutal-con-helado-de-idiazabal", "allergens": ["gluten", "huevo", "lacteos", "soja"] },
   { "id": "pos-02", "section": "postres", "order": 2, "name": "Chocolate coulant", "description": "With dulce de leche ice cream and chocolate soil.", "price": 7, "allergens": ["gluten", "huevo", "lacteos", "soja"] }

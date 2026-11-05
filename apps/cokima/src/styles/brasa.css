@@ -227,6 +227,18 @@ html[data-entrada] .portada h1 .sub,html[data-entrada] .portada .acc,html[data-e
 /* El pan y el aperitivo, al pie de la carta como en la suya: una fila más, sin parte */
 .aperitivo{margin-top:clamp(28px,5vw,48px)}
 .aperitivo ul{border-top:1px solid var(--line)}
+/* Los alérgenos, en números bajo el plato y leyenda al pie, como en Ochoa (Mario, 2026-11-04). Con --bone-2 y
+   no --bone-3: es dato de salud y tiene que leerse sin buscarlo, sin competir con el precio. */
+.al{display:flex;flex-wrap:wrap;gap:.6em;margin-top:6px;font:500 .8rem/1.4 var(--sans);color:var(--bone-2)}
+.pf .al{margin-top:10px}
+.al-oculto{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.chuleta{max-width:760px;margin-top:clamp(28px,5vw,48px);padding-top:16px;border-top:1px solid var(--line)}
+.chuleta-tit{margin:0;font:500 .66rem/1.2 var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--bone-2)}
+.chuleta dl{display:grid;grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr));gap:6px 16px;margin:14px 0 0;font:400 .85rem/1.4 var(--sans)}
+.chuleta dl div{display:flex;gap:8px}
+.chuleta dt{min-width:1.2em;font-weight:600;color:var(--bone)}
+.chuleta dd{margin:0;color:var(--bone-2)}
+.chuleta-nota{margin:14px 0 0;font:400 .8rem/1.45 var(--sans);color:var(--bone-2)}
 .imp{display:inline-block;margin-left:8px;font:600 .54rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--ember);border:1px solid rgba(255,154,82,.5);border-radius:999px;padding:3px 6px;vertical-align:2px;white-space:nowrap}
 
 /* El plato en foto, como en Aliento: la foto a sangre se disuelve y el texto se apoya en lo disuelto */

@@ -1,8 +1,8 @@
 # Cokima: el rediseño
 
-> **Estado: vivo** · el rediseño está en curso · revisado 2026-11-04
+> **Estado: vivo** · el rediseño está en curso · revisado 2026-11-05
 
-- **Abierto:** 2026-08-14 · **Última tanda:** 2026-11-03
+- **Abierto:** 2026-08-14 · **Última tanda:** 2026-11-05
 - **Rama:** `preview` desde el 2026-10-26, cuando Mario pidió trabajar solo en ella. Antes vivió en
   `tmp/entrada-cokima`
 - **Estado:** **desde el 2026-10-31 la web de Cokima en `preview` es Brasa** (§3), y se itera
@@ -1047,6 +1047,53 @@ bajando a mitad de arder, con «reducir movimiento» y sin JavaScript. En todos:
 errores, los datos pedidos una sola vez, la foto del rótulo sin descargarse y el nombre de Cokima dentro de la pantalla.
 Una medida se salió de la horquilla, 0,75 s en Chromium a 1280×720, y no se repitió: 0,29 s al volver a medirla. **Sin mirar en un iPhone:** ni el ritmo ni lo que le cuesta a su
 procesador, que aquí se mide con el del Mac. **Espera a Mario**, que la ve en el móvil y la ajusta.
+
+### La carta del PDF oficial (2026-11-04)
+
+**El problema real no eran «un par de platos».** La carta de la web venía de transcribir la anterior, con alérgenos
+marcados como orientativos que no se enseñaban. Mario trajo el PDF del restaurante
+(`docs/carta-alergenos-cokima-oficial-2026-11-04.pdf`) y, al compararlo, 14 de los 17 platos comparables tenían mal
+los alérgenos: faltaban 26 y sobraban 2. Su criterio: *«Toma como referencia la carta de Cokima que te he pasado y
+cíñete a ella»*, y *«Ambos PDFs son oficiales»*. Por eso la gilda pierde el pescado y el dumpling el gluten, aunque
+sorprenda: lo dice la hoja.
+
+**Números, no iconos.** Mario: *«Quisiera mantener el formato del número asociado a un tipo de alérgeno»* y *«los
+iconos desentonarían bastante»*. Son los del Anexo II, los mismos que Ochoa, con leyenda al pie que solo lista los
+que usa la carta. Se comparte el número, no la pieza: cada casa tiene su propio marcado. Se descarta el componente
+de iconos, que además no tiene dibujo para moluscos, frutos de cáscara ni apio.
+
+**Lo que se decidió sin preguntar, porque el cambio lo arrastraba:**
+
+- **Los postres abren con la tarta.** La foto y la frase de la torrija no pueden quedarse bajo el nombre de otro
+  postre, y de la panna cotta no hay foto puesta. `torrija.jpg` sigue en `public/images`, sin usar.
+- **Los platos nuevos no llevan «Imprescindible».** El PDF no lo dice, y sin el tataki los imprescindibles son cuatro.
+- **Los textos que nombraban el tataki** dejan de hacerlo, y «para compartir» pasa de «3 a 18 €» a «3 a 21 €».
+- **El inglés se traduce del español, no de la página 2 del PDF.** Esa página tiene **cruzadas** las filas del tomate
+  y las gyozas: el tomate sale con gluten y crustáceos a 14 €, y las gyozas con lácteos y frutos de cáscara a 12 €.
+  Copiarla sería un error de salud. Además trae erratas («FUMPLINGS», «CEAVICHE»). `menu-en.json` queda al día, pero
+  Brasa no pinta inglés y `/en/` lleva a la portada: publicarlo sigue siendo lo de §6. **Mario lo confirmó el
+  2026-11-05:** *«utiliza la info española para esos platos que dices que están cruzados»*. Las filas en español y los
+  datos en inglés ya coincidían en alérgenos y precio de los 20 platos, así que no hubo que corregir nada.
+
+**Abierto, del restaurante.** Mario no tiene estos datos (2026-11-05: *«no tengo la info»*), así que no hay que volver a
+preguntárselos: se quedan así hasta que el restaurante los dé.
+
+- **Mantequilla, AOVE, pan y aperitivo** no lleva ningún icono en el PDF y por eso no lleva números. No se rellena por
+  deducción, pero una fila sin números se lee como «sin alérgenos». Hay que preguntarlo.
+- **Sulfitos, mostaza, cacahuetes y altramuces** no los marca ningún plato. Se sigue la hoja; falta saber si los
+  contempló.
+- **La página inglesa cruzada:** si esa carta está impresa, el restaurante debería saberlo.
+- **Quién hereda «Imprescindible»**, si alguien, y **qué foto abre Postres** cuando haya panna cotta.
+- **El vídeo de portada** sigue con planos del tataki, la torrija y el soft shell crab (`scripts/video-entrada.sh`), tres
+  platos que ya no están en carta. No se ha tocado.
+
+**Trampa de lectura:** los iconos del PDF no son texto, y la extracción solo da los nombres y los precios. Se leyeron en
+recortes ampliados; dos filas quedaban cortadas por el borde del recorte y hubo que mirar la página entera. **Los nombres
+y los precios sí se comparan contra el texto del PDF**, y así salieron el bao y la gilda, que no estaban literales.
+
+**Medido sobre el build,** comparando el HTML con el PDF por script: 20 platos, 0 diferencias de nombre, descripción,
+precio o número. En el navegador a 375, 320 y 1440: sin scroll lateral, los 20 bloques de números dentro de la pantalla y
+la leyenda a 2, 1 y 4 columnas. **Sin mirar en un iPhone**, y los iconos, leídos a ojo: el PDF es la referencia.
 
 ---
 
