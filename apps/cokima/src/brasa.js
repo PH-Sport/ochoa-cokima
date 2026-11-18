@@ -529,7 +529,7 @@ import { montarMecha } from "./mecha.js";
     }).observe(cine);
     document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") parar(); else if (aLaVista) seguir(); });
     // Las tres cortan a 1 s una de otra porque el desfase va dentro de cada archivo, y eso solo se
-    // sostiene con un reloj común (regla 25): son bucles de 12, 9 y 9 s, cada uno con el suyo, y cada
+    // sostiene con un reloj común (regla 25): son bucles de 6, 6 y 9 s, cada uno con el suyo, y cada
     // vuelta o cada parón puede separarlos. El reloj es la primera columna, con sus vueltas contadas;
     // cada segundo, la que se haya ido más de 0,3 s de donde le toca vuelve a su sitio. Solo si se
     // puede saltar a ese punto (`seekable`): un servidor que no sirve por rangos —el http.server de

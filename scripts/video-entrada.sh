@@ -19,9 +19,9 @@
 #
 # QUÉ SACA:
 #
-#   entrada.mp4 / .webm          608x1080  — móvil: los diez planos seguidos, 30 s.
+#   entrada.mp4 / .webm          608x1080  — móvil: los siete planos seguidos, 21 s.
 #   entrada-col-1.mp4 / .webm    720x1280  — ordenador: tres columnas, cada una
-#   entrada-col-2.mp4 / .webm    720x1280    con sus planos (12, 9 y 9 s).
+#   entrada-col-2.mp4 / .webm    720x1280    con sus planos (6, 6 y 9 s).
 #   entrada-col-3.mp4 / .webm    720x1280
 #
 # Los vídeos de Instagram son verticales. En el móvil encajan tal cual; en el
@@ -68,22 +68,25 @@ fi
 # ninguno es de los que usa Nosotros, que se queda con el local y el equipo. Este
 # orden es el del móvil. Para cambiar uno, se cambia aquí y se mira su hoja de
 # fotogramas: ffmpeg -i VIDEO -vf "fps=1,scale=144:256,tile=10x3" -frames:v 1 hoja.png
+#
+# Eran diez hasta el 2026-11-13. Salieron el tataki, el soft shell crab y la
+# torrija, que dejaron la carta con el PDF oficial del 2026-11-04: el restaurante
+# vio el tataki en la portada y avisó de que ya no está. No se sustituyeron por
+# otros planos sin que Mario los vea; si se añaden, que no sean las gyozas, que ya
+# no se emplatan así (menos salsa).
 TRAMOS="enoki      cocina_fideua__DeWktOvBJNA-1                  9
 ceviche    cocina_ceviche-de-corvina__DcgIrkstdQL-1      18
 fideua     cocina_fideua__DeWktOvBJNA-1                  1
-tataki     cocina_tataki-de-atun__DZ987NPtikY-1          15
 dumpling   cocina_dumpling-de-chipirones__DdoN2T5Nb-S-1  2
 gilda      cocina_gilda-de-pastrami__DbYCDxWtBLV-1       16
 tartar     cocina_steak-tartar__DON_GGvDVgb-1            16
-softshell  cocina_soft-shell-crab__DZHzLGctasW-1         13.5
-torrija    cocina_torrija__DWBt71gDBL--1                 8
 tarta      plato_tarta-de-queso__DQ9JHdvDbSv-1           10"
 
 # Las columnas del ordenador, de izquierda a derecha, y cuánto se adelanta cada
 # una. Que no coincidan dos planos del mismo plato a la vez (la fideuá y su enoki
 # van en columnas distintas y a distinta altura del bucle).
-COL_1="enoki tataki tartar torrija"
-COL_2="ceviche gilda softshell"
+COL_1="enoki tartar"
+COL_2="ceviche gilda"
 COL_3="dumpling tarta fideua"
 DESFASE_2=1
 DESFASE_3=2

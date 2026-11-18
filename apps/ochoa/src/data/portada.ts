@@ -1,13 +1,17 @@
-// La portada de Ochoa: ocho fotos de su Instagram. Viven aquí y no en el
+// La portada de Ochoa: siete fotos de su Instagram. Viven aquí y no en el
 // componente para que la versión en inglés no se quede con otra serie.
 //
 // La serie es la tercera ronda del probador (2026-10-29). La de antes —seis fotos
 // de la casa con gente, puesta el 2026-10-27— no le convencía a Mario,
-// «principalmente por las fotos». Estas ocho no salen en el resto de la home: dos
-// brindis, una clienta, un camarero con un brioche, un vermú con su gilda, una
-// caña tirándose, el rótulo del cristal y vino en la mesa. Salen de la fototeca
-// (docs/fotografia.md §La fototeca) tal cual, a su tamaño de Instagram. El orden
-// es el de la serie.
+// «principalmente por las fotos». Estas siete no salen en el resto de la home: dos
+// brindis, una clienta, un vermú con su gilda, una caña tirándose, el rótulo del
+// cristal y vino en la mesa. Salen de la fototeca (docs/fotografia.md §La
+// fototeca) tal cual, a su tamaño de Instagram. El orden es el de la serie.
+//
+// Eran ocho hasta el 2026-11-13: la tercera, un camarero con un brioche, se quitó
+// porque era el brioche de mollejas y ya no está en carta (lo vio el restaurante;
+// los brioches de hoy son el de pintxo donostiarra y el de sobrasada y miel).
+// Si llega una foto de uno de esos, puede volver a ese hueco.
 //
 // Se enseñan distinto según la pantalla (docs/ochoa-inicio-vivo.md):
 //  · en el móvil, una a una a pantalla completa, con el telón. La foto llena el
@@ -16,7 +20,6 @@
 //    nada y el encuadre no cuenta.
 import brindis from "../assets/portada/brindis.jpg";
 import clienta from "../assets/portada/clienta.jpg";
-import brioche from "../assets/portada/brioche.jpg";
 import vermuGilda from "../assets/portada/vermu-gilda.jpg";
 import brindisBarra from "../assets/portada/brindis-barra.jpg";
 import cana from "../assets/portada/cana.jpg";
@@ -54,14 +57,6 @@ export const portada: {
     alt: {
       es: "Una clienta bebiendo en una mesa de mármol",
       en: "A customer drinking at a marble table",
-    },
-  },
-  {
-    src: brioche,
-    encuadre: "50% 50%",
-    alt: {
-      es: "Un camarero con el delantal de la casa y un brioche en el plato",
-      en: "A waiter in the house apron, with a brioche on the plate",
     },
   },
   {

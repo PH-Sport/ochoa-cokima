@@ -3,13 +3,13 @@
 import { Image } from "astro:assets";
 import OpenState from "@tombo/ui/OpenState.astro";
 import { RESTAURANT } from "../site.ts";
-// La portada son ocho fotos de Instagram, y se enseñan distinto en cada pantalla
+// La portada son siete fotos de Instagram, y se enseñan distinto en cada pantalla
 // (2026-10-29, tercera ronda del probador; el porqué entero en
 // docs/ochoa-inicio-vivo.md):
 //  · En el móvil, el telón que Mario eligió el 2026-10-27 entre cinco bocetos:
 //    una foto a pantalla completa y la siguiente que entra de derecha a izquierda
-//    sobre ella. Siete fotos: el rótulo del cristal no cabe en vertical.
-//  · En el ordenador, «la tira»: las ocho en fila, enteras, pasando despacio de
+//    sobre ella. Seis fotos: el rótulo del cristal no cabe en vertical.
+//  · En el ordenador, «la tira»: las siete en fila, enteras, pasando despacio de
 //    derecha a izquierda. Con el telón, la portada era una franja de 1440×682 y
 //    de cada foto de Instagram —verticales o cuadradas— se veía entre el 36 y el
 //    47% de su alto, estirada al doble en una pantalla de alta densidad.
@@ -291,7 +291,7 @@ const estilo = (f: (typeof portada)[number]) => (f.encuadre ? `--encuadre: ${f.e
     };
   }
 
-  /* LA TIRA, en el ordenador. Las ocho fotos en fila, cada una entera al alto de
+  /* LA TIRA, en el ordenador. Las siete fotos en fila, cada una entera al alto de
    * la capa del paralaje y con su proporción —eso lo hace el CSS: la anchura sale
    * del alto y del `width`/`height` de cada foto—, y la serie dos veces seguida
    * para que la vuelta no se note: al recorrer exactamente una serie, la copia

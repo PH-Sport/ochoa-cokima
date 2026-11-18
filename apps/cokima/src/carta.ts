@@ -9,7 +9,8 @@ export const precio = (p: number) => (Number.isInteger(p) ? p + " €" : p.toFix
 // Los platos con foto en la fototeca, y la frase que la casa ha publicado de cada uno.
 export const FOTOS: Record<string, { img: string; w: number; h: number; alt: string; frase: string | null }> = {
   "compartir-01": { img: "croquetas", w: 825, h: 1100, alt: "Una croqueta con su velo de papada", frase: "Han pasado por casi todas nuestras cartas. Y siguen aquí" },
-  "compartir-04": { img: "gyozas", w: 1100, h: 1100, alt: "Gyozas de langostino con salsa de chorizo", frase: "Compartir es vivir." },
+  // Las gyozas no llevan foto desde el 2026-11-13: la que había es de cuando se emplataban con más salsa, y el
+  // restaurante avisó de que ya no salen así. gyozas.jpg sigue en public/images, sin usar.
   "compartir-06": { img: "dumpling", w: 880, h: 1100, alt: "Dumpling de chipirones", frase: "Madrid cabe en un dumpling." },
   "compartir-10": { img: "tacos", w: 1100, h: 1100, alt: "Una mano sostiene un taco de gambón", frase: null },
   "terminar-02": { img: "katsu", w: 880, h: 1100, alt: "Katsu sando con patatas", frase: "Hay dos tipos de clientes en Cokima." },
@@ -23,4 +24,6 @@ export const PARTES = [["compartir", "Compartir es vivir"], ["terminar", "Para t
 // debajo, los demás. Mario la eligió entre tres maneras el 2026-11-02, «con el resto de platos abajo»;
 // hasta que vio el plato de la foto repetido en la lista, que sobraba (docs/cokima-el-rediseno.md §3).
 // Los postres abren con la tarta desde el 2026-11-04: la torrija salió de la carta y su foto bajo otro nombre sería mentira.
-export const PORTADILLAS: Record<(typeof PARTES)[number][0], string> = { compartir: "compartir-04", terminar: "terminar-04", postres: "postres-01" };
+// Compartir abre con las croquetas desde el 2026-11-13, por la foto de las gyozas: es el primer plato de la parte y tiene
+// foto y frase propias.
+export const PORTADILLAS: Record<(typeof PARTES)[number][0], string> = { compartir: "compartir-01", terminar: "terminar-04", postres: "postres-01" };

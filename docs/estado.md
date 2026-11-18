@@ -25,6 +25,32 @@ el logo. Medido sobre el build; **la entrada en marcha no se vio** (panel oculto
 legales y el «Cokima» del mapa de Visítanos siguen en texto, porque no se pidieron. El cómo y lo medido, en
 `cokima-el-rediseno.md` §3, «El logo».
 
+**2026-11-13: lo que el restaurante vio en las previews, y lo que se quitó.** Lorena y Alberto, del restaurante,
+revisaron las dos webs y Mario trajo sus mensajes. Su criterio, el mismo de él: *«fotos que veáis que no
+corresponden, las quito»*. Hecho en las dos casas:
+
+- **Ochoa, portada:** fuera la foto del camarero con el brioche, que es el de mollejas y ya no está (los brioches
+  de hoy son el de pintxo donostiarra y el de sobrasada y miel). La serie pasa de ocho a siete; en el móvil, seis.
+- **Ochoa, «Los que destacan»:** el bikini de lacón se queda sin foto, porque la que había es de una versión
+  anterior. En las previews su ficha enseña la rejilla guía. **Lorena ofreció mandar una actual**, y va a dar a
+  Mario acceso a su Drive con el material.
+- **Cokima, vídeo de portada:** salen los planos del tataki —el que vio Lorena—, el soft shell crab y la torrija,
+  que dejaron la carta con el PDF oficial del 2026-11-04. Quedan siete, 21 s en el móvil y columnas de 6, 6 y 9 s
+  en el ordenador. No se sustituyeron por planos nuevos que Mario no haya visto.
+- **Cokima, La carta:** las gyozas ya no se emplatan así, con tanta salsa, y su foto deja de abrir «Compartir es
+  vivir»; abre con las croquetas, el primer plato de la parte, con su foto y su frase.
+
+Lo demás que pedían en la carta de Cokima —la torrija pasa a panna cotta, sin tataki ni el cangrejo (el soft
+shell crab)— **ya estaba** desde el PDF oficial del 2026-11-04. El PDF que mandó Alberto, *Cokima 2026.pdf*, de dos
+páginas, se da por el mismo, sin comparar; Alberto avisa de que en diciembre cambiarán más platos.
+
+**Abierto, espera a Mario:** la foto del tataki en el panel del producto del Inicio («más cuchillo, más producto»),
+que según Lorena *«tampoco sería la idónea»*. Quitarla rompe la frase de tres partes del panel, así que hace falta
+otra foto. Medido sobre el build: la portada de Ochoa con siete fotos y la tira del ordenador más ancha que la
+pantalla hasta 3440 px; la carta de Cokima a 375 con las croquetas arriba y las gyozas en la lista, y los ocho
+archivos del vídeo nuevo servidos con su duración. **El vídeo no se vio reproducirse**: el navegador estaba en
+segundo plano. Sin mirar en un iPhone.
+
 **Ochoa, 2026-11-04: sus vídeos de Instagram ya están en la fototeca, sin usar en la web.** Mario vio
 que Ochoa no llevaba ninguno y preguntó por qué: no se habían bajado nunca, porque su recogida del 26 de
 octubre se los saltaba. Son 31, desde 2024. **Falta que Mario diga dónde van.** La fototeca no viaja por

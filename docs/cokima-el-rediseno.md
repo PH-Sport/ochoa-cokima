@@ -1084,8 +1084,11 @@ preguntárselos: se quedan así hasta que el restaurante los dé.
   contempló.
 - **La página inglesa cruzada:** si esa carta está impresa, el restaurante debería saberlo.
 - **Quién hereda «Imprescindible»**, si alguien, y **qué foto abre Postres** cuando haya panna cotta.
-- **El vídeo de portada** sigue con planos del tataki, la torrija y el soft shell crab (`scripts/video-entrada.sh`), tres
-  platos que ya no están en carta. No se ha tocado.
+- ~~**El vídeo de portada** sigue con planos del tataki, la torrija y el soft shell crab~~ **Resuelto el 2026-11-13:** el
+  restaurante vio el tataki en la portada y avisó. Salieron los tres planos y quedan siete, sin sustituir por otros que
+  Mario no haya visto (`scripts/video-entrada.sh`). Ese día salió también la foto de las gyozas de La carta (ya no se
+  emplatan con tanta salsa) y Compartir abre con las croquetas. **Sigue abierta** la foto del tataki en el panel del
+  producto del Inicio («más cuchillo, más producto»), que el restaurante dice que no es la idónea (`estado.md` §0).
 
 **Trampa de lectura:** los iconos del PDF no son texto, y la extracción solo da los nombres y los precios. Se leyeron en
 recortes ampliados; dos filas quedaban cortadas por el borde del recorte y hubo que mirar la página entera. **Los nombres

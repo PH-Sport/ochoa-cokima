@@ -1,6 +1,6 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-11-04 · Ochoa tiene foto en sus diez destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las de Brasa (dieciséis desde el 2026-11-02). Los vídeos de Instagram de Ochoa están en la fototeca desde el 2026-11-04, sin usar en la web (§La fototeca)
+> **Estado: vivo** · revisado 2026-11-13 · Ochoa tiene foto en nueve de sus diez destacados (el bikini de lacón espera la foto nueva), una portada de siete fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las de Brasa (dieciséis desde el 2026-11-02). Los vídeos de Instagram de Ochoa están en la fototeca desde el 2026-11-04, sin usar en la web (§La fototeca)
 
 ## Estado
 
@@ -15,7 +15,7 @@ tarta, torrija y vacio—, reducidas para el boceto y sin pasar por la optimizac
 quedó apuntado de qué publicación sale cada una**, y ya no coinciden con sus originales. Desde el
 2026-11-02 hay una dieciséis, `sala-entera.jpg`, que sí lo tiene: es *Cokima 5*, la sala entera de
 las seis del local de Mario (abajo), en sRGB y a 1400 px, en la muestra de Nosotros del Inicio. Y
-tres de producto de @cokimamadrid para el panel del producto del Inicio, a 1100 px y en sRGB:
+**Desde el 2026-11-13, `gyozas.jpg` tampoco se usa**: el restaurante avisó de que las gyozas ya no se emplatan así, con tanta salsa, y La carta abre «Compartir es vivir» con las croquetas (`apps/cokima/src/carta.ts`). Y tres de producto de @cokimamadrid para el panel del producto del Inicio, a 1100 px y en sRGB:
 `producto-atun.jpg` (`producto_atun-rojo__Da0Z4XRNpRS-1`), que es la de fondo del panel,
 `producto-tomates.jpg` (`producto_tomates__DYR0DNYjTQL-1`) y, desde el 2026-11-03, la fila de
 tres es `producto-atun-marcado.jpg` (`producto_atun-marcado__DZZ8pJvDU6c-2`),
@@ -66,7 +66,8 @@ como candidata en el catálogo y espera a Mario. **Desde el 2026-11-02 está en 
 En `para-el-video/` (en su iCloud y en `fototeca/icloud/cokima/`) hay cinco elegidas para el vídeo de la entrada,
 **todas sin manos a la vista**: los generadores de vídeo deforman dedos y en un plano cerrado de
 comida eso canta. **Desde el 2026-11-03 no hacen falta:** la portada ya no lleva un vídeo hecho
-con IA sino diez planos de los vídeos de Instagram de Cokima, y en vídeo real las manos y los
+con IA sino diez planos de los vídeos de Instagram de Cokima —siete desde el 2026-11-13, cuando salieron el tataki,
+el soft shell crab y la torrija, que ya no están en carta—, y en vídeo real las manos y los
 guantes del pase sí valen. Los planos, con su vídeo y su segundo, están en
 `scripts/video-entrada.sh`; el porqué, en `cokima-el-rediseno.md` §3. Las ocho fotos que se
 prepararon para hacerlo con Seedance, recortadas a 16:9, se quedaron en `fototeca/para-seedance/`.
@@ -107,12 +108,11 @@ mayor resolución disponible.
 | Destino | Qué buscamos |
 |---|---|
 | `apps/cokima/src/assets/hero.jpg` | ✅ **`DepAPTwNTvJ-1`, puesta el 2026-10-26**: la sartén en llamas en el fogón (cuadrada, 1440), con su copia a 1200 en `public/images/` para las redes. Sustituye a la burrata de 2021. Es la misma foto que el pase de «la casa», pero **en pantalla no se repite: la portada con foto (`Hero.astro`) quedó huérfana al entrar el rediseño en `preview` el 2026-10-26**, y la cabecera es el vídeo. Esta foto se veía solo al compartir el enlace; **el 2026-11-02 su copia de `public/images/` fue la foto del primer panel del Inicio de Brasa**, «Cokima», hasta que ese mismo día el panel se fundió con «Ven», que lleva la de la puerta. **Desde el 2026-11-03 tampoco es la imagen al compartir el enlace** (lo es `compartir.jpg`, §Nota técnica): se queda como foto del local para los buscadores. Mientras la portada vieja estuvo puesta, a 390px el tramo rojo del titular caía sobre el fuego y se leía mal; con la burrata pasaba lo mismo o peor (titular blanco sobre la burrata blanca), y otras dos fotos oscuras tampoco lo resolvían. Era el velo de esa portada, no la foto. **Si `Hero.astro` vuelve a usarse, revisar eso antes.** |
-| `apps/ochoa/src/assets/portada/*.jpg` | ✅ **Desde el 2026-10-29, ocho fotos de Instagram que no salen en el resto de la home** (la serie, sus encuadres y sus textos, en `src/data/portada.ts`; en el móvil, telón; en el ordenador, la tira, `ochoa-inicio-vivo.md`). En orden: `brindis.jpg` (`DMsOEbToHc4-1`, brindis con vino y caña), `clienta.jpg` (`DPeYU5ziIo6-2`), `brioche.jpg` (`C66BbqHtC1M-1`, el camarero con un brioche; la única a 2060 px), `vermu-gilda.jpg` (`DHQbxoKiBLd-1`), `brindis-barra.jpg` (`DPyg6SPCGH5-3`, caña y vermú), `cana.jpg` (`DLAgINkIMFS-1`, tirando una caña), `cristal.jpg` (`C2Pz8szNUrq-10`, el rótulo del cristal) y `vino.jpg` (`DNF9_F0IzXV-1`). Copiadas de la fototeca tal cual, a su tamaño de Instagram. Mario las eligió en la tercera ronda del probador: la serie anterior no le convencía, *«principalmente por las fotos»*. Fuera de la elección, con su motivo: las de Navidad, que caducan; la de la camiseta del Madrid, que es de un equipo; y la del guante de Spiderman, que es más de Cokima. **Las seis de antes salen de la portada y sus archivos se quedan sin uso, sin borrar:** `sala.jpg` (`DHdb1_hCOls-1`), `barra-clientas.jpg` (`DQe2dPqiJwV-1`), `cocinero.jpg` (`DQB1FAiCKup-1`), `barra-rotulos.jpg` (`DV_ZtJHCPRQ-1`), `sirviendo.jpg` (`DPeYU5ziIo6-1`) y `rotulo-exterior.jpg` (`DPyg6SPCGH5-1`); fueron la portada del 2026-10-27 al 29. La fachada (`hero.jpg`, `LosOchoa-5`) tampoco se ve en la portada desde el 2026-10-27, y **desde el 2026-10-30 ya no es la imagen al compartir el enlace**: se queda como foto del local para los buscadores (§Nota técnica). El archivo de `src/assets/hero.jpg` sigue sin uso y sin borrar. |
+| `apps/ochoa/src/assets/portada/*.jpg` | ✅ **Desde el 2026-10-29, ocho fotos de Instagram que no salen en el resto de la home; siete desde el 2026-11-13**, cuando salió `brioche.jpg`: es el brioche de mollejas, que ya no está en carta (lo vio el restaurante; los de hoy son el de pintxo donostiarra y el de sobrasada y miel). El archivo se queda sin uso, sin borrar (la serie, sus encuadres y sus textos, en `src/data/portada.ts`; en el móvil, telón; en el ordenador, la tira, `ochoa-inicio-vivo.md`). En orden: `brindis.jpg` (`DMsOEbToHc4-1`, brindis con vino y caña), `clienta.jpg` (`DPeYU5ziIo6-2`), `brioche.jpg` (`C66BbqHtC1M-1`, el camarero con un brioche; la única a 2060 px), `vermu-gilda.jpg` (`DHQbxoKiBLd-1`), `brindis-barra.jpg` (`DPyg6SPCGH5-3`, caña y vermú), `cana.jpg` (`DLAgINkIMFS-1`, tirando una caña), `cristal.jpg` (`C2Pz8szNUrq-10`, el rótulo del cristal) y `vino.jpg` (`DNF9_F0IzXV-1`). Copiadas de la fototeca tal cual, a su tamaño de Instagram. Mario las eligió en la tercera ronda del probador: la serie anterior no le convencía, *«principalmente por las fotos»*. Fuera de la elección, con su motivo: las de Navidad, que caducan; la de la camiseta del Madrid, que es de un equipo; y la del guante de Spiderman, que es más de Cokima. **Las seis de antes salen de la portada y sus archivos se quedan sin uso, sin borrar:** `sala.jpg` (`DHdb1_hCOls-1`), `barra-clientas.jpg` (`DQe2dPqiJwV-1`), `cocinero.jpg` (`DQB1FAiCKup-1`), `barra-rotulos.jpg` (`DV_ZtJHCPRQ-1`), `sirviendo.jpg` (`DPeYU5ziIo6-1`) y `rotulo-exterior.jpg` (`DPyg6SPCGH5-1`); fueron la portada del 2026-10-27 al 29. La fachada (`hero.jpg`, `LosOchoa-5`) tampoco se ve en la portada desde el 2026-10-27, y **desde el 2026-10-30 ya no es la imagen al compartir el enlace**: se queda como foto del local para los buscadores (§Nota técnica). El archivo de `src/assets/hero.jpg` sigue sin uso y sin borrar. |
 
 **El encuadre de la portada de Ochoa solo cuenta en el móvil.** Ahí la portada llena la pantalla
 y cada foto se recorta por los lados, así que lleva su `encuadre` (`object-position`) en
-`portada.ts`, hacia lo que cuenta y no al centro: `brindis` y `clienta` `42% 50%`, `brioche`
-`50% 50%`, `vermu-gilda` `95% 50%`, `brindis-barra` `46% 50%`, `cana` `15% 50%` y `vino`
+`portada.ts`, hacia lo que cuenta y no al centro: `brindis` y `clienta` `42% 50%`, `vermu-gilda` `95% 50%`, `brindis-barra` `46% 50%`, `cana` `15% 50%` y `vino`
 `100% 50%`. **El rótulo del cristal no sale en el móvil:** en vertical se leía «S OCHO». **La del
 vino y la de la caña llevan, desde el 2026-10-29, un encuadre que se calcula para cada pantalla**:
 dicen qué tiene que verse (`foco`) y qué letrero no puede salir partido (`letrero`) —las letras
@@ -155,7 +155,7 @@ copiar de ahí.
 | Ochoa | Ración de croquetas de jamón Joselito | ✅ `DLua8GqoiNn-1` (jul. 2025): la huevera, a 1440. Sustituye a `LosOchoa-2`, de 2021 y a 1000 |
 | Ochoa | Ensaladilla rusa casera | ✅ `DMSamLoo0l1-1` (jul. 2025): se ven el atún, el polvo de jamón y la yema |
 | Ochoa | Brioche de sobrasada, Brie y miel | ✅ `Degkd45I31h-1` (oct. 2026), desde el 2026-10-30 como las tres siguientes: en la mano, con la caña detrás; el texto lo nombra. Vertical (1440 × 1920), y en la ficha apaisada del móvil el brioche sigue entero |
-| Ochoa | Bikini de lacón | ✅ `DEr4EREtm0N-1` (ene. 2025): abierto con las dos manos y el queso estirándose, sobre la cortina roja. De las cuatro que hay, la que aguanta el recorte apaisado del móvil: en `DAQdoMDtO9h-1` se perdía la parte de arriba |
+| Ochoa | Bikini de lacón | ⏳ **Sin foto desde el 2026-11-13: la que había es de una versión anterior del bikini**, y el restaurante ofreció una actual (llegará por su Drive). En las previews la ficha enseña su rejilla guía; en producción, nombre y precio. La que había, sin uso y sin borrar: `DEr4EREtm0N-1` (ene. 2025): abierto con las dos manos y el queso estirándose, sobre la cortina roja. De las cuatro que hay, la que aguanta el recorte apaisado del móvil: en `DAQdoMDtO9h-1` se perdía la parte de arriba |
 | Ochoa | Pulpo a la plancha | ✅ `Dd02u7EIpSm-1` (sep. 2026): sobre las revolconas, con la cortina detrás; el texto cuenta que vuelve a la carta |
 | Ochoa | Tarta de queso BRUTAL con helado de Idiazábal | ✅ `DeKBZtIoDva-1` (oct. 2026): la porción con su bola de helado; el texto dice que tiene «su sitio asegurado» en la carta |
 

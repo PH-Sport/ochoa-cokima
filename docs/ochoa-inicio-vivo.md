@@ -194,7 +194,7 @@ home; la serie, sus encuadres y por qué está cada una, en `fotografia.md`.
   «reducir movimiento» se queda quieta. Sin indicador. El titular, el velo y el estado de apertura
   siguen donde estaban.
 
-Las ocho fotos son los mismos elementos en las dos pantallas: el CSS las apila para el telón o las
+Las siete fotos —ocho hasta el 2026-11-13, cuando salió la del brioche de mollejas, que ya no está en carta— son los mismos elementos en las dos pantallas: el CSS las apila para el telón o las
 pone en fila para la tira, y la copia de la serie la añade el script. Sin JavaScript, en el
 ordenador queda la fila quieta.
 
