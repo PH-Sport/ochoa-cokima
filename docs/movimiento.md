@@ -1,6 +1,6 @@
 # Movimiento
 
-> **Estado: vivo** · revisado 2026-11-04
+> **Estado: vivo** · revisado 2026-11-18
 
 Pocas animaciones, concretas, y todas saliendo de los mismos cinco valores. **No hay un solo
 milisegundo suelto en los componentes**: si algo se mueve, su duración y su curva vienen de
@@ -443,7 +443,10 @@ más lejos; Ochoa es una tasca y es seca.
     casan— y no cambian de golpe: se pintan en 1,7 s y se borran en 1,4.
 
     **Y en Cokima, los vídeos de la portada (2026-11-03).** En el ordenador son tres columnas que
-    cortan a 1 s una de otra. El desfase va dentro de cada archivo, pero son bucles de 12, 9 y 9 s,
+    cortan a 1 s una de otra. El desfase va dentro de cada archivo, pero son bucles de 6, 6 y 9 s
+    (12, 9 y 9 hasta el 2026-11-13). Por eso mismo, dos planos que no deben verse a la vez no pueden ir
+    en columnas distintas: al deslizarse los bucles, cada plano acaba pasando junto a todos los del
+    vecino (la fideuá y su enoki, juntos en una columna desde el 2026-11-18). Y son bucles,
     cada uno con el reloj de su `<video>`, y cada vuelta o cada parón puede separarlos. Arrancan
     juntas, cuando las tres pueden reproducirse, y `brasa.js` toma la primera como reloj, con sus
     vueltas contadas: cada segundo, la columna que se haya ido más de 0,3 s de donde le toca vuelve
@@ -573,7 +576,7 @@ más lejos; Ochoa es una tasca y es seca.
 | Botones de Brasa (Cokima) | Un neón: el de borde es un tubo apagado; con el ratón encima arranca a trompicones y se queda encendido hasta que el ratón se va. Al pulsar, el botón se hunde un poco y salta un puñado de chispas, sin tocar el tubo. En el móvil, el toque lo enciende y se apaga solo | `opacity` del tubo (un pseudo con su sombra fija), `@keyframes encender`, `--dur-encender`, `ease-in-out`; al pulsar, `scale(.965)` con `--dur-out`, al menos `--dur-out`; las chispas, en el lienzo de delante; en el móvil, `--dur-neon-toque`; encendido sin arranque con «reducir movimiento» |
 | Nosotros de Brasa (Cokima), el collage | Automático: dos ampliadas, cuatro tarjetas a la vista y una fuera; cada 3 s más o menos se mueve un carril (columna en el móvil, fila en el ordenador): o entra la de fuera empujando a las demás, o la pequeña crece y la ampliada se encoge. Suenan las ampliadas. Al tocar una, solo esa ampliada y las cinco a la vista; a los 6 s sin hacer nada, vuelve (excepción de la regla 6). El botón redondo trae la tarjeta al primer plano sobre todo el collage | `collage.js`: ventana con `clip-path` y vídeo con `transform` en el mismo fotograma (reglas 2 y 27), con `--dur-cambio`, `--pausas-collage`, `--espera-vuelta` y, al abrir el bloque, `--dur-viaje`; todo con `--ease-viaje`. Su foto fija debajo (regla 31). Nada con la sección cerrada, la zona fuera de la vista o la pestaña oculta; «Pausar» lo para. Con «reducir movimiento», una ampliada y las cinco a la vista, sin animar, sin que suene ni se descargue nada hasta pulsar «Reproducir» |
 | Entrada de Brasa (Cokima) | La primera vez de la sesión, al llegar al Inicio: sube una bocanada de chispas desde un fondo vacío, «Cokima» se destapa de abajo arriba al rojo y se enfría hasta el hueso; «Kitchen Madness», los botones y el vídeo entran detrás. Unos 1,5 s | `clip-path` y `transform` del nombre, `opacity` de una copia en degradado de brasa (`--calor`) y de lo demás, desde `brasa.js`; `--dur-aviva`, `--dur-enfria`, `--dur-in`, `--ease`, `--ease-viaje`; la decide el `<head>` antes del primer pintado; tocar, desplazar o una tecla la terminan; sin entrada con «reducir movimiento» (regla 5) |
-| Vídeo de la portada de Brasa (Cokima) | En el móvil, un vertical de diez planos de 3 s; en el ordenador apaisado, tres verticales en columnas que cortan a 1 s una de otra | el vídeo, horneado (`scripts/video-entrada.sh`); entra con la entrada (`opacity`, `--dur-in`); se pausa fuera de la vista y con la pestaña oculta (regla 6); no se pide con «reducir movimiento» ni con ahorro de datos (regla 20); las columnas, con reloj común (regla 25) |
+| Vídeo de la portada de Brasa (Cokima) | En el móvil, un vertical de siete planos de 3 s; en el ordenador apaisado, tres verticales en columnas que cortan a 1 s una de otra | el vídeo, horneado (`scripts/video-entrada.sh`); entra con la entrada (`opacity`, `--dur-in`); se pausa fuera de la vista y con la pestaña oculta (regla 6); no se pide con «reducir movimiento» ni con ahorro de datos (regla 20); las columnas, con reloj común (regla 25) |
 | Cambio de sección de Brasa (Cokima) | El fundido corto de siempre y, encima, una bocanada de chispas que sube desde abajo por toda la pantalla, bastante más densa que el fondo | la sección, `opacity` con `--dur-out` y `--dur-in`; las chispas, en el lienzo de delante (una por cada 6.000 px², entre 70 y 220); sin chispas con «reducir movimiento» |
 | Línea de progreso de Brasa (Cokima) | Al pie de la barra de arriba, se llena de izquierda a derecha según se baja. Sustituye a la barra del navegador. No se mueve sola: la mueve quien baja, así que no le aplica la regla 6 y sigue igual con «reducir movimiento» | `transform: scaleX`, sin transición, desde `brasa.js`; se quita con `opacity` y `--dur-out` si se abre el desplegable |
 | La mecha de Visítanos (Cokima) | Al abrir la sección, cuatro mechas arden por las calles reales desde los metros más cercanos, sueltan chispas y llegan a la vez a Cokima; entonces la luz se abre por el barrio y aparece su nombre. Una vez por cada vez que se abre y solo a la vista: si se baja hasta perderla, se pone el final (regla 6). Con «reducir movimiento», el final | lienzo 2D, `--dur-mecha`, `--dur-mecha-barrio`; el nombre, `opacity`, `--dur-in` |

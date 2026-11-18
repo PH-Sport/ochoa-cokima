@@ -79,7 +79,9 @@ corresponden, las quito»*. Hecho en las dos casas:
   Mario acceso a su Drive con el material.
 - **Cokima, vídeo de portada:** salen los planos del tataki —el que vio Lorena—, el soft shell crab y la torrija,
   que dejaron la carta con el PDF oficial del 2026-11-04. Quedan siete, 21 s en el móvil y columnas de 6, 6 y 9 s
-  en el ordenador. No se sustituyeron por planos nuevos que Mario no haya visto.
+  en el ordenador. No se sustituyeron por planos nuevos que Mario no haya visto. **Retocado el 2026-11-18**, en
+  la revisión antes de subir: con ese reparto la fideuá y su enoki salían a la vez 3 s de cada 18, en columnas
+  vecinas, y ahora van en la misma (`cokima-el-rediseno.md` §3). Los mismos siete planos; el del móvil no cambia.
 - **Cokima, La carta:** las gyozas ya no se emplatan así, con tanta salsa, y su foto deja de abrir «Compartir es
   vivir»; abre con las croquetas, el primer plato de la parte, con su foto y su frase.
 

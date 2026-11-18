@@ -83,11 +83,17 @@ tartar     cocina_steak-tartar__DON_GGvDVgb-1            16
 tarta      plato_tarta-de-queso__DQ9JHdvDbSv-1           10"
 
 # Las columnas del ordenador, de izquierda a derecha, y cuánto se adelanta cada
-# una. Que no coincidan dos planos del mismo plato a la vez (la fideuá y su enoki
-# van en columnas distintas y a distinta altura del bucle).
-COL_1="enoki tartar"
+# una. Que no coincidan dos planos del mismo plato a la vez: la fideuá y su enoki
+# van EN LA MISMA COLUMNA (2026-11-18). En columnas distintas acaban coincidiendo
+# siempre, pongan como se pongan: los bucles miden distinto (6 y 9 s), y al
+# deslizarse uno sobre otro cada plano pasa por delante de todos los del vecino.
+# Probadas todas las maneras de repartir los siete planos: en columnas distintas,
+# 3 s juntos de cada 18 como poco; en la misma, nunca. Con diez planos pasaba
+# igual, 3 s de cada 36. En un bucle de tres, la tarta los separa en un sentido y
+# en el otro van seguidos: es la misma cocina seis segundos, no dos a la vez.
+COL_1="dumpling tartar"
 COL_2="ceviche gilda"
-COL_3="dumpling tarta fideua"
+COL_3="enoki tarta fideua"
 DESFASE_2=1
 DESFASE_3=2
 

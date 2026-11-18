@@ -714,7 +714,10 @@ son mucho mejores»*. De la maqueta de la portada con ellos dijo *«me parece to
   empieza 1 s dentro de su primer plano, la tercera 2 s) y, como son bucles de 12, 9 y 9 s, cada una
   con su reloj, `brasa.js` las arranca juntas y cada segundo recoloca la que se separe más de 0,3 s
   de la primera. Es la regla 25 de `movimiento.md`, que ya decía que un desfase sin reloj común no
-  dura.
+  dura. **Desde el 2026-11-13 son siete planos**, 21 s en el móvil y bucles de 6, 6 y 9 s, y **desde el
+  2026-11-18 la fideuá y su enoki van en la misma columna**: en columnas distintas, con bucles de distinta
+  duración, acaban coincidiendo siempre (3 s de cada 18 con siete planos, 3 de cada 36 con diez; probados
+  todos los repartos). El porqué entero, en `scripts/video-entrada.sh`.
 - **El oscurecido es más suave que el del vídeo de IA.** Aquel grado se calibró para un material claro
   y plano, de catálogo, y a estos los dejaba casi negros y sin color: se comparó en una hoja, con el
   velo de la portada encima, y el suave es el de la maqueta.
