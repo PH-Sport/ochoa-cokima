@@ -27,9 +27,17 @@ interface Props {
 const { title, description, locale, altPath, restaurant, ogImage, schemaImage = ogImage, noindex = false } = Astro.props;
 const site = Astro.site ?? new URL("http://localhost:4321");
 const canonical = new URL(Astro.url.pathname, site);
-const alternate = altPath ? new URL(altPath, site) : null;
+// La ruta del otro idioma, con la misma forma que la canónica de esta página: con barra al final o sin ella,
+// la que use la casa. Ochoa la escribe sin barra («/en/menu») y la publica con ella («/en/menu/»), y un
+// `hreflang` que no apunta a la canónica exacta de la otra página es una pareja que Google puede no
+// reconocer (2026-11-18). Las dos casas usan la misma forma en todas sus páginas, así que la de esta vale
+// para la otra; menos en la portada, que es «/» con barra o sin ella, y ahí se deja la ruta como viene.
+const conBarra = canonical.pathname.endsWith("/");
+const comoLaCanonica = (ruta: string) =>
+  canonical.pathname === "/" || ruta === "/" ? ruta : conBarra ? ruta.replace(/\/?$/, "/") : ruta.replace(/\/$/, "");
+const alternate = altPath ? new URL(comoLaCanonica(altPath), site) : null;
 const altLocale = locale === "es" ? "en" : "es";
-const xDefault = altPath ? new URL(locale === "es" ? Astro.url.pathname : altPath, site) : null;
+const xDefault = altPath ? new URL(locale === "es" ? Astro.url.pathname : comoLaCanonica(altPath), site) : null;
 // La web del restaurante es su portada, la mire quien la mire. Hasta el 2026-11-18 era la canónica de
 // cada página, y el aviso legal declaraba que la web de Cokima era /aviso-legal: la misma ficha en
 // cada página, con una dirección distinta en cada una, es lo contrario de decirle a Google quién es.

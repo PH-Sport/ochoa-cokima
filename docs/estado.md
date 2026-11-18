@@ -60,6 +60,14 @@ y gana `twitter:card`. Medido en su build. No gana `WebSite` mientras su `site.t
 - El 301 de `grupotombo.com/cokima-kitchenmadness/`, que **sigue respondiendo 200**.
 - Search Console (§5).
 
+**2026-11-18, en la revisión antes de subir: lo que venía de antes.**
+
+- **Las parejas de idioma de Ochoa ya apuntan a la dirección exacta de la otra página.** La carta decía que
+  su versión inglesa era `/en/menu`, y la inglesa se declaraba `/en/menu/`: pasaba en todas, y Google puede
+  no reconocer una pareja así. Se arregló en `Seo.astro`, que ahora da a la ruta del otro idioma la misma
+  forma que la canónica de la página, y no en cada página de Ochoa: así no vuelve a pasar. Medido sobre el
+  build: 24 parejas, todas a una canónica real y recíprocas. Cokima no cambia (no declara ninguna).
+
 **2026-11-18: el logo de Cokima, en la portada y en la barra.** Se lo pidieron a Mario y trajo el logo del restaurante,
 que es negro y sobre el fondo de Brasa no se veía. La versión clara (letras en el hueso de los textos, la «x» en su rojo)
 se sacó de ese mismo archivo, y ocupa el sitio exacto del nombre escrito: el mismo ancho en la portada y los mismos
