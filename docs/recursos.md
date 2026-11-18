@@ -1,6 +1,6 @@
 # Recursos: identificadores, accesos y material
 
-> **Estado: vivo** · revisado 2026-11-03
+> **Estado: vivo** · revisado 2026-11-18
 
 **Lo que cuesta recuperar y no se deduce del código.** URLs, slugs, IDs de proyecto y dónde vive
 el material que entrega Mario. Todo lo de aquí está verificado; cada bloque dice cuándo y cómo.
@@ -57,6 +57,11 @@ son las ramas de prueba para ver una propuesta en la web antes de decidir (`esta
 - Las previews construyen sin `SITE_URL` y salen con `x-robots-tag: noindex`.
 - El **conector MCP de Vercel funciona** en sesiones de terminal (`list_teams` → `list_projects` →
   `list_deployments`). **El CLI `vercel` no está instalado.**
+- **Pero puede haber dos conectores de Vercel, y uno puede no ver nada.** El 2026-11-18, en el Mac,
+  el del plugin `vercel` respondía bien a `get_auth_user` y `list_teams` y devolvía **cero
+  proyectos** en `rodz-dev` (y 404 al pedir `cokima` por su ID); el otro conector de Vercel listaba
+  los 18. Si un conector dice que no hay proyectos, probar con el otro antes de creer que se han
+  borrado.
 - No sondear las previews en bucle: ver `metodo.md` §3.
 
 El reparto de proyectos, el `ignoreCommand` por app y la resolución de `SITE_URL` están en

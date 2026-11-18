@@ -11,6 +11,9 @@ export const RESTAURANT: RestaurantInfo = {
   priceRange: "€€",
   openingHours: ["Mo-Su 09:00-00:00"],
   instagram: "https://instagram.com/cokimamadrid",
+  siteName: "Cokima",
+  menuPath: "/carta",
+  reservationsPath: "/reservas",
 };
 
 export const COVER_SLUG = import.meta.env.PUBLIC_COVERMANAGER_SLUG ?? "restaurante-cokima";

@@ -17,6 +17,49 @@
 
 ## 0. Por dónde seguir
 
+**2026-11-18: el dominio de Cokima es `cokima.es`, y su SEO se repasa antes de apuntarlo.** El cliente ya
+tiene los dominios, pero no son nuevos, y Mario no quería romper nada. Mirada la zona DNS en DonDominio: de
+21 registros, solo dos son de la web; el resto es un correo @cokima.es que está activo y no se toca. Lo que
+sirve hoy el dominio es un WordPress vacío, sin direcciones antiguas que redirigir. **Todavía no se ha
+cambiado nada ni en DonDominio ni en Vercel**: el registro a registro y el orden están en `deploy.md`
+§Dominios y SEO. Falta decidir qué publica producción, porque `main` no tiene ningún despliegue que haya
+funcionado.
+
+En el mismo repaso, cuatro arreglos de SEO en el código. Medidos sobre el build con
+`SITE_URL=https://cokima.es`, en las 9 páginas:
+
+- `/en`, que solo redirige a la portada, **sale del sitemap** (8 direcciones).
+- **Las tres legales ya no declaran `hreflang`**: decían que su versión inglesa era `/en/`. Era la deuda
+  apuntada desde agosto. Se resolvió quitando `altPath` del `Seo` en el `Base.astro` de Cokima, sin el
+  `altSeoPath` de Ochoa: el `Base` de Cokima solo lo usan las legales, y no hay inglés.
+- **La ficha `Restaurant` lleva siempre la portada como `url`**, en lugar de la página en que está, más
+  `@id`, `hasMenu` (`/carta`) y `acceptsReservations` (`/reservas`).
+- **Se añade la ficha `WebSite` con el nombre «Cokima»**, que es de donde saca Google el nombre del sitio
+  en los resultados, y `og:site_name`.
+- `twitter:card` grande, para que X no enseñe la miniatura pequeña.
+
+**Toca a Ochoa también**, porque `Seo.astro` es compartido: su ficha pasa a llevar la portada como `url`
+y gana `twitter:card`. Medido en su build. No gana `WebSite` mientras su `site.ts` no dé `siteName`.
+
+**Descartado, con su porqué:**
+
+- Las **coordenadas**: no hay una fuente en el repo, y no se inventan; Google las saca de la dirección y
+  de la ficha de Maps.
+- El **`logo`** en la ficha, que **queda por decidir, y lo decide Mario**. El de la web, en hueso sobre
+  transparente, no se vería en el fondo blanco de Google; el original del restaurante, en negro
+  (`cokima-black.png`, que tiene Mario y no está en el repo), sí. Ponerlo es subir ese archivo a `public/`
+  y darle su ruta a la ficha.
+- El **icono del iPhone**: el favicon es provisional, a la espera del logo vectorial.
+- El **«sin alt» de la imagen del vídeo** era un falso positivo de la medición: Astro escribe `alt` sin
+  valor, que equivale a `alt=""`.
+
+**Lo que pesa más y no es código, de Mario:**
+
+- Que la ficha de Google Business apunte a `cokima.es` con los mismos datos que la web. La web dice
+  «lunes a domingo, 9:00 a 00:00».
+- El 301 de `grupotombo.com/cokima-kitchenmadness/`, que **sigue respondiendo 200**.
+- Search Console (§5).
+
 **2026-11-18: el logo de Cokima, en la portada y en la barra.** Se lo pidieron a Mario y trajo el logo del restaurante,
 que es negro y sobre el fondo de Brasa no se veía. La versión clara (letras en el hueso de los textos, la «x» en su rojo)
 se sacó de ese mismo archivo, y ocupa el sitio exacto del nombre escrito: el mismo ancho en la portada y los mismos
@@ -528,9 +571,7 @@ conversación con él, no una tarea que ejecutar por cuenta propia.**
 4. ~~La clave de Google Maps~~ (cerrado el 2026-09-20), validar la carta en inglés, si «fríos» y «calientes» se separan, y
    unificar «Idiazabal» / «Idiazábal». Detalle en §4.
 
-**Deuda de Cokima que sigue ahí y queda fuera de este hilo:** sus tres páginas legales arrastran
-el `hreflang` roto que se corrigió en Ochoa el 31 de julio —declaran que su versión inglesa es la
-home inglesa—. El arreglo es pasar `altSeoPath={null}` y su `Base.astro` necesita esa prop.
+**El `hreflang` roto de las tres legales de Cokima** se arregló el 2026-11-18 (§0).
 
 **Y `Hero.astro` y `Embers.astro` de Cokima quedan huérfanos a propósito.** No se borran hasta
 que el rediseño cierre.
@@ -1600,14 +1641,17 @@ sirven media ración, no tapa. Es la nomenclatura que va en la carta.
 
 - [ ] Variables de entorno y dominios por proyecto en Vercel. `SITE_URL` bloquea los
       despliegues de producción a propósito mientras no haya dominio. **Comprobado el
-      2026-10-22 en `ochoa`: cero variables y ningún dominio propio.**
+      2026-10-22 en `ochoa`: cero variables y ningún dominio propio.** Cokima ya tiene dominio,
+      `cokima.es`, con la zona mirada el 2026-11-18 y sin tocar (`deploy.md` §Dominios y SEO); su
+      proyecto sigue con cero variables y solo `cokima.vercel.app`.
 - [ ] **El plan de Vercel.** El equipo está en Hobby, que Vercel reserva a uso no comercial.
       Pasar a Pro (o el plan que se decida) antes de servir la web de un restaurante con
       dominio propio. Lo decide y lo paga Mario.
 - [ ] *Ignored Build Step* en ambos proyectos: hoy cada push reconstruye las dos webs.
       Comando en `deploy.md`.
 - [ ] Redirects 301 desde `grupotombo.com/cokima-kitchenmadness/` y
-      `/tasquita-los-ochoa/` hacia los dominios nuevos.
+      `/tasquita-los-ochoa/` hacia los dominios nuevos. La de Cokima seguía respondiendo 200 el
+      2026-11-18.
 - [ ] Alta de cada dominio en Google Search Console y enlace con su ficha de Google Business.
 
 ---

@@ -25,7 +25,9 @@ export default defineConfig({
       minimumCacheTTL: 60 * 60 * 24 * 30,
     },
   }),
-  integrations: [sitemap()],
+  // /en no es una página: redirige a la portada (src/pages/en/index.astro). En el sitemap, Search Console
+  // la marcaría como «página con redirección», y un sitemap solo debe listar lo que se quiere indexar.
+  integrations: [sitemap({ filter: (page) => !/\/en\/?$/.test(page) })],
   // Las direcciones, sin barra al final: /carta, y no /carta/, también en la canónica y en el sitemap.
   trailingSlash: "never",
   // La web es Brasa, y desde el 2026-11-04 cada sección tiene su página: /carta y /reservas vuelven a ser

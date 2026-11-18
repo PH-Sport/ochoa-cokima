@@ -1433,9 +1433,9 @@ API (`list_deployments` → `state: READY`), no martilleando la URL.
    `MenuDeck.astro`, `AllergenFilter.astro`, `data/casa.ts`, `data/dish-images.ts` y la colección
    `menu-en`, que eran de las páginas que dejaron de publicarse. `Nav.astro`, `Footer.astro` y
    `Base.astro` siguen vivos: los usan las legales.
-5. **El `hreflang` de las tres legales de Cokima** sigue roto: declaran que su versión inglesa es
-   la home inglesa. El arreglo es `altSeoPath={null}` y su `Base.astro` necesita la prop, igual
-   que se hizo en Ochoa el 31 de julio. No se ha tocado porque queda fuera de este hilo.
+5. ~~**El `hreflang` de las tres legales de Cokima**~~, que declaraba como su versión inglesa la
+   home inglesa: arreglado el 2026-11-18, quitando `altPath` del `Seo` en su `Base.astro`
+   (`estado.md` §0).
 6. **Diez de las doce fotos de plato siguen sin identificar.** Ver `fotografia.md`.
 
 ## 7. Lo que no hay que volver a discutir

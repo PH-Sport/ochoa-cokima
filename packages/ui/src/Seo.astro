@@ -30,10 +30,15 @@ const canonical = new URL(Astro.url.pathname, site);
 const alternate = altPath ? new URL(altPath, site) : null;
 const altLocale = locale === "es" ? "en" : "es";
 const xDefault = altPath ? new URL(locale === "es" ? Astro.url.pathname : altPath, site) : null;
+// La web del restaurante es su portada, la mire quien la mire. Hasta el 2026-11-18 era la canónica de
+// cada página, y el aviso legal declaraba que la web de Cokima era /aviso-legal: la misma ficha en
+// cada página, con una dirección distinta en cada una, es lo contrario de decirle a Google quién es.
+const home = new URL("/", site).href;
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Restaurant",
+  "@id": `${home}#restaurante`,
   name: restaurant.name,
   address: {
     "@type": "PostalAddress",
@@ -46,10 +51,26 @@ const jsonLd = {
   servesCuisine: restaurant.servesCuisine,
   priceRange: restaurant.priceRange,
   openingHours: restaurant.openingHours,
-  url: canonical.href,
+  url: home,
+  ...(restaurant.menuPath ? { hasMenu: new URL(restaurant.menuPath, site).href } : {}),
+  ...(restaurant.reservationsPath ? { acceptsReservations: new URL(restaurant.reservationsPath, site).href } : {}),
   ...(restaurant.instagram ? { sameAs: [restaurant.instagram] } : {}),
   ...(schemaImage ? { image: new URL(schemaImage, site).href } : {}),
 };
+
+// El nombre del sitio en los resultados de Google sale de esta ficha (developers.google.com/search/docs/
+// appearance/site-names). Solo se declara si la app da el nombre corto: inventarlo del `name` largo
+// sería proponerle a Google justo el nombre que no queremos que ponga.
+const webSiteLd = restaurant.siteName
+  ? {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": `${home}#web`,
+      name: restaurant.siteName,
+      url: home,
+      publisher: { "@id": `${home}#restaurante` },
+    }
+  : null;
 ---
 
 <title>{title}</title>
@@ -68,5 +89,9 @@ const jsonLd = {
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical.href} />
 <meta property="og:locale" content={locale === "es" ? "es_ES" : "en_GB"} />
+{restaurant.siteName && <meta property="og:site_name" content={restaurant.siteName} />}
 {ogImage && <meta property="og:image" content={new URL(ogImage, site).href} />}
+{/* Sin esto, X enseña el enlace con la miniatura pequeña aunque la imagen sea de 1200×630. */}
+{ogImage && <meta name="twitter:card" content="summary_large_image" />}
 <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+{webSiteLd && <script type="application/ld+json" set:html={JSON.stringify(webSiteLd)} />}

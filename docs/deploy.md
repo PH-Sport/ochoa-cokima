@@ -1,6 +1,6 @@
 # Despliegue en Vercel
 
-> **Estado: vivo** · revisado 2026-10-29
+> **Estado: vivo** · revisado 2026-11-18
 
 > **Estado (2026-07-31): los dos proyectos existen y despliegan.** Cada push a `preview` publica
 > en su alias fijo, que está en `estado.md` §6. Lo que sigue pendiente son los **dominios
@@ -36,7 +36,7 @@ por defecto en monorepos) — sin eso, `packages/*` no llega al build.
 | Framework preset | Astro (autodetectado) | Astro (autodetectado) |
 | Build Command | `astro build` (autodetectado) | `astro build` (autodetectado) |
 | Install Command | `pnpm install` en la raíz (automático) | igual |
-| Dominio | pendiente (p. ej. `cokima.es`) | pendiente (p. ej. `tasquitalosochoa.es`) |
+| Dominio | `cokima.es`, del cliente, con los DNS en DonDominio; **aún sin dar de alta en Vercel** (§Dominios y SEO) | pendiente (p. ej. `tasquitalosochoa.es`) |
 
 ### Variables de entorno
 
@@ -133,12 +133,43 @@ quedó en `CANCELED`**.
 ## Dominios y SEO
 
 1. Asignar el dominio a cada proyecto (Settings → Domains) y fijar `SITE_URL` con ese mismo
-   valor. De `SITE_URL` salen canonical, `hreflang`, sitemap y el JSON-LD `Restaurant`.
+   valor. De `SITE_URL` salen canonical, `hreflang`, sitemap y el JSON-LD `Restaurant` (y el
+   `WebSite`, en la app que da `siteName`; hoy, Cokima).
 2. Si se abandonan las URLs actuales de `grupotombo.com`, configurar **redirects 301** desde
    `/cokima-kitchenmadness/` y `/tasquita-los-ochoa/` hacia los dominios nuevos. Sin esto se
    tira el posicionamiento acumulado.
 3. Dar de alta **cada dominio por separado** en Google Search Console y enlazar cada web con
    su ficha de Google Business.
+
+### `cokima.es`: lo que hay y qué se cambia (mirado el 2026-11-18)
+
+**El dominio no es nuevo, y eso es lo que daba reparo.** Los DNS están en DonDominio
+(`ns1/ns2.dondominio.com`, los mismos que usa `phsport.es` con Vercel en este equipo) y la zona
+tiene 21 registros. Solo dos son de la web; el resto se deja tal cual:
+
+| Registros | Qué son | Qué se hace |
+|---|---|---|
+| `cokima.es` ANAME → `hostingsrv97.dondominio.com` | La web, el dominio pelado | **Se borra y se crea un `A`** con el valor que dé Vercel |
+| `www` CNAME → `hostingsrv97.dondominio.com` | La web con `www` | **Se cambia el destino** al que dé Vercel |
+| MX, TXT `v=spf1`, TXT `dddk._domainkey` (DKIM), `mail`, `imap`, `pop`, `pop3`, `smtp`, `webmail`, `autoconfig`, `autodiscover`, SRV `_autodiscover._tcp` | El correo @cokima.es, **montado y activo** | Nada |
+| `ftp`, `bbdd`, `*.cokima.es` | Restos del hosting de DonDominio | Nada: no estorban |
+| Los cuatro `_<hash>` CNAME → `comodoca.com` / `sectigo.com` | Validaciones de certificados viejos del hosting | Nada: no estorban |
+
+- **Los valores de Vercel se copian de Vercel**, no de memoria: ya no son siempre `76.76.21.21`
+  y `cname.vercel-dns.com`, a veces da unos propios del proyecto. Por eso el orden es dar de alta
+  `cokima.es` y `www` en el proyecto (eso no cambia nada de cara al público), copiar lo que pida y
+  solo entonces tocar DonDominio. Propuesto: `cokima.es` como principal y `www` redirigiendo a ella,
+  que es lo que ya declaran la canónica y el sitemap.
+- **Se guarda una copia de la zona antes de tocarla.** Es el deshacer.
+- **No hay registro CAA** (el que limita quién puede emitir certificados): Vercel podrá sacar el suyo.
+- **Lo que sirve hoy el dominio es un WordPress vacío**: menú con anclas (`#about`, `#carta`,
+  `#restaurante`, `#reservas`) en una sola página, portada con «404 Page not found» y un sitemap con
+  la portada y la `sample-page`. No hay direcciones antiguas que redirigir.
+- **No dar de baja el hosting de DonDominio sin mirar qué incluye el plan:** el correo sale de sus
+  servidores (`mailsrv8`) y puede ir en el mismo plan.
+- **Qué publica producción sigue sin decidir.** Hasta hoy `main` no tiene ningún despliegue en
+  `READY` (el único, de `1020d5c`, falló a propósito por falta de `SITE_URL`): si el dominio apunta a
+  Vercel antes de eso, enseña un error de Vercel en lugar del WordPress vacío.
 
 ## Cómo se resuelve `SITE_URL`
 
