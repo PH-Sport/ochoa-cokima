@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-11-05 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-11-18 · **el punto de entrada del repo**
 
-- **Corte:** 2026-11-05
+- **Corte:** 2026-11-18
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
   nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
   de decidir, que no se fusionan: `feat/inicio-paralaje`, el Inicio de Ochoa en paralaje, parada,
@@ -16,6 +16,14 @@
 ---
 
 ## 0. Por dónde seguir
+
+**2026-11-18: el logo de Cokima, en la portada y en la barra.** Se lo pidieron a Mario y trajo el logo del restaurante,
+que es negro y sobre el fondo de Brasa no se veía. La versión clara (letras en el hueso de los textos, la «x» en su rojo)
+se sacó de ese mismo archivo, y ocupa el sitio exacto del nombre escrito: el mismo ancho en la portada y los mismos
+79 px en la barra del móvil, porque a 320 no cabe más. La entrada, que avivaba y enfriaba el nombre, hace lo mismo con
+el logo. Medido sobre el build; **la entrada en marcha no se vio** (panel oculto) y **sin mirar en un iPhone**. Las
+legales y el «Cokima» del mapa de Visítanos siguen en texto, porque no se pidieron. El cómo y lo medido, en
+`cokima-el-rediseno.md` §3, «El logo».
 
 **Cokima, 2026-10-31: la web en `preview` es «Brasa», y se itera sobre ella.** Es la séptima
 ronda de bocetos en Artifacts —el porqué de cada rechazo y lo que Mario eligió de cada una, en

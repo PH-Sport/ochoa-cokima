@@ -81,7 +81,10 @@ main{position:relative;z-index:1}
 .progreso{position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--line);pointer-events:none;transition:opacity var(--dur-out) var(--ease)}
 .progreso i{display:block;height:100%;background:var(--ember);transform:scaleX(0);transform-origin:left}
 .progreso.sin,.menu-abierto .progreso{opacity:0}
-.marca{font:300 1.45rem/1 var(--sans);letter-spacing:-.01em;text-decoration:none}
+/* El logo de la barra (2026-11-18). En el móvil, 79 px: lo que medía «Cokima» escrito, y ni uno más, porque a
+   320 la marca, el desplegable con «Visítanos» y «Reservar» ya llenan la barra con los huecos al mínimo. */
+.marca{display:block;flex:none;text-decoration:none}
+.marca img{display:block;width:79px;height:auto}
 .secciones{display:none;gap:30px}
 .secciones a{text-decoration:none;position:relative}
 .secciones a{font:400 .94rem/1 var(--sans);color:var(--bone-2);padding:8px 0}
@@ -137,13 +140,18 @@ main{position:relative;z-index:1}
 /* ===== Inicio ===== */
 .portada{position:relative;min-height:100svh;display:grid;place-items:center;box-sizing:border-box;padding-bottom:12svh}
 .portada h1{margin:0;display:grid;justify-items:center;gap:clamp(8px,1.6vw,16px);text-align:center;font-weight:inherit}
-.portada h1 .nombre{position:relative;font:200 clamp(4.6rem,22vw,13rem)/.86 var(--sans);letter-spacing:-.03em;--calor:0}
+/* El nombre es el logo desde el 2026-11-18, al mismo ancho que tenía escrito en la Bricolage (3,22 veces su cuerpo,
+   medido): así la composición de la portada no se mueve. */
+.portada h1 .nombre{position:relative;display:block;--calor:0}
+.portada h1 .nombre img{display:block;width:clamp(237px,70.8vw,670px);height:auto}
 /* La entrada (2026-11-02; Mario juntó dos de la maqueta: «que se enfríe tras avivarse»). La decide el
    <head> antes del primer pintado (data-entrada): así la portada no asoma un fotograma ya puesta. Desde
    ahí, «Cokima» tapado y al rojo —una copia en degradado de brasa encima, cuya opacidad es --calor—, y lo
-   demás apagado; brasa.js lo destapa, lo enfría y lo suelta. */
-.portada h1 .nombre::after{content:attr(data-texto);position:absolute;inset:0;pointer-events:none;opacity:var(--calor);
-  background:linear-gradient(to top,#ffd08a 0%,#ff8a2e 38%,#d4410f 72%,#8a1f07 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+   demás apagado; brasa.js lo destapa, lo enfría y lo suelta. Con el logo, la copia es el degradado recortado
+   con la forma del propio logo (una máscara): la entrada es la misma que con el nombre escrito. */
+.portada h1 .nombre::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:var(--calor);
+  background:linear-gradient(to top,#ffd08a 0%,#ff8a2e 38%,#d4410f 72%,#8a1f07 100%);
+  -webkit-mask:url(/images/cokima-logo.png) 0 0/100% 100% no-repeat;mask:url(/images/cokima-logo.png) 0 0/100% 100% no-repeat}
 html[data-entrada] .portada h1 .nombre{clip-path:inset(100% -10% -10% -10%);--calor:1}
 html[data-entrada] .portada h1 .sub,html[data-entrada] .portada .acc,html[data-entrada] .cine{opacity:0}
 /* «Kitchen Madness» bajo el nombre (Mario, 2026-10-31). Primero fue en la cursiva de la voz; al
@@ -381,6 +389,8 @@ html[data-entrada] .portada h1 .sub,html[data-entrada] .portada .acc,html[data-e
   .secciones{display:flex}
   .barra{--barra:72px}
   :root{--barra:72px}
+  /* En el ordenador sobra sitio, y a 79 px el logo se quedaba en 16 de alto en una barra de 72 */
+  .marca img{width:104px}
   .pan-zona{padding-top:clamp(50px,10vh,110px)}
   .paneles{height:clamp(600px,84vh,800px)}
   .pan-zona.fija .pan-platos small,.pan-zona.fija .pan-largo{display:block}

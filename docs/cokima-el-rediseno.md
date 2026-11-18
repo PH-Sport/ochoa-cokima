@@ -1,8 +1,8 @@
 # Cokima: el rediseño
 
-> **Estado: vivo** · el rediseño está en curso · revisado 2026-11-05
+> **Estado: vivo** · el rediseño está en curso · revisado 2026-11-18
 
-- **Abierto:** 2026-08-14 · **Última tanda:** 2026-11-05
+- **Abierto:** 2026-08-14 · **Última tanda:** 2026-11-18
 - **Rama:** `preview` desde el 2026-10-26, cuando Mario pidió trabajar solo en ella. Antes vivió en
   `tmp/entrada-cokima`
 - **Estado:** **desde el 2026-10-31 la web de Cokima en `preview` es Brasa** (§3), y se itera
@@ -1094,6 +1094,41 @@ y los precios sí se comparan contra el texto del PDF**, y así salieron el bao 
 **Medido sobre el build,** comparando el HTML con el PDF por script: 20 platos, 0 diferencias de nombre, descripción,
 precio o número. En el navegador a 375, 320 y 1440: sin scroll lateral, los 20 bloques de números dentro de la pantalla y
 la leyenda a 2, 1 y 4 columnas. **Sin mirar en un iPhone**, y los iconos, leídos a ojo: el PDF es la referencia.
+
+### El logo, en la portada y en la barra (2026-11-18)
+
+**Se lo pidieron a Mario** (*«Me han pedido de ponerlo en la portada y arriba»*), y él trajo el logo: `cokima-black.png`, 1756 × 354, fondo
+transparente, letras negras (#101012) y la «x» bajo la exclamación en rojo (#c4283c). **Tal cual no servía:** el negro
+sobre el fondo de Brasa (#0e0907) da un contraste de 1,04:1, es decir, invisible; solo se habría visto la crucecita.
+
+**La versión clara la sacamos de ese archivo, con el visto bueno de Mario:** el negro pasa al `--bone` de los textos
+(#f3eadd) y el rojo se queda en el suyo. El archivo solo tenía esos dos colores, también en los píxeles semitransparentes
+del borde, así que el cambio es exacto: la transparencia queda idéntica (mismos píxeles transparentes, opacos y de borde,
+y el mismo recorte, comprobado decodificando los dos). Es `apps/cokima/public/images/cokima-logo.png`, 23 KB; el negro
+original no está en el repo. **El rojo del logo no es el `--vermilion` de la web, y está bien así:** un logo lleva sus
+colores, como el de Metro en Visítanos.
+
+**Ocupa el sitio que tenía el nombre escrito, medido antes de tocar nada:**
+
+- **Portada:** el mismo ancho que «Cokima» en la Bricolage 200, que era 3,22 veces su cuerpo: `clamp(237px, 70,8vw,
+  670px)`. Como el logo es más bajo que la caja de la letra, «Kitchen Madness» sube unos 9 px a 390.
+- **Barra, móvil:** 79 px, lo que medía la palabra, **y ni uno más**: a 320, con «Nosotros» o «Visítanos» en el
+  desplegable, los huecos entre las tres piezas ya están en su mínimo de 16 px. Sale a 16 px de alto.
+- **Barra, ordenador (≥ 900):** 104 px (21 de alto). Ahí sobra sitio, y 16 px de alto en una barra de 72 se quedaba corto.
+
+**La entrada no cambia.** Antes, el nombre al rojo era una copia del texto (`attr(data-texto)`) con el degradado de brasa
+recortado a la letra; ahora es el mismo degradado recortado **con la forma del logo**, como máscara (`mask` con el mismo
+PNG). Al rojo se tapa también la «x», y al enfriarse vuelve a su color. El `data-texto` se quitó porque ya no lo lee nadie.
+El PNG se pide dos veces por página —la imagen y la máscara, que el navegador trae por separado—; son 23 KB y se aceptó.
+
+**Medido sobre el build** (`cokima-build`): portada a 390, 276,1 px de ancho (antes 276) y la máscara del mismo tamaño
+que la imagen; a 1440, 670 px (antes 670). La barra a 320 en las cuatro secciones, sin desbordar y con los huecos
+iguales que antes. El logo de la barra lleva al Inicio. El degradado de la entrada, visto forzando `--calor` a 1 y a 0,5.
+**La entrada en marcha no se pudo ver:** el panel del navegador estaba oculto y no pinta fotogramas (`metodo.md` §2); se
+vio el tope de 4 s soltarla. **Sin mirar en un iPhone.**
+
+**Lo que no lleva logo, a propósito:** las legales, que siguen con la barra de la web anterior (`Nav.astro`), y el
+«Cokima» de Visítanos sobre el mapa. No se pidieron. El favicon tampoco cambia.
 
 ---
 

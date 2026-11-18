@@ -118,7 +118,9 @@ const hayColumnas = columnas.every((c) => c.mp4 || c.webm);
     <canvas class="chispazos" aria-hidden="true"></canvas>
 
     <header class:list={["barra", { oculta: enInicio }]}>
-      <a class="marca" href="/" data-ir="inicio">Cokima</a>
+      {/* El logo, en su versión clara (2026-11-18): el original del restaurante es negro, y sobre este fondo no
+          se ve. Es el mismo archivo que el de la portada (cokima-el-rediseno.md §3, «El logo»). */}
+      <a class="marca" href="/" data-ir="inicio"><img src="/images/cokima-logo.png" alt="Cokima" width="1756" height="354" decoding="async" /></a>
       <nav class="secciones" aria-label="Secciones">
         {secciones.map((s) => <a href={s.href} data-ir={s.v} aria-current={s.actual}>{s.nombre}</a>)}
       </nav>
