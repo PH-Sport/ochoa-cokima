@@ -41,7 +41,12 @@ const { title, description, locale, altPath, altSeoPath = altPath, noindex = fal
    tiempo. Hay un test que vigila que la función siga siendo serializable.
 
    Sin JavaScript no se pone nada y la web se ve entera desde el primer frame,
-   que es la degradación correcta. */
+   que es la degradación correcta.
+
+   El `setTimeout` del final es el seguro: este script es síncrono y el que
+   retira la plancha no lo es, y sin él un módulo que no llegue deja la pantalla
+   en rojo. La nota va aquí y no dentro del guion porque el guion se publica tal
+   cual en cada página (2026-11-18). */
 const guionEntrada = `
 (function () {
   var raiz = document.documentElement;
@@ -56,8 +61,6 @@ const guionEntrada = `
   })) return;
   raiz.dataset.intro = "si";
   try { sessionStorage.setItem(${JSON.stringify(CLAVE_SESION)}, "1"); } catch (e) {}
-  /* El seguro. Este script es síncrono y el que retira la plancha no lo es: sin
-     esto, un módulo que no llegue deja la pantalla en rojo. */
   setTimeout(function () { raiz.removeAttribute("data-intro"); }, ${SEGURO});
 })();
 `;

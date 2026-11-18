@@ -26,7 +26,13 @@ const fuentes = `
 }
 `;
 
+/* Sin las notas (2026-11-18), como en Ochoa: las de `tokens.css` y la piel son para quien mantiene la web,
+   y servidas llegaban a cualquiera que abriera la hoja (51). Se quitan al servir, no en los fuentes. La
+   expresión no distingue un `/*` dentro de una cadena: hoy ninguna de las dos hojas lo tiene (comprobado
+   ese día); si alguna lo llegara a tener, esto la rompería. */
+const sinNotas = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\n\s*\n+/g, "\n");
+
 export const GET: APIRoute = () =>
-  new Response(`${fuentes}\n${tokens}\n${piel}`, {
+  new Response(sinNotas(`${fuentes}\n${tokens}\n${piel}`), {
     headers: { "Content-Type": "text/css; charset=utf-8" },
   });

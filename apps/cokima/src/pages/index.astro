@@ -18,12 +18,12 @@ const destacados = (await platosDeLaCarta()).filter((d) => d.featured);
       <h1><span class="nombre"><img src="/images/cokima-logo.png" alt="Cokima" width="1756" height="354" fetchpriority="high" /></span><span class="sub">Kitchen Madness</span></h1>
       <div class="acc"><a class="pill" href="/carta" data-ir="carta">Ver carta</a><a class="pill solid" href="/reservas" data-ir="reservar">Reservar</a></div>
     </div>
-    <!-- Por debajo de la portada, el Inicio son cuatro paneles a todo lo ancho: cada uno cuenta una
+    {/* Por debajo de la portada, el Inicio son cuatro paneles a todo lo ancho: cada uno cuenta una
          cosa de Cokima y adelanta una sección. Mario los eligió entre tres maneras el 2026-11-02, y
          el mismo día los reordenó: primero los platos, como «Lo que más sale» en Ochoa; luego el
          producto y la sala; y al final Cokima y Ven en uno, con un texto para buscadores
          (docs/cokima-el-rediseno.md §3). Los textos son de la web del Grupo Tombo y de
-         @cokimamadrid; los coloca y los abre brasa.js. -->
+         @cokimamadrid; los coloca y los abre brasa.js. */}
     <div class="pan-zona">
       <div class="paneles rv" data-paneles>
         <div class="pan" data-panel>
@@ -43,9 +43,9 @@ const destacados = (await platosDeLaCarta()).filter((d) => d.featured);
             <p class="etq">Buen producto. Malas intenciones.</p>
             <p class="voz">Elaboramos nuestros platos con los mejores productos frescos;</p>
             <ul class="pan-trio">
-              <!-- El cuchillo desde el 2026-11-18: el atún marcado que había es la base del tataki, y el restaurante
+              {/* El cuchillo desde el 2026-11-18: el atún marcado que había es la base del tataki, y el restaurante
                    dijo que no era la idónea. Es la primera foto de la misma publicación de la frase
-                   (docs/fotografia.md). -->
+                   (docs/fotografia.md). */}
               <li><img src="/images/producto-cuchillo.jpg" alt="Un cuchillo japonés de hoja larga sobre fondo negro" width="1100" height="1467" loading="lazy"><p>más cuchillo, más producto,</p></li>
               <li><img src="/images/producto-steak-tartar.jpg" alt="El steak tartar de picaña madurada sobre el tuétano" width="1100" height="1100" loading="lazy"><p>materia prima de primer nivel</p></li>
               <li><img src="/images/producto-tomates.jpg" alt="Tres tomates apilados en unas manos con guantes negros" width="1100" height="1467" loading="lazy"><p>y verduras que saben a lo que tienen que saber.</p></li>
@@ -69,8 +69,8 @@ const destacados = (await platosDeLaCarta()).filter((d) => d.featured);
           <div class="pan-cont">
             <p class="etq">Kitchen Madness · Argüelles</p>
             <h2 class="pan-tit">Puedes comer en cualquier sitio, pero será solo comer.</h2>
-            <!-- El texto para buscadores que pidió Mario (2026-11-02): solo datos comprobados (site.ts y
-                 Visítanos) y frases de la casa, a la espera de que lo revise. -->
+            {/* El texto para buscadores que pidió Mario (2026-11-02): solo datos comprobados (site.ts y
+                 Visítanos) y frases de la casa, a la espera de que lo revise. */}
             <p class="pan-seo pan-largo">Cokima es una explosión de sabor en Argüelles, Madrid: cocina ecléctica para compartir, de las recetas más castizas a los guiños más exóticos. Estamos en la calle de Andrés Mellado, 21, y abrimos de lunes a domingo, de 9:00 a 00:00.</p>
             <p class="voz">Ven a conocernos y le dirás <i>ciao</i> a las croquetas de tu abuela.</p>
             <p class="estado" data-estado></p>

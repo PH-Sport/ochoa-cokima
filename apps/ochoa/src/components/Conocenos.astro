@@ -144,16 +144,18 @@ const marco = (f: ImageMetadata) => `aspect-ratio: ${f.width} / ${f.height}`;
   {/* Las entradas, decididas antes de que se pinte nada: este script va delante
       de lo que esconde, así que nada se ve un instante para luego esconderse.
       Con «reducir movimiento» no esconde nada. Va en línea, y no en un módulo,
-      para que no haya nada que pueda no llegar y dejar la página en blanco. */}
+      para que no haya nada que pueda no llegar y dejar la página en blanco.
+
+      El primer observador, `pide`, existe porque una foto `lazy` tapada del todo
+      por su recorte no se descarga nunca en Chromium (regla 28 de movimiento.md):
+      se pide a mano una pantalla antes de llegar a ella. Las notas van aquí y no
+      dentro del script, que se publica tal cual (2026-11-18). */}
   <script is:inline data-astro-rerun>
     (function () {
       var art = document.currentScript && document.currentScript.closest("article");
       if (!art || !("IntersectionObserver" in window) || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       art.classList.add("revela");
       var mira = function () {
-        /* Una foto `lazy` tapada del todo por su recorte no se descarga nunca en
-           Chromium (regla 28 de movimiento.md): se pide a mano una pantalla antes
-           de llegar a ella. */
         var pide = new IntersectionObserver(function (es) {
           es.forEach(function (e) {
             if (!e.isIntersecting) return;

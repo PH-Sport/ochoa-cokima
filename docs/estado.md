@@ -67,6 +67,14 @@ y gana `twitter:card`. Medido en su build. No gana `WebSite` mientras su `site.t
   no reconocer una pareja así. Se arregló en `Seo.astro`, que ahora da a la ruta del otro idioma la misma
   forma que la canónica de la página, y no en cada página de Ochoa: así no vuelve a pasar. Medido sobre el
   build: 24 parejas, todas a una canónica real y recíprocas. Cokima no cambia (no declara ninguna).
+- **Las notas internas ya no se publican.** Llegaban a los archivos servidos unas 100 en Cokima y 250 en
+  Ochoa, con comparaciones entre las dos casas. Salían de tres sitios, y queda la regla de cada uno: **en
+  las páginas, `{/* */}` y nunca `<!-- -->`**, que se publica; **dentro de un `<script is:inline>`, ninguna
+  nota**, porque se publica tal cual (van encima, en `{/* */}`, o en el bloque de arriba del componente); y
+  **las hojas de las reservas**, que se sirven en crudo, se limpian al servir (`covermanager.css.ts` de
+  cada casa). Medido sobre los dos builds: cero notas en HTML y CSS; las hojas de reservas, idénticas regla
+  a regla sin las notas, de 25 a 11 KB en Cokima y de 30 a 10 en Ochoa; el aviso de cookies, el filtro del
+  historial, la entrada de Ochoa y Conócenos, funcionando en el navegador.
 
 **2026-11-18: el logo de Cokima, en la portada y en la barra.** Se lo pidieron a Mario y trajo el logo del restaurante,
 que es negro y sobre el fondo de Brasa no se veía. La versión clara (letras en el hueso de los textos, la «x» en su rojo)

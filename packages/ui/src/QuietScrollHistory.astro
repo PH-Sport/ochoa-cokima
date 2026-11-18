@@ -59,6 +59,21 @@
  * Va `is:inline` y antes de `<ClientRouter />` a propósito: los módulos son
  * diferidos, así que un script clásico en el `<head>` corre siempre antes que el
  * router y llega a tiempo de envolver la función.
+ *
+ * LAS NOTAS DEL SCRIPT, AQUÍ Y NO DENTRO (2026-11-18). Un `is:inline` se
+ * publica tal cual, notas incluidas, en cada página de las dos casas. Lo que
+ * explicaban, por orden:
+ *
+ * - `navegandoHasta`: ventana con caducidad en vez de un interruptor. Si una
+ *   navegación se queda a medias —alguien cancela el evento—, el filtro se
+ *   recupera solo en cinco segundos en vez de quedarse apagado para siempre.
+ * - El `catch` vacío de `vuelca`: Safari corta a las 100 llamadas por ventana;
+ *   si pasa, no es nada que debamos arrastrar hasta la consola del visitante.
+ * - `pagehide`: al abandonar el documento (enlace externo, recarga, cierre).
+ * - `visibilitychange`: en iOS, donde `pagehide` no siempre llega al cambiar de
+ *   aplicación.
+ * - `astro:before-preparation`: al navegar con el router se vuelca lo retenido
+ *   y se abre la ventana en la que sus propias escrituras pasan sin filtrar.
  */
 ---
 
@@ -66,9 +81,6 @@
   (function () {
     var nativo = history.replaceState.bind(history);
     var pendiente = null;
-    // Ventana con caducidad en vez de un interruptor: si una navegación se
-    // queda a medias —alguien cancela el evento— el filtro se recupera solo en
-    // cinco segundos en vez de quedarse apagado para siempre.
     var navegandoHasta = 0;
 
     function soloCambiaElScroll(entrante, url) {
@@ -101,20 +113,13 @@
       pendiente = null;
       try {
         nativo(estado, "");
-      } catch (e) {
-        /* Safari corta a las 100 llamadas por ventana; si pasa, no es nada que
-           debamos arrastrar hasta la consola del visitante. */
-      }
+      } catch (e) {}
     }
 
-    // Al abandonar el documento: enlace externo, recarga, cierre.
     addEventListener("pagehide", vuelca);
-    // Y en iOS, donde `pagehide` no siempre llega al cambiar de aplicación.
     addEventListener("visibilitychange", function () {
       if (document.visibilityState === "hidden") vuelca();
     });
-    // Al navegar con el router: se vuelca lo retenido y se abre la ventana en
-    // la que sus propias escrituras pasan sin filtrar.
     document.addEventListener("astro:before-preparation", function () {
       vuelca();
       navegandoHasta = Date.now() + 5000;
