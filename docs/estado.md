@@ -25,6 +25,12 @@ el logo. Medido sobre el build; **la entrada en marcha no se vio** (panel oculto
 legales y el «Cokima» del mapa de Visítanos siguen en texto, porque no se pidieron. El cómo y lo medido, en
 `cokima-el-rediseno.md` §3, «El logo».
 
+**Ochoa, 2026-11-04: sus vídeos de Instagram ya están en la fototeca, sin usar en la web.** Mario vio
+que Ochoa no llevaba ninguno y preguntó por qué: no se habían bajado nunca, porque su recogida del 26 de
+octubre se los saltaba. Son 31, desde 2024. **Falta que Mario diga dónde van.** La fototeca no viaja por
+git: están en el Mac. El método, las trampas y el recuento, en `fotografia.md` §La fototeca; los scripts de
+la fototeca pasan a la versión 2, la que usó Cokima.
+
 **Cokima, 2026-10-31: la web en `preview` es «Brasa», y se itera sobre ella.** Es la séptima
 ronda de bocetos en Artifacts —el porqué de cada rechazo y lo que Mario eligió de cada una, en
 `cokima-el-rediseno.md` §3—. De Brasa dijo *«Me gusta más este diseño, lo veo mejor»*, y al verla

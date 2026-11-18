@@ -1,6 +1,6 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-11-04 · Ochoa tiene foto en sus diez destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las de Brasa (dieciséis desde el 2026-11-02)
+> **Estado: vivo** · revisado 2026-11-04 · Ochoa tiene foto en sus diez destacados, una portada de ocho fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las de Brasa (dieciséis desde el 2026-11-02). Los vídeos de Instagram de Ochoa están en la fototeca desde el 2026-11-04, sin usar en la web (§La fototeca)
 
 ## Estado
 
@@ -229,13 +229,14 @@ identificado sus fotos de Cokima en agosto, §Estado.)
 ya enseña, como se haría a mano con el inspector. Dos piezas:
 
 1. `scripts/fototeca-recoger.js` se ejecuta en la página de Instagram. En el perfil lista las
-   publicaciones; en cada publicación devuelve sus fotos en alta (pasa el carrusel entero), el
-   texto y la fecha. Lo ejecuta el agente en el navegador integrado, o cualquiera en la consola
-   del navegador.
-2. `python3 scripts/fototeca.py recogida.json` descarga las fotos a
-   `fototeca/instagram/<cuenta>/<código>-<n>.jpg` y las apunta en `fototeca/catalogo.json`, que
-   guarda la decisión sobre cada foto: tipo, plato, hueco, estado y nota. Volver a ejecutarlo no
+   publicaciones; en cada publicación devuelve sus fotos y sus vídeos en alta (el carrusel entero),
+   el texto y la fecha. Lo ejecuta el agente en el navegador, o cualquiera en la consola.
+2. `python3 scripts/fototeca.py recogida.jsonl` descarga las fotos y los vídeos a
+   `fototeca/instagram/<cuenta>/<código>-<n>.<ext>` y los apunta en `fototeca/catalogo.json`, que
+   guarda la decisión sobre cada pieza: tipo, plato, hueco, estado y nota. Volver a ejecutarlo no
    pisa lo escrito a mano.
+
+Los vídeos entraron después, con la versión 2 de estos scripts (abajo, «Los vídeos»).
 
 **`confirmar`: el plato es una suposición.** Desde el 2026-10-28 Mario quiere usar también las
 fotos cuyo plato no está asegurado, marcadas para preguntarle al equipo. Esas fichas llevan el
@@ -260,7 +261,8 @@ resumen de lo decidido.
 - Las fotos llegan a **1440 px de ancho** (1440×1919, 1440×1800 o 1440×1440).
 - Las URLs van firmadas y **solo funcionan enteras**: recortarles parámetros da `403`. Además
   caducan en unos días, así que se descarga justo después de recoger.
-- Los vídeos se saltan, también los que van dentro de un carrusel.
+- Esta primera recogida se saltaba los vídeos, también los de dentro de un carrusel. Ya no es así
+  (abajo, «Los vídeos»).
 - Una espera fija de 1,5 s dejó una publicación sin foto; el fragmento espera ahora a que aparezca
   la foto grande, hasta 8 s.
 
@@ -293,6 +295,76 @@ Trampas de esa recogida, todas medidas:
 a `<tipo>_<etiqueta>__<código>-<n>.jpg` (`plato_cachopin-de-ternera__C7CXyVLNCBt-1.jpg`), con el
 tipo y la etiqueta del catálogo. Las fotos de una casa quedan agrupadas por tipo, y el código sigue
 ahí para volver a la publicación.
+
+**Los vídeos: el método (Cokima el 2026-10-30, Ochoa el 2026-11-04).** Cokima los trajo en una
+versión 2 de los tres scripts que se quedó fuera del repo, en las notas de aquella sesión; **desde el
+2026-11-04 está en `scripts/`**, y por eso esta sección ya puede contarlo. Lo descartado sigue
+descartado: ni descargadores masivos ni peticiones a la API interna. Se lee lo que la página ya trae.
+
+1. **Con la sesión de Mario en Brave**, `python3 scripts/fototeca-receptor.py <carpeta> 2024-01-01`
+   escuchando, y `fototeca-recoger.js` en el perfil (`/<cuenta>/`) y en la pestaña de reels
+   (`/<cuenta>/reels/`). Cada lista va a `lista.jsonl`.
+2. **Una publicación por vez, por tandas de ocho.** El script se guarda en el `localStorage` de
+   instagram.com, cada publicación es la orden corta `await eval(localStorage.getItem('fototeca_v2'))`,
+   y el receptor devuelve la pestaña a la siguiente de la cola. Si se corta, se retoma sola. Al acabar
+   se borra lo guardado.
+3. **`python3 scripts/fototeca.py [--solo-videos] <carpeta>/recogida.jsonl`** baja cada vídeo con su
+   portada y, si no es H.264, su copia `-compatible.mp4`.
+4. **Revisar y nombrar:** rellenar las fichas y `--nombrar`. Antes de nombrar, comprobar que no mueve
+   ninguna otra ficha, porque recorre el catálogo entero.
+
+Lo que hay detrás de esos pasos, todo medido:
+
+- **Los datos salen del JSON que la página trae dentro** (sus `<script type="application/json">`), no de
+  las `<img>`: ahí está el carrusel entero, y los vídeos, que en pantalla son un `blob:`, tienen
+  dirección.
+- **Manda el tamaño, no el formato.** Cada vídeo viene en dos versiones: la «progresiva» (imagen y sonido
+  juntos) y la DASH (por separado; ffmpeg las junta sin recomprimir). En los de 2026 suele ganar la DASH
+  y en los de 2025 hacia atrás, muchas veces la progresiva (1920 de alto frente a 640). La primera pasada
+  de Cokima prefirió siempre la DASH y bajó 27 vídeos a 360.
+- **Sin sesión no hay progresiva**, además de los 12 del perfil. Probado el 2026-11-04 con tres reels de
+  Ochoa en el navegador integrado: los datos y la descarga funcionan, pero un reel de 2025 se queda
+  en lo que traiga su DASH. Para recoger de verdad hace falta la sesión.
+- **El Mac no abre VP9** (QuickLook se colgó con él el 2026-10-30), de ahí la copia compatible: la
+  progresiva de Instagram si es H.264, o convertida aquí a CRF 18. `compatible_origen` dice cuál.
+- **La fecha buena es la de publicación**, no la del código: se programan hasta una semana antes.
+
+Trampas de la recogida de Ochoa, el 2026-11-04:
+
+- **Saltar al fondo de la página atasca la rejilla:** se paró en 120 y luego en 132 publicaciones, con
+  catorce intentos seguidos sin cargar nada. Bajando a pasos llegó hasta el corte de fecha en menos de un
+  minuto, y las 120 publicaciones que ya había en el catálogo salieron todas en la lista. El script ya
+  baja a pasos; esa lista se sacó con el mismo bucle pegado a mano, y la versión del fichero no se ha
+  vuelto a ejecutar.
+- **En la pestaña de reels, Instagram no deja `eval`** (su CSP, la regla de seguridad de la página). En el
+  perfil y en las publicaciones sí. Ahí hay que pegar el fragmento de listar entero.
+- **Una tanda de dieciséis se pasó de tiempo** en la herramienta del navegador, aunque terminó por detrás.
+  Con ocho, no. Tampoco se pierde nada si pasa: la cola sabe por dónde va.
+- **La extensión dijo una vez «no puede ayudar con esta página»**, con todo ya recogido: se miró el
+  receptor antes de repetir nada, y no hizo falta.
+- **`--solo-videos` existe por las fotos de Ochoa:** se recogieron con la versión 1, numeradas sin contar
+  los vídeos, y sus fichas ya estaban revisadas. Las fotos constan en `publicaciones.json` sin fichero.
+  Ningún vídeo cayó en el número de una foto.
+
+**Los vídeos de Ochoa: lo que hay (2026-11-04).** De las 148 publicaciones desde 2024 —abiertas todas, sin
+errores ni avisos de Instagram—, **31 vídeos: 28 reels y 3 dentro de carruseles**, 8 min 40 s en total, de
+1,4 a 57 s con mediana de 16 s, y 253 MB en la carpeta con fotos incluidas (221 MB entre vídeos, copias y
+portadas). 28 verticales (14 a 1080×1920, 13 a 720×1280 y uno a 910×1618) y 3 cuadrados (dos a 1080 y
+uno a 720). Los dos cuadrados a 1080 no tienen sonido. Lo anterior a 2024 se quedó fuera, como con Cokima:
+de las 411 publicaciones, unas 260.
+
+- **Usan las ocho divisiones de Cokima** (`plato` 13, `cocina` 10, `bebida` 3, `ambiente` 4, `grafico` 1).
+  Las fotos de Ochoa siguen con sus tipos de antes, `gente` incluido.
+- **4 son de otras cuentas**, en colaboración, y van `descartada`: los derechos son de quien las publicó,
+  como en Cokima. **3 van `dudosa`:** la de 1,4 s con bandas negras, la que lleva incrustada la marca de
+  CapCut (un editor de vídeo) y el pase con rótulos añadidos. **5 llevan `confirmar`**, con la pregunta para
+  el restaurante, y `dish` vacío hasta entonces.
+- **Cómo se miraron:** diez fotogramas de cada uno de los 27 propios, cuatro de los cuatro ajenos, y sin
+  escuchar el sonido. Lo que se ve entre fotogramas no está mirado, así que `caras` en false quiere decir
+  «ninguna en los fotogramas mirados». Las duraciones de logos y cierres de las notas son aproximadas.
+- **La marca que se repite:** muchos de 2025 cierran con el logo encima o sobre negro, unos 2 s que se
+  pueden cortar. Donde no se puede es en las gambas al ajillo, que lo llevan todo el vídeo. **Dónde se usan,
+  ninguno todavía:** lo decide Mario.
 
 **Lo que dio la primera recogida** (detalle de cada foto en el catálogo del Mac y, para mirarlas,
 en el artifact privado de Mario https://claude.ai/artifact/Y9xkL8LhfVpZtRgHsnjjAe):
