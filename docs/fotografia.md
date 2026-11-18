@@ -1,6 +1,6 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-11-13 · Ochoa tiene foto en nueve de sus diez destacados (el bikini de lacón espera la foto nueva), una portada de siete fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las de Brasa (dieciséis desde el 2026-11-02). Los vídeos de Instagram de Ochoa están en la fototeca desde el 2026-11-04, sin usar en la web (§La fototeca)
+> **Estado: vivo** · revisado 2026-11-18 · Ochoa tiene foto en nueve de sus diez destacados (el bikini de lacón espera la foto nueva), una portada de siete fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las de Brasa (dieciséis desde el 2026-11-02). Los vídeos de Instagram de Ochoa están en la fototeca desde el 2026-11-04, sin usar en la web (§La fototeca)
 
 ## Estado
 
@@ -24,7 +24,16 @@ cuatro vueltas el mismo día**, todas de Mario: el atún se repetía (de fondo y
 fue la otra foto de la picaña, que no le convenció ni de foto ni de texto; el aperitivo —el aceite en
 la bandeja— tenía el texto largo en el móvil y no seguía los rojos; y de tres opciones probadas en la
 página quitó también los carabineros y se quedó con el atún marcado, el steak tartar y los tomates,
-**todas rojas y sobre fondo oscuro**. Las de la picaña, los carabineros y el aperitivo se quitaron. Y el panel de
+**todas rojas y sobre fondo oscuro**. Las de la picaña, los carabineros y el aperitivo se quitaron.
+**Desde el 2026-11-18, la primera de la fila es `producto-cuchillo.jpg`** (`cocina_cuchillo__DZZ8pJvDU6c-1`,
+1100 × 1467, sRGB, 127 KB), y `producto-atun-marcado.jpg` queda sin usar. El restaurante dijo que el atún marcado, que
+es la base del tataki y el tataki ya no está en carta, *«tampoco sería la idónea»*, y Mario dejó la elección al agente.
+**El cuchillo es la primera foto de la misma publicación**, cuyo texto es justo *«Más cuchillo. Más producto.»*: la
+frase del panel sale de ahí. Fondo negro, como las otras dos. **No es roja**, que era el otro criterio de Mario, y se
+aceptó así porque las rojas que quedan ya las había quitado él (la picaña, los carabineros) o no son producto sobre
+fondo oscuro: el lomo bajo es un plato sobre mármol claro, la maracuyá es amarilla y la cebolla morada sale en blanco y
+negro. Se comprimió más que las otras (calidad 60 de `sips`), porque la textura del fondo engorda el archivo; a tamaño
+real no se ven artefactos. Y el panel de
 los imprescindibles lleva, desde el mismo día, `imprescindibles-arroz.jpg`
 (`plato_arroz-de-carabinero__DZM_hMUDRFG-1`, 1100 px, sRGB) en lugar del katsu con patatas, que a
 Mario no le parecía *«la más premium»*: el arroz de carabinero es el más caro de los cinco. Detrás

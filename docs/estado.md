@@ -85,18 +85,23 @@ corresponden, las quito»*. Hecho en las dos casas:
 
 Lo demás que pedían en la carta de Cokima —la torrija pasa a panna cotta, sin tataki ni el cangrejo (el soft
 shell crab)— **ya estaba** desde el PDF oficial del 2026-11-04. El PDF que mandó Alberto, *Cokima 2026.pdf*, de dos
-páginas, se da por el mismo, sin comparar; Alberto avisa de que en diciembre cambiarán más platos.
+páginas, se da por el mismo: Mario lo confirmó el 2026-11-18, sin cotejarlo aquí. Alberto avisa de que en diciembre
+cambiarán más platos.
 
-**Abierto, espera a Mario:** la foto del tataki en el panel del producto del Inicio («más cuchillo, más producto»),
-que según Lorena *«tampoco sería la idónea»*. Quitarla rompe la frase de tres partes del panel, así que hace falta
-otra foto. Medido sobre el build: la portada de Ochoa con siete fotos y la tira del ordenador más ancha que la
+Medido sobre el build el 2026-11-13: la portada de Ochoa con siete fotos y la tira del ordenador más ancha que la
 pantalla hasta 3440 px; la carta de Cokima a 375 con las croquetas arriba y las gyozas en la lista, y los ocho
 archivos del vídeo nuevo servidos con su duración. **El vídeo no se vio reproducirse**: el navegador estaba en
 segundo plano. Sin mirar en un iPhone.
 
+**La foto del tataki del panel del producto del Inicio** («más cuchillo, más producto»), que según Lorena *«tampoco
+sería la idónea»*, **se cambió el 2026-11-18** por el cuchillo japonés de la misma publicación de la frase. Mario dejó
+la elección al agente; el porqué, en `fotografia.md`. Medido sobre el build a 390 y 1440: las tres fotos de la fila
+cargadas y recortadas en su cuadrado, los textos en las mismas líneas que antes y el panel sin desbordar. Sin mirar en
+un iPhone.
+
 **Ochoa, 2026-11-04: sus vídeos de Instagram ya están en la fototeca, sin usar en la web.** Mario vio
 que Ochoa no llevaba ninguno y preguntó por qué: no se habían bajado nunca, porque su recogida del 26 de
-octubre se los saltaba. Son 31, desde 2024. **Falta que Mario diga dónde van.** La fototeca no viaja por
+octubre se los saltaba. Son 31, desde 2024. **Falta que Mario diga dónde van**; el 2026-11-18 lo dejó para más adelante. La fototeca no viaja por
 git: están en el Mac. El método, las trampas y el recuento, en `fotografia.md` §La fototeca; los scripts de
 la fototeca pasan a la versión 2, la que usó Cokima.
 
