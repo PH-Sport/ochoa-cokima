@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-> **Estado: vivo** · corte 2026-11-18 · **el punto de entrada del repo**
+> **Estado: vivo** · corte 2026-11-19 · **el punto de entrada del repo**
 
-- **Corte:** 2026-11-18
+- **Corte:** 2026-11-19
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
   nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
   de decidir, que no se fusionan: `feat/inicio-paralaje`, el Inicio de Ochoa en paralaje, parada,
@@ -82,7 +82,8 @@ se sacó de ese mismo archivo, y ocupa el sitio exacto del nombre escrito: el mi
 79 px en la barra del móvil, porque a 320 no cabe más. La entrada, que avivaba y enfriaba el nombre, hace lo mismo con
 el logo. Medido sobre el build; **la entrada en marcha no se vio** (panel oculto) y **sin mirar en un iPhone**. Las
 legales y el «Cokima» del mapa de Visítanos siguen en texto, porque no se pidieron. El cómo y lo medido, en
-`cokima-el-rediseno.md` §3, «El logo».
+`cokima-el-rediseno.md` §3, «El logo». **Desde el 2026-11-19 va también en la imagen que sale al compartir el
+enlace**, que se rehace con `scripts/compartir-cokima.js` (`fotografia.md`). Sin probar en WhatsApp de verdad.
 
 **2026-11-13: lo que el restaurante vio en las previews, y lo que se quitó.** Lorena y Alberto, del restaurante,
 revisaron las dos webs y Mario trajo sus mensajes. Su criterio, el mismo de él: *«fotos que veáis que no

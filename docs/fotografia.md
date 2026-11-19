@@ -1,6 +1,6 @@
 # Fotografía
 
-> **Estado: vivo** · revisado 2026-11-18 · Ochoa tiene foto en nueve de sus diez destacados (el bikini de lacón espera la foto nueva), una portada de siete fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las de Brasa (dieciséis desde el 2026-11-02). Los vídeos de Instagram de Ochoa están en la fototeca desde el 2026-11-04, sin usar en la web (§La fototeca)
+> **Estado: vivo** · revisado 2026-11-19 · Ochoa tiene foto en nueve de sus diez destacados (el bikini de lacón espera la foto nueva), una portada de siete fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las de Brasa (dieciséis desde el 2026-11-02). Los vídeos de Instagram de Ochoa están en la fototeca desde el 2026-11-04, sin usar en la web (§La fototeca)
 
 ## Estado
 
@@ -476,17 +476,27 @@ que *«apenas se aprecian»*. **Lo descartado del ajuste:** poner encima, a medi
 de «Al rojo» tal cual: sus rojos oscuros de arriba, mezclados con el hueso, daban un rosa salmón y no
 un naranja.
 
-**Cómo está hecha, para rehacerla.** 1200×630, JPEG de calidad 86, 76 KB; pintada con Chromium a
-densidad 1 desde un HTML de una sola vez que no está en el repo. Tres columnas de 400×630 con 3 px de
-`--ground` entre ellas, de fotogramas de los planos de `scripts/video-entrada.sh` con su mismo
-oscurecido: el ceviche en su segundo 1,6, el enoki en el 0,8 y la tarta en el 1,6 (contados desde el
-principio de cada plano), escalados a 400 de ancho y recortados al centro. Encima, un velo como el
-de la portada, de `--ground` de arriba abajo al 42 %, al 50 % a media altura, al 80 % al 85 % y al
-92 % abajo, y un óvalo de `--ground` al 50 % detrás del nombre, para que se lea en pequeño. «Cokima», en Bricolage 200 a 196 px, en `--bone`, con una copia
-encima en degradado de abajo arriba `#ffd890` → `#ffa94e` (45 %) → `#ff7f2a` a opacidad 0,85; «Kitchen
-Madness», en Bricolage 500 a 23 px, mayúsculas, 0,32 em de espaciado, `--bone-2`. Las chispas son las
-del fondo de `brasa.js` quietas, con un azar fijo (semilla 7) y 150 pasos de 1/30 s: 132 (2,1 veces la
-densidad de la web), con el trazo un 60 % más largo y un 20 % más grueso, porque en una imagen quieta
-es lo que dice que vuelan. Lleva el nombre en el centro para que aguante si alguna app la recorta en
-cuadrado. No lleva texto que traducir.
+**Desde el 2026-11-19 lleva el logo en lugar del nombre escrito**: se lo pidieron a Mario para la
+portada y la barra, y él lo quiso también en lo que se comparte por WhatsApp. Lo demás es lo mismo, y las chispas siguen la misma
+receta, aunque no caen donde caían.
+
+**Cómo está hecha, para rehacerla: `scripts/compartir-cokima.js`**, que se pega en la consola del build
+servido y la descarga; arriba del archivo están los pasos, con los segundos de cada fotograma. La de
+antes salió de un HTML que no se guardó; esta se guarda para que la próxima salga igual, y sale igual:
+ejecutado de nuevo, da el mismo archivo byte a byte. 1200×630, JPEG de calidad 86, 77 KB. Tres
+columnas de 400 con 3 px de `--ground` entre ellas, de fotogramas de los planos de
+`scripts/video-entrada.sh` con su mismo oscurecido: el ceviche en su segundo 1,6, el enoki en el 0,8 y
+la tarta en el 1,6 (contados desde el principio de cada plano), escalados a 400 de ancho y recortados
+al centro. Encima, un velo como el de la portada, de `--ground` de arriba abajo al 42 %, al 50 % a
+media altura, al 80 % al 85 % y al 92 % abajo, y un óvalo de `--ground` al 50 % detrás del logo, para
+que se lea en pequeño. **El logo**, el claro de la web, a 560 de ancho y a la altura del nombre de
+antes: cabe con margen en el cuadrado del centro, que es lo que se ve si un chat la recorta (el nombre
+escrito medía unos 620 y quedaba justo). **El calor va solo en las letras:** el mismo degradado que
+llevaba el nombre, de abajo arriba `#ffd890` → `#ffa94e` (45 %) → `#ff7f2a` a opacidad 0,85, y la «x»
+en su rojo, que con el degradado encima se perdía. «Kitchen Madness», en Bricolage 500 a 23 px,
+mayúsculas, 0,32 em de espaciado, `--bone-2`. Las chispas son las del fondo de `brasa.js` quietas, con
+un azar fijo (mulberry32, semilla 7) y 150 pasos de 1/30 s: 132 (2,1 veces la densidad de la web), con
+el trazo un 60 % más largo y un 20 % más grueso, porque en una imagen quieta es lo que dice que vuelan.
+No lleva texto que traducir. **Sin probar en WhatsApp de verdad**, como la anterior; recuerda la vista
+previa de lo ya compartido, así que en un enlace que ya se mandó puede salir la de antes (`?v=2`).
 `/images/mesa.jpg` es el cenital de la mesa, que sirve la sección «la tasca».

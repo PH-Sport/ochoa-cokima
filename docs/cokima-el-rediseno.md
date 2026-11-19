@@ -1135,7 +1135,8 @@ iguales que antes. El logo de la barra lleva al Inicio. El degradado de la entra
 vio el tope de 4 s soltarla. **Sin mirar en un iPhone.**
 
 **Lo que no lleva logo, a propósito:** las legales, que siguen con la barra de la web anterior (`Nav.astro`), y el
-«Cokima» de Visítanos sobre el mapa. No se pidieron. El favicon tampoco cambia.
+«Cokima» de Visítanos sobre el mapa. No se pidieron. El favicon tampoco cambia. **La imagen que sale al compartir el
+enlace sí lo lleva desde el 2026-11-19**, a petición de Mario (`fotografia.md`).
 
 ---
 
