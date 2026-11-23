@@ -15,7 +15,7 @@ excesivamente grande»*.
 
 ## Lo que es
 
-**La portada es una pantalla partida** (desde el 2026-11-23, idea de Mario): cada mitad es una casa con
+**La portada es una pantalla partida** (publicada el 2026-11-23, idea de Mario): cada mitad es una casa con
 **su propia estética**, la de su web, y el logo del grupo las une en la costura. En el móvil, Cokima
 arriba y Ochoa abajo; en el ordenador, izquierda y derecha. Cada mitad entera es un enlace a su web.
 Al bajar, el grupo: el logo, su frase y el contacto. Además, el aviso legal, la privacidad y una
@@ -26,16 +26,32 @@ página de 404. **Los textos son los de cada casa y los del WordPress del grupo*
     en Bricolage;
   - la frase de la web vieja del grupo (*«Puedes comer en cualquier sitio, pero será solo comer»*) en
     la Cormorant cursiva de su voz;
-  - un botón rojo redondeado.
+  - su botón, el `.pill.solid` de Brasa.
 - **La mitad de Ochoa es de día:**
   - la foto del brindis de su portada y el rótulo ovalado del local («Tasquita · Los Ochoa ·
     Madrid»), en Anton con su sombra;
   - *«¡La tasca que te mereces!»*;
-  - un botón blanco con borde y sombra negra, como los de su web.
-- **La costura** es el logo del grupo en blanco sobre negro: en la línea entre las dos mitades en el
-  móvil, y arriba en el centro en el ordenador.
+  - su botón, el `.btn` de Ochoa.
+- **La costura** es el logo del grupo en blanco, solo las letras y el brochazo, con una sombra suave
+  para despegarlo de las fotos: en la línea entre las dos mitades en el móvil, y arriba en el centro en
+  el ordenador. Llevó una pastilla negra debajo hasta que Mario pidió quitarla, el mismo 2026-11-23:
+  *«deja solo las letras con el brochazo, que si no, no me parece que quede del todo bien»*.
 - **Al señalar una mitad** con el ratón, su foto se acerca un poco y la otra se apaga. Solo `transform`
   y `opacity`, con duraciones de `tokens.css`, y nada con «reducir movimiento».
+- **Los botones son los de cada casa, con su comportamiento** (desde el 2026-11-23, tras preguntar
+  Mario si los elementos se reutilizaban tal cual). La primera versión solo los imitaba: el de Cokima
+  era rojo y el de Ochoa blanco, ninguno de los dos como en su web, y no reaccionaban a nada.
+  - **El de Cokima** es el `.pill.solid` de Brasa. Es un neón: con el ratón encima arranca a
+    trompicones y se queda encendido; al pulsar se hunde (`scale(.965)`); en el móvil, el toque lo
+    enciende y se apaga solo pasado `--ck-dur-neon-toque`.
+  - **El de Ochoa** es su `.btn` rojo con sombra de tinta. Con el ratón encima se oscurece y baja un
+    píxel; al pulsar se hunde los 3 px de su sombra, y al soltar vuelve a subir.
+  - Como aquí la mitad entera es el enlace, es señalar o tocar la mitad lo que acciona su botón. El
+    toque va con `pointerdown` y un script en la portada, como en las casas, porque `:active` no es
+    fiable en Safari de iOS.
+  - **No vienen las chispas** que salta el botón de Cokima al pulsar: las pinta `brasa.js` en su web.
+  - **Trampa:** el build reescribe las duraciones a segundos (`1800ms` sale como `1.8s`), así que el
+    script lee la unidad; un `parseFloat` a secas apagaba el neón en el acto.
 - **Los tokens de cada casa están copiados** en `apps/grupo/src/styles/tokens.css`, con prefijo `--ck-`
   y `--oc-`. **Si una casa cambia su paleta o su letra, se cambia también aquí.** También las fuentes
   (Bricolage, Anton y Archivo, copiadas de `public/fonts` de cada app; la Cormorant, con
@@ -58,6 +74,11 @@ página de 404. **Los textos son los de cada casa y los del WordPress del grupo*
 - **No usa el `Seo.astro` de `@tombo/ui`**, que declara un `Restaurant`. Aquí la ficha para buscadores
   es una `Organization` con sus dos casas como `subOrganization`, más un `WebSite` con el nombre
   «Grupo Tombo». Solo la lleva la portada.
+- **La imagen al compartir el enlace** (`/images/compartir.jpg`, 1200×630, 87 KB) es la portada en
+  pequeño: las dos mitades con sus fotos y su velo, y el logo del grupo en blanco en el centro, sin
+  pastilla, sobre un óvalo de sombra difusa y más grande que en la web, para que se lea en un chat. Se rehace igual con
+  `sh scripts/compartir-grupo.sh` (ffmpeg). **Trampa:** sin pasar las fotos a RGB y conservar el rango
+  completo, los colores salían lavados.
 - **El icono de la pestaña es la pincelada roja**, el mismo que tenía el WordPress, en sus tres tamaños
   (32, 180 y 192 px). Lo eligió Mario el 2026-11-23, en lugar del provisional con «GT».
 
@@ -82,7 +103,6 @@ página de 404. **Los textos son los de cada casa y los del WordPress del grupo*
 ## Lo que falta
 
 - **Los datos fiscales del titular** en el aviso legal y la privacidad, como en las otras dos webs.
-- **No tiene imagen para compartir el enlace** (`og:image`).
 - **El enlace a «Grupo Tombo» en el pie de Cokima y de Ochoa.**
 - **Los DNS:** el paso a paso y los valores, en `deploy.md` §Dominios y SEO.
 

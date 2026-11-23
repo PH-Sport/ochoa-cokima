@@ -35,7 +35,17 @@ dominios dados de alta, y su primer despliegue, salido de `preview`, ya está en
   sin scroll lateral a 1024 px.
 
 **Mario pidió después rehacer la portada como pantalla partida**, cada mitad con la estética de su
-casa, y la aprobó en maqueta: está en `preview`, sin publicar todavía (`grupo-tombo-web.md`). El porqué, lo
+casa. La aprobó en maqueta, la vio construida y **está publicada desde el mismo día** (`87c19f8` en
+`main`). Medido en `www.grupotombo.com`, en el navegador del panel:
+
+- **a 375×812:** cada mitad mide 406 px, el logo del grupo queda en la costura y la seña de Cokima se
+  parte entre el nombre y la dirección;
+- **a 1280×800:** cada mitad mide 640 px;
+- sin scroll lateral, sin imágenes rotas ni errores, y con las cinco familias cargadas.
+
+El porqué y lo descartado, en `grupo-tombo-web.md`. **Después, en `preview`:** los botones pasan a ser
+los de cada casa, con su comportamiento al ratón y al dedo, y la web del grupo tiene ya imagen para
+compartir el enlace (`scripts/compartir-grupo.sh`). El porqué, lo
 descartado y lo que falta, en `grupo-tombo-web.md`; los registros, en `deploy.md` §Dominios y SEO.
 
 **2026-11-18: el dominio de Cokima es `cokima.es`, y su SEO se repasa antes de apuntarlo.** El cliente ya
