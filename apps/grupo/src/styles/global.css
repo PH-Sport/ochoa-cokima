@@ -1,0 +1,120 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+a:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.wrap {
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+@media (min-width: 720px) {
+  .wrap {
+    padding-left: max(40px, env(safe-area-inset-left, 0px));
+    padding-right: max(40px, env(safe-area-inset-right, 0px));
+  }
+}
+
+/* Cabecera */
+.top .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-block: 22px;
+}
+
+.marca {
+  display: block;
+  width: clamp(118px, 22vw, 150px);
+}
+
+.marca img {
+  width: 100%;
+  height: auto;
+}
+
+.marca .claro {
+  display: var(--logo-light);
+}
+
+.marca .oscuro {
+  display: var(--logo-dark);
+}
+
+.top nav {
+  display: flex;
+  gap: 22px;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.top nav a {
+  text-decoration: none;
+  color: var(--muted);
+}
+
+.top nav a:hover {
+  color: var(--ink);
+}
+
+/* Pie */
+.pie-pagina {
+  border-top: 1px solid var(--line);
+}
+
+.pie-pagina .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px 24px;
+  padding-block: 22px 28px;
+  font-size: var(--step--1);
+  color: var(--muted);
+}
+
+.pie-pagina nav {
+  display: flex;
+  gap: 18px;
+}
+
+.pie-pagina a {
+  text-decoration: none;
+}
+
+.pie-pagina a:hover {
+  color: var(--ink);
+}

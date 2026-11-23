@@ -13,13 +13,14 @@
 > ausencia no significa nada. Este documento decía «no ejecutado» hasta el 2026-07-31 e indujo a
 > error justo por ahí.
 
-## El concepto: un repo, dos proyectos
+## El concepto: un repo, tres proyectos
 
 La unidad de despliegue en Vercel es el **proyecto**, no el repositorio. Un mismo repo de
 Git puede alimentar tantos proyectos como haga falta; lo que los distingue es el
 **Root Directory**.
 
-Aquí se crean **dos proyectos** que importan este mismo repositorio. Cada uno tiene su
+Aquí hay **tres proyectos** que importan este mismo repositorio: las dos casas y, desde el
+2026-11-23, la web del grupo (`grupo-tombo`, Root Directory `apps/grupo`). Cada uno tiene su
 dominio, sus variables de entorno, su historial de despliegues y sus URLs de preview:
 independientes a todos los efectos, aunque compartan `packages/*`.
 
@@ -36,7 +37,7 @@ por defecto en monorepos) — sin eso, `packages/*` no llega al build.
 | Framework preset | Astro (autodetectado) | Astro (autodetectado) |
 | Build Command | `astro build` (autodetectado) | `astro build` (autodetectado) |
 | Install Command | `pnpm install` en la raíz (automático) | igual |
-| Dominio | `www.cokima.es` (principal) y `cokima.es` (308 a `www`), dados de alta el 2026-11-23; **los DNS de DonDominio, sin cambiar** (§Dominios y SEO) | pendiente (p. ej. `tasquitalosochoa.es`) |
+| Dominio | `www.cokima.es` (principal) y `cokima.es` (308 a `www`), publicada el 2026-11-23 (§Dominios y SEO) | `www.tasquitalosochoa.es` (principal); `tasquitalosochoa.es`, `tasquitalosochoa.com` y `www.tasquitalosochoa.com`, 308 a ella. Publicada el 2026-11-23 (§Dominios y SEO) |
 
 ### Variables de entorno
 
@@ -45,7 +46,7 @@ los `.env.example` de cada app.
 
 | Variable | `cokima` | `ochoa` | Notas |
 |---|---|---|---|
-| `SITE_URL` | su dominio | su dominio | **Obligatoria en producción**: sin ella el build falla. |
+| `SITE_URL` | `https://www.cokima.es` (puesta el 2026-11-23, solo *production*) | `https://www.tasquitalosochoa.es` (ídem) | **Obligatoria en producción**: sin ella el build falla. |
 | `PUBLIC_GTM_ID` | `GTM-KW58ZDS` | `GTM-KW58ZDS` | Contenedor actual del grupo. |
 | `PUBLIC_META_PIXEL_ID` | píxel de Cokima | píxel de Los Ochoa | Recomendado uno por marca (hoy comparten `6251807501500238`). |
 | `PUBLIC_COVERMANAGER_SLUG` | `restaurante-cokima` | `tasquita-los-ochoa` | Verificados en la web actual. |
@@ -135,9 +136,27 @@ quedó en `CANCELED`**.
 1. Asignar el dominio a cada proyecto (Settings → Domains) y fijar `SITE_URL` con ese mismo
    valor. De `SITE_URL` salen canonical, `hreflang`, sitemap y el JSON-LD `Restaurant` (y el
    `WebSite`, en la app que da `siteName`; hoy, Cokima).
-2. Si se abandonan las URLs actuales de `grupotombo.com`, configurar **redirects 301** desde
-   `/cokima-kitchenmadness/` y `/tasquita-los-ochoa/` hacia los dominios nuevos. Sin esto se
-   tira el posicionamiento acumulado.
+2. **Redirects 301 desde `grupotombo.com`** hacia los dominios nuevos. Sin esto, se tira el
+   posicionamiento acumulado y las páginas viejas compiten con las nuevas. El 2026-11-23, según
+   el sitemap del WordPress, son cuatro, y las cuatro respondían 200:
+
+   | Página vieja | Va a |
+   |---|---|
+   | `/cokima-kitchenmadness/` | `https://www.cokima.es/` |
+   | `/carta-cokima/` | `https://www.cokima.es/carta` |
+   | `/tasquita-los-ochoa/` | `https://www.tasquitalosochoa.es/` |
+   | `/carta-los-ochoa/` | `https://www.tasquitalosochoa.es/carta/` |
+
+   **Desde el 2026-11-23 van en la web del grupo** (`redirects` de `apps/grupo/astro.config.mjs`), y
+   se activan cuando `grupotombo.com` apunte a Vercel. Hasta entonces, si hiciera falta cortarlas en
+   el WordPress (es Apache, en el hosting de DonDominio), se ponen al principio de su `.htaccess`:
+
+   ```apache
+   RedirectMatch 301 ^/cokima-kitchenmadness/?$ https://www.cokima.es/
+   RedirectMatch 301 ^/carta-cokima/?$ https://www.cokima.es/carta
+   RedirectMatch 301 ^/tasquita-los-ochoa/?$ https://www.tasquitalosochoa.es/
+   RedirectMatch 301 ^/carta-los-ochoa/?$ https://www.tasquitalosochoa.es/carta/
+   ```
 3. Dar de alta **cada dominio por separado** en Google Search Console y enlazar cada web con
    su ficha de Google Business.
 
@@ -195,9 +214,106 @@ estropear y no hace falta: siguen en DonDominio.
   la portada y la `sample-page`. No hay direcciones antiguas que redirigir.
 - **No dar de baja el hosting de DonDominio sin mirar qué incluye el plan:** el correo sale de sus
   servidores (`mailsrv8`) y puede ir en el mismo plan.
-- **Qué publica producción sigue sin decidir.** Hasta hoy `main` no tiene ningún despliegue en
-  `READY` (el único, de `1020d5c`, falló a propósito por falta de `SITE_URL`): si el dominio apunta a
-  Vercel antes de eso, enseña un error de Vercel en lugar del WordPress vacío.
+- **Producción publica Cokima desde el 2026-11-23**: `preview` se fusionó en `main` (`7d004a0`) con
+  `SITE_URL=https://www.cokima.es` en producción, y el despliegue quedó `READY` con los alias
+  `www.cokima.es` y `cokima.es`. Mario cambió los dos registros de DonDominio ese mismo día.
+
+### `tasquitalosochoa.es` y `.com`: lo que hay y qué se cambia (2026-11-23)
+
+**Los dos dominios estaban aparcados.** Los DNS están en DonDominio, y lo que servían era la página
+«Registrado en DonDominio». **No hay correo que funcione:** quedan las entradas de un correo de
+DonDominio (`mail`, `imap`…), pero ningún MX, así que no llega nada. La principal es
+`www.tasquitalosochoa.es`, como en Cokima, y las otras tres direcciones le redirigen con un 308.
+Se dieron de alta por la API de Vercel ese mismo día, sin efecto de cara al público.
+
+Los cambios son los mismos en **cada uno** de los dos dominios, con las zonas copiadas del panel
+de DonDominio el 2026-11-23:
+
+| Nombre | Antes (para deshacer) | Después (lo que pidió Vercel) |
+|---|---|---|
+| `@` | ANAME `parkingsrv0.dondominio.com` (resolvía a `31.214.178.55`) | **Se borra y se crea un A** `216.198.79.1` |
+| `www` | CNAME `parkingsrv0.dondominio.com.` | CNAME `b138c459c3eddf88.vercel-dns-017.com` |
+
+El resto de las dos zonas se queda como está. Es igual en las dos, salvo el servidor de la base de
+datos:
+
+- TXT `v=spf1 include:spf.dondominio.com`
+- `*` → `parkingsrv0.dondominio.com.`
+- `bbdd` → `bbddsrv33.dondominio.com.` en el `.es`, y `bbddsrv31.dondominio.com.` en el `.com`
+- `ftp` → `ftp-server-00.dondominio.net.`
+- `imap`, `mail`, `pop`, `pop3` y `smtp` → `mailsrv3.dondominio.com.`
+- `webmail` → `webmail-03.dondominio.net.`
+
+Si DonDominio tiene activado el servicio de *parking* en el dominio, hay que desactivarlo, porque
+puede imponerse a los registros.
+
+**Publicada el 2026-11-23.** Mario cambió los registros de los dos dominios. El despliegue de `main` de
+Ochoa había fallado por falta de `SITE_URL`: se puso `SITE_URL=https://www.tasquitalosochoa.es` y se
+relanzó por la API (`create_deployment` con `gitSource` en `main`), porque un push no lo habría hecho sin
+cambios en `apps/ochoa`. Lo medido, en `estado.md` §0.
+
+### `grupotombo.com` y `.es`: lo que hay (2026-11-23), para cuando llegue la web del grupo
+
+**Dados de alta en el proyecto `grupo-tombo` el 2026-11-23; los DNS, todavía sin tocar.** La principal es
+`www.grupotombo.com`, y `grupotombo.com`, `grupotombo.es` y `www.grupotombo.es` le redirigen con un 308.
+`SITE_URL=https://www.grupotombo.com` está puesta en *production*. Los valores que pidió Vercel, iguales en
+los dos dominios:
+
+| Nombre | Antes | Después |
+|---|---|---|
+| `@` | ANAME (ver la tabla de abajo) | **Se borra y se crea un A** `216.198.79.1` |
+| `www` | CNAME (ver la tabla de abajo) | CNAME `552ceccd7d762ca8.vercel-dns-017.com` |
+
+**El proyecto se creó con la protección de Vercel por defecto** («Vercel Authentication» en todo menos
+los dominios propios): sus previews y su `*.vercel.app` piden iniciar sesión en Vercel, a diferencia de
+`cokima` y `ochoa`. Quitarla desde el agente se denegó por permisos; si hace falta enseñar previews del
+grupo sin sesión, la quita Mario en Settings → Deployment Protection. **Y salió con Node 26**, no con el
+24 de los otros dos, por la misma razón.
+
+**Ojo: su primer despliegue salió de `preview` y fue a producción.** Se hizo con el push de `e872b55`, sin
+pasar por `main`, aunque la rama por defecto de GitHub es `main`. Quedó en `READY` con los cuatro
+dominios. Comprobado el 2026-11-23 con `web_fetch_vercel_url`, porque el `*.vercel.app` pide sesión:
+la portada da 200 con la canónica en `https://www.grupotombo.com/`, y `/cokima-kitchenmadness/` y
+`/carta-los-ochoa` dan un 301 a su web nueva. **La rama de producción sí es `main`**: los pushes siguientes a `preview`
+(`87e418e`, `ecc21ee`) salieron como previews (`target: null`), no a producción. Lo de aquel primero
+fue que Vercel lleva a producción el primer despliegue de un proyecto que aún no tiene ninguno.
+**Consecuencia: producción se quedó en `e872b55`**, y lo que llegue después a `preview` (el icono de la
+pestaña, por ejemplo) no se publica hasta que `preview` pase a `main`. Ese paso desde el agente se
+denegó por permisos el 2026-11-23, así que `main` todavía no tiene `apps/grupo`.
+
+**Al mover el dominio a Vercel, el WordPress deja de verse.** Las redirecciones de sus páginas viejas
+(§2, arriba) pasan entonces a la configuración del proyecto nuevo, y ya no hace falta acceso al
+WordPress.
+
+Lo que había antes, copiado del panel de DonDominio, para deshacer:
+
+| Dominio | `@` | `www` |
+|---|---|---|
+| `grupotombo.com` | ANAME `hostingsrv103.dondominio.com` (resolvía a `31.214.178.17`) | CNAME `hostingsrv103.dondominio.com.` |
+| `grupotombo.es` | ANAME `parkingsrv0.dondominio.com` (resolvía a `31.214.178.55`) | CNAME `parkingsrv0.dondominio.com.` |
+
+**`grupotombo.com` tiene correo activo** (info@grupotombo.com), y no se toca nada de él:
+
+- MX `10 mx01.dondominio.com.`
+- TXT `v=spf1 include:spf.dondominio.com`
+- TXT `dddk._domainkey` (DKIM)
+- `imap`, `mail`, `pop`, `pop3` y `smtp` → `mailsrv3.dondominio.com.`
+- `webmail` → `webmail-03.dondominio.net.`
+- `autoconfig` → `autoconfig.panel247.com.`
+- `autodiscover` → `autodiscover.panel247.com.`
+- SRV `_autodiscover._tcp` → `0 443 autodiscover.panel247.com`
+
+Tampoco se toca el resto de su zona:
+
+- `*` → `hostingsrv103.dondominio.com.`
+- `bbdd` → `bbddsrv33.dondominio.com.`
+- `ftp` → `ftp-server-00.dondominio.net.`
+- cinco validaciones `_<hash>` de sectigo y comodoca.
+
+**`grupotombo.es` está aparcado y sin MX.** Además del `@` y el `www`, tiene un TXT `v=spf1`, `*` a
+`parkingsrv0`, `bbdd` a `bbddsrv33`, `ftp` y las entradas de un correo de DonDominio (`imap`, `mail`,
+`pop`, `pop3`, `smtp` y `webmail`, a `mailsrv3` y `webmail-03`) que no reciben nada. Se queda todo
+como está.
 
 ## Cómo se resuelve `SITE_URL`
 
@@ -221,7 +337,7 @@ Dos ramas permanentes:
 
 | Rama | Papel | Despliegue |
 |---|---|---|
-| `main` | **producción** | *production* en Vercel. Falla mientras no haya `SITE_URL`, a propósito. |
+| `main` | **producción** | *production* en Vercel. Recibe `preview` solo cuando Mario lo pide. Las dos publican desde el 2026-11-23. |
 | `preview` | **desarrollo** | preview con alias fijo por rama. Aquí se integra todo el trabajo. |
 
 El trabajo se integra en `preview` y se enseña desde su alias. Cuando una tanda está

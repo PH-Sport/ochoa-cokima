@@ -24,6 +24,7 @@ Equipo **«Rodz»**, plan Hobby.
 | slug del equipo | **`rodz-dev`** |
 | Proyecto `cokima` | `prj_EdHpUZSUL08uIpraAMtuKDvrt5Iu` · Root Directory `apps/cokima` |
 | Proyecto `ochoa` | `prj_T4mNHTefzsFNiZChLDgxQ8JxIlEy` · Root Directory `apps/ochoa` |
+| Proyecto `grupo-tombo` | `prj_8h2E9XxqXaCYuUOwXuQvVst3KI2X` · Root Directory `apps/grupo` (creado el 2026-11-23) |
 
 **El slug cambió** —era `rodzs-projects-1c289ef0`— y con él cambiaron **todos los alias**. Si un
 enlace de preview de un documento viejo devuelve 404, es esto. Verificado el 2026-08-17.
@@ -66,6 +67,21 @@ son las ramas de prueba para ver una propuesta en la web antes de decidir (`esta
 
 El reparto de proyectos, el `ignoreCommand` por app y la resolución de `SITE_URL` están en
 `deploy.md`.
+
+### Los dominios: todos en la misma cuenta de DonDominio
+
+Visto en el panel el 2026-11-23. **Todos en renovación manual**: si nadie los renueva, caducan y se
+caen la web y el correo.
+
+| Dominio | Caduca | Qué hay |
+|---|---|---|
+| `cokima.es` | 2027-06-24 | Web de Cokima en Vercel; correo y hosting en DonDominio |
+| `grupotombo.com` | 2027-08-24 | WordPress del grupo en el hosting de DonDominio; **correo activo** (MX `mx01.dondominio.com`) |
+| `grupotombo.es` | 2027-08-24 | Aparcado; sin MX |
+| `tasquitalosochoa.es` | 2027-08-24 | Web de Ochoa en Vercel; sin MX |
+| `tasquitalosochoa.com` | 2027-08-24 | Redirige a la web de Ochoa; sin MX |
+
+En la misma cuenta está `phsport.es`, que caduca el 2027-03-02 y es de otro proyecto.
 
 ---
 
@@ -135,6 +151,24 @@ Ambas recomendaciones están **bloqueadas por accesos del cliente**; ver `estado
 
 - Cokima: https://claude.ai/code/artifact/1310ef1a-9b31-4a91-829a-8740df5c1bb4
 - Los Ochoa: https://claude.ai/code/artifact/b716368e-80d1-48b6-ae95-83f3cee20043
+
+**La web del grupo, en maqueta** (artifact privado de Mario, 2026-11-23):
+https://claude.ai/artifact/JwoAj2PWR3kk95P9D5WQYc
+
+### El Drive de los restaurantes (acceso desde el 2026-11-23)
+
+Es la carpeta compartida del equipo de los restaurantes, la que ofreció Lorena el 2026-11-13, y es
+**la fuente más al día** para material: fotos, vídeos, cartas y logos. Mario tiene acceso de lectura
+con su cuenta de Google, y el conector de Google Drive de Claude la ve. Las dos casas cuelgan de la
+misma carpeta madre (`1K6t03HXXyo7STneVWgLR89lH2aHxXUtk`):
+
+| Casa | Carpeta | Lo que puede servir a la web |
+|---|---|---|
+| Cokima | `COKIMA` · `1y9uQVQLdu3EaRmVZdHXBzdk7Yp7DP_Xb` | `BRANDING`, `LOCAL`, `AMBIENTE`, `PRODUCTOS`, `FOTOS DE EQUIPO`, `CARTA NUEVA MARZO`, `VIDEOS NUEVA CARTA`, `MARIDAJES` |
+| Ochoa | `TASQUITA LOS OCHOA` · `1ihhZZ2mUoCAz0tYlOgS3a18PtxdNHpmE` | `LOGO Y PATRONES`, `LOCAL`, `CONTENIDO TASQUITA` (sept. 2026), `CARTA`, `PINTXOS`, `BOCADILLOS`, `BEBIDAS`, `DESAYUNOS`, `FEED NUEVO` |
+
+Hay carpetas que no son material para la web, como `PERSONAL` o `CLIENTES`, y no se abren sin que
+Mario lo pida. **No se ha revisado aún el contenido de ninguna**: lo de arriba son solo los nombres.
 
 ---
 

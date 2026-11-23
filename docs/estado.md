@@ -2,9 +2,9 @@
 
 > **Estado: vivo** · corte 2026-11-19 · **el punto de entrada del repo**
 
-- **Corte:** 2026-11-19
-- **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
-  nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
+- **Corte:** 2026-11-23
+- **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción: recibió
+  `preview` el 2026-11-23 y publica las dos webs en sus dominios) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
   de decidir, que no se fusionan: `feat/inicio-paralaje`, el Inicio de Ochoa en paralaje, parada,
   y `feat/cokima-brasa`, el boceto Brasa como página suelta, que sobra desde que Brasa está en
   `preview` (§0). Si se borran lo decide él; la otra rama de prueba, `feat/inicio-vivo`, ya se
@@ -17,14 +17,46 @@
 
 ## 0. Por dónde seguir
 
+**2026-11-23: la web del grupo, en `apps/grupo`.** `grupotombo.com` era un WordPress que seguía
+publicando las páginas de las dos casas y sus cartas viejas, compitiendo con las webs nuevas. Ahora es
+una sola página que presenta el grupo, lleva a las dos casas y enseña el correo de contacto. Las
+direcciones viejas redirigen con un 301. Tiene su propio proyecto en Vercel, `grupo-tombo`, con los cuatro
+dominios dados de alta, y su primer despliegue, salido de `preview`, ya está en producción y comprobado.
+**Falta que Mario cambie los DNS** de `grupotombo.com` y `.es`, y pasar `preview` a `main`: producción
+se quedó en ese primer despliegue y no tiene el icono de la pincelada, que llegó después
+(`deploy.md` §Dominios y SEO). El porqué, lo
+descartado y lo que falta, en `grupo-tombo-web.md`; los registros, en `deploy.md` §Dominios y SEO.
+
 **2026-11-18: el dominio de Cokima es `cokima.es`, y su SEO se repasa antes de apuntarlo.** El cliente ya
 tiene los dominios, pero no son nuevos, y Mario no quería romper nada. Mirada la zona DNS en DonDominio: de
 21 registros, solo dos son de la web; el resto es un correo @cokima.es que está activo y no se toca. Lo que
-sirve hoy el dominio es un WordPress vacío, sin direcciones antiguas que redirigir. **El 2026-11-23 se dio
-de alta en Vercel, con `www.cokima.es` como principal; DonDominio sigue sin tocar**: los dos registros que
-hay que cambiar y sus valores están en `deploy.md` §Dominios y SEO. Falta decidir qué publica producción,
-porque `main` no tiene ningún despliegue que haya funcionado: si se cambian los DNS antes, `cokima.es`
-enseña un error de Vercel.
+sirve hoy el dominio es un WordPress vacío, sin direcciones antiguas que redirigir.
+
+**2026-11-23: las dos webs, en producción y en sus dominios.** Con el visto bueno de Mario, `preview` se
+fusionó en `main` (`7d004a0`, 216 commits). En cada proyecto se puso `SITE_URL` solo en *production*, con
+`www` como principal:
+
+- **Cokima:** `www.cokima.es`. `cokima.es` le redirige con un 308.
+- **Ochoa:** `www.tasquitalosochoa.es`. `tasquitalosochoa.es` y las dos direcciones del `.com` le
+  redirigen con un 308. Su despliegue de `main` falló primero, a propósito, por falta de `SITE_URL`; se
+  relanzó por la API con ella puesta.
+
+Mario cambió los DNS en DonDominio: dos registros por dominio, con los valores de antes apuntados para
+deshacer en `deploy.md` §Dominios y SEO. El correo de `cokima.es` (MX) sigue intacto.
+
+**Medido ese día desde fuera:**
+
+- los seis nombres resuelven a Vercel, también preguntando directamente a `ns1.dondominio.com`;
+- certificados de Let's Encrypt en los seis, válidos hasta febrero de 2027;
+- todas las páginas en 200, con la canónica y el sitemap en su `www`, sin `x-robots-tag` y con 404 en
+  una dirección inventada;
+- las redirecciones dan un solo salto, y desde `http://` dos;
+- las dos portadas, abiertas en el navegador del panel, sin errores en consola y sin peticiones
+  fallidas: el `ERR_ABORTED` del vídeo de Cokima se repite al momento con un 206.
+
+**Salen con lo ya sabido:** el aviso legal y la privacidad con huecos (razón social y CIF «[pendiente]»),
+el plan Hobby, y sin GTM, píxel ni CAPI, que no tienen variables. **Queda, de Mario:** Search Console,
+las fichas de Google Business y los 301 de `grupotombo.com` (§5).
 
 En el mismo repaso, cuatro arreglos de SEO en el código. Medidos sobre el build con
 `SITE_URL=https://cokima.es`, en las 9 páginas:
@@ -1664,20 +1696,21 @@ sirven media ración, no tapa. Es la nomenclatura que va en la carta.
 
 ## 5. Infraestructura pendiente
 
-- [ ] Variables de entorno y dominios por proyecto en Vercel. `SITE_URL` bloquea los
-      despliegues de producción a propósito mientras no haya dominio. **Comprobado el
-      2026-10-22 en `ochoa`: cero variables y ningún dominio propio.** Cokima ya tiene dominio,
-      `cokima.es`, con la zona mirada el 2026-11-18 y sin tocar (`deploy.md` §Dominios y SEO); su
-      proyecto sigue con cero variables y solo `cokima.vercel.app`.
+- [x] Dominios y `SITE_URL` por proyecto en Vercel: hecho el 2026-11-23, con las dos webs
+      publicadas (§0, `deploy.md` §Dominios y SEO). El resto de variables (GTM, píxel, CAPI)
+      sigue sin poner, a la espera de los accesos.
 - [ ] **El plan de Vercel.** El equipo está en Hobby, que Vercel reserva a uso no comercial.
       Pasar a Pro (o el plan que se decida) antes de servir la web de un restaurante con
       dominio propio. Lo decide y lo paga Mario.
 - [ ] *Ignored Build Step* en ambos proyectos: hoy cada push reconstruye las dos webs.
       Comando en `deploy.md`.
-- [ ] Redirects 301 desde `grupotombo.com/cokima-kitchenmadness/` y
-      `/tasquita-los-ochoa/` hacia los dominios nuevos. La de Cokima seguía respondiendo 200 el
-      2026-11-18.
+- [ ] Redirects 301 desde `grupotombo.com` hacia los dominios nuevos: las dos casas y sus dos
+      cartas viejas. Desde el 2026-11-23 van en la web del grupo (`apps/grupo`), así que se
+      activan solas cuando Mario cambie los DNS de `grupotombo.com`; ya no hace falta tocar el
+      `.htaccess` del WordPress.
 - [ ] Alta de cada dominio en Google Search Console y enlace con su ficha de Google Business.
+- [ ] **Los dominios están en renovación manual** en DonDominio. El primero en caducar es `cokima.es`,
+      el 2027-06-24 (`recursos.md` §1). Pasarlos a automática o apuntarse la fecha: lo decide Mario.
 
 ---
 

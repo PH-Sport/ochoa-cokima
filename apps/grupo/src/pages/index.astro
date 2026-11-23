@@ -1,0 +1,302 @@
+---
+// La portada del grupo, la única página con contenido. Los textos son los del WordPress que había en
+// grupotombo.com, sin inventar nada (docs/grupo-tombo-web.md). Las dos casas llevan a su web.
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import cokima from "../assets/cokima.jpg";
+import ochoa from "../assets/ochoa.jpg";
+
+const casas = [
+  {
+    nombre: "Cokima",
+    lema: "Puedes comer en cualquier sitio, pero será solo comer.",
+    direccion: "C. de Andrés Mellado, 21 · Madrid",
+    web: "https://www.cokima.es/",
+    dominio: "cokima.es",
+    foto: cokima,
+    alt: "El rótulo de Cokima iluminado sobre la puerta",
+  },
+  {
+    nombre: "Tasquita Los Ochoa",
+    lema: "¡La tasca que te mereces!",
+    direccion: "P.º de la Castellana, 117 · Madrid",
+    web: "https://www.tasquitalosochoa.es/",
+    dominio: "tasquitalosochoa.es",
+    foto: ochoa,
+    alt: "La fachada de la Tasquita Los Ochoa, con su toldo rojo",
+  },
+];
+---
+
+<Base
+  title="Grupo Tombo · Grupo hostelero en Madrid"
+  description="Grupo Tombo es el grupo hostelero de Cokima, en Andrés Mellado, y de la Tasquita Los Ochoa, en la Castellana: locales con personalidad propia y la buena comida como denominador común."
+  ficha
+>
+  <section class="intro">
+    <div class="wrap">
+      <div class="cabeza">
+        <p class="eyebrow">Grupo hostelero · Madrid</p>
+        <h1>Espacios de esos que vuelves una y otra vez.</h1>
+      </div>
+      <div class="texto">
+        <p>
+          Amantes de la comida y de los buenos restaurantes decidimos emprender en este viaje culinario
+          creando locales con personalidad propia pero con la buena comida como denominador común.
+        </p>
+        <p>
+          Trabajamos para ofrecer una gastronomía diferente que sorprenda con un equilibrio perfecto entre
+          calidad-precio. Nuestros platos son siempre elaboraciones que fusionan la modernidad, sabores del
+          mundo y un buen producto.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="casas" id="restaurantes" aria-labelledby="t-restaurantes">
+    <div class="wrap">
+      <h2 class="titular" id="t-restaurantes"><span>Restaurantes</span></h2>
+      <div class="rejilla">
+        {casas.map((c) => (
+          <a class="casa" href={c.web}>
+            <Image src={c.foto} alt={c.alt} widths={[480, 780, 1200]} sizes="(min-width: 760px) 50vw, 100vw" quality={78} />
+            <div class="pie">
+              <h3>{c.nombre}</h3>
+              <p class="lema">{c.lema}</p>
+              <p class="datos">
+                <span class="dir">{c.direccion}</span>
+                <span class="ir">{c.dominio} →</span>
+              </p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="contacto" id="contacto">
+    <div class="wrap">
+      <div>
+        <h2>Contacto</h2>
+        <p>Si quieres contactar con nosotros, escríbenos.</p>
+        <a class="correo" href="mailto:info@grupotombo.com">info@grupotombo.com</a>
+      </div>
+      <div id="trabaja">
+        <h2>Trabaja con nosotros</h2>
+        <p>Envíanos tu currículum a este correo.</p>
+        <a class="correo" href="mailto:info@grupotombo.com">info@grupotombo.com</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Frase del grupo */
+  .intro .wrap {
+    display: grid;
+    gap: 28px;
+    padding-block: clamp(28px, 6vw, 72px) clamp(36px, 6vw, 64px);
+  }
+  .eyebrow {
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin: 0;
+  }
+  h1 {
+    margin: 0;
+    max-width: 18ch;
+    font-size: var(--step-3);
+    line-height: 1.02;
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .texto {
+    display: grid;
+    gap: 14px;
+    max-width: var(--measure);
+    color: var(--muted);
+    font-size: var(--step-1);
+  }
+  .texto p {
+    margin: 0;
+  }
+  @media (min-width: 900px) {
+    .intro .wrap {
+      grid-template-columns: 1.1fr 1fr;
+      align-items: end;
+      column-gap: 64px;
+    }
+    .cabeza {
+      display: grid;
+      gap: 18px;
+    }
+  }
+
+  /* Las casas */
+  .casas .wrap {
+    display: grid;
+    gap: 18px;
+    padding-block: 0 clamp(48px, 8vw, 96px);
+  }
+  .titular {
+    position: relative;
+    display: inline-block;
+    justify-self: start;
+    margin: 0 0 6px;
+    padding: 6px 22px 8px 14px;
+  }
+  /* La pincelada del logo, teñida con el rojo del tema: el único acento de la página. */
+  .titular::before {
+    content: "";
+    position: absolute;
+    inset: 0 -14px 0 -6px;
+    background: var(--red);
+    -webkit-mask: url(/images/pincelada.png) center / 100% 100% no-repeat;
+    mask: url(/images/pincelada.png) center / 100% 100% no-repeat;
+  }
+  .titular span {
+    position: relative;
+    color: var(--on-red);
+    font-size: var(--step-2);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 1;
+  }
+  .rejilla {
+    display: grid;
+    gap: 18px;
+  }
+  @media (min-width: 760px) {
+    .rejilla {
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+  }
+  .casa {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    text-decoration: none;
+    aspect-ratio: 4 / 5;
+    max-width: 100%;
+    background: var(--photo);
+    border-radius: 4px;
+  }
+  @media (min-width: 760px) {
+    .casa {
+      aspect-ratio: 5 / 6;
+    }
+  }
+  .casa :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.01);
+    transition: transform var(--dur-lento) var(--curva-suave);
+  }
+  .casa::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--photo-shade) 0%, transparent 58%);
+  }
+  .pie {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    display: grid;
+    gap: 6px;
+    padding: clamp(18px, 3.2vw, 30px);
+    color: var(--on-photo);
+  }
+  h3 {
+    margin: 0;
+    font-size: var(--step-2);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+  .lema {
+    margin: 0;
+    max-width: 34ch;
+    opacity: 0.92;
+  }
+  .datos {
+    margin: 6px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 6px 16px;
+    font-size: var(--step--1);
+  }
+  .dir {
+    opacity: 0.82;
+  }
+  .ir {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    border-bottom: 2px solid var(--red);
+    padding-bottom: 1px;
+  }
+  .casa:hover :global(img),
+  .casa:focus-visible :global(img) {
+    transform: scale(1.045);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .casa :global(img) {
+      transition: none;
+    }
+    .casa:hover :global(img),
+    .casa:focus-visible :global(img) {
+      transform: scale(1.01);
+    }
+  }
+
+  /* Contacto */
+  .contacto {
+    border-top: 1px solid var(--line);
+  }
+  .contacto .wrap {
+    display: grid;
+    gap: 34px;
+    padding-block: clamp(40px, 7vw, 76px);
+  }
+  @media (min-width: 760px) {
+    .contacto .wrap {
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+    }
+  }
+  .contacto h2 {
+    margin: 0 0 10px;
+    font-size: var(--step-1);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .contacto p {
+    margin: 0;
+    color: var(--muted);
+    max-width: 44ch;
+  }
+  .correo {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: var(--step-1);
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 2px solid var(--red);
+  }
+</style>
