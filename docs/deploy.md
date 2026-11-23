@@ -202,16 +202,28 @@ estropear y no hace falta: siguen en DonDominio.
 ### `tasquitalosochoa.es` y `.com`: lo que hay y qué se cambia (2026-11-23)
 
 **Los dos dominios estaban aparcados.** Los DNS están en DonDominio, y lo que servían era la página
-«Registrado en DonDominio». No había web ni correo: ningún MX, solo un TXT `v=spf1` que se queda.
-La principal es `www.tasquitalosochoa.es`, como en Cokima, y las otras tres direcciones le redirigen
-con un 308. Se dieron de alta por la API de Vercel ese mismo día, sin efecto de cara al público.
+«Registrado en DonDominio». **No hay correo que funcione:** quedan las entradas de un correo de
+DonDominio (`mail`, `imap`…), pero ningún MX, así que no llega nada. La principal es
+`www.tasquitalosochoa.es`, como en Cokima, y las otras tres direcciones le redirigen con un 308.
+Se dieron de alta por la API de Vercel ese mismo día, sin efecto de cara al público.
 
-En **cada uno** de los dos dominios, en DonDominio:
+Los cambios son los mismos en **cada uno** de los dos dominios, con las zonas copiadas del panel
+de DonDominio el 2026-11-23:
 
-| Nombre | Tipo | Valor nuevo (lo que pidió Vercel) | Valor anterior, para deshacer |
-|---|---|---|---|
-| `@` | A | `216.198.79.1` | `31.214.178.55` |
-| `www` | CNAME | `b138c459c3eddf88.vercel-dns-017.com` | `parkingsrv0.dondominio.com.` |
+| Nombre | Antes (para deshacer) | Después (lo que pidió Vercel) |
+|---|---|---|
+| `@` | ANAME `parkingsrv0.dondominio.com` (resolvía a `31.214.178.55`) | **Se borra y se crea un A** `216.198.79.1` |
+| `www` | CNAME `parkingsrv0.dondominio.com.` | CNAME `b138c459c3eddf88.vercel-dns-017.com` |
+
+El resto de las dos zonas se queda como está. Es igual en las dos, salvo el servidor de la base de
+datos:
+
+- TXT `v=spf1 include:spf.dondominio.com`
+- `*` → `parkingsrv0.dondominio.com.`
+- `bbdd` → `bbddsrv33.dondominio.com.` en el `.es`, y `bbddsrv31.dondominio.com.` en el `.com`
+- `ftp` → `ftp-server-00.dondominio.net.`
+- `imap`, `mail`, `pop`, `pop3` y `smtp` → `mailsrv3.dondominio.com.`
+- `webmail` → `webmail-03.dondominio.net.`
 
 Si DonDominio tiene activado el servicio de *parking* en el dominio, hay que desactivarlo, porque
 puede imponerse a los registros.
