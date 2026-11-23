@@ -47,7 +47,7 @@ const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data
     <div class="wrap"><div class="rule"></div></div>
     <div class="wrap tasca-grid">
       <div class="tasca-photo" data-paralaje>
-        <img src="/images/mesa.jpg" alt="Mesa de mármol con varios platos de la carta servidos para compartir" width="1920" height="1080" loading="lazy" data-vel="-0.08" data-vel-tacto="-0.12" data-tope="22" data-ventana />
+        <img src="/images/tasca-pintxos.jpg" alt="Rosquillas con ensaladilla, boquerón y anchoa, un vermú con naranja y banderillas de piparra sobre una mesa de mármol" width="1920" height="1280" loading="lazy" data-vel="-0.08" data-vel-tacto="-0.12" data-tope="22" data-ventana />
       </div>
       <div>
         <p class="eyebrow">La tasca</p>
@@ -136,8 +136,11 @@ const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data
       grid-template-columns: 1fr;
     }
   }
-  /* Apaisada 16:9, la proporción del propio archivo: aquí vive el cenital de la
-     mesa y recortarlo a cuadrado se comía media mesa. */
+  /* Apaisada 16:9. Nació para el cenital de la mesa, que era 16:9 y recortado a
+     cuadrado perdía media mesa. Desde el 2026-11-23 la foto es la de los pintxos y
+     el vermú que propuso Eva, del restaurante, a 3:2: el marco recorta un poco
+     por arriba y por abajo, y lo que se pierde es la parte alta de la carta del
+     fondo. */
   .tasca-photo {
     border: 2px solid var(--ink);
     border-radius: var(--r-marco);

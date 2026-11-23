@@ -499,4 +499,10 @@ un azar fijo (mulberry32, semilla 7) y 150 pasos de 1/30 s: 132 (2,1 veces la de
 el trazo un 60 % más largo y un 20 % más grueso, porque en una imagen quieta es lo que dice que vuelan.
 No lleva texto que traducir. **Sin probar en WhatsApp de verdad**, como la anterior; recuerda la vista
 previa de lo ya compartido, así que en un enlace que ya se mandó puede salir la de antes (`?v=2`).
-`/images/mesa.jpg` es el cenital de la mesa, que sirve la sección «la tasca».
+`/images/mesa.jpg` es el cenital de la mesa, que sirvió la sección «la tasca» hasta el 2026-11-23. Ese
+día Eva, del restaurante, escribió *«Esa foto habría que cambiarla»* y propuso otra, que estaba en su
+Drive: `PINTXOS/COMPOSICIONES/0011.jpg` (`recursos.md` §3), con rosquillas con ensaladilla, boquerón y
+anchoa, un vermú con naranja y banderillas de piparra. Desde entonces la sección lleva
+`/images/tasca-pintxos.jpg`, sacada de ella a 1920×1280 (3:2; el original es de 4000×2667). El marco es
+16:9 y le recorta un poco por arriba y por abajo, sobre todo la carta del fondo. `mesa.jpg` se queda sin
+uso y sin borrar.

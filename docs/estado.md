@@ -17,6 +17,11 @@
 
 ## 0. Por dónde seguir
 
+**2026-11-23: la foto de «La tasca», en la portada de Ochoa, es la que propuso Eva.** Eva, del
+restaurante, le escribió a Mario *«Esa foto habría que cambiarla»* sobre el cenital de la mesa, y propuso
+otra: rosquillas con ensaladilla, un vermú y banderillas. Estaba en su Drive (`fotografia.md`). Va en las
+dos portadas, en español y en inglés.
+
 **2026-11-23: el bikini de lacón de Ochoa vuelve a tener foto,** la del Drive del restaurante (carpeta
 «BIKINI LACON & TRUFA», que creó Lorena el 2026-11-04). Mario la eligió entre las dos de la carpeta. Que
 sea la versión actual del plato se deduce del nombre y la fecha de la carpeta: Lorena no lo ha dicho
