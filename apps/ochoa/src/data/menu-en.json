@@ -23,7 +23,7 @@
   { "id": "pan-08", "section": "con-pan", "order": 8, "name": "Calamari with ham mayonnaise roll", "price": 8.5, "allergens": ["gluten", "moluscos", "huevo"] },
   { "id": "pan-09", "section": "con-pan", "order": 9, "name": "Chorizo in cider roll", "price": 7, "allergens": ["gluten", "sulfitos"] },
   { "id": "pan-10", "section": "con-pan", "order": 10, "name": "Potato and onion omelette roll", "price": 7, "allergens": ["gluten", "huevo"] },
-  { "id": "pan-11", "section": "con-pan", "order": 11, "name": "Cured pork shoulder toastie", "description": "With Idiazabal cheese and truffle.", "price": 9.5, "featured": true, "allergens": ["gluten", "lacteos"] },
+  { "id": "pan-11", "section": "con-pan", "order": 11, "name": "Cured pork shoulder toastie", "description": "With Idiazabal cheese and truffle.", "price": 9.5, "featured": true, "image": "bikini-de-lacon-y-trufa", "allergens": ["gluten", "lacteos"] },
   { "id": "pan-12", "section": "con-pan", "order": 12, "name": "Minutejos toastie with brava sauce", "price": 10 },
 
   { "id": "rac-01", "section": "raciones", "order": 1, "name": "Moorish skewer with potatoes", "price": 4.75, "allergens": ["sulfitos"] },

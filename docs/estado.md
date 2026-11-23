@@ -17,6 +17,11 @@
 
 ## 0. Por dónde seguir
 
+**2026-11-23: el bikini de lacón de Ochoa vuelve a tener foto,** la del Drive del restaurante (carpeta
+«BIKINI LACON & TRUFA», que creó Lorena el 2026-11-04). Mario la eligió entre las dos de la carpeta. Que
+sea la versión actual del plato se deduce del nombre y la fecha de la carpeta: Lorena no lo ha dicho
+(`fotografia.md`). Medido en el build: la ficha la enlaza en español y en inglés.
+
 **2026-11-23: la carta de Ochoa deja de enseñar el «pendiente de confirmar».** Cinco platos llevaban el
 gluten como «1\*», con una leyenda que decía «pendiente de confirmar con el restaurante»: es el gluten que
 la hoja del restaurante marca en amarillo sin decir por qué (§4). Mario pidió quitarlo y dejarlo como nota
