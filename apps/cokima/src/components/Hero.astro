@@ -1,0 +1,161 @@
+---
+// apps/cokima/src/components/Hero.astro
+import { Image } from "astro:assets";
+import OpenState from "@tombo/ui/OpenState.astro";
+import Embers from "./Embers.astro";
+import { RESTAURANT } from "../site.ts";
+import hero from "../assets/hero.jpg";
+
+interface Props {
+  locale: "es" | "en";
+}
+const { locale } = Astro.props;
+const es = locale === "es";
+---
+
+<header class="hero" id="top">
+  <Image
+    src={hero}
+    alt={es ? "Sartén en llamas sobre el fogón de la cocina de Cokima" : "A pan in flames on the stove in Cokima's kitchen"}
+    widths={[390, 640, 960, 1200]}
+    sizes="100vw"
+    quality={72}
+    loading="eager"
+    fetchpriority="high"
+    class="shot"
+  />
+  <Embers />
+  <div class="veil"></div>
+  <div class="wrap copy">
+    <h1>
+      {es ? (
+        <>Puedes comer en cualquier sitio. <span class="red">Pero será solo comer.</span></>
+      ) : (
+        <>You can eat anywhere. <span class="red">But it will just be eating.</span></>
+      )}
+    </h1>
+    <OpenState hours={RESTAURANT.openingHours} locale={locale} />
+  </div>
+</header>
+
+<script>
+  /* La portada mide una vez y se queda quieta hasta que cambie el ancho.
+   *
+   * `svh` está definido como estable frente al colapso de la barra del
+   * navegador, pero basta con que un navegador toque el alto del viewport por
+   * cualquier motivo para que esta portada le cambie el tamaño, empuje todo lo
+   * que tiene debajo e invalide la capa entera del documento. Medido aquí antes
+   * de congelarla: al acortar el viewport 62px —lo que ocupa la barra al
+   * asomar—, la portada pasaba de 623 a 561px y el documento entero de 2990 a
+   * 2928. En Ochoa, donde se hizo primero, eso costaba 116 tareas de
+   * rasterizado desde cualquier posición de scroll, también con la portada
+   * fuera de pantalla, que es lo que despistaba.
+   *
+   * Solo se vuelve a medir cuando cambia el ANCHO, que es el único cambio de
+   * viewport que de verdad afecta a este cálculo: el alto entra por `svh` y el
+   * resto son `vw` y la cabecera. Así una rotación recoloca y un vaivén de
+   * barras no toca nada.
+   *
+   * Si el script no llega a correr, el `calc()` del CSS sigue mandando y la
+   * portada mide exactamente lo mismo: esto no añade una medida, congela la que
+   * ya había. El razonamiento largo está en el Hero de Ochoa.
+   */
+  let sueltaAnterior: (() => void) | undefined;
+
+  const montaPortada = () => {
+    const hero = document.querySelector<HTMLElement>(".hero");
+    if (!hero) return undefined;
+
+    const raiz = document.documentElement;
+    const abort = new AbortController();
+    let anchoMedido = -1;
+
+    const mide = () => {
+      if (window.innerWidth === anchoMedido) return;
+      anchoMedido = window.innerWidth;
+      /* Se retira el valor congelado para que el `calc()` vuelva a mandar, se
+         lee lo que da y se congela otra vez. Fuerza un reflujo, y por eso pasa
+         solo cuando cambia el ancho y no en cada gesto. */
+      raiz.style.removeProperty("--alto-portada");
+      raiz.style.setProperty("--alto-portada", `${Math.round(hero.getBoundingClientRect().height)}px`);
+    };
+
+    mide();
+    window.addEventListener("resize", mide, { passive: true, signal: abort.signal });
+
+    return () => {
+      abort.abort();
+      raiz.style.removeProperty("--alto-portada");
+    };
+  };
+
+  document.addEventListener("astro:page-load", () => {
+    sueltaAnterior?.();
+    sueltaAnterior = montaPortada();
+  });
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    /* svh y no vh: en móvil, vh cuenta con la barra del navegador retraída y la
+       portada se corta por abajo justo donde queremos que asome el primer
+       plato. Además de la cabecera se resta una franja de asomo: sin ella la
+       portada llena la pantalla al píxel y la tira de platos queda invisible
+       hasta que alguien decide bajar. Que asome es el punto entero. */
+    /* El cálculo se queda como respaldo y como valor del primer pintado; en
+       cuanto el script mide, manda `--alto-portada`, que es ese mismo número
+       congelado en píxeles. El motivo está en el script. */
+    height: var(--alto-portada, calc(100svh - var(--t-header-h, 61px) - clamp(128px, 18vw, 156px)));
+    min-height: 420px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+  }
+  .shot {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* Degradado solo bajo el texto, no una capa uniforme sobre toda la foto:
+     apagar la imagen entera es justo lo que hacen las cinco webs que nos
+     pusieron de referencia, y es lo que las vuelve intercambiables. */
+  .veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(21, 15, 12, 0.94) 0%,
+      rgba(21, 15, 12, 0.72) 26%,
+      rgba(21, 15, 12, 0) 62%
+    );
+  }
+  /* El cartel de cookies vive en esta misma esquina durante la primera visita.
+     `--t-consent-h` lo publica el propio cartel y vuelve a 0 al decidir, así
+     que el titular se aparta mientras hace falta y no un píxel más. */
+  /* El apartarse es un `transform` y no el `padding` que crecía: mover el
+     relleno obliga al navegador a recalcular la disposición en cada fotograma,
+     y el resultado en pantalla es idéntico porque el bloque ya está anclado
+     abajo y el alto de la portada no depende de él. */
+  .copy {
+    position: relative;
+    padding-bottom: clamp(26px, 5vw, 54px);
+    width: 100%;
+    transform: translateY(calc(-1 * var(--t-consent-h, 0px)));
+    transition: transform var(--dur-out) var(--ease);
+  }
+  .hero h1 {
+    font-weight: 800;
+    font-size: clamp(2.3rem, 8.2vw, 5.4rem);
+    line-height: 0.99;
+    letter-spacing: -0.025em;
+    margin: 0 0 14px;
+    max-width: 16ch;
+    text-wrap: balance;
+  }
+  .hero h1 .red {
+    color: var(--vermilion);
+  }
+</style>

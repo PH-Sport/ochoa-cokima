@@ -10,10 +10,14 @@ const es = locale === "es";
   <div class="wrap foot-in">
     <span class="brand cartel">Los Ochoa</span>
     <span>Castellana 117 · Madrid · <a href="tel:+34912876820">912 87 68 20</a></span>
+    {/* En inglés se marca el idioma en el que están: el texto legal válido en
+        España es el español y estas tres no se traducen, así que prometer
+        «Legal notice» a secas y aterrizar en español se lee como un descuido.
+        El «(ES)» avisa antes de pulsar. */}
     <span class="legal">
-      <a href="/aviso-legal">{es ? "Aviso legal" : "Legal notice"}</a> ·
-      <a href="/privacidad">{es ? "Privacidad" : "Privacy"}</a> ·
-      <a href="/cookies">Cookies</a>
+      <a href="/aviso-legal">{es ? "Aviso legal" : "Legal notice (ES)"}</a> ·
+      <a href="/privacidad">{es ? "Privacidad" : "Privacy (ES)"}</a> ·
+      <a href="/cookies">{es ? "Cookies" : "Cookies (ES)"}</a>
     </span>
   </div>
 </footer>

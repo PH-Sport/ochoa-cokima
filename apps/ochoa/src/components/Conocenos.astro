@@ -1,0 +1,430 @@
+---
+/**
+ * El cuerpo de «Conócenos», compartido por la página española y la inglesa.
+ *
+ * Vive aquí y no dentro de cada página por lo mismo que la home tiene sus
+ * secciones en componentes: los bloques son los mismos en los dos idiomas y lo
+ * único que cambia es el texto. Así se escribe una vez la estructura y dos
+ * veces las palabras, en vez de mantener dos maquetaciones que se van
+ * separando sin que nadie lo note —que es exactamente lo que le pasó a la home
+ * inglesa hasta el 31—.
+ *
+ * Desde el 2026-10-30 es «En sus palabras», una de las dos maneras que Mario vio
+ * en el probador (la otra, «Un día en Los Ochoa», sigue allí): la experiencia
+ * del restaurante y nada más, sin el equipo, en cinco momentos con su foto
+ * entera y una frase que la casa ha publicado en su Instagram, y el cubo de
+ * madera para cerrar. Mario: «cuánto menos podamos inventarnos, mejor». Lo único
+ * escrito aquí son las etiquetas de los momentos y las notas de horario, que
+ * salen de `site.ts`; en inglés, las frases son traducción nuestra. El porqué y
+ * de dónde sale cada frase, en docs/estado.md («Conócenos»).
+ */
+import { Image } from "astro:assets";
+import { RESTAURANT } from "../site.ts";
+import comedor from "../assets/conocenos/comedor.jpg";
+import desayuno from "../assets/conocenos/desayuno.jpg";
+import barra from "../assets/conocenos/barra.jpg";
+import aperol from "../assets/conocenos/aperol.jpg";
+import mesa from "../assets/conocenos/mesa.jpg";
+import rotulo from "../assets/conocenos/rotulo.jpg";
+import cubo from "../assets/conocenos/cubo.jpg";
+
+interface Props {
+  locale: "es" | "en";
+}
+const { locale } = Astro.props;
+const es = locale === "es";
+
+/* Las notas de horario están escritas a mano a partir de `site.ts`. Si el
+   horario cambia, el build se para aquí en vez de publicar uno viejo. */
+const HORARIO = "Mo-Th 09:00-01:00|Fr 09:00-02:30|Sa 12:00-02:30|Su 12:00-01:00";
+if (RESTAURANT.openingHours.join("|") !== HORARIO) {
+  throw new Error("Conocenos.astro: the opening hours in site.ts changed; update the hour notes.");
+}
+
+const t = es
+  ? {
+      eyebrow: "Conócenos",
+      // El titular y la entradilla son una sola frase suya (Instagram, 2026-05-28),
+      // partida en dos.
+      h1: "Madrid tiene bares… y luego están las tascas",
+      entradilla: "Donde la comida acaba siendo la excusa para quedarse.",
+      altComedor: "El comedor, con el banco corrido rojo, las mesas de mármol y el rótulo «Conservas»",
+      momentos: "La casa, en sus palabras",
+      abre: "De lunes a viernes, desde las 9:00. Sábados y domingos, desde las 12:00.",
+      cierra: "De domingo a jueves, hasta la 1:00. Viernes y sábados, hasta las 2:30.",
+      altCubo: "Un cubo de madera con el nombre de la casa y el refrán «Este bar invita dos veces: una fue ayer y la otra es mañana»",
+      refran: "Este bar invita dos veces: una fue ayer y la otra es mañana",
+      manifiesto:
+        "Reivindicamos lo castizo con orgullo. Cocina sencilla, caña bien tirada y el ambiente que solo da una tasca con alma.",
+      llamada: "Barra lista. Solo faltas tú.",
+      reservar: "Reservar mesa",
+      verCarta: "Ver la carta",
+      hrefReserva: "/reservas",
+      hrefCarta: "/carta",
+    }
+  : {
+      eyebrow: "About us",
+      h1: "Madrid has bars… and then there are tascas",
+      entradilla: "Where the food ends up being the excuse to stay.",
+      altComedor: "The dining room, with the long red bench, the marble tables and the “Conservas” sign",
+      momentos: "The house, in its own words",
+      abre: "Monday to Friday, from 9:00. Saturdays and Sundays, from 12:00.",
+      cierra: "Sunday to Thursday, until 1:00. Fridays and Saturdays, until 2:30.",
+      altCubo: "A wooden crate with the name of the house and the saying “Este bar invita dos veces: una fue ayer y la otra es mañana”",
+      refran: "This bar buys you a round twice: one was yesterday, the other is tomorrow",
+      manifiesto:
+        "Proudly old-school Madrid. Simple cooking, a well-pulled beer and the atmosphere only a tasca with soul can give.",
+      llamada: "The bar's ready. All that's missing is you.",
+      reservar: "Book a table",
+      verCarta: "See the menu",
+      hrefReserva: "/en/reservations",
+      hrefCarta: "/en/menu",
+    };
+
+/* Cada frase sale de la publicación de su propia foto cuando la tiene. */
+const momentos = [
+  {
+    foto: desayuno,
+    etq: es ? "La mañana" : "The morning",
+    alt: es
+      ? "Zumo de naranja, café con leche y tostadas con tomate sobre el mármol"
+      : "Orange juice, white coffee and toast with tomato on the marble",
+    cita: es
+      ? "No se trata solo de comer… se trata de cómo empiezas el día. Desayuno sencillo, sabores de verdad y ese momento solo para ti."
+      : "It's not just about eating… it's about how you start the day. A simple breakfast, real flavours and that moment just for you.",
+    nota: t.abre,
+  },
+  {
+    foto: barra,
+    etq: es ? "La barra" : "The bar",
+    alt: es
+      ? "La barra, con el espejo rotulado a mano: tortilla, gildas, ensaladilla"
+      : "The bar, with the hand-lettered mirror: tortilla, gildas, ensaladilla",
+    cita: es
+      ? "El cuerpo lo sabe… y la barra también. Es viernes y el plan se huele desde la puerta: cañas frías, vermut de grifo y el mejor tapeo de Madrid."
+      : "Your body knows it… and so does the bar. It's Friday and you can smell the plan from the door: cold beers, vermouth on tap and the best tapas in Madrid.",
+  },
+  {
+    foto: aperol,
+    etq: es ? "La ronda" : "The round",
+    alt: es
+      ? "Sirviendo un aperol en la barra, junto a la carta de la casa"
+      : "Pouring an Aperol at the bar, next to the house menu",
+    cita: es
+      ? "Reunión cancelada. Ronda confirmada. El único briefing que importa empieza a las 19:00."
+      : "Meeting cancelled. Round confirmed. The only briefing that matters starts at 19:00.",
+  },
+  {
+    foto: mesa,
+    etq: es ? "La mesa" : "The table",
+    alt: es
+      ? "«La tasca que te mereces» pintado sobre una mesa de mármol"
+      : "“La tasca que te mereces” painted on a marble table",
+    cita: es
+      ? "Hay lugares donde el tiempo se detiene. Donde una mesa, una caña y una tapa saben a casa."
+      : "There are places where time stands still. Where a table, a beer and a tapa taste like home.",
+  },
+  {
+    foto: rotulo,
+    etq: es ? "El sitio" : "The spot",
+    alt: es ? "El cartel colgante de Tasquita Los Ochoa, de cerca" : "The hanging Tasquita Los Ochoa sign, up close",
+    cita: es
+      ? "Tu sitio hoy está claro. Caña fría, barra y lo que vaya saliendo."
+      : "Your spot today is clear. A cold beer, the bar and whatever comes out of the kitchen.",
+    nota: t.cierra,
+  },
+];
+
+/* Las fotos ocupan casi media columna en el ordenador y todo el ancho en el móvil. */
+const TAMANOS = "(max-width: 860px) 90vw, 45vw";
+const marco = (f: ImageMetadata) => `aspect-ratio: ${f.width} / ${f.height}`;
+---
+
+<article class="conocenos">
+  {/* Las entradas, decididas antes de que se pinte nada: este script va delante
+      de lo que esconde, así que nada se ve un instante para luego esconderse.
+      Con «reducir movimiento» no esconde nada. Va en línea, y no en un módulo,
+      para que no haya nada que pueda no llegar y dejar la página en blanco.
+
+      El primer observador, `pide`, existe porque una foto `lazy` tapada del todo
+      por su recorte no se descarga nunca en Chromium (regla 28 de movimiento.md):
+      se pide a mano una pantalla antes de llegar a ella. Las notas van aquí y no
+      dentro del script, que se publica tal cual (2026-11-18). */}
+  <script is:inline data-astro-rerun>
+    (function () {
+      var art = document.currentScript && document.currentScript.closest("article");
+      if (!art || !("IntersectionObserver" in window) || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      art.classList.add("revela");
+      var mira = function () {
+        var pide = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            e.target.querySelectorAll("img").forEach(function (img) { img.loading = "eager"; });
+            pide.unobserve(e.target);
+          });
+        }, { rootMargin: "0px 0px 100% 0px" });
+        var ojo = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            e.target.classList.add("visto");
+            ojo.unobserve(e.target);
+          });
+        }, { threshold: 0.18 });
+        art.querySelectorAll("[data-revela]").forEach(function (el) {
+          pide.observe(el);
+          ojo.observe(el);
+        });
+        document.addEventListener("astro:before-swap", function () {
+          pide.disconnect();
+          ojo.disconnect();
+        }, { once: true });
+      };
+      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mira, { once: true });
+      else mira();
+    })();
+  </script>
+
+  <header class="cabecera">
+    <div class="wrap cabecera-in" data-revela>
+      <div>
+        <p class="eyebrow">{t.eyebrow}</p>
+        <h1 class="cartel" data-relieve="0.075">{t.h1}</h1>
+        <p class="entradilla">{t.entradilla}</p>
+      </div>
+      <figure class="foto" style={marco(comedor)}>
+        <Image src={comedor} alt={t.altComedor} widths={[320, 640, 960, 1200]} sizes={TAMANOS} quality={72} loading="eager" />
+      </figure>
+    </div>
+  </header>
+
+  <section class="momentos" aria-label={t.momentos}>
+    <div class="wrap">
+      {momentos.map((m) => (
+        <div class="momento" data-revela>
+          <figure class="foto" style={marco(m.foto)}>
+            <Image src={m.foto} alt={m.alt} widths={[320, 640, 960, 1200]} sizes={TAMANOS} quality={72} loading="lazy" />
+          </figure>
+          <div>
+            <p class="eyebrow">{m.etq}</p>
+            <blockquote class="cita"><p>{m.cita}</p></blockquote>
+            {m.nota && <p class="nota">{m.nota}</p>}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="cierre">
+    <div class="wrap cierre-in" data-revela>
+      <figure class="foto" style={marco(cubo)}>
+        <Image src={cubo} alt={t.altCubo} widths={[320, 640, 960, 1200]} sizes={TAMANOS} quality={72} loading="lazy" />
+      </figure>
+      <div>
+        <p class="cartel refran">{t.refran}</p>
+        <p class="manifiesto">{t.manifiesto}</p>
+        <p class="llamada">{t.llamada}</p>
+        <p class="acciones">
+          <a href={t.hrefReserva} class="btn">{t.reservar}</a>
+          <a href={t.hrefCarta} class="btn ghost">{t.verCarta}</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</article>
+
+<style>
+  /* Las secciones no llevan fondo: dejan ver el fondo vivo, como en la home. */
+
+  /* ---------------------------------------------------------- la cabecera */
+  .cabecera {
+    padding-block: clamp(36px, 7vw, 96px) clamp(56px, 9vw, 120px);
+  }
+  .cabecera-in {
+    display: grid;
+    gap: clamp(28px, 5vw, 64px);
+    align-items: center;
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(2.6rem, 6.4vw, 5.6rem);
+    line-height: 0.94;
+    max-width: 13ch;
+    text-wrap: balance;
+  }
+  .entradilla {
+    margin: clamp(16px, 2vw, 24px) 0 0;
+    font-weight: 650;
+    font-stretch: var(--wd-rotulo);
+    font-size: clamp(1.15rem, 1.9vw, 1.55rem);
+    line-height: 1.32;
+    max-width: 26ch;
+  }
+  @media (min-width: 861px) {
+    .cabecera-in {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    }
+  }
+
+  /* -------------------------------------------- las fotos, enteras y enmarcadas */
+  /* El marco de la casa: tinta, la esquina de los marcos y sombra roja dura. Cada
+     marco lleva la proporción de su foto, así que no se recorta nada. */
+  .foto {
+    position: relative;
+    margin: 0;
+    border: 2px solid var(--ink);
+    border-radius: var(--r-marco);
+    overflow: hidden;
+    background: var(--paper-3);
+    box-shadow: 6px 6px 0 var(--rojo);
+  }
+  .foto :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+  }
+
+  /* ---------------------------------------------------- la voz de la casa */
+  .cita {
+    margin: 0;
+  }
+  .cita p {
+    margin: 0;
+    font-family: var(--sans);
+    font-weight: 650;
+    font-stretch: var(--wd-rotulo);
+    font-size: clamp(1.35rem, 2.3vw, 2.05rem);
+    line-height: 1.22;
+    color: var(--ink);
+    max-width: 28ch;
+    text-wrap: pretty;
+  }
+  .cita p::before {
+    content: "«";
+    color: var(--rojo);
+  }
+  .cita p::after {
+    content: "»";
+    color: var(--rojo);
+  }
+  .nota {
+    margin: 14px 0 0;
+    color: var(--ink-dim);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    max-width: 40ch;
+  }
+
+  /* ----------------------------------- los momentos: foto y frase, alternando */
+  .momentos .wrap {
+    display: grid;
+    gap: clamp(72px, 11vw, 150px);
+    padding-bottom: clamp(80px, 10vw, 140px);
+  }
+  .momento {
+    display: grid;
+    gap: clamp(20px, 3vw, 40px);
+    align-items: center;
+  }
+  .momento .eyebrow {
+    margin-bottom: 12px;
+  }
+  @media (min-width: 861px) {
+    .momento {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      gap: clamp(40px, 6vw, 96px);
+    }
+    .momento:nth-child(even) {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    }
+    .momento:nth-child(even) .foto {
+      order: 2;
+    }
+  }
+
+  /* ------------------------------------------------- el cierre, con el cubo */
+  .cierre {
+    padding-block: clamp(40px, 6vw, 80px) clamp(80px, 11vw, 150px);
+  }
+  .cierre-in {
+    display: grid;
+    gap: clamp(28px, 5vw, 64px);
+    align-items: center;
+  }
+  .refran {
+    margin: 0;
+    font-size: clamp(2rem, 4.4vw, 3.6rem);
+    line-height: 0.98;
+    max-width: 16ch;
+    text-wrap: balance;
+  }
+  .manifiesto {
+    margin: 22px 0 0;
+    font-weight: 600;
+    font-size: clamp(1.1rem, 1.6vw, 1.3rem);
+    line-height: 1.42;
+    max-width: 36ch;
+  }
+  .llamada {
+    margin: 28px 0 18px;
+    font-family: var(--display);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.015em;
+    font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+    line-height: 1;
+    color: var(--ink);
+  }
+  .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin: 0;
+  }
+  @media (min-width: 861px) {
+    .cierre-in {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    }
+  }
+
+  /* ---------------------------------------------------------- las entradas */
+  /* La foto entra con el telón de la casa, de derecha a izquierda, y el texto sube
+     un poco detrás. Una sola vez, al llegar. Los recortes empiezan fuera del marco
+     para no cortar la sombra. */
+  .revela [data-revela] .foto {
+    clip-path: inset(-12px -12px -12px calc(100% + 12px));
+  }
+  .revela [data-revela] :is(.eyebrow, .cita, .nota, .manifiesto, .llamada, .acciones) {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  .revela [data-revela].visto .foto {
+    clip-path: inset(-12px);
+    transition: clip-path var(--dur-recogida) var(--ease-telon);
+  }
+  .revela [data-revela].visto :is(.eyebrow, .cita, .nota, .manifiesto, .llamada, .acciones) {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity var(--dur-in) var(--ease),
+      transform var(--dur-in) var(--ease);
+  }
+  .revela [data-revela].visto .cita {
+    transition-delay: var(--dur-out);
+  }
+  .revela [data-revela].visto :is(.nota, .manifiesto) {
+    transition-delay: calc(var(--dur-out) * 2);
+  }
+  .revela [data-revela].visto :is(.llamada, .acciones) {
+    transition-delay: calc(var(--dur-out) * 3);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .revela [data-revela] :is(.foto, .eyebrow, .cita, .nota, .manifiesto, .llamada, .acciones) {
+      clip-path: none;
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

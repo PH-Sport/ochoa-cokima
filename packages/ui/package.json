@@ -7,8 +7,14 @@
     ".": "./src/index.ts",
     "./*": "./src/*"
   },
+  "scripts": {
+    "test": "vitest run"
+  },
   "dependencies": {
     "@tombo/content": "workspace:*"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.0"
   },
   "peerDependencies": {
     "astro": "^6.0.0"

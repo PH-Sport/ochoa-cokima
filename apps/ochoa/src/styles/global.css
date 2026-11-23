@@ -6,31 +6,94 @@
   src: url("/fonts/anton-400.woff2") format("woff2");
 }
 
+/* Un solo archivo para toda la familia: los rangos de `font-weight` y
+   `font-stretch` son los dos ejes variables, no tres pesos sueltos. Subconjunto
+   latino, que ya trae ñ, los acentos, «», ½ y €. */
+@font-face {
+  font-family: "Archivo";
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/archivo-var.woff2") format("woff2");
+}
+
+/* La letra de las palabras pintadas a mano en el espejo de la barra —Tortilla,
+   Gildas, Ensaladilla—, que el fondo vivo de la home (2026-10-29) pinta en el
+   blanco libre. Solo la usa ese lienzo, y una `@font-face` no descarga nada
+   hasta que alguien la pide: el resto de páginas no la paga.
+   Origen: Yellowtail, de Astigmatic (Brian J. Bonislawsky), bajada de Google
+   Fonts el 2026-10-29 —su subconjunto latino, versión 25, que trae ú y ñ— y
+   servida desde aquí, como Anton y Archivo. Licencia Apache 2.0
+   (https://www.apache.org/licenses/LICENSE-2.0), no OFL: su ficha está en
+   `apache/yellowtail` del repositorio google/fonts. */
+@font-face {
+  font-family: "Yellowtail";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/yellowtail-400.woff2") format("woff2");
+}
+
 * {
   box-sizing: border-box;
 }
 html {
-  scroll-behavior: smooth;
+  /* Sin `scroll-behavior: smooth`. No había en toda la web un solo anclaje
+     interno del que colgar —ni un `href="#"`, ni un `scrollIntoView`—, así que
+     no animaba ninguna navegación: la única que existe es la de la tira de
+     platos, y esa pide su `behavior: "smooth"` en la propia llamada. Lo que sí
+     hacía era animar los reajustes de scroll que el navegador se da a sí mismo,
+     y en Chromium el colapso de la barra de direcciones es uno de ellos. */
+
+  /* El hueco de la barra de scroll se reserva siempre, esté o no. Así, cuando el
+     menú oculta el desbordamiento, la página no se ensancha de golpe: sin esto
+     todo el contenido daba un respingo lateral justo al abrir. En móvil, donde
+     la barra se superpone, no reserva nada. */
+  scrollbar-gutter: stable;
+
+  /* iOS y Android pintan de su cuenta un recuadro translúcido sobre lo que se
+     toca, y aquí sobra: `[data-tacto]` ya acusa el dedo hundiendo la pieza
+     contra su propia sombra. Los dos a la vez se pisan —el rectángulo gris del
+     sistema no es de nadie y tapa el hundido justo mientras ocurre—. Se apaga
+     en la raíz porque la propiedad se hereda, así que cubre todo el documento
+     sin listar un solo selector. */
+  -webkit-tap-highlight-color: transparent;
+}
+/* Fondo quieto con el menú abierto. La clase la pone `menu-overlay.ts`. */
+html.menu-open {
+  overflow: hidden;
+}
+/* Y quieto de verdad: la barra pasa a `fixed` mientras dura el menú (ver
+   Nav.astro), o sea que sale del flujo y deja un hueco de su propio alto. Sin
+   devolverlo, la página de debajo daba un tirón hacia arriba de exactamente
+   esos 62px justo al abrir —se veía porque el telón todavía está cayendo y no
+   la tapa—. El relleno ocupa el sitio que la barra deja, así que el contenido
+   no se entera de que ha cambiado de posicionamiento. */
+html.menu-open body {
+  padding-top: var(--t-header-h);
 }
 body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--serif);
-  font-size: 17.5px;
-  line-height: 1.62;
+  font-family: var(--sans);
+  font-size: var(--fs-body);
+  font-stretch: var(--wd-text);
+  line-height: var(--lh-body);
+  font-kerning: normal;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-}
-/* grano de papel */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.06;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* Sin `overflow-x: hidden`. El `overflow` del body se propaga al viewport
+     cuando el del `<html>` es `visible`, así que esta línea no recortaba una
+     caja: convertía el viewport entero en un scroller con desbordamiento
+     tapado. En Chromium eso enturbia el mecanismo que oculta y devuelve la
+     barra de direcciones al deslizar, que es el que se veía a trompicones en
+     Brave y no en Safari —donde ese colapso no redimensiona el viewport—.
+     Y no protegía nada: medido sin ella en las cinco rutas a 360px, el ancho
+     desplazable es idéntico al visible. Lo que desborda de verdad son las
+     tarjetas de la tira de platos, y de eso ya se ocupa su propio
+     `overflow-x: auto`. Si algún día algo vuelve a salirse, el sitio de
+     recortarlo es esa pieza, no el documento. */
 }
 a {
   color: inherit;
@@ -44,26 +107,43 @@ img {
 .wrap {
   max-width: var(--maxw);
   margin: 0 auto;
-  padding: 0 clamp(20px, 5vw, 48px);
+  /* Con el móvil tumbado, la isla de la cámara y las esquinas redondas caen
+     dentro de la página (`viewport-fit=cover`, en Base.astro), y el 5vw no
+     llegaba a librarlas: en un iPhone 17 tumbado, la isla tapaba el borde de
+     la «L» del titular y del rótulo (visto en el simulador el 2026-10-29). El
+     margen no baja nunca de lo que tapan; en vertical eso es 0 y manda el 5vw. */
+  padding: 0 max(5vw, env(safe-area-inset-right, 0px)) 0 max(5vw, env(safe-area-inset-left, 0px));
   position: relative;
   z-index: 1;
 }
 
 /* titulares de cartel: Anton + sombra dura, como el rótulo real */
+/* La sombra lee `--relieve-x` y `--relieve-y`: con ratón, el cursor es la luz y
+   la sombra cae al otro lado (El relieve, 2026-10-29). Los publica
+   `relieve.ts` solo en las piezas marcadas con `data-relieve` —el rótulo de la
+   barra, sus secciones y el titular de la portada—; en las demás, sin ratón o
+   sin script, manda la fórmula de siempre. La fórmula sigue siendo una sola: se
+   le añade la luz aquí en vez de copiar el valor en cada pieza (regla 20). */
 .cartel {
   font-family: var(--display);
   font-weight: 400;
   text-transform: uppercase;
   color: var(--rojo);
   letter-spacing: 0.015em;
-  line-height: 0.96;
-  text-shadow: 0.045em 0.05em 0 var(--ink);
+  line-height: var(--lh-cartel);
+  text-shadow: var(--relieve-x, 0.045em) var(--relieve-y, 0.05em) 0 var(--ink);
 }
 
+/* La etiqueta es la bisagra entre Anton y el texto: misma versal apretada del
+   rótulo, pero en Archivo. Es lo que hace que las dos familias se lean como una
+   sola voz en vez de como una pareja de conveniencia. */
 .eyebrow {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 1.06rem;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-stretch: var(--wd-rotulo);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: var(--fs-label);
   color: var(--rojo);
   margin: 0 0 0.3rem;
 }
@@ -80,30 +160,169 @@ img {
   display: inline-block;
   font-family: var(--sans);
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 650;
+  letter-spacing: 0.005em;
   background: var(--rojo);
-  color: #fff9ee;
+  color: #ffffff;
   padding: 12px 22px;
   border: 0;
-  border-radius: 3px;
+  border-radius: var(--r-btn);
   cursor: pointer;
   white-space: nowrap;
   box-shadow: 3px 3px 0 var(--ink);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  /* Responde a un dedo, así que va con la duración corta: lo que reacciona a
+     una pulsación tiene que sentirse instantáneo.
+     El retardo vive aquí y no en `:active` a propósito: esta es la transición
+     de *vuelta*, la que corre al soltar. La ida la gobierna la regla de
+     `:active`, que lo pone a cero. Así el botón baja en el instante en que se
+     toca y se queda abajo un momento después de levantar el dedo, que es
+     cuando por fin se ve. */
+  transition:
+    transform var(--dur-out) var(--ease),
+    box-shadow var(--dur-out) var(--ease),
+    background var(--dur-out) var(--ease);
+}
+/* La respuesta al dedo la gobierna `data-tacto` desde el script del layout, no
+   `:active`: en Safari de iOS ese estado solo se aplica de forma fiable si hay
+   un listener táctil en la página, y era la razón de que en el iPhone no se
+   viera nada. `:active` se queda como respaldo para quien navegue sin
+   JavaScript.
+
+   Cada pieza declara cuánto se hunde en `--tacto-d` y de qué color es su
+   sombra en `--tacto-sombra`; el fotograma de salida no se escribe, así que
+   cada una vuelve exactamente a la suya. */
+[data-tacto] {
+  --tacto-d: 3px;
+}
+.btn:hover,
+.btn:active {
+  transition-duration: var(--dur-out);
+  transition-delay: 0s;
 }
 .btn:hover {
   background: var(--rojo-2);
   transform: translate(1px, 1px);
   box-shadow: 2px 2px 0 var(--ink);
 }
+/* El recorrido entero: la pieza baja los tres píxeles que medía su sombra y se
+   queda pegada al papel. Va en `:active` y no solo en `:hover` porque en el
+   móvil —que es donde se usa esta web— no existe el hover: sin esto, el botón
+   no acusaba el dedo por ninguna parte. Los tres píxeles del desplazamiento son
+   exactamente los de la sombra en reposo; por eso parece que se hunde y no que
+   se mueve. */
+.btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--ink);
+}
+/* El fantasma llevaba `box-shadow: none` y `transform: none`, así que era el
+   único botón de la casa sin relieve ni recorrido: se leía como texto con una
+   caja alrededor. Ahora es el mismo botón, en hueco. */
 .btn.ghost {
   background: transparent;
   color: var(--ink);
   border: 1.5px solid var(--ink);
-  box-shadow: none;
+  box-shadow: 3px 3px 0 var(--ink);
 }
 .btn.ghost:hover {
+  background: transparent;
   color: var(--rojo);
   border-color: var(--rojo);
-  transform: none;
+  box-shadow: 2px 2px 0 var(--rojo);
+}
+.btn.ghost:active {
+  background: transparent;
+  box-shadow: 0 0 0 var(--rojo);
+}
+
+/* El estado de tacto va DESPUÉS de los botones, y no antes, porque pesa lo
+   mismo que `.btn.ghost` y que `.btn:hover` —dos clases cada uno— y en un
+   empate de especificidad gana el que se declara el último. Colocado arriba,
+   el fantasma se hundía arrastrando su sombra de tres píxeles: bajaba, pero la
+   sombra bajaba con él, así que se leía como que se movía y no como que se
+   apoyaba en el papel. Es el mismo tropiezo del botón de la barra, que además
+   necesita reescribirlo en su propio componente porque el `[data-astro-cid-…]`
+   de los estilos con scope le da un punto más. */
+[data-tacto].tocando {
+  transform: translate(var(--tacto-d), var(--tacto-d));
+  box-shadow: 0 0 0 var(--tacto-sombra, var(--ink));
+  transition: none;
+}
+[data-tacto].soltando {
+  animation: tacto-sube var(--dur-sube) var(--ease);
+}
+@keyframes tacto-sube {
+  from {
+    transform: translate(var(--tacto-d), var(--tacto-d));
+    box-shadow: 0 0 0 var(--tacto-sombra, var(--ink));
+  }
+}
+
+/* Cuadro vichy rojo y blanco del mantel, generado sin imagen. Se usa como
+   separador de sección, nunca de fondo bajo texto. */
+.vichy {
+  height: 22px;
+  background-image:
+    repeating-linear-gradient(90deg, var(--rojo) 0 11px, transparent 11px 22px),
+    repeating-linear-gradient(0deg, var(--rojo) 0 11px, transparent 11px 22px);
+  background-color: rgba(198, 34, 43, 0.22);
+  background-blend-mode: multiply;
+}
+
+/* Barrido entre páginas. La hoja nueva entra por el borde y empuja a la vieja
+   fuera, como se pasa una foto en la galería del móvil; el fundido por defecto
+   de las transiciones de vista no decía en qué dirección se estaba yendo.
+   La que sale recorre menos que la que entra —un 22% frente al 100%— porque
+   así se lee que una tapa a la otra en vez de que las dos se persigan.
+   La dirección la marca `data-nav`, que escribe el layout: hacia adelante en
+   una navegación normal, y al revés con el botón de atrás del navegador, que
+   es donde un barrido en el sentido equivocado se nota como un error. */
+@keyframes barre-entra {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes barre-sale {
+  to {
+    transform: translateX(-22%);
+  }
+}
+@keyframes barre-entra-atras {
+  from {
+    transform: translateX(-100%);
+  }
+}
+@keyframes barre-sale-atras {
+  to {
+    transform: translateX(22%);
+  }
+}
+::view-transition-old(root) {
+  animation: barre-sale var(--dur-in) var(--ease) both;
+}
+::view-transition-new(root) {
+  animation: barre-entra var(--dur-in) var(--ease) both;
+}
+html[data-nav="atras"]::view-transition-old(root) {
+  animation-name: barre-sale-atras;
+}
+html[data-nav="atras"]::view-transition-new(root) {
+  animation-name: barre-entra-atras;
+}
+
+/* Ninguna transición de vista ni animación para quien pide menos movimiento.
+   Se apagan también las de View Transitions, que el navegador ejecuta por su
+   cuenta y no pasan por ninguna regla de autor. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

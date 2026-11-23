@@ -5,21 +5,48 @@ interface Props {
   title: string;
   description: string;
   locale: "es" | "en";
-  /** Ruta equivalente en el otro idioma, p. ej. "/en/menu" desde "/carta". */
-  altPath: string;
+  /** Ruta equivalente en el otro idioma, p. ej. "/en/menu" desde "/carta".
+   *  Opcional: hay páginas que solo existen en un idioma —las legales de Ochoa
+   *  se publican solo en español— y ahí no se declara ninguna equivalencia.
+   *  Declarar una falsa es peor que no declarar nada: el emparejamiento tiene
+   *  que ser recíproco, y una legal apuntando a la home inglesa no lo es. */
+  altPath?: string;
   restaurant: RestaurantInfo;
   ogImage?: string;
+  /** La foto del local para los buscadores (el `image` del JSON-LD). Sin ella
+   *  vale la de compartir. Va aparte porque la de compartir puede ser un
+   *  cartel, y a un buscador se le enseña el sitio. */
+  schemaImage?: string;
+  /** Página que existe pero todavía no debe indexarse: la que está montada con
+   *  huecos de contenido a la espera de material. `follow` y no `nofollow`
+   *  porque los enlaces que salen de ella —a la carta, a reservas— sí valen;
+   *  lo que no vale es que la página en obras compita en los resultados. */
+  noindex?: boolean;
 }
 
-const { title, description, locale, altPath, restaurant, ogImage } = Astro.props;
+const { title, description, locale, altPath, restaurant, ogImage, schemaImage = ogImage, noindex = false } = Astro.props;
 const site = Astro.site ?? new URL("http://localhost:4321");
 const canonical = new URL(Astro.url.pathname, site);
-const alternate = new URL(altPath, site);
+// La ruta del otro idioma, con la misma forma que la canónica de esta página: con barra al final o sin ella,
+// la que use la casa. Ochoa la escribe sin barra («/en/menu») y la publica con ella («/en/menu/»), y un
+// `hreflang` que no apunta a la canónica exacta de la otra página es una pareja que Google puede no
+// reconocer (2026-11-18). Las dos casas usan la misma forma en todas sus páginas, así que la de esta vale
+// para la otra; menos en la portada, que es «/» con barra o sin ella, y ahí se deja la ruta como viene.
+const conBarra = canonical.pathname.endsWith("/");
+const comoLaCanonica = (ruta: string) =>
+  canonical.pathname === "/" || ruta === "/" ? ruta : conBarra ? ruta.replace(/\/?$/, "/") : ruta.replace(/\/$/, "");
+const alternate = altPath ? new URL(comoLaCanonica(altPath), site) : null;
 const altLocale = locale === "es" ? "en" : "es";
+const xDefault = altPath ? new URL(locale === "es" ? Astro.url.pathname : comoLaCanonica(altPath), site) : null;
+// La web del restaurante es su portada, la mire quien la mire. Hasta el 2026-11-18 era la canónica de
+// cada página, y el aviso legal declaraba que la web de Cokima era /aviso-legal: la misma ficha en
+// cada página, con una dirección distinta en cada una, es lo contrario de decirle a Google quién es.
+const home = new URL("/", site).href;
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Restaurant",
+  "@id": `${home}#restaurante`,
   name: restaurant.name,
   address: {
     "@type": "PostalAddress",
@@ -32,22 +59,47 @@ const jsonLd = {
   servesCuisine: restaurant.servesCuisine,
   priceRange: restaurant.priceRange,
   openingHours: restaurant.openingHours,
-  url: canonical.href,
+  url: home,
+  ...(restaurant.menuPath ? { hasMenu: new URL(restaurant.menuPath, site).href } : {}),
+  ...(restaurant.reservationsPath ? { acceptsReservations: new URL(restaurant.reservationsPath, site).href } : {}),
   ...(restaurant.instagram ? { sameAs: [restaurant.instagram] } : {}),
-  ...(ogImage ? { image: new URL(ogImage, site).href } : {}),
+  ...(schemaImage ? { image: new URL(schemaImage, site).href } : {}),
 };
+
+// El nombre del sitio en los resultados de Google sale de esta ficha (developers.google.com/search/docs/
+// appearance/site-names). Solo se declara si la app da el nombre corto: inventarlo del `name` largo
+// sería proponerle a Google justo el nombre que no queremos que ponga.
+const webSiteLd = restaurant.siteName
+  ? {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": `${home}#web`,
+      name: restaurant.siteName,
+      url: home,
+      publisher: { "@id": `${home}#restaurante` },
+    }
+  : null;
 ---
 
 <title>{title}</title>
 <meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, follow" />}
 <link rel="canonical" href={canonical.href} />
-<link rel="alternate" hreflang={locale} href={canonical.href} />
-<link rel="alternate" hreflang={altLocale} href={alternate.href} />
-<link rel="alternate" hreflang="x-default" href={new URL(locale === "es" ? Astro.url.pathname : altPath, site).href} />
+{alternate && xDefault && (
+  <>
+    <link rel="alternate" hreflang={locale} href={canonical.href} />
+    <link rel="alternate" hreflang={altLocale} href={alternate.href} />
+    <link rel="alternate" hreflang="x-default" href={xDefault.href} />
+  </>
+)}
 <meta property="og:type" content="website" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical.href} />
 <meta property="og:locale" content={locale === "es" ? "es_ES" : "en_GB"} />
+{restaurant.siteName && <meta property="og:site_name" content={restaurant.siteName} />}
 {ogImage && <meta property="og:image" content={new URL(ogImage, site).href} />}
+{/* Sin esto, X enseña el enlace con la miniatura pequeña aunque la imagen sea de 1200×630. */}
+{ogImage && <meta name="twitter:card" content="summary_large_image" />}
 <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+{webSiteLd && <script type="application/ld+json" set:html={JSON.stringify(webSiteLd)} />}

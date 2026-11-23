@@ -1,61 +1,31 @@
 ---
-import Base from "../layouts/Base.astro";
+// La sección se llama «reservar», y su dirección es /reservas, la de la web anterior.
+import Brasa from "../layouts/Brasa.astro";
 import BookingEmbed from "@tombo/ui/BookingEmbed.astro";
 import { COVER_SLUG } from "../site.ts";
+
+// La piel de Brasa para el motor de CoverManager (ver pages/covermanager.css.ts). En local no se
+// aplica: el motor es https y no carga una hoja de http://localhost.
+const coverTemplate = new URL("/covermanager.css", Astro.site).href;
 ---
 
-<Base
-  title="Reservas · Cokima — Kitchen Madness"
-  description="Reserva tu mesa en Cokima, Andrés Mellado 21, Madrid. Cocina de 13:00 a 16:00 y de 19:30 a 23:30."
-  locale="es"
-  altPath="/en/reservations"
+<Brasa
+  vista="reservar"
+  title="Reservar mesa · Cokima, restaurante en Argüelles (Madrid)"
+  description="Reserva tu mesa en Cokima, calle de Andrés Mellado, 21 (Argüelles, Madrid). Lunes a domingo, 9:00–00:00. Si no encuentras hueco, llámanos al 915 98 94 01."
 >
-  <section class="reservar">
-    <div class="wrap">
-      <div class="grid">
-        <div>
-          <p class="eyebrow">Reservas</p>
-          <h1>Reserva tu mesa</h1>
-          <p class="txt">
-            Cocina de 13:00 a 16:00 y de 19:30 a 23:30, todos los días.
-            Si no encuentras hueco, llámanos al <a href="tel:+34915989401">915 98 94 01</a>.
-          </p>
-        </div>
-        <BookingEmbed slug={COVER_SLUG} locale="es" title="Reservas Cokima" />
+{/* El motor de CoverManager dentro de la web, como en Ochoa (Mario, 2026-11-02), con la piel de Brasa.
+     Va en un <template>: brasa.js lo monta al abrir esta sección, sin llamar antes a covermanager.com.
+     No está en el menú de secciones: se llega por los «Reservar». */}
+  <section class="vista" data-vista="reservar">
+    <div class="wrap cab-vista reserva">
+      <div>
+        <p class="etq">Reservas</p>
+        <h1 class="tit">Reserva tu mesa</h1>
+        <p class="reserva-txt">Lunes a domingo, 9:00–00:00. Si no encuentras hueco, llámanos al <a href="tel:+34915989401">+34 915 98 94 01</a>.</p>
       </div>
+      <template data-motor><BookingEmbed slug={COVER_SLUG} locale="es" title="Reservas Cokima" template={coverTemplate} /></template>
     </div>
+    <div class="wrap"><footer class="pie"><a href="/aviso-legal">Aviso legal</a><a href="/privacidad">Privacidad</a><a href="/cookies">Cookies</a></footer></div>
   </section>
-</Base>
-
-<style>
-  .reservar {
-    padding: clamp(52px, 8vw, 96px) 0 0;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1.1fr;
-    gap: clamp(28px, 5vw, 56px);
-    align-items: start;
-  }
-  @media (max-width: 820px) {
-    .grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  h1 {
-    font-weight: 800;
-    font-size: clamp(2rem, 5vw, 3.3rem);
-    line-height: 1;
-    margin: 0.15rem 0 0;
-    letter-spacing: -0.02em;
-  }
-  .txt {
-    color: var(--bone-dim);
-    margin: 1.1rem 0 0;
-    max-width: 42ch;
-  }
-  .txt a {
-    color: var(--bone);
-    text-decoration: underline;
-  }
-</style>
+</Brasa>

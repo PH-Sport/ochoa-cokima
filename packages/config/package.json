@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     "./site-url": "./src/site-url.mjs",
+    "./photo-guides": "./src/photo-guides.mjs",
     "./tsconfig.base.json": "./tsconfig.base.json"
   },
   "scripts": {

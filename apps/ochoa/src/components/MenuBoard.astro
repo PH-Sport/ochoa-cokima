@@ -1,0 +1,336 @@
+---
+// apps/ochoa/src/components/MenuBoard.astro
+import { formatEuro, allergenNumber, usedAllergens, dishAllergens, type MenuEntry } from "@tombo/content";
+import { ALLERGEN_LABELS } from "../site.ts";
+
+interface Props {
+  dishes: MenuEntry[];
+  locale: "es" | "en";
+}
+const { dishes, locale } = Astro.props;
+const es = locale === "es";
+const t = es
+  ? {
+      half: "½ ración",
+      full: "Ración",
+      price: "Precio",
+      dish: "Plato",
+      noHalf: "No se sirve en media ración",
+      allergens: "Alérgenos",
+      toConfirm: "Pendiente de confirmar con el restaurante.",
+      allergensNote: "Según la información facilitada por el restaurante. Ante cualquier duda, pregunta al personal.",
+      sections: {
+        pinchos: "Pinchos y tapas",
+        "con-pan": "Con pan",
+        raciones: "Raciones",
+        postres: "Postres",
+      } as Record<string, string>,
+    }
+  : {
+      half: "Half",
+      full: "Full",
+      price: "Price",
+      dish: "Dish",
+      noHalf: "Not served as a half portion",
+      allergens: "Allergens",
+      toConfirm: "To be confirmed with the restaurant.",
+      allergensNote: "According to the information provided by the restaurant. If in doubt, ask the staff.",
+      sections: {
+        pinchos: "Pintxos & tapas",
+        "con-pan": "In bread",
+        raciones: "Sharing plates",
+        postres: "Desserts",
+      } as Record<string, string>,
+    };
+
+// `order` es correlativo dentro de cada sección, no un índice global: hay que
+// agrupar por sección y ordenar dentro de ella, o los postres se intercalan
+// entre los platos salados.
+//
+// Las tres primeras son las que pidió la casa —pinchos y tapas, con pan,
+// raciones—; los postres van detrás porque están en la carta de sala y no
+// caben en ninguna de las tres.
+const SECTION_ORDER = ["pinchos", "con-pan", "raciones", "postres"];
+const sections = SECTION_ORDER.map((key) => {
+  const items = dishes.filter((d) => d.section === key).sort((a, b) => a.order - b.order);
+  return {
+    key,
+    title: t.sections[key] ?? key,
+    items,
+    // Los postres tienen un precio y ya. Una sección sin medias raciones no
+    // enseña una columna vacía: enseña una sola columna de precio.
+    hasHalf: items.some((d) => typeof d.price === "object" && d.price.half !== null),
+  };
+}).filter((s) => s.items.length > 0);
+
+/* La chuleta al pie lista solo los alérgenos que usa esta carta, en orden de
+   número. La marca «*» solo aparece si algún plato la lleva. */
+const labels = ALLERGEN_LABELS[locale];
+const chuleta = usedAllergens(dishes);
+const hayMarca = dishes.some((d) => d.allergensToConfirm.length > 0);
+
+/** Los números de un plato, con la marca en los que el restaurante señaló. */
+const numeros = (dish: MenuEntry) =>
+  dishAllergens(dish).map((a) => ({
+    n: allergenNumber(a),
+    marca: dish.allergensToConfirm.includes(a),
+    label: labels[a] ?? a,
+  }));
+
+/** Las dos cifras de una fila, tal y como van impresas en la carta de la casa. */
+const cells = (price: MenuEntry["price"]) => {
+  if (typeof price === "number") return { half: null, full: price, noHalf: false };
+  return { half: price.half, full: price.full, noHalf: price.half === null };
+};
+---
+
+<div class="board">
+  {sections.map((sec) => (
+    <section class="sec">
+      {/* Todas llevan título desde que la carta se divide en cuatro: antes la
+          primera se lo callaba porque se llamaba «Carta» igual que el titular
+          de la página, y repetirlo sobraba. «Pinchos y tapas» no sobra. */}
+      <h2 class="sec-title">{sec.title}</h2>
+
+      <table class="menu">
+        <caption class="visually-hidden">{sec.title}</caption>
+        <thead>
+          <tr>
+            {/* La columna de platos necesita nombre para quien navega con
+                lector de pantalla, pero ninguna carta de bar escribe "PLATO"
+                encima de los platos: se lo dice a quien lo necesita y no le
+                quita sitio a nadie más. */}
+            <th scope="col" class="col-dish"><span class="visually-hidden">{t.dish}</span></th>
+            {sec.hasHalf && <th scope="col" class="col-price">{t.half}</th>}
+            <th scope="col" class="col-price">{sec.hasHalf ? t.full : t.price}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sec.items.map((dish) => {
+            const c = cells(dish.price);
+            return (
+              <tr>
+                <th scope="row" class="dish">
+                  <span class="name">{dish.name}</span>
+                  {dish.description && <span class="desc">{dish.description}</span>}
+                  {dish.allergens.length > 0 && (
+                    <span class="al">
+                      {/* Los números se leen con la chuleta; quien no la ve
+                          oye el nombre entero. */}
+                      <span class="visually-hidden">{t.allergens}: {numeros(dish).map((x) => x.label).join(", ")}.</span>
+                      {numeros(dish).map((x) => (
+                        <span aria-hidden="true">{x.n}{x.marca && "*"}</span>
+                      ))}
+                    </span>
+                  )}
+                </th>
+                {sec.hasHalf && (
+                  <td class="price">
+                    {c.half !== null ? (
+                      formatEuro(c.half)
+                    ) : (
+                      <>
+                        <span aria-hidden="true" class="dash">—</span>
+                        <span class="visually-hidden">{t.noHalf}</span>
+                      </>
+                    )}
+                  </td>
+                )}
+                <td class="price">{formatEuro(c.full)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </section>
+  ))}
+  {chuleta.length > 0 && (
+    <footer class="chuleta">
+      <h2 class="chuleta-title">{t.allergens}</h2>
+      <dl>
+        {chuleta.map((a) => (
+          <>
+            <dt>{allergenNumber(a)}</dt>
+            <dd>{labels[a] ?? a}</dd>
+          </>
+        ))}
+        {hayMarca && (
+          <>
+            <dt aria-hidden="true">*</dt>
+            <dd>{t.toConfirm}</dd>
+          </>
+        )}
+      </dl>
+      <p class="chuleta-note">{t.allergensNote}</p>
+    </footer>
+  )}
+</div>
+
+<style>
+  .sec + .sec {
+    margin-top: var(--t-section-gap);
+  }
+  .sec-title {
+    font-family: var(--t-heading-font);
+    font-size: var(--t-menu-title-size);
+    font-weight: var(--t-menu-title-weight);
+    color: var(--t-menu-title-color);
+    text-transform: var(--t-menu-title-transform);
+    letter-spacing: var(--t-menu-title-spacing);
+    text-shadow: var(--t-menu-title-shadow);
+    line-height: var(--lh-cartel);
+    margin: 0 0 0.6rem;
+  }
+
+  /* Hasta el 2026-09-19 la carta se paraba en 44rem: a 1280px el nombre del
+     plato quedaba a setecientos píxeles de su precio y el ojo no recorre esa
+     distancia —es el hueco que antes tapaba la guía de puntos—, y el margen
+     derecho se reservaba para las fotos. Mario pidió probarla al 90% de la
+     pantalla («vamos a ver qué tal queda») y, vista, extenderlo a toda la web:
+     el tope global vive ahora en `--maxw` (tokens.css). Si el precio vuelve a
+     quedar lejos, esta variable es lo que hay que volver a poner en 44rem. */
+  .board {
+    --carta-w: none;
+    /* Aire contra el titular de la página. Desde que la primera sección también
+       lleva rótulo, «CARTA» y «PINCHOS Y TAPAS» quedaban a un renglón de
+       distancia y se leían como un titular de dos líneas. */
+    margin-top: clamp(24px, 4.5vw, 42px);
+  }
+  .menu {
+    width: 100%;
+    max-width: var(--carta-w);
+    border-collapse: collapse;
+  }
+  /* Las cabeceras de columna son la pieza que sostiene todo el invento: sin
+     ellas, dos cifras seguidas no dicen cuál es la media y cuál la entera.
+     Van en la versal apretada del rótulo y se apoyan en el filete doble de la
+     casa, el mismo "CARTA ====" de la carta impresa. */
+  .menu thead th {
+    font-family: var(--sans);
+    font-size: var(--fs-micro);
+    font-weight: 700;
+    font-stretch: var(--wd-rotulo);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-dim);
+    text-align: right;
+    padding: 0 0 6px;
+    border-bottom: var(--t-rule-top);
+    /* En una línea, siempre: partido, el «½» caía sobre el «ración» y las dos
+       cabeceras dejaban de leerse como la pareja que son. Es la columna la que
+       se ensancha lo que haga falta, no el rótulo el que se rompe. */
+    white-space: nowrap;
+  }
+  .menu thead .col-dish {
+    text-align: left;
+  }
+  /* Anchos fijos y no `auto`: son las dos columnas alineadas las que dicen de
+     un vistazo qué precio es cuál, y para eso tienen que caer en la misma
+     vertical en las veinticinco filas. Con `auto` cada tabla se colocaría a su
+     aire y la media ración quedaría desperdigada de la entera. */
+  .menu .col-price {
+    width: 3.9rem;
+  }
+  .menu thead .col-price:last-child {
+    width: 4.4rem;
+  }
+
+  .menu tbody tr {
+    border-bottom: 1px solid var(--line);
+  }
+  .dish {
+    text-align: left;
+    font-weight: 400;
+    padding: 13px 12px 13px 0;
+  }
+  .name {
+    display: block;
+    font-size: 1.02rem;
+    font-weight: 550;
+    line-height: 1.3;
+  }
+  /* Los alérgenos van en números, como en la carta de bar de toda la vida, y
+     la chuleta al pie los traduce. Mario los prefirió a las palabras y a los
+     iconos el 2026-09-19 («al menos de momento»). Van en la voz de aviso de
+     la casa y en el gris más apagado: se ven si se buscan y no compiten con
+     el precio. */
+  .al {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45em;
+    margin-top: 0.3rem;
+    font-size: var(--fs-micro);
+    color: var(--ink-faint);
+    line-height: 1.4;
+  }
+  .chuleta {
+    max-width: var(--carta-w);
+    margin-top: 1.6rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line);
+    font-size: var(--fs-micro);
+    color: var(--ink-dim);
+    line-height: 1.5;
+  }
+  .chuleta-title {
+    font-family: var(--sans);
+    font-size: var(--fs-micro);
+    font-weight: 700;
+    font-stretch: var(--wd-rotulo);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-dim);
+    margin: 0;
+  }
+  .chuleta dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 10px;
+    row-gap: 3px;
+    margin: 0.5rem 0 0;
+  }
+  .chuleta dt {
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .chuleta dd {
+    margin: 0;
+  }
+  .chuleta-note {
+    margin: 0.8rem 0 0;
+    color: var(--ink-faint);
+  }
+  .desc {
+    display: block;
+    margin-top: 0.3rem;
+    color: var(--ink-dim);
+    font-size: 0.92rem;
+    line-height: 1.45;
+    max-width: 46ch;
+  }
+  /* Sin `tabular-nums`: era lo que hacía que los precios parecieran de otra
+     fuente que el nombre del plato. Y sin guía de puntos, que existía para
+     llevar el ojo hasta un precio suelto a la derecha; con dos columnas
+     alineadas, la columna ya es la guía. */
+  .price {
+    text-align: right;
+    vertical-align: baseline;
+    font-weight: 600;
+    white-space: nowrap;
+    padding: 13px 0;
+  }
+  /* El guion es el de la carta de la casa: dice "esto no va en media" sin
+     gastar una palabra. Se apaga un punto para que no pese como una cifra. */
+  .dash {
+    color: var(--ink-faint);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+import Base from "../layouts/Base.astro";
+import Conocenos from "../components/Conocenos.astro";
+import Fondo from "../components/Fondo.astro";
+import { EN_OBRAS } from "../conocenos.ts";
+import { RESTAURANT } from "../site.ts";
+
+const site = Astro.site ?? new URL("http://localhost:4321");
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  name: "Conócenos · Tasquita Los Ochoa",
+  url: new URL("/conocenos", site).href,
+  inLanguage: "es",
+  // La página habla del restaurante, y así lo declara: el `Restaurant` completo
+  // lo emite `Seo.astro` en todas las páginas, y este `mainEntity` es lo que
+  // ata una cosa con la otra en vez de dejar dos fichas sueltas.
+  mainEntity: {
+    "@type": "Restaurant",
+    name: RESTAURANT.name,
+    url: new URL("/", site).href,
+  },
+};
+---
+
+<Base
+  title="Conócenos · Tasquita Los Ochoa"
+  description="Madrid tiene bares… y luego están las tascas, donde la comida acaba siendo la excusa para quedarse. Tasquita Los Ochoa, en el Paseo de la Castellana, contada con sus propias palabras."
+  locale="es"
+  altPath="/en/about"
+  noindex={EN_OBRAS}
+>
+  <Fondo />
+  <Conocenos locale="es" />
+  {!EN_OBRAS && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />}
+</Base>

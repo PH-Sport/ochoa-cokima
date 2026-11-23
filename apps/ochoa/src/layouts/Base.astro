@@ -1,9 +1,13 @@
 ---
 import "../styles/tokens.css";
 import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
 import Seo from "@tombo/ui/Seo.astro";
 import ConsentBanner from "@tombo/ui/ConsentBanner.astro";
+import QuietScrollHistory from "@tombo/ui/QuietScrollHistory.astro";
+import { decideEntrada, CLAVE_SESION, SEGURO } from "@tombo/ui/intro.ts";
 import Nav from "../components/Nav.astro";
+import Intro from "../components/Intro.astro";
 import Footer from "../components/Footer.astro";
 import { RESTAURANT } from "../site.ts";
 
@@ -11,25 +15,172 @@ interface Props {
   title: string;
   description: string;
   locale: "es" | "en";
+  /** A dónde lleva el selector de idioma del menú. Siempre hay uno: aunque la
+   *  página no tenga gemela, quien pulsa «EN» tiene que ir a alguna parte. */
   altPath: string;
+  /** Qué se declara a los buscadores como equivalente. `null` cuando la página
+   *  no existe en el otro idioma. Es una cosa distinta de `altPath`: navegar y
+   *  declarar equivalencia no son lo mismo, y las legales solo en español
+   *  tienen lo primero pero no lo segundo. */
+  altSeoPath?: string | null;
+  /** Para la página que está montada pero aún sin contenido real. Ver `Seo.astro`. */
+  noindex?: boolean;
 }
 
-const { title, description, locale, altPath } = Astro.props;
+const { title, description, locale, altPath, altSeoPath = altPath, noindex = false } = Astro.props;
+
+/* La entrada se decide ANTES del primer pintado o no sirve de nada: si la
+   decisión llegara después, se vería la web un instante y LUEGO la plancha roja
+   encima, que es peor que no tener entrada. Por eso este guion va inline y
+   síncrono en el `<head>`, y no en un `<script>` de Astro, que sale como módulo
+   diferido.
+
+   `decideEntrada` se serializa en vez de reescribirse aquí: así la lógica que
+   corre en el navegador es exactamente la que cubren los tests de
+   `packages/ui/test/intro.test.ts`, y no dos copias que se separan con el
+   tiempo. Hay un test que vigila que la función siga siendo serializable.
+
+   Sin JavaScript no se pone nada y la web se ve entera desde el primer frame,
+   que es la degradación correcta.
+
+   El `setTimeout` del final es el seguro: este script es síncrono y el que
+   retira la plancha no lo es, y sin él un módulo que no llegue deja la pantalla
+   en rojo. La nota va aquí y no dentro del guion porque el guion se publica tal
+   cual en cada página (2026-11-18). */
+const guionEntrada = `
+(function () {
+  var raiz = document.documentElement;
+  var decide = ${decideEntrada.toString()};
+  var nav = performance.getEntriesByType("navigation")[0];
+  var yaVisto = false;
+  try { yaVisto = sessionStorage.getItem(${JSON.stringify(CLAVE_SESION)}) === "1"; } catch (e) {}
+  if (!decide({
+    tipo: (nav && nav.type) || "navigate",
+    yaVisto: yaVisto,
+    menosMovimiento: matchMedia("(prefers-reduced-motion: reduce)").matches
+  })) return;
+  raiz.dataset.intro = "si";
+  try { sessionStorage.setItem(${JSON.stringify(CLAVE_SESION)}, "1"); } catch (e) {}
+  setTimeout(function () { raiz.removeAttribute("data-intro"); }, ${SEGURO});
+})();
+`;
 ---
 
 <html lang={locale}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* `viewport-fit=cover` llegó a parecer el culpable de que la barra del
+        navegador volviera a salir al deslizar en el iPhone. No lo era: la causa
+        estaba en el guardado de scroll del router, y está probada y arreglada
+        —ver `QuietScrollHistory.astro` y `docs/barra-del-navegador-ios.md`—.
+        Se queda porque es lo que hace que la franja de la barra de estado vaya
+        en el rojo de la casa y que la portada llegue a sangre bajo el notch, y
+        lo que da valor al `env(safe-area-inset-bottom)` del cartel de cookies. */}
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    {/* El rojo de la casa también en la barra del navegador. En Chrome y Brave de
+        Android, `theme-color` tiñe la barra de direcciones: sin él sale del color
+        por defecto del navegador, y cada vez que asoma al deslizar aparece un
+        bloque ajeno justo encima de nuestra plancha roja, que es lo que la hacía
+        tan visible. Con el mismo rojo, la barra y la cabecera son la misma
+        superficie —el mismo argumento por el que el panel del menú dejó de ser
+        blanco—. Es lo que hace la referencia de Mario: vercel.com declara el
+        #FAFAFA de su propio fondo, y por eso su barra no se ve llegar. */}
+    <meta name="theme-color" content="#c6222b" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin />
-    <Seo title={title} description={description} locale={locale} altPath={altPath} restaurant={RESTAURANT} ogImage="/images/hero.jpg" />
+    {/* Al compartir el enlace, el cartel que eligió Mario; a los buscadores, la
+        fachada (fotografia.md §Nota técnica). */}
+    <Seo title={title} description={description} locale={locale} altPath={altSeoPath ?? undefined} restaurant={RESTAURANT} ogImage="/images/compartir.jpg" schemaImage="/images/hero.jpg" noindex={noindex} />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    {/* La entrada, decidida antes de que se pinte nada. Va después del preload
+        de las fuentes para no retrasarlo: el rótulo de la plancha es Anton, y
+        cuanto antes empiece a bajar, antes puede medirse el viaje. */}
+    <script is:inline set:html={guionEntrada}></script>
+    {/* Antes del router, que es a quien envuelve: en Brave de iPhone su
+        guardado de scroll era lo que devolvía la barra de direcciones al
+        levantar el dedo. El porqué entero, en el propio componente. */}
+    <QuietScrollHistory />
+    <ClientRouter />
+    {/* Lo que una página concreta necesite en la cabecera y no valga para todas
+        —hoy, el JSON-LD propio de «Conócenos»—. Va después del router para no
+        meterse entre él y `QuietScrollHistory`, cuyo orden sí importa. */}
+    <slot name="head" />
   </head>
   <body>
     <Nav locale={locale} altPath={altPath} />
+    {/* Después de la barra a propósito: el rótulo al que aterriza la entrada
+        vive dentro de ella y tiene que existir ya en el DOM cuando se mide. */}
+    <Intro />
     <slot />
     <Footer locale={locale} />
     <ConsentBanner locale={locale} cookiesPath="/cookies" />
+    <script>
+      /* El sentido del barrido. Lo escribe aquí y no en el CSS porque solo el
+         evento de navegación sabe si se va hacia adelante o se está volviendo:
+         un barrido que entra siempre por el mismo lado convierte el botón de
+         atrás en algo que se siente roto.
+         Se marca en los dos documentos a propósito: el intercambio copia los
+         atributos del `<html>` entrante sobre el actual, así que marcar solo
+         este se borraba justo antes de que la animación llegara a leerlo. */
+      document.addEventListener("astro:before-swap", (e) => {
+        const ev = e as { direction?: string; newDocument?: Document };
+        const sentido = ev.direction === "back" ? "atras" : "adelante";
+        document.documentElement.dataset.nav = sentido;
+        if (ev.newDocument) ev.newDocument.documentElement.dataset.nav = sentido;
+      });
+
+      /* La respuesta al dedo de todo lo que tiene relieve.
+       *
+       * No sale de `:active` porque en Safari de iOS ese estado no se aplica de
+       * forma fiable —hace falta un listener táctil en la página para que
+       * WebKit se digne, y aun así llega tarde—, y porque la subida tenía que
+       * arrancar en el mismo instante en que se levanta el dedo: entre soltar
+       * un enlace y tener la página nueva pasan poco más de 200ms, y los ocho
+       * botones de esta web son enlaces. Todo lo que empiece más tarde se lo
+       * lleva la navegación.
+       *
+       * `pointerdown` y no `touchstart`: cubre dedo, ratón y lápiz con un solo
+       * camino, y en el escritorio deja el hundido igual de vivo.
+       */
+      const PIEZAS = ".btn, .contacto a, .mapa, .consent-btn";
+
+      const montaTacto = () => {
+        for (const el of document.querySelectorAll<HTMLElement>(PIEZAS)) {
+          el.dataset.tacto = "";
+        }
+      };
+
+      const pieza = (t: EventTarget | null) =>
+        t instanceof Element ? (t.closest(PIEZAS) as HTMLElement | null) : null;
+
+      document.addEventListener(
+        "pointerdown",
+        (e) => {
+          const el = pieza(e.target);
+          if (!el) return;
+          el.classList.remove("soltando");
+          el.classList.add("tocando");
+        },
+        { passive: true },
+      );
+
+      /* En `pointerup` y en `pointercancel`: sin el segundo, arrastrar el dedo
+         fuera del botón para no pulsarlo lo dejaba hundido para siempre. */
+      const suelta = (e: Event) => {
+        const el = pieza(e.target) ?? document.querySelector<HTMLElement>(".tocando");
+        if (!el?.classList.contains("tocando")) return;
+        el.classList.remove("tocando");
+        el.classList.add("soltando");
+        el.addEventListener("animationend", () => el.classList.remove("soltando"), { once: true });
+      };
+      document.addEventListener("pointerup", suelta, { passive: true });
+      document.addEventListener("pointercancel", suelta, { passive: true });
+
+      montaTacto();
+      document.addEventListener("astro:page-load", montaTacto);
+    </script>
+
     <script>
       import { initTracking } from "@tombo/tracking/client";
 

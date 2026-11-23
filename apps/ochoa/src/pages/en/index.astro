@@ -1,5 +1,17 @@
 ---
+import { getCollection } from "astro:content";
+import { pickFeatured } from "@tombo/content";
 import Base from "../../layouts/Base.astro";
+import Fondo from "../../components/Fondo.astro";
+import Hero from "../../components/Hero.astro";
+import Highlights from "../../components/Highlights.astro";
+import Ticker from "../../components/Ticker.astro";
+import Manifiesto from "../../components/Manifiesto.astro";
+import Casa from "../../components/Casa.astro";
+import Mapa from "../../components/Mapa.astro";
+import Contacto from "../../components/Contacto.astro";
+
+const featured = pickFeatured((await getCollection("menu-en")).map((e) => e.data));
 ---
 
 <Base
@@ -8,63 +20,81 @@ import Base from "../../layouts/Base.astro";
   locale="en"
   altPath="/"
 >
-  <header class="hero" id="top">
-    <div class="wrap hero-grid">
-      <div>
-        <p class="eyebrow">Tasquita · On the Castellana</p>
-        <h1 class="cartel">The tasca you deserve</h1>
-        <p class="kicker">
-          A place that feels like Madrid's neighbourhood bars of old, with a renewed kitchen:
-          a proper vermouth, tapas with a twist and the best quality produce.
-        </p>
-        <div class="hero-cta">
-          <a href="/en/reservations" class="btn">Book a table</a>
-          <a href="/en/menu" class="btn ghost">See the menu</a>
-        </div>
-      </div>
-      <div class="hero-photo">
-        <img src="/images/hero.jpg" alt="Marble table with Los Ochoa's aperitivo spread" width="1400" height="787" loading="eager" fetchpriority="high" />
-        <span class="stamp cartel">Madriz</span>
-        <span class="tag">Aperitivo, served</span>
-      </div>
-    </div>
-  </header>
+  {/* Las mismas piezas que la home española desde el 2026-10-29, cuando la home
+      viva entró en `preview` con el visto bueno de Mario: ver index.astro y
+      docs/ochoa-inicio-vivo.md. Los textos son los ingleses de siempre. */}
+  <Fondo />
+  <Hero locale="en" />
 
-  <section class="manifesto">
-    <div class="wrap">
-      <div class="rule"></div>
-      <blockquote>“Aperitivos that stretch into the night, <strong>as a philosophy of life</strong>.”</blockquote>
-      <p class="sub">
-        A fun spot right on the Castellana to sip a good vermouth alongside tapas with a twist.
-        Lifelong tapeo, with new flavours.
-      </p>
+  <Highlights dishes={featured} locale="en" href="/en/menu" />
+
+  {/* Va debajo de la tira y no debajo de la portada: ahí arriba el hueco está
+      medido para que asome la primera ficha de plato. Ver index.astro. */}
+  <Ticker locale="en" />
+
+  <Manifiesto>
+    <blockquote>“Aperitivos that stretch into the night, <strong>as a philosophy of life</strong>.”</blockquote>
+    <p class="sub">
+      A fun spot right on the Castellana to sip a good vermouth alongside tapas with a twist.
+      Lifelong tapeo, with new flavours.
+    </p>
+  </Manifiesto>
+
+  <section class="tasca">
+    <div class="wrap"><div class="rule"></div></div>
+    <div class="wrap tasca-grid">
+      <div class="tasca-photo" data-paralaje>
+        <img src="/images/mesa.jpg" alt="Marble table with several dishes from the menu, served to share" width="1920" height="1080" loading="lazy" data-vel="-0.08" data-vel-tacto="-0.12" data-tope="22" data-ventana />
+      </div>
+      <div>
+        <p class="eyebrow">The tasca</p>
+        <h2 class="cartel">The lifelong bar, renewed</h2>
+        <p class="txt">
+          Bar, marble and a red sign. <em>The tapeo of a lifetime, with new flavours that will
+          surprise you</em> and the best produce there is — from the Russian salad to the
+          cachopín, by way of txistorra gyozas.
+        </p>
+        {/* Mismo par que en la home española: ver §«La tasca» de `index.astro`. */}
+        <p class="acciones">
+          <a href="/en/menu" class="btn ghost">See the full menu</a>
+          <a href="/en/about" class="btn ghost">About us</a>
+        </p>
+      </div>
     </div>
   </section>
 
+  <Casa locale="en">
+    Bar, marble and mid-afternoon vermouth. <em>The tapeo that stretches until somebody
+    checks the clock</em> and it turns out it's already night. Los Ochoa from the inside.
+  </Casa>
+
   <section class="visita" id="visit">
     <div class="wrap">
+      <div class="rule"></div>
       <p class="eyebrow">Find us</p>
       <h2 class="cartel">On the Castellana</h2>
+      {/* El mapa abre la sección en vez de cerrarla: quien llega hasta aquí ya
+          sabe que quiere venir. Detrás, las dos acciones, y solo después los
+          datos en frío. El teléfono y el Instagram los da `Contacto`, así que no
+          se repiten en la lista. */}
       <div class="visit-grid">
-        <dl class="info">
-          <div class="block"><dt>Address</dt><dd>P.º de la Castellana, 117<small>28046 Madrid</small></dd></div>
-          <div class="block"><dt>Phone</dt><dd><a href="tel:+34912876820">+34 912 87 68 20</a></dd></div>
-          <div class="block">
-            <dt>Hours</dt>
-            <dd>
-              <div class="hours">
-                <span>Monday to Thursday</span><b>9:00 – 1:00</b>
-                <span>Friday</span><b>9:00 – 2:30</b>
-                <span>Saturday</span><b>12:00 – 2:30</b>
-                <span>Sunday</span><b>12:00 – 1:00</b>
-              </div>
-            </dd>
-          </div>
-          <div class="block"><dt>Instagram</dt><dd><a href="https://instagram.com/tasquita.losochoa">@tasquita.losochoa</a></dd></div>
-        </dl>
-        <div class="mapbox" role="img" aria-label="Map placeholder: Paseo de la Castellana 117, Madrid">
-          <div class="pin"><i class="dot"></i><span>Castellana 117</span></div>
-          <span class="ph">Map · integration pending</span>
+        <Mapa locale="en" />
+        <div class="datos">
+          <Contacto locale="en" />
+          <dl class="info">
+            <div class="block"><dt>Address</dt><dd>P.º de la Castellana, 117<small>28046 Madrid</small></dd></div>
+            <div class="block">
+              <dt>Hours</dt>
+              <dd>
+                <div class="hours">
+                  <span>Monday to Thursday</span><b>9:00 – 1:00</b>
+                  <span>Friday</span><b>9:00 – 2:30</b>
+                  <span>Saturday</span><b>12:00 – 2:30</b>
+                  <span>Sunday</span><b>12:00 – 1:00</b>
+                </div>
+              </dd>
+            </div>
+          </dl>
         </div>
       </div>
     </div>
@@ -72,35 +102,144 @@ import Base from "../../layouts/Base.astro";
 </Base>
 
 <style>
-  .hero { padding: clamp(46px, 8.5vw, 104px) 0 clamp(40px, 7vw, 80px); }
-  .hero-grid { display: grid; grid-template-columns: 1.04fr 0.96fr; gap: clamp(28px, 5vw, 60px); align-items: center; }
-  @media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; } }
-  .hero h1 { font-size: clamp(3.2rem, 10vw, 7rem); margin: 0.25em 0 0; }
-  .kicker { max-width: 47ch; color: var(--ink-dim); font-size: 1.12rem; margin: 1.4rem 0 0; }
-  .hero-cta { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 2.1rem; }
-  .hero-photo { position: relative; border: 2px solid var(--ink); border-radius: 4px; overflow: hidden; box-shadow: 8px 8px 0 rgba(35, 32, 27, 0.85); aspect-ratio: 16 / 10; }
-  .hero-photo img { width: 100%; height: 100%; object-fit: cover; }
-  .hero-photo .tag { position: absolute; left: 14px; bottom: 14px; font-family: var(--serif); font-style: italic; font-size: 1rem; color: var(--ink); background: rgba(244, 238, 226, 0.92); border: 1px solid var(--ink); padding: 6px 12px; border-radius: 3px; }
-  .stamp { position: absolute; right: 16px; top: 16px; transform: rotate(6deg); font-size: 1rem; letter-spacing: 0.06em; border: 2.5px solid var(--rojo); border-radius: 6px; padding: 6px 12px; background: rgba(244, 238, 226, 0.85); text-shadow: none; }
-  .manifesto { padding: clamp(44px, 7vw, 84px) 0; }
-  .manifesto .rule { margin-bottom: clamp(30px, 5vw, 52px); }
-  blockquote { margin: 0; font-family: var(--serif); font-style: italic; font-size: clamp(1.5rem, 3.5vw, 2.5rem); line-height: 1.32; max-width: 26ch; text-wrap: balance; }
-  blockquote strong { color: var(--rojo); }
-  .sub { font-size: 1.08rem; color: var(--ink-dim); max-width: 56ch; margin: 1.5rem 0 0; }
-  .visita { padding: clamp(24px, 4vw, 48px) 0 0; }
-  .visita h2 { font-size: clamp(2.2rem, 6vw, 3.6rem); margin: 0.2rem 0 1.6rem; }
-  .visit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 56px); align-items: stretch; }
-  @media (max-width: 820px) { .visit-grid { grid-template-columns: 1fr; } }
-  .info { margin: 0; }
-  .block { padding: 18px 0; border-bottom: 1px solid var(--line); }
-  .block dt { font-family: var(--serif); font-style: italic; font-size: 1.02rem; color: var(--rojo); margin: 0 0 0.4rem; }
-  .block dd { margin: 0; font-size: 1.08rem; }
-  .block dd small { display: block; color: var(--ink-dim); font-size: 0.9rem; margin-top: 0.3rem; }
-  .hours { display: grid; grid-template-columns: auto 1fr; gap: 0.15rem 1.2rem; font-size: 1rem; }
-  .hours span { color: var(--ink-dim); }
-  .mapbox { position: relative; border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; min-height: 300px; background: radial-gradient(circle at 40% 45%, rgba(198, 34, 43, 0.14), transparent 45%), repeating-linear-gradient(0deg, rgba(35, 32, 27, 0.07) 0 1px, transparent 1px 46px), repeating-linear-gradient(90deg, rgba(35, 32, 27, 0.07) 0 1px, transparent 1px 46px), #efe8d8; }
-  .pin { position: absolute; left: 40%; top: 45%; transform: translate(-50%, -100%); text-align: center; }
-  .dot { display: block; width: 16px; height: 16px; border-radius: 50%; background: var(--rojo); margin: 0 auto; box-shadow: 0 0 0 6px rgba(198, 34, 43, 0.2), 2px 2px 0 var(--ink); }
-  .pin span { font-family: var(--sans); font-size: 0.82rem; color: var(--paper); background: var(--ink); padding: 4px 10px; border-radius: 3px; margin-top: 8px; display: inline-block; }
-  .ph { position: absolute; left: 14px; bottom: 12px; font-family: var(--sans); font-size: 0.8rem; color: var(--ink-faint); }
+  .tasca {
+    padding: clamp(32px, 6vw, 56px) 0 0;
+  }
+  /* Mismo filete doble de cartel que abre el manifiesto: ver index.astro. */
+  .tasca .rule,
+  .visita .rule {
+    margin-bottom: clamp(22px, 4vw, 40px);
+  }
+  .tasca-grid {
+    display: grid;
+    grid-template-columns: 0.92fr 1.08fr;
+    gap: clamp(28px, 5vw, 60px);
+    align-items: center;
+  }
+  /* Ver el comentario en la home española. */
+  .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  @media (max-width: 860px) {
+    .tasca-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .tasca-photo {
+    border: 2px solid var(--ink);
+    border-radius: var(--r-marco);
+    overflow: hidden;
+    box-shadow: -8px 8px 0 rgba(198, 34, 43, 0.9);
+    aspect-ratio: 16 / 9;
+  }
+  .tasca-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* La capa lejana del paralaje dentro de su marco: ver index.astro. */
+  .tasca-photo img {
+    position: relative;
+    top: -8%;
+    left: -4%;
+    width: 108%;
+    max-width: none;
+    height: 116%;
+    transition: translate var(--dur-ventana) var(--ease);
+  }
+  .tasca h2 {
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    margin: 0.2rem 0 0;
+  }
+  .txt {
+    color: var(--ink-dim);
+    font-size: 1.08rem;
+    max-width: 50ch;
+    margin: 1.3rem 0 1.6rem;
+  }
+  .txt em {
+    color: var(--ink);
+  }
+
+  .visita {
+    padding: clamp(32px, 6vw, 56px) 0 0;
+  }
+  .visita h2 {
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    margin: 0.2rem 0 1.6rem;
+  }
+  .visit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(28px, 5vw, 56px);
+    align-items: stretch;
+  }
+  @media (max-width: 820px) {
+    .visit-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .info {
+    margin: 0;
+  }
+  .block {
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .block dt {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-stretch: var(--wd-rotulo);
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-size: var(--fs-label);
+    color: var(--rojo);
+    margin: 0 0 0.4rem;
+  }
+  .block dd {
+    margin: 0;
+    font-size: 1.08rem;
+  }
+  .block dd small {
+    display: block;
+    color: var(--ink-dim);
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+  }
+  .hours {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.15rem 1.2rem;
+    font-size: 1rem;
+  }
+  .hours span {
+    color: var(--ink-dim);
+  }
+  /* Las acciones separadas de los datos: entre pulsar «llamar» y leer el
+     horario hay un cambio de marcha, y el hueco lo dice mejor que una regla. */
+  .datos {
+    display: grid;
+    gap: clamp(18px, 3vw, 26px);
+    align-content: start;
+  }
+
+  /* Densificación móvil de la hoja de bar: ver index.astro. */
+  @media (max-width: 860px) {
+    .visita {
+      padding-top: 28px;
+    }
+    .tasca {
+      padding-top: 52px;
+    }
+    .tasca .rule,
+    .visita .rule {
+      margin-bottom: 20px;
+    }
+    .txt {
+      font-size: 1rem;
+      margin-top: 0.9rem;
+    }
+  }
 </style>

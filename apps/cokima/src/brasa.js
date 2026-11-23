@@ -1,0 +1,676 @@
+// Brasa: las secciones, el estado de la cocina y el fondo de chispas. Salió del boceto que eligió Mario el
+// 2026-10-31 (docs/cokima-el-rediseno.md §3).
+import { RUTAS } from "./rutas.js";
+import { montarCollage } from "./collage.js";
+import { montarMecha } from "./mecha.js";
+
+(() => {
+  // Los tokens de tokens.css se leen al usarlos y con su unidad: el build reescribe 180ms como .18s,
+  // y WebKit los devuelve vacíos mientras carga la página (regla 30 de movimiento.md).
+  const token = (t) => getComputedStyle(document.documentElement).getPropertyValue(t).trim();
+  const leeMs = (t) => { const v = token(t); return v.endsWith("ms") ? parseFloat(v) : parseFloat(v) * 1000; };
+  // Del amarillo al rojo apagado según se enfría (k: 1, recién salida; 0, fría). Las chispas y la mecha.
+  const TONOS = [[110, 22, 8], [214, 62, 18], [255, 140, 45], [255, 214, 140]];
+  const tono = (k) => {
+    const x = Math.min(0.999, Math.max(0, k)) * 3, i = Math.floor(x), f = x - i, a = TONOS[i], b = TONOS[i + 1];
+    return a.map((v, n) => Math.round(v + (b[n] - v) * f)).join(",");
+  };
+  const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest(".chips a"); if (!a) return;
+    e.preventDefault(); document.getElementById("p-" + a.dataset.a)?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  });
+
+  // Estado de la cocina, a la hora de Madrid. Horario real: cocina 13:00–16:00 y 19:30–23:30, todos los días.
+  const estado = () => {
+    const [h, m] = new Intl.DateTimeFormat("es-ES", { timeZone: "Europe/Madrid", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()).split(":").map(Number);
+    const t = h * 60 + m;
+    let txt, abierta = false;
+    if (t >= 780 && t < 960) { txt = "Cocina abierta ahora, hasta las 16:00"; abierta = true; }
+    else if (t >= 1170 && t < 1410) { txt = "Cocina abierta ahora, hasta las 23:30"; abierta = true; }
+    else if (t < 780) txt = "La cocina abre hoy a las 13:00";
+    else if (t < 1170) txt = "La cocina vuelve a las 19:30";
+    else txt = "La cocina abre mañana a las 13:00";
+    document.querySelectorAll("[data-estado]").forEach((e) => { e.textContent = txt; e.classList.toggle("abierta", abierta); });
+  };
+  estado(); setInterval(estado, 60000);
+
+  // Secciones: una a la vista cada vez, con un fundido corto al cambiar. Cada una es su propia página, con su
+  // dirección (rutas.js), y en su HTML solo va lo suyo (2026-11-04, docs/cokima-el-rediseno.md §3). Las demás
+  // se traen de su página la primera vez que se va a ellas y se quedan aquí: se cambia sin recargar, con el
+  // fondo y el vídeo en marcha. Los enlaces son de verdad: sin esto, o si falla la red, navegan sin más.
+  const main = document.querySelector("main"), primera = main.querySelector(".vista");
+  const vistas = { [primera.dataset.vista]: primera };
+  const barra = document.querySelector(".barra"), desp = document.querySelector(".desp");
+  // `actual` es adonde se va; `visible`, la que se ve: durante el fundido de salida no son la misma.
+  let actual = primera.dataset.vista, visible = actual;
+  // Marca la sección en las del ordenador y en la lista del móvil, y pone su nombre en el desplegable.
+  const marcar = () => {
+    document.querySelectorAll(".secciones [data-ir], .desplegable [data-ir]").forEach((a) => {
+      if (a.dataset.ir === actual) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    // Reservar no está en el menú: su nombre lo lleva su botón de la barra.
+    const nombre = document.querySelector(`.desplegable [data-ir="${actual}"], .barra .pill[data-ir="${actual}"]`)?.textContent || "";
+    desp.querySelector("[data-actual]").textContent = nombre;
+    desp.setAttribute("aria-label", `Secciones. Estás en ${nombre}`);
+  };
+  const revelar = () => {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+    vistas[actual].querySelectorAll(".rv:not(.in)").forEach((x) => io.observe(x));
+  };
+  // El vídeo de la portada vive fuera de <main> para quedar debajo de las chispas, así que no se esconde
+  // con la sección: se esconde aquí, y al esconderlo su observador lo pausa.
+  const cine = document.querySelector(".cine");
+  // Las chispas de delante (2026-11-02): la bocanada al cambiar de sección y las que salta un botón al
+  // pulsarlo. Las pone en marcha el fondo, al final del archivo; hasta entonces, o con «reducir
+  // movimiento», no hacen nada. Y la densidad del fondo, que la entrada sube desde cero.
+  let rafaga = () => {}, soltar = () => {}, brotar = () => {}, densidadFondo = 1;
+  // El motor de reservas (2026-11-02) se monta la primera vez que se abre Reservar, y no antes: así el
+  // Inicio no llama a covermanager.com. Primero la mitad del iframeResizer que va en esta página y luego
+  // el iframe, porque su onload la necesita ya cargada; si no, el iframe se queda en 550px con scroll
+  // propio (recursos.md §2). Si el script no llega, el iframe se monta igual, y reserva igual.
+  const montarMotor = () => {
+    const motor = vistas.reservar?.querySelector("template[data-motor]");
+    if (!motor || motor.dataset.montado) return;
+    motor.dataset.montado = "1";
+    const frag = motor.content.cloneNode(true), viejo = frag.querySelector("script"), js = document.createElement("script");
+    js.src = viejo.src; viejo.remove();
+    js.onload = js.onerror = () => motor.replaceWith(frag);
+    document.head.append(js);
+  };
+  // Lo que dice la cabecera de cada sección, para ponerlo al cambiar: la pestaña y el historial lo enseñan.
+  const descripcion = document.querySelector('meta[name="description"]'), canonica = document.querySelector('link[rel="canonical"]');
+  const cabeceras = { [actual]: { titulo: document.title, descripcion: descripcion?.content } };
+  const ponerCabecera = (v) => {
+    const c = cabeceras[v]; if (!c) return;
+    document.title = c.titulo;
+    if (descripcion && c.descripcion) descripcion.content = c.descripcion;
+    if (canonica) canonica.href = new URL(RUTAS[v], canonica.href).href;
+  };
+  // Trae una sección de su página, una sola vez, sin ponerla aún: así sus fotos no se piden hasta que toca.
+  // Con ella, los estilos que solo lleva esa página, como los del motor de reservas.
+  const traidas = {}, firma = (n) => n.getAttribute("href") || n.textContent;
+  const traer = (v) => (traidas[v] ??= fetch(RUTAS[v]).then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); }).then((t) => {
+    const doc = new DOMParser().parseFromString(t, "text/html"), s = doc.querySelector(`.vista[data-vista="${v}"]`);
+    if (!s) throw new Error(v);
+    cabeceras[v] = { titulo: doc.title, descripcion: doc.querySelector('meta[name="description"]')?.content };
+    const hay = new Set([...document.head.querySelectorAll('link[rel="stylesheet"],style')].map(firma));
+    doc.head.querySelectorAll('link[rel="stylesheet"],style').forEach((n) => { if (!hay.has(firma(n))) document.head.append(document.importNode(n, true)); });
+    return s;
+  }).catch((e) => { delete traidas[v]; throw e; }));
+  // El collage de Nosotros (collage.js) corre solo con su sección abierta, y hasta entonces no descarga nada.
+  let collage = { activar() {} };
+  // La mecha de Visítanos (mecha.js): igual, corre solo con su sección abierta.
+  let mecha = { activar() {} };
+  const ponerMecha = () => { mecha = montarMecha({ leeMs, token, tono, brotar: (...a) => brotar(...a) }); };
+  const montar = (v, s) => {
+    const n = document.importNode(s, true); n.hidden = true; main.append(n); vistas[v] = n;
+    if (v === "inicio") { montarPortada(); montarPaneles(); }
+    if (v === "nosotros") collage = montarCollage({ leeMs, leeCurva, token });
+    if (v === "visitanos") ponerMecha();
+    estado();
+  };
+  // Una sección puede tardar un par de fotogramas en tener su alto (los paneles se colocan así).
+  const aY = (y, n = 8) => { scrollTo(0, y); if (n && Math.abs(scrollY - y) > 2) requestAnimationFrame(() => aY(y, n - 1)); };
+  // La altura se apunta en la entrada del historial de la sección que se ve: a mitad de un cambio no se apunta,
+  // porque el scroll aún es de la que se va. Safari limita estas llamadas, y de ahí el try.
+  const guardarY = () => { if (visible === actual) try { history.replaceState({ y: scrollY }, ""); } catch (e) {} };
+  let turno = 0;
+  // Con `historia` viene del botón de volver o de avanzar: la dirección ya es esa, y `y` es donde se dejó.
+  const ir = (destino, { historia = false, y = 0 } = {}) => {
+    const v = RUTAS[destino] ? destino : "inicio";
+    if (v === actual) { if (!historia) scrollTo(0, 0); return; }
+    menu(false);
+    if (!historia) { guardarY(); history.pushState({ y: 0 }, "", RUTAS[v]); }
+    actual = v; marcar();
+    const mio = ++turno, sale = vistas[visible];
+    // Se vuelve a la que aún se estaba yendo.
+    if (v === visible) { sale.classList.remove("saliendo"); ponerCabecera(v); alScroll(); return; }
+    // El cambio de sección espera a que acabe el fundido de salida, que dura --dur-out, y a que haya llegado
+    // lo que va a entrar. Y mientras, una bocanada de chispas (Mario, 2026-11-02, de la maqueta, «subiéndole
+    // la densidad»). Si no llega, se navega de verdad: la dirección ya es la buena.
+    rafaga(); sale.classList.add("saliendo");
+    const fuera = new Promise((r) => setTimeout(r, leeMs("--dur-out")));
+    Promise.all([vistas[v] ? null : traer(v), fuera]).then(([traida]) => {
+      if (mio !== turno) return;
+      if (traida && !vistas[v]) montar(v, traida);
+      const entra = vistas[v];
+      sale.hidden = true; sale.classList.remove("saliendo"); visible = v;
+      if (cine) cine.hidden = v !== "inicio";
+      entra.classList.add("entrando"); entra.hidden = false; aY(y);
+      collage.activar(v === "nosotros");
+      mecha.activar(v === "visitanos");
+      if (v === "reservar") montarMotor();
+      ponerCabecera(v);
+      requestAnimationFrame(() => requestAnimationFrame(() => entra.classList.remove("entrando")));
+      revelar(); alScroll();
+    }, () => {
+      // Un momento después y solo si sigue siendo adonde se va: al irse de la web también se corta la petición,
+      // y esto no puede pisar esa navegación.
+      setTimeout(() => { if (mio === turno) location.replace(RUTAS[v]); }, 300);
+    });
+  };
+  // El desplegable del móvil (2026-11-02). Se cierra al elegir sección, al tocar fuera, con Escape,
+  // al mover la página, al volver a la portada —donde no hay barra— y al pasar a ancho de ordenador.
+  const html = document.documentElement;
+  let yMenu = 0;
+  const abierto = () => html.classList.contains("menu-abierto");
+  const menu = (abrir) => { html.classList.toggle("menu-abierto", abrir); desp.setAttribute("aria-expanded", String(abrir)); yMenu = scrollY; };
+  desp.addEventListener("click", () => menu(!abierto()));
+  document.querySelector(".velo").addEventListener("click", () => menu(false));
+  addEventListener("keydown", (e) => { if (e.key === "Escape" && abierto()) { menu(false); desp.focus(); } });
+  matchMedia("(min-width: 900px)").addEventListener("change", () => menu(false));
+  // Con una tecla pulsada (abrir en otra pestaña) el enlace hace lo suyo.
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("[data-ir]");
+    if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault(); menu(false); ir(a.dataset.ir);
+  });
+  // Se trae en cuanto se apunta al enlace, para que el fundido no tenga que esperar a la red.
+  const adelantar = (e) => { const a = e.target.closest?.("[data-ir]"); if (a && !vistas[a.dataset.ir]) traer(a.dataset.ir).catch(() => {}); };
+  ["pointerover", "pointerdown", "focusin"].forEach((t) => document.addEventListener(t, adelantar, { passive: true }));
+
+  // Los botones son un neón (2026-11-02; el tubo y su arranque, en brasa.css). Al pulsar se hunde un poco
+  // —lo justo para verse, --dur-out como poco— y salta un puñado de chispas, sin tocar el tubo. En el
+  // móvil no hay ratón que lo encienda ni lo apague: el toque lo enciende y se apaga solo, pasado
+  // --dur-neon-toque.
+  document.addEventListener("pointerdown", (e) => {
+    const b = e.target.closest(".pill, .contacto a, .mas"); if (!b) return;
+    const desde = performance.now(); b.classList.add("tocando"); soltar(b);
+    if (e.pointerType !== "mouse") {
+      b.classList.add("encendido"); clearTimeout(b._apaga);
+      b._apaga = setTimeout(() => b.classList.remove("encendido"), leeMs("--dur-neon-toque"));
+    }
+    const fin = () => {
+      removeEventListener("pointerup", fin); removeEventListener("pointercancel", fin);
+      setTimeout(() => b.classList.remove("tocando"), Math.max(0, leeMs("--dur-out") - (performance.now() - desde)));
+    };
+    addEventListener("pointerup", fin); addEventListener("pointercancel", fin);
+  });
+
+  // El viaje (2026-11-02). Al pasar el límite de la portada, «Reservar» y «Ver carta» viajan hasta su
+  // sitio en la barra —«Ver carta» se vuelve «La carta», la del menú de arriba— y vuelven al subir. En
+  // el móvil solo viaja «Reservar»: «La carta» está dentro del desplegable, cerrado, y no hay adónde
+  // llegar; «Ver carta» se apaga con la portada, como antes. Lo que se mueve es un
+  // viajero: sale de donde está la pieza que se va y llega a donde está la que viene, leída en cada
+  // fotograma, porque al subir la portada sigue corriendo con el scroll. Posición, forma y letra se
+  // calculan en el mismo requestAnimationFrame (regla 27 de movimiento.md), con la curva y la
+  // duración de tokens.css. Si se cruza de vuelta a medio viaje, parte de donde va. Sin movimiento,
+  // o si lo que se va ya no está en pantalla (un salto), el cambio es directo, como antes.
+  // Los dos tokens se leen al empezar cada viaje, no al cargar (regla 30 de movimiento.md).
+  const leeCurva = (t) => {
+    const n = (token(t).match(/cubic-bezier\(([^)]+)\)/)?.[1] || "").split(",").map(Number);
+    if (n.length !== 4 || n.some((x) => !Number.isFinite(x))) return null;
+    const b = (a1, a2, t) => 3 * a1 * t * (1 - t) ** 2 + 3 * a2 * t * t * (1 - t) + t ** 3;
+    return (x) => { let lo = 0, hi = 1, t = x; for (let i = 0; i < 24; i++) { t = (lo + hi) / 2; if (b(n[0], n[2], t) < x) lo = t; else hi = t; } return b(n[1], n[3], t); };
+  };
+  const suave = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  const medir = (e) => { const r = e.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; };
+  // Una píldora como trazo: el sentido contrario hace de agujero, y así el aro sale sin evenodd.
+  const estadio = (x, y, w, h, contra) => {
+    const r = Math.min(w, h) / 2, f = (v) => v.toFixed(2);
+    return contra
+      ? `M${f(x + r)} ${f(y)}A${f(r)} ${f(r)} 0 0 0 ${f(x + r)} ${f(y + h)}H${f(x + w - r)}A${f(r)} ${f(r)} 0 0 0 ${f(x + w - r)} ${f(y)}Z`
+      : `M${f(x + r)} ${f(y)}H${f(x + w - r)}A${f(r)} ${f(r)} 0 0 1 ${f(x + w - r)} ${f(y + h)}H${f(x + r)}A${f(r)} ${f(r)} 0 0 1 ${f(x + r)} ${f(y)}Z`;
+  };
+  const copiar = (s, de, c) => { s.textContent = de.textContent.trim(); s.style.font = `${c.fontStyle} ${c.fontWeight} ${c.fontSize}/1 ${c.fontFamily}`; s.style.letterSpacing = c.letterSpacing; s.style.color = c.color; };
+  const transparente = (c) => c === "transparent" || /rgba\(.*,\s*0\)$/.test(c);
+  const viaje = (portada, enBarra) => {
+    const v = el("div", "viajero"), cap = el("span", "cap"), aro = el("span", "aro"), lp = el("span"), lb = el("span");
+    v.setAttribute("aria-hidden", "true"); v.hidden = true; v.append(cap, aro, lp, lb); document.body.append(v);
+    // m: 0 es como está en la portada y 1 como está en la barra; de m sale todo lo que no es el sitio.
+    let anim = 0, m = 0, caja = null, tocados = [];
+    const acabar = (aBarra) => {
+      cancelAnimationFrame(anim); v.hidden = true; caja = null; m = aBarra ? 1 : 0;
+      tocados.forEach((x) => x.classList.remove("vuela")); tocados = [];
+    };
+    return (aBarra, animar) => {
+      cancelAnimationFrame(anim);
+      const B = enBarra(), dur = leeMs("--dur-viaje"), curva = leeCurva("--ease-viaje");
+      if (!animar || !B || !(dur > 0) || !curva) { acabar(aBarra); return; }
+      const llega = aBarra ? B : portada, r0 = v.hidden ? medir(aBarra ? portada : B) : caja;
+      // Sin viaje si lo que se va ya no está en pantalla, o si adonde va no se pinta (otra sección).
+      if (!r0.w || r0.y + r0.h < 0 || r0.y > innerHeight || !medir(llega).w) { acabar(aBarra); return; }
+      const m0 = v.hidden ? (aBarra ? 0 : 1) : m, mT = aBarra ? 1 : 0;
+      const rp = medir(portada), rB = medir(B), cP = getComputedStyle(portada), cB = getComputedStyle(B);
+      const W = Math.ceil(Math.max(rp.w, rB.w, r0.w)) + 2, H = Math.ceil(Math.max(rp.h, rB.h, r0.h)) + 2;
+      v.style.width = W + "px"; v.style.height = H + "px";
+      cap.style.background = cP.backgroundColor; aro.style.background = cP.borderTopColor;
+      copiar(lp, portada, cP); copiar(lb, B, cB);
+      const fP = parseFloat(cP.fontSize), fB = parseFloat(cB.fontSize), mismo = lp.textContent === lb.textContent;
+      const capsula = !transparente(cB.backgroundColor);
+      [portada, B].forEach((x) => { x.classList.add("vuela"); if (!tocados.includes(x)) tocados.push(x); });
+      v.hidden = false;
+      const t0 = performance.now();
+      const paso = (ahora) => {
+        const p = Math.min(1, Math.max(0, (ahora - t0) / dur)), e = curva(p), r1 = medir(llega);
+        caja = { x: r0.x + (r1.x - r0.x) * e, y: r0.y + (r1.y - r0.y) * e, w: r0.w + (r1.w - r0.w) * e, h: r0.h + (r1.h - r0.h) * e };
+        m = m0 + (mT - m0) * e;
+        const { x, y, w, h } = caja, ox = (W - w) / 2, oy = (H - h) / 2, fuera = estadio(ox, oy, w, h);
+        v.style.transform = `translate(${(x - ox).toFixed(2)}px,${(y - oy).toFixed(2)}px)`;
+        cap.style.clipPath = `path("${fuera}")`;
+        aro.style.clipPath = `path("${fuera} ${estadio(ox + 1, oy + 1, w - 2, h - 2, true)}")`;
+        // La cápsula es lo que dice que es el mismo botón: se queda entera casi todo el viaje y solo
+        // se disuelve al llegar a donde no la hay. Con las dos palabras a la vez a medio fundir, el
+        // botón se quedaba en nada a mitad de camino.
+        cap.style.opacity = aro.style.opacity = capsula ? 1 : 1 - suave(0.55, 0.95, m);
+        // La letra cambia de tamaño con la cápsula. Si es la misma palabra, se pasa de una a otra a
+        // mitad de viaje, cuando ya miden lo mismo: así llega idéntica a la de verdad.
+        const s = 1 + (fB / fP - 1) * m;
+        lp.style.transform = `scale(${s})`; lb.style.transform = `scale(${(s * fP) / fB})`;
+        lp.style.opacity = mismo ? +(m < 0.5) : 1 - suave(0.35, 0.6, m);
+        lb.style.opacity = mismo ? +(m >= 0.5) : suave(0.4, 0.65, m);
+        if (p < 1) anim = requestAnimationFrame(paso); else acabar(aBarra);
+      };
+      paso(t0);
+    };
+  };
+  const secciones = document.querySelector(".secciones");
+  // Los botones de la portada solo existen donde está el Inicio: al cargar su página, o al ir a él.
+  let viajes = [], accPortada = null;
+  const montarPortada = () => {
+    // Que el siguiente alScroll los deje como toque aunque la página ya no esté en la portada.
+    enPortada = null;
+    accPortada = document.querySelector(".portada .acc");
+    viajes = [
+      viaje(document.querySelector(".portada .acc .pill.solid"), () => document.querySelector(".barra .pill")),
+      viaje(document.querySelector('.portada .acc [data-ir="carta"]'), () =>
+        getComputedStyle(secciones).display === "none" ? null : secciones.querySelector('[data-ir="carta"]')),
+    ];
+  };
+
+  // Con margen: la portada se deja al pasar el 60% de la pantalla y se recupera por debajo del 50%,
+  // para que quien se pare justo en el límite no ponga los botones a ir y venir.
+  let enPortada = null;
+  const DEJA_PORTADA = 0.6;
+  // La línea de progreso, al pie de la barra (Mario, 2026-11-04: «se navega un poco a ciegas», sobre todo
+  // en los paneles del Inicio, que se bajan en vertical y se abren en horizontal). Sustituye a la barra del
+  // navegador, que brasa.css esconde. En el Inicio cuenta desde donde aparece la barra: en la portada no
+  // hay nada encima. Solo indica: sigue al scroll sin transición y no se pulsa.
+  const progreso = barra.querySelector(".progreso"), llenado = progreso.firstElementChild;
+  let pideProgreso = 0;
+  const pintaProgreso = () => {
+    pideProgreso = 0;
+    const desde = actual === "inicio" ? innerHeight * DEJA_PORTADA : 0, total = html.scrollHeight - innerHeight - desde;
+    // Si la sección cabe en la pantalla no hay nada que indicar.
+    progreso.classList.toggle("sin", total < 8);
+    llenado.style.transform = `scaleX(${total > 0 ? Math.min(1, Math.max(0, (scrollY - desde) / total)).toFixed(4) : 0})`;
+  };
+  const pedirProgreso = () => { if (!pideProgreso) pideProgreso = requestAnimationFrame(pintaProgreso); };
+  // La página también cambia de alto sin mover el scroll: al cambiar de sección, al fijarse los paneles o
+  // al crecer el motor de reservas.
+  new ResizeObserver(pedirProgreso).observe(document.body);
+  addEventListener("resize", pedirProgreso);
+  const alScroll = (desdeScroll) => {
+    pedirProgreso();
+    const portada = actual === "inicio" && scrollY < innerHeight * (enPortada === false ? 0.5 : DEJA_PORTADA);
+    if (portada !== enPortada) {
+      const viajar = desdeScroll === true && enPortada !== null && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+      enPortada = portada;
+      barra.classList.toggle("oculta", portada); accPortada?.classList.toggle("oculta", !portada);
+      if (portada) menu(false);
+      viajes.forEach((v) => v(!portada, viajar));
+    }
+    if (actual === "carta") {
+      let on = "compartir";
+      document.querySelectorAll(".parte").forEach((p) => { if (p.getBoundingClientRect().top < innerHeight * 0.35) on = p.dataset.parte; });
+      if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) on = "postres";
+      document.querySelectorAll(".chips a").forEach((c) => c.classList.toggle("on", c.dataset.a === on));
+    }
+  };
+  addEventListener("scroll", () => { alScroll(true); if (abierto() && Math.abs(scrollY - yMenu) > 8) menu(false); }, { passive: true });
+
+  // El Inicio: los paneles, cuatro (2026-11-02). Ninguno cambia de tamaño —recalcularía la página en cada
+  // fotograma (regla 2)—: todos ocupan la zona entera y cada uno se deja ver por su franja,
+  // recortado con clip-path; su foto, su rótulo y su texto se colocan con transform. Al abrir otro, las
+  // franjas se reparten en el mismo requestAnimationFrame (regla 27), con --ease-viaje y --dur-viaje.
+  // Si la zona cabe en la pantalla bajo la barra, se queda fija mientras se baja (.fija en brasa.css) y
+  // cada tramo de scroll abre el siguiente; tocar uno lo abre y lleva la página a su tramo, para que el
+  // scroll y el panel abierto nunca se contradigan. Si no cabe —los móviles pequeños—, se abren al
+  // tocarlos. Ya no pasan solos: con el scroll mandando, un reloj se pelearía con él.
+  const montarPaneles = () => {
+    const paneles = document.querySelector("[data-paneles]");
+    if (!paneles) return;
+    const ps = [...paneles.querySelectorAll("[data-panel]")], N = ps.length, zona = paneles.parentElement;
+    const ancho = matchMedia("(min-width: 900px)"), sinMov = matchMedia("(prefers-reduced-motion: reduce)");
+    // Lo que pesa el abierto frente a uno cerrado, el hueco entre franjas y el alto de una banda del móvil,
+    // suelta o fija. TRAMO es el scroll que abre el siguiente, en partes del alto de la zona; HOLGURA, lo
+    // que hay que pasarse de la mitad del tramo para cambiar, para que un temblor del dedo en la frontera no
+    // abra y cierre; MARGEN, lo que queda entre la barra y la zona fija (los 8px de .fija en brasa.css).
+    // Fija, en el móvil, va todo más junto —hueco de 4 y márgenes de 4—, para que quepa en un iPhone con
+    // las barras de Safari a la vista; la banda se queda en 40, que se pueda tocar.
+    const PESO = 6.5, HUECO = 8, BANDA = 68, HUECO_FIJA = 4, BANDA_FIJA = 40, TRAMO = 0.75, HOLGURA = 0.08, MARGEN = 4;
+    let abiertoP = 0, franjas = null, animP = 0, clave = "", tam = 0, hueco = HUECO, banda = BANDA;
+    let fija = false, tramo = 0, arriba = 0, relleno = 0, pendiente = 0;
+    // Dónde va cada franja con el panel i abierto: [inicio, tamaño] a lo largo del eje que toca.
+    const reparto = (i) => {
+      const total = ancho.matches ? paneles.clientWidth : paneles.clientHeight;
+      const cerrado = ancho.matches ? (total - hueco * (N - 1)) / (PESO + N - 1) : banda;
+      const grande = ancho.matches ? cerrado * PESO : total - (banda + hueco) * (N - 1);
+      let a = 0;
+      return ps.map((_, j) => { const t = j === i ? grande : cerrado, f = [a, t]; a += t + hueco; return f; });
+    };
+    const f1 = (v) => v.toFixed(1);
+    const pintarP = (F) => {
+      franjas = F;
+      const h = ancho.matches, total = h ? paneles.clientWidth : paneles.clientHeight;
+      ps.forEach((p, j) => {
+        const [a, t] = F[j], resto = total - a - t, c = a + t / 2;
+        p.style.clipPath = h ? `inset(0 ${f1(resto)}px 0 ${f1(a)}px round 4px)` : `inset(${f1(a)}px 0 ${f1(resto)}px 0 round 4px)`;
+        p.querySelector(".pan-foto").style.transform = h ? `translateX(${f1(c - tam / 2)}px)` : `translateY(${f1(c - tam / 2)}px)`;
+        p.querySelector(".pan-rotulo").style.transform = h ? `translateX(${f1(c)}px) translateX(-50%) rotate(180deg)` : `translateY(${f1(c)}px) translateY(-50%)`;
+        p.querySelector(".pan-cont").style.transform = h ? `translateX(${f1(a)}px)` : `translateY(${f1(a)}px)`;
+      });
+    };
+    const abrirP = (i, animar) => {
+      abiertoP = i;
+      ps.forEach((p, j) => { p.classList.toggle("abierto", j === i); p.querySelector(".pan-abrir").setAttribute("aria-expanded", String(j === i)); });
+      cancelAnimationFrame(animP);
+      const destino = reparto(i), dur = leeMs("--dur-viaje"), curva = leeCurva("--ease-viaje");
+      if (!animar || !franjas || sinMov.matches || !(dur > 0) || !curva) { pintarP(destino); return; }
+      const desde = franjas, t0 = performance.now();
+      const paso = (ahora) => {
+        const p = Math.min(1, Math.max(0, (ahora - t0) / dur)), e = curva(p);
+        pintarP(destino.map(([a, t], j) => [desde[j][0] + (a - desde[j][0]) * e, desde[j][1] + (t - desde[j][1]) * e]));
+        if (p < 1) animP = requestAnimationFrame(paso);
+      };
+      paso(t0);
+    };
+    // Lo que mide el texto de un panel, de la primera línea a la última, y el aire de su caja por dentro.
+    const aire = (p) => { const cs = getComputedStyle(p.querySelector(".pan-cont")); return parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom); };
+    const texto = (p) => { const k = [...p.querySelector(".pan-cont").children]; return k[k.length - 1].getBoundingClientRect().bottom - k[0].getBoundingClientRect().top; };
+    // Lo que se ha bajado desde que la zona se quedó fija: 0 al fijarse y (N-1)·tramo al soltarse.
+    const bajado = () => arriba - (zona.getBoundingClientRect().top + relleno);
+    // El panel que toca según el scroll: al bajar, pasada la HOLGURA; al recolocar, el que toque, sin animar.
+    const segunScroll = (animar) => {
+      if (!fija || !paneles.clientWidth) return;
+      const f = Math.min(Math.max(bajado() / tramo, 0), N - 1), k = Math.round(f);
+      if (k !== abiertoP && (!animar || Math.abs(f - abiertoP) > 0.5 + HOLGURA)) abrirP(k, animar);
+    };
+    // Primero se prueba fija. En el ordenador cabe si la zona, que mide lo que dice brasa.css, cabe en la
+    // ventana con la barra; en el móvil la zona ya llena la pantalla, y cabe si el texto más largo cabe en
+    // el panel abierto. Si no, suelta: en el móvil la zona mide lo que pide el texto más largo, abierto, más
+    // las otras cuatro bandas. Y el panel abierto, lo que queda.
+    const recolocar = () => {
+      if (!paneles.clientWidth) return;
+      const h = ancho.matches, alto = barra.getBoundingClientRect().height;
+      zona.classList.add("fija"); paneles.style.removeProperty("--alto-paneles");
+      hueco = h ? HUECO : HUECO_FIJA; banda = h ? BANDA : BANDA_FIJA;
+      const z = paneles.clientHeight;
+      // En el móvil, el texto más largo con el aire de su caja y 16 px de holgura tiene que caber en la banda abierta.
+      fija = h ? z + alto + 2 * MARGEN <= innerHeight : Math.max(...ps.map((p) => texto(p) + aire(p))) + 16 <= z - (banda + hueco) * (N - 1);
+      if (fija) {
+        tramo = Math.round(z * TRAMO); relleno = parseFloat(getComputedStyle(zona).paddingTop);
+        arriba = alto + (h ? Math.max(MARGEN, (innerHeight - alto - z) / 2) : MARGEN);
+        zona.style.setProperty("--recorrido", tramo * (N - 1) + "px"); zona.style.setProperty("--fijo-arriba", arriba + "px");
+      } else {
+        zona.classList.remove("fija"); hueco = HUECO; banda = BANDA;
+        if (!h) paneles.style.setProperty("--alto-paneles", Math.round(Math.max(460, Math.max(...ps.map(texto)) + 64) + (BANDA + HUECO) * (N - 1)) + "px");
+      }
+      const F = reparto(abiertoP);
+      tam = Math.max(...F.map((f) => f[1])); paneles.style.setProperty("--tam-abierto", tam + "px");
+      cancelAnimationFrame(animP); pintarP(F);
+      segunScroll(false);
+    };
+    // Se recoloca un fotograma después: en el móvil recolocar cambia el alto de la zona, y hacerlo dentro
+    // del aviso de ResizeObserver lo vuelve a disparar en el mismo fotograma («loop completed…»). Cuenta el
+    // ancho y, en el ordenador, el alto de la ventana; en el móvil el alto no, que cambia al deslizar con la
+    // barra del navegador (regla 15), y la zona fija cuelga de 100svh, que no.
+    const revisar = () => requestAnimationFrame(() => {
+      const w = paneles.clientWidth, c = ancho.matches ? w + "x" + innerHeight : String(w);
+      if (w && c !== clave) { clave = c; recolocar(); }
+    });
+    new ResizeObserver(revisar).observe(paneles);
+    addEventListener("resize", revisar);
+    document.fonts?.ready.then(recolocar);
+    addEventListener("scroll", () => { if (!pendiente) pendiente = requestAnimationFrame(() => { pendiente = 0; segunScroll(true); }); }, { passive: true });
+    ps.forEach((p, j) => p.querySelector(".pan-abrir").addEventListener("click", () => {
+      abrirP(j, true);
+      // Fija, la página salta al tramo del panel: la zona no se mueve, y el scroll que siga parte de ahí.
+      if (fija) scrollTo(0, scrollY + j * tramo - bajado());
+    }));
+    abrirP(0, false);
+  };
+
+  if (vistas.inicio) { montarPortada(); montarPaneles(); }
+  if (vistas.nosotros) { collage = montarCollage({ leeMs, leeCurva, token }); collage.activar(true); }
+  if (vistas.visitanos) { ponerMecha(); mecha.activar(true); }
+  if (actual === "reservar") montarMotor();
+  marcar(); revelar(); alScroll();
+
+  // Volver y avanzar. La altura de cada sección la lleva esto, en el historial: el navegador solo sabe de
+  // páginas, y aquí una sola carga recorre varias. Se apunta al pararse el scroll, y no solo al salir: al volver
+  // con el botón ya no se puede escribir en la entrada que se deja, y Chrome no guarda lo escrito al recargar.
+  try { history.scrollRestoration = "manual"; } catch (e) {}
+  const yAlCargar = history.state?.y, vistaAlCargar = actual;
+  history.replaceState({ y: yAlCargar || 0 }, "");
+  if (yAlCargar) {
+    aY(yAlCargar);
+    // Los paneles toman su alto al llegar las letras. Si para entonces ya se ha movido algo, se deja.
+    let tocada = false;
+    ["wheel", "touchstart", "keydown", "pointerdown"].forEach((t) => addEventListener(t, () => { tocada = true; }, { once: true, passive: true }));
+    document.fonts?.ready.then(() => { if (!tocada && visible === vistaAlCargar) aY(yAlCargar); });
+  }
+  let apuntar = 0;
+  addEventListener("scroll", () => { clearTimeout(apuntar); apuntar = setTimeout(guardarY, 300); }, { passive: true });
+  addEventListener("pagehide", guardarY);
+  addEventListener("popstate", (e) => {
+    const ruta = location.pathname.replace(/\/+$/, "") || "/", v = Object.keys(RUTAS).find((k) => RUTAS[k] === ruta);
+    if (v) ir(v, { historia: true, y: e.state?.y || 0 });
+  });
+
+  // La entrada (2026-11-02). Mario juntó dos de la maqueta —«que se enfríe tras avivarse»—: sube una
+  // bocanada de chispas desde un fondo vacío, «Cokima» se destapa de abajo arriba al rojo (--dur-aviva) y
+  // se enfría hasta el hueso (--dur-enfria, desde la mitad del destape); «Kitchen Madness», los botones y
+  // el vídeo entran detrás (--dur-in). Unos 1,5 s. La decide el <head> (data-entrada); aquí se suelta.
+  // Tocar, desplazar o una tecla la terminan al momento (regla 6), y si la página ya no está arriba del
+  // todo, no hay entrada.
+  const raiz = document.documentElement;
+  if (raiz.hasAttribute("data-entrada")) {
+    const nombre = document.querySelector(".portada h1 .nombre"), sub = document.querySelector(".portada h1 .sub"), acc = document.querySelector(".portada .acc");
+    const piezas = [nombre, sub, acc, cine].filter(Boolean), cortes = ["pointerdown", "wheel", "touchstart", "keydown", "scroll"];
+    let viva = true, t0 = 0;
+    const acabar = () => {
+      if (!viva) return; viva = false; densidadFondo = 1;
+      piezas.forEach((p) => { p.style.clipPath = ""; p.style.opacity = ""; p.style.transform = ""; p.style.removeProperty("--calor"); });
+      raiz.removeAttribute("data-entrada");
+      cortes.forEach((ev) => removeEventListener(ev, acabar));
+    };
+    cortes.forEach((ev) => addEventListener(ev, acabar, { passive: true }));
+    const curva = leeCurva("--ease"), reparte = leeCurva("--ease-viaje");
+    const aviva = leeMs("--dur-aviva"), enfria = leeMs("--dur-enfria"), dIn = leeMs("--dur-in");
+    if (scrollY > 10 || !nombre || !sub || !acc || !curva || !reparte || !(aviva > 0) || !(enfria > 0)) acabar();
+    else {
+      densidadFondo = 0;
+      const tramo = (t, desde, dura, f) => f(Math.min(1, Math.max(0, (t - desde) / dura)));
+      const paso = (ahora) => {
+        if (!viva) return;
+        if (!t0) { t0 = ahora; rafaga(0.6); }
+        const t = ahora - t0, n = tramo(t, 120, aviva, curva);
+        nombre.style.clipPath = `inset(${((1 - n) * 100).toFixed(2)}% -10% -10% -10%)`;
+        nombre.style.transform = `translateY(${((1 - n) * 14).toFixed(1)}px)`;
+        nombre.style.setProperty("--calor", (1 - tramo(t, 120 + aviva / 2, enfria, reparte)).toFixed(3));
+        const s = tramo(t, 120 + aviva * 0.65, dIn, curva), b = tramo(t, 120 + aviva * 0.75, dIn, curva);
+        sub.style.opacity = s; sub.style.transform = `translateY(${((1 - s) * 10).toFixed(1)}px)`;
+        acc.style.opacity = b; acc.style.transform = `translateY(${((1 - b) * 12).toFixed(1)}px)`;
+        if (cine) cine.style.opacity = tramo(t, 300, aviva + dIn, curva);
+        densidadFondo = tramo(t, aviva * 0.6, aviva + dIn, (x) => x);
+        if (t >= 120 + aviva / 2 + enfria) acabar(); else requestAnimationFrame(paso);
+      };
+      requestAnimationFrame(paso);
+    }
+  }
+
+  // La cinta de la portada. Como en Entrada.astro: sin `autoplay` y con `preload="none"`, la arranca
+  // esto, y no la arranca con «reducir movimiento» ni con ahorro de datos (regla 20 de
+  // movimiento.md); entonces se queda el póster. Se carga la primera vez que se ve —quien entra por
+  // otra sección no la descarga— y se pausa fuera de la vista y con la pestaña oculta (regla 6), y sigue al
+  // volver. En el ordenador apaisado son tres vídeos en columnas (2026-11-03), con la misma condición
+  // que brasa.css; se decide una vez, al cargar, y no al redimensionar (cokima-el-rediseno.md §4).
+  const uno = cine?.querySelector("video.uno"), tres = [...(cine?.querySelectorAll(".tres video") ?? [])];
+  const cintas = tres.length === 3 && matchMedia("(min-width: 900px) and (min-aspect-ratio: 9/10)").matches ? tres : [uno].filter(Boolean);
+  if (cintas.length && !matchMedia("(prefers-reduced-motion: reduce)").matches && navigator.connection?.saveData !== true) {
+    let cargada = false, aLaVista = false;
+    const listas = () => Promise.all(cintas.map((v) => (v.readyState >= 3 ? 0 : new Promise((r) => v.addEventListener("canplay", r, { once: true })))));
+    const parar = () => cintas.forEach((v) => v.pause());
+    // Las columnas arrancan a la vez, cuando las tres pueden reproducirse. En un iPhone con ahorro de
+    // energía, play() se rechaza: no es un error, se queda el póster.
+    const seguir = () => listas().then(() => {
+      if (aLaVista && document.visibilityState === "visible") cintas.forEach((v) => v.play().then(() => v.classList.add("puesta"), () => {}));
+    });
+    new IntersectionObserver(([e]) => {
+      aLaVista = e.isIntersecting;
+      if (!aLaVista) { parar(); return; }
+      // Con preload="none", load() no pide un byte hasta el play(), y aquí se espera a «canplay» para
+      // arrancar las columnas juntas: sin el preload="auto" de ahora, esa espera no acabaría nunca. No va
+      // en la etiqueta para no competir con el póster al cargar la página (regla 21).
+      if (!cargada) { cargada = true; cintas.forEach((v) => { v.preload = "auto"; v.load(); }); }
+      seguir();
+    }).observe(cine);
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") parar(); else if (aLaVista) seguir(); });
+    // Las tres cortan a 1 s una de otra porque el desfase va dentro de cada archivo, y eso solo se
+    // sostiene con un reloj común (regla 25): son bucles de 6, 6 y 9 s, cada uno con el suyo, y cada
+    // vuelta o cada parón puede separarlos. El reloj es la primera columna, con sus vueltas contadas;
+    // cada segundo, la que se haya ido más de 0,3 s de donde le toca vuelve a su sitio. Solo si se
+    // puede saltar a ese punto (`seekable`): un servidor que no sirve por rangos —el http.server de
+    // Python con el que se prueba el build— manda cada salto al segundo 0, y la columna se quedaría ahí.
+    if (cintas.length === 3) {
+      const [guia, ...otras] = cintas;
+      let vueltas = 0, antes = 0;
+      setInterval(() => {
+        if (guia.paused || !(guia.duration > 0)) return;
+        if (guia.currentTime < antes - 1) vueltas++;
+        antes = guia.currentTime;
+        const t = vueltas * guia.duration + guia.currentTime;
+        otras.forEach((v) => {
+          if (v.paused || v.seeking || !(v.duration > 0)) return;
+          const debe = t % v.duration, lejos = Math.abs(v.currentTime - debe), s = v.seekable;
+          if (Math.min(lejos, v.duration - lejos) > 0.3 && s.length && s.start(0) <= debe && s.end(0) >= debe) v.currentTime = debe;
+        });
+      }, 1000);
+    }
+  }
+
+  // Fondo: chispas de brasa que suben, como en una barbacoa (Mario, 2026-11-02, en lugar del lecho de
+  // brasas de Rescoldo). La primera versión, puntos con halo en WebGL, le parecieron estrellas: «no
+  // deberían tener tanto glow… no me parecen siquiera brasas». Así que son partículas, cada una con su
+  // vuelo: sale de abajo empujada por el aire caliente, frena, va dando bandazos, se enfría de amarillo
+  // a rojo y se apaga. Se pinta como se ve en una foto: un trazo fino a lo largo de su vuelo —lo que
+  // recorre en un instante, más largo cuanto más rápida—, sin halo. Lienzo 2D, a 30 fotogramas por
+  // segundo como mucho; transparente, y en la portada deja ver el vídeo debajo. La regla 6 de
+  // movimiento.md tiene su excepción escrita para este fondo. Delante de todo hay otro lienzo, el de las
+  // chispas que no son fondo: la bocanada al cambiar de sección y las que salta un botón al pulsarlo.
+  const cv = document.querySelector(".fondo"), cx = cv.getContext("2d");
+  const cvD = document.querySelector(".chispazos"), cxD = cvD?.getContext("2d");
+  if (!cx) return;
+  const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W = 0, H = 0;
+  const size = () => {
+    const d = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight;
+    for (const [c, x] of [[cv, cx], [cvD, cxD]]) if (x) { c.width = Math.round(W * d); c.height = Math.round(H * d); x.setTransform(d, 0, 0, d, 0, 0); }
+  };
+  // Una por cada 12.000 px² de pantalla, entre 36 y 120. Eran 16.000, 28 y 90: Mario las pidió
+  // «ligeramente» más densas el 2026-11-02, y es un tercio más. La entrada la sube desde cero.
+  const cuantas = () => Math.round(Math.max(36, Math.min(120, (W * H) / 12000)) * densidadFondo);
+  const azar = (a, b) => a + Math.random() * (b - a);
+  // z es lo cerca que está (1, delante): las de lejos son más finas, más lentas y más tenues. Seis de cada
+  // diez nacen bajo el borde de abajo y entran subiendo; las demás aparecen ya en el aire, poco a poco,
+  // como si entraran en foco, para que las haya en todo el alto de la pantalla.
+  const nueva = (o = {}) => {
+    const z = azar(0.45, 1), abajo = o.abajo ?? Math.random() < 0.6;
+    return { z, x: azar(0, W), y: abajo ? H + azar(4, 40) : azar(H * 0.2, H), vx: azar(-15, 15), vy: -azar(70, 170) * z * (o.fuerza || 1),
+      edad: 0, vida: azar(1.8, 4.6) * (o.corta || 1), entra: abajo ? 0.12 : 0.5, calor: azar(0.75, 1), grueso: Math.random() < 0.12 ? azar(2, 2.6) : azar(1.1, 1.6),
+      f1: azar(1.2, 2.6), f2: azar(3.2, 6.5), p1: azar(0, 6.3), p2: azar(0, 6.3), luz: azar(0, 100) };
+  };
+  const chispas = [], delante = [];
+  // El aire: un empujón hacia arriba que se gasta, un vaivén de dos ondas y, de vez en cuando, un bandazo.
+  const mover = (c, dt, t) => {
+    c.edad += dt;
+    c.vx += (Math.sin(t * c.f1 + c.p1) + 0.6 * Math.sin(t * c.f2 + c.p2)) * 70 * c.z * dt;
+    if (Math.random() < 0.6 * dt) c.vx += azar(-70, 70) * c.z;
+    c.vx *= Math.exp(-1.2 * dt);
+    c.vy = (c.vy - 25 * c.z * dt) * Math.exp(-0.45 * dt);
+    c.x += c.vx * dt; c.y += c.vy * dt;
+  };
+  const suaveF = (x) => { const t = Math.min(1, Math.max(0, x)); return t * t * (3 - 2 * t); };
+  // Pinta una lista de chispas en un lienzo: el fondo, o el de delante.
+  const pintarEn = (cx, lista, t) => {
+    cx.clearRect(0, 0, W, H);
+    cx.globalCompositeOperation = "lighter"; cx.lineCap = "round";
+    for (const c of lista) {
+      const vida = c.edad / c.vida, k = c.calor * Math.pow(1 - vida, 0.6);
+      const parpadeo = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(t * 13 + c.luz)) * (0.5 + 0.5 * Math.sin(t * 29 + c.luz * 1.7));
+      // Arriba se apagan, para no subir a la barra; las que salta un botón, no, que pueden salir de ella.
+      const alfa = suaveF(c.edad / c.entra) * (1 - suaveF((vida - 0.7) / 0.3)) * (c.salto ? 1 : suaveF(c.y / (H * 0.2))) * parpadeo * (0.5 + 0.5 * k) * (0.6 + 0.4 * c.z);
+      if (alfa < 0.01) continue;
+      // El trazo: lo que recorre en 50 ms, hacia atrás desde donde está. Y, mientras está caliente, la
+      // cabeza más clara: es lo que la hace brasa y no una mota, sin halo.
+      const largo = 0.05, x0 = c.x - c.vx * largo, y0 = c.y - c.vy * largo;
+      cx.strokeStyle = `rgba(${tono(k)},${Math.min(1, alfa).toFixed(3)})`; cx.lineWidth = c.grueso * c.z;
+      cx.beginPath(); cx.moveTo(x0, y0); cx.lineTo(c.x, c.y); cx.stroke();
+      if (k > 0.45) {
+        cx.strokeStyle = `rgba(${tono(Math.min(1, k + 0.3))},${Math.min(1, alfa * (k - 0.45) * 1.8).toFixed(3)})`;
+        cx.beginPath(); cx.moveTo(c.x - c.vx * largo * 0.35, c.y - c.vy * largo * 0.35); cx.lineTo(c.x, c.y); cx.stroke();
+      }
+    }
+  };
+  // Al bajar la página, las chispas suben un poco con ella, más las de cerca; un salto grande (cambiar de
+  // sección) no las arrastra.
+  let yAntes = scrollY;
+  const llevar = () => {
+    const d = scrollY - yAntes; yAntes = scrollY;
+    if (Math.abs(d) < 300) for (const c of chispas) c.y -= d * 0.25 * c.z;
+  };
+  const pintar = (t) => pintarEn(cx, chispas, t);
+  const llenar = () => { while (chispas.length < cuantas()) chispas.push(nueva()); chispas.length = cuantas(); };
+  const avanzar = (dt, t) => chispas.forEach((c, n) => {
+    mover(c, dt, t);
+    if (c.edad > c.vida || c.y < -30 || c.x < -40 || c.x > W + 40) chispas[n] = nueva();
+  });
+  // Las de delante. Las de la bocanada vuelan como las del fondo, más deprisa y menos tiempo; las de un
+  // botón saltan de su borde de arriba y caen frenadas, como las que suelta una brasa al tocarla.
+  const avanzarDelante = (dt, t) => {
+    for (let i = delante.length - 1; i >= 0; i--) {
+      const c = delante[i];
+      if (c.salto) { c.edad += dt; c.vx *= Math.exp(-2.2 * dt); c.vy = c.vy * Math.exp(-1.6 * dt) + 140 * dt; c.x += c.vx * dt; c.y += c.vy * dt; }
+      else mover(c, dt, t);
+      if (c.edad > c.vida || c.y < -30) delante.splice(i, 1);
+    }
+  };
+  size(); llenar();
+  // Se arranca con tres segundos ya vividos, para que la pantalla no empiece vacía.
+  for (let n = 0; n < 90; n++) avanzar(1 / 30, n / 30);
+  // Cambiar el tamaño del lienzo lo borra: con «reducir movimiento», que no repinta solo, se repinta aquí.
+  addEventListener("resize", () => { size(); llenar(); if (quieto) pintar(3); });
+  if (quieto) { pintar(3); return; }
+  // La bocanada: bastante más densa que el fondo —Mario la quiso «un poquito más considerablemente»—,
+  // una por cada 6.000 px², entre 70 y 220, por lo que se le pida; nacen bajo el borde de abajo.
+  rafaga = (cuanto = 1) => {
+    if (!cxD) return;
+    const n = Math.round(Math.max(70, Math.min(220, (W * H) / 6000)) * cuanto);
+    for (let i = 0; i < n; i++) { const c = nueva({ abajo: true, fuerza: azar(1.6, 2.5), corta: 0.6 }); c.y = H + azar(0, 80); delante.push(c); }
+  };
+  // Las que suelta un punto de la pantalla: la cabeza de una mecha, y Cokima al llegar las cuatro.
+  brotar = (x, y, n, fuerza = 1, ancho = 30) => {
+    if (!cxD) return;
+    for (let i = 0; i < n; i++) { const c = nueva({ abajo: false, fuerza: azar(0.9, 1.7) * fuerza, corta: 0.42 }); c.x = x + azar(-ancho, ancho); c.y = y + azar(-ancho * 0.4, ancho * 0.4); c.vx = azar(-70, 70); c.entra = 0.04; delante.push(c); }
+  };
+  // Las de un botón al pulsarlo: de cuatro a seis, de su borde de arriba.
+  soltar = (b) => {
+    if (!cxD) return;
+    const r = b.getBoundingClientRect(), n = 4 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < n; i++) delante.push({ salto: true, z: 1, x: r.left + r.width * azar(0.18, 0.82), y: r.top + azar(2, 6), vx: azar(-80, 80), vy: -azar(170, 330),
+      edad: 0, vida: azar(0.45, 0.95), entra: 0.04, calor: azar(0.85, 1), grueso: azar(1.2, 1.9), luz: azar(0, 100) });
+  };
+  let ultimo = 0, limpio = true;
+  const frame = (ms) => {
+    requestAnimationFrame(frame);
+    if (ms - ultimo < 32) return;
+    // Con la pestaña oculta no se pinta; al volver, el salto de tiempo se queda en un paso normal.
+    const dt = ultimo ? Math.min(0.05, (ms - ultimo) / 1000) : 1 / 30, t = ms / 1000; ultimo = ms;
+    llevar(); llenar(); avanzar(dt, t); pintar(t);
+    // El lienzo de delante solo se pinta mientras tiene algo, y una vez más para dejarlo limpio.
+    if (cxD && (delante.length || !limpio)) { avanzarDelante(dt, t); pintarEn(cxD, delante, t); limpio = !delante.length; }
+  };
+  requestAnimationFrame(frame);
+})();

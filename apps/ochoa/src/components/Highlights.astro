@@ -1,0 +1,794 @@
+---
+// apps/ochoa/src/components/Highlights.astro
+import { Image } from "astro:assets";
+import { formatEuro, dishImageKey, type MenuEntry } from "@tombo/content";
+import { showPhotoGuides } from "@tombo/config/photo-guides";
+import PhotoGuide from "@tombo/ui/PhotoGuide.astro";
+import { dishImages } from "../data/dish-images.ts";
+
+// Andamio, nunca producción: la decisión la toma @tombo/config, no este archivo.
+const guides = showPhotoGuides();
+
+interface Props {
+  dishes: MenuEntry[];
+  locale: "es" | "en";
+  href: string;
+}
+const { dishes, locale, href } = Astro.props;
+const es = locale === "es";
+// «Los que destacan» desde el 2026-10-30, y no «Lo que más sale»: Mario lo cambió
+// al pasar de seis platos a diez, para no confundir a nadie con algo «que puede
+// no ser objetivo». Nadie ha medido qué se vende más.
+const t = es
+  ? { title: "Los que destacan", more: "Ver la carta", list: "Platos destacados" }
+  : { title: "Standouts", more: "Full menu", list: "Featured dishes" };
+
+const cards = dishes.map((d) => ({
+  dish: d,
+  image: d.image ? dishImages[d.image] : undefined,
+}));
+
+// La carta de Ochoa tiene platos con media ración y platos sin ella: cuando
+// existe media se muestran los dos importes, como ya hace MenuBoard.
+const label = (price: MenuEntry["price"]) => {
+  if (typeof price === "number") return formatEuro(price);
+  return price.half ? `${formatEuro(price.half)} · ${formatEuro(price.full)}` : formatEuro(price.full);
+};
+
+// Dos cifras seguidas no dicen cuál es la media y cuál la entera: en la carta lo
+// resuelven las cabeceras de columna, y aquí, donde no hay tabla, hace falta
+// decirlo para quien lo escucha en vez de verlo.
+const priceLabel = (price: MenuEntry["price"]) => {
+  if (typeof price === "number" || !price.half) return undefined;
+  return es
+    ? `½ ración ${formatEuro(price.half)}, ración ${formatEuro(price.full)}`
+    : `Half ${formatEuro(price.half)}, full ${formatEuro(price.full)}`;
+};
+---
+
+<section class="highlights">
+  <div class="wrap head">
+    <h2 class="cartel">{t.title}</h2>
+    <a href={href} class="btn ghost more">{t.more} →</a>
+  </div>
+
+  {/* tabindex="0" para poder recorrer la tira con el teclado: es una región
+      con scroll y sin nada enfocable dentro. Va en el HTML, no puesto por
+      script, para que también funcione sin JavaScript. La ventana solo cuenta
+      en el ordenador: es la que recorta la rueda (ver el CSS). */}
+  <div class="wrap ventana">
+    <ul class="strip" tabindex="0" aria-label={t.list}>
+      {cards.map(({ dish, image }) => (
+        <li class:list={["card", { flat: !image && !guides }]}>
+          {image && (
+            <Image
+              src={image}
+              alt={dish.name}
+              widths={[320, 640, 960, 1200]}
+              sizes="(max-width: 860px) 90vw, 15vw"
+              quality={72}
+              loading="lazy"
+              class="shot"
+            />
+          )}
+          {!image && guides && (
+            <PhotoGuide
+              file={`apps/ochoa/src/assets/dishes/${dishImageKey(dish.name)}.jpg`}
+              ratio="4 / 3"
+              note={`${dish.name}. Plano corto, el plato llenando el encuadre.`}
+            />
+          )}
+          <div class="body">
+            <h3>{dish.name}</h3>
+            <span class="price" aria-label={priceLabel(dish.price)}>{label(dish.price)}</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  {/* Guía de cuántos platos hay y por cuál va. Es un indicador, no un mando:
+      `aria-hidden` porque la tira ya se recorre con el dedo y con el teclado, y
+      diez paradas de tabulación más no ayudarían a nadie. El turno en curso es
+      una barra que se rellena; los demás, puntos. */}
+  <div class="turnos" aria-hidden="true" data-turnos>
+    {cards.map(() => <span class="turno"><i></i></span>)}
+  </div>
+</section>
+
+<script>
+  /* «Los que destacan» se mueven solos: en el móvil son un mazo y en el
+   * ordenador, una rueda.
+   *
+   * El mazo: los platos apilados, las dos cartas siguientes asomando por la
+   * izquierda, y cada turno la de delante sale por la izquierda torciéndose y
+   * vuelve al fondo. Mario lo pidió el 2026-10-26 para que no se moviera de lado
+   * igual que el telón de la portada —«como cuando barajas cartas»— y eligió
+   * esta variante entre tres en un boceto.
+   *
+   * La rueda (2026-10-30): seis tarjetas a la vista, del mismo tamaño que cuando
+   * cabían todos los platos en la fila, y cada turno la fila se corre una
+   * tarjeta hacia la derecha —entra una por la izquierda y sale otra por la
+   * derecha— sin fin. Mario la pidió al pasar de seis platos a diez: «irán
+   * rotando constantemente hacia la derecha, similar a lo que teníamos antes en
+   * móvil», que era la tira pasando sola un plato por turno. Va a turnos y no
+   * corriendo, porque justo encima corre la tira de la portada: dos cosas
+   * pasando a la vez y al mismo paso no se distinguen.
+   *
+   * Sin JavaScript, o mientras carga, queda la tira de siempre, que se desliza
+   * con el dedo o con el teclado: el mazo y la rueda solo existen con
+   * `data-mazo` y `data-rueda`, que pone este script.
+   *
+   * El turno avanza solo mientras nadie toca, y se apaga para siempre en cuanto
+   * alguien toca: en una fila con precios, moverse debajo de quien está leyendo
+   * «7 € · 12 €» es quitarle el sitio. Por eso no hay botón de pausa —el gesto
+   * ya es la pausa— y por eso el apagado es definitivo y no una tregua. La
+   * rueda, además, espera mientras el ratón está encima, y sigue cuando se va:
+   * con ratón se lee con el puntero sobre lo que se lee.
+   */
+  import { hastaElProximo, leeDuracion } from "../compas.ts";
+
+  /* El mazo es para el móvil en vertical, o en uno lo bastante alto: tumbado y
+     bajo, la carta, con su foto en proporción, no cabe en la pantalla (a 844×390
+     medía 542 px de alto), y la tira de siempre, que se desliza, enseña dos
+     fichas y media. Es la misma condición que la del telón de la portada. */
+  const MOVIL = "(max-width: 860px) and (orientation: portrait), (max-width: 860px) and (min-height: 501px)";
+  /* La rueda, donde la fila es de `--visibles` tarjetas (ver el CSS). */
+  const ORDENADOR = "(min-width: 861px)";
+  /* Lo que tiene que recorrer el dedo para que cuente como pasar de carta y no
+     como un toque que tiembla. */
+  const UMBRAL = 30;
+
+  /* Lo propio de cada manera: qué hace al ir a un lado o al otro, hacia cuál va
+     sola y cómo se deshace. El turno, los gestos y el reloj son comunes
+     (`montaTurnos`). */
+  interface Manera {
+    izquierda: () => void;
+    derecha: () => void;
+    sola: "izquierda" | "derecha";
+    /** Si espera mientras el ratón está encima. */
+    esperaAlRaton: boolean;
+    suelta: () => void;
+  }
+
+  function mazo(seccion: HTMLElement, fila: HTMLElement, cartas: HTMLElement[], marcas: HTMLElement[]): Manera {
+    const n = cartas.length;
+    let frente = 0;
+
+    seccion.setAttribute("data-mazo", "");
+
+    /* El puesto de cada carta: 0 delante, 1 y 2 asomando, el resto escondidas
+       detrás de la 2. El CSS lo convierte en desplazamiento y escala. */
+    const coloca = () => {
+      cartas.forEach((c, j) => {
+        const p = (j - frente + n) % n;
+        c.style.setProperty("--puesto", String(Math.min(p, 2)));
+        c.style.setProperty("--capa", String(n - p));
+        c.toggleAttribute("data-delante", p === 0);
+        c.toggleAttribute("data-escondida", p > 2);
+      });
+      marcas.forEach((m, i) => m.toggleAttribute("data-activo", i === frente));
+    };
+
+    const limpia = () => {
+      fila.removeAttribute("data-atras");
+      cartas.forEach((c) => {
+        c.removeAttribute("data-sale");
+        c.removeAttribute("data-vuelve");
+      });
+    };
+    const siguiente = () => {
+      const sale = cartas[frente];
+      limpia();
+      frente = (frente + 1) % n;
+      coloca();
+      void sale.offsetWidth;
+      sale.setAttribute("data-sale", "");
+    };
+    /* Hacia atrás no basta con recolocar: la carta que vuelve estaba escondida
+       en el fondo, y con solo la transición se ponía encima desde el primer
+       fotograma y aparecía fundiéndose sobre la de delante — las dos a medio
+       transparentar a la vez. Mario lo vio en su iPhone el 2026-10-27. Entra
+       por la izquierda, por encima y a la vista (`del-fondo`). */
+    const anterior = () => {
+      limpia();
+      void fila.offsetWidth;
+      fila.setAttribute("data-atras", "");
+      frente = (frente - 1 + n) % n;
+      coloca();
+      const vuelve = cartas[frente];
+      void vuelve.offsetWidth;
+      vuelve.setAttribute("data-vuelve", "");
+    };
+
+    coloca();
+
+    return {
+      izquierda: siguiente,
+      derecha: anterior,
+      sola: "izquierda",
+      esperaAlRaton: false,
+      suelta: () => {
+        seccion.removeAttribute("data-mazo");
+        fila.removeAttribute("data-atras");
+        cartas.forEach((c) => {
+          c.removeAttribute("data-sale");
+          c.removeAttribute("data-vuelve");
+          c.removeAttribute("data-delante");
+          c.removeAttribute("data-escondida");
+        });
+      },
+    };
+  }
+
+  function rueda(seccion: HTMLElement, fila: HTMLElement, cartas: HTMLElement[]): Manera | null {
+    const n = cartas.length;
+    const visibles = parseInt(getComputedStyle(fila).getPropertyValue("--visibles"), 10);
+    /* Hacen falta dos tarjetas más de las que se ven: una esperando fuera por la
+       izquierda para entrar y al menos otra fuera por la derecha, para que la
+       que da la vuelta la dé siempre sin que se vea. Con menos queda la tira. */
+    if (!(n >= visibles + 2)) return null;
+    let giro = 0;
+
+    seccion.setAttribute("data-rueda", "");
+
+    /* El sitio de cada tarjeta: de 0 a `visibles` - 1 a la vista, de izquierda a
+       derecha; -1 la que espera fuera por la izquierda, y las demás fuera por la
+       derecha. El CSS lo convierte en desplazamiento. La que da la vuelta salta
+       de la última a -1, o al revés, sin transición (`data-salta`): los dos
+       sitios están fuera de la vista, y con ella cruzaría la fila entera. */
+    const coloca = (deGolpe = false) => {
+      cartas.forEach((c, j) => {
+        const sitio = ((((j + giro + 1) % n) + n) % n) - 1;
+        const antes = Number(c.dataset.sitio ?? sitio);
+        c.toggleAttribute("data-salta", deGolpe || Math.abs(sitio - antes) > 1);
+        c.dataset.sitio = String(sitio);
+        c.style.setProperty("--sitio", String(sitio));
+      });
+    };
+    /* De golpe la primera vez: con la transición, cada tarjeta llegaría a su
+       sitio deslizándose desde el principio de la fila. */
+    coloca(true);
+
+    /* Las de fuera se piden ya: recortadas por la tira, Chromium no las
+       descargaría hasta que entraran, y entrarían en blanco (regla 28). */
+    for (const img of fila.querySelectorAll("img")) img.loading = "eager";
+
+    return {
+      izquierda: () => {
+        giro -= 1;
+        coloca();
+      },
+      derecha: () => {
+        giro += 1;
+        coloca();
+      },
+      sola: "derecha",
+      esperaAlRaton: true,
+      suelta: () => {
+        seccion.removeAttribute("data-rueda");
+        cartas.forEach((c) => {
+          c.removeAttribute("data-salta");
+          delete c.dataset.sitio;
+          c.style.removeProperty("--sitio");
+        });
+      },
+    };
+  }
+
+  let sueltaAnterior: (() => void) | null = null;
+
+  function montaTurnos(origen: number) {
+    const seccion = document.querySelector<HTMLElement>(".highlights");
+    const fila = seccion?.querySelector<HTMLElement>(".strip");
+    const turnos = seccion?.querySelector<HTMLElement>("[data-turnos]");
+    if (!seccion || !fila || !turnos) return null;
+
+    const cartas = [...fila.children] as HTMLElement[];
+    const marcas = [...turnos.children] as HTMLElement[];
+    if (cartas.length < 2) return null;
+
+    const manera = matchMedia(MOVIL).matches
+      ? mazo(seccion, fila, cartas, marcas)
+      : matchMedia(ORDENADOR).matches
+        ? rueda(seccion, fila, cartas)
+        : null;
+    if (!manera) return null;
+
+    const abort = new AbortController();
+    const { signal } = abort;
+    let reloj: ReturnType<typeof setTimeout> | null = null;
+    let parado = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const pausa = () => {
+      if (reloj) clearTimeout(reloj);
+      reloj = null;
+      turnos.removeAttribute("data-corriendo");
+    };
+    /* La espera no se cuenta aquí: se pregunta al reloj común, para que el
+       mazo nunca cambie a la vez que la portada (`compas.ts`). La barra del
+       turno dura lo que de verdad falta. */
+    const arranca = () => {
+      if (parado || reloj) return;
+      const periodo = leeDuracion("--dur-turno");
+      const espera = hastaElProximo(origen, periodo, periodo + leeDuracion("--desfase-turno"));
+      turnos.style.setProperty("--espera", `${espera}ms`);
+      turnos.removeAttribute("data-corriendo");
+      void turnos.offsetWidth;
+      turnos.setAttribute("data-corriendo", "");
+      reloj = setTimeout(() => {
+        reloj = null;
+        manera[manera.sola]();
+        arranca();
+      }, espera);
+    };
+    const para = () => {
+      parado = true;
+      pausa();
+    };
+
+    /* Qué cuenta como tocarlo, como en `toque.ts`: con el dedo apoyado el mazo
+       espera; si el navegador se queda el gesto para bajar la página
+       (`pointercancel`), sigue; y si llega a soltarse sobre él —un toque o una
+       carta pasada de lado, que `pan-y` le deja entera—, se apaga para siempre.
+       Con `pointerdown` se apagaba también al bajar con el dedo encima, que en el
+       móvil es casi siempre. Con el ratón, pulsar ya es tocar. */
+    let x0: number | null = null;
+    fila.addEventListener(
+      "pointerdown",
+      (e) => {
+        if (e.pointerType === "mouse") para();
+        else pausa();
+        x0 = e.clientX;
+      },
+      { signal },
+    );
+    fila.addEventListener(
+      "pointerup",
+      (e) => {
+        if (x0 === null) return;
+        const dx = e.clientX - x0;
+        x0 = null;
+        para();
+        if (dx < -UMBRAL) manera.izquierda();
+        else if (dx > UMBRAL) manera.derecha();
+      },
+      { signal },
+    );
+    fila.addEventListener(
+      "pointercancel",
+      () => {
+        x0 = null;
+        decide();
+      },
+      { signal },
+    );
+    /* Con el teclado, las flechas hacen lo que el dedo: la de la derecha lleva
+       las cartas a la izquierda, como cuando se desliza la tira hacia allí. */
+    fila.addEventListener(
+      "keydown",
+      (e) => {
+        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+        e.preventDefault();
+        para();
+        if (e.key === "ArrowRight") manera.izquierda();
+        else manera.derecha();
+      },
+      { signal },
+    );
+
+    /* La rueda espera mientras el ratón está encima, y sigue cuando se va. */
+    let encima = false;
+    if (manera.esperaAlRaton) {
+      for (const [evento, dentro] of [
+        ["pointerenter", true],
+        ["pointerleave", false],
+      ] as const) {
+        fila.addEventListener(
+          evento,
+          (e) => {
+            if (e.pointerType !== "mouse") return;
+            encima = dentro;
+            decide();
+          },
+          { signal },
+        );
+      }
+    }
+
+    // Nada corre mientras no se ve, ni con la pestaña en segundo plano.
+    let enVista = false;
+    const decide = () => (enVista && !encima && !document.hidden ? arranca() : pausa());
+    const ojo = new IntersectionObserver(
+      ([e]) => {
+        /* La proporción y no `isIntersecting`: esa es cierta en cuanto asoma un
+           borde, y la primera llamada llega siempre, cruce o no el umbral. */
+        enVista = e.intersectionRatio >= 0.5;
+        decide();
+      },
+      { threshold: 0.5 },
+    );
+    ojo.observe(fila);
+    document.addEventListener("visibilitychange", decide, { signal });
+
+    return () => {
+      pausa();
+      ojo.disconnect();
+      abort.abort();
+      manera.suelta();
+    };
+  }
+
+  /* `astro:page-load` dispara en la carga inicial y después de cada navegación
+     con transiciones de vista; su `timeStamp` es el origen del reloj común, el
+     mismo que lee la portada. Se suelta el montaje anterior antes de crear
+     otro: sin esto, cada visita dejaría un reloj corriendo sobre nodos que ya
+     no existen. Y se rehace al cruzar el ancho del móvil o el del ordenador,
+     para que al girar una tableta aparezca el mazo, la rueda o la tira. */
+  let origen = 0;
+  const remonta = () => {
+    sueltaAnterior?.();
+    sueltaAnterior = montaTurnos(origen);
+  };
+  document.addEventListener("astro:page-load", (e) => {
+    origen = e.timeStamp;
+    remonta();
+  });
+  matchMedia(MOVIL).addEventListener("change", remonta);
+  matchMedia(ORDENADOR).addEventListener("change", remonta);
+</script>
+
+<style>
+  /* El relleno superior va apretado a propósito: la portada deja asomar una
+     franja fija y todo lo que gaste este encabezado es ficha de plato que no
+     se ve. */
+  .highlights {
+    padding: clamp(16px, 4vw, 44px) 0 clamp(30px, 5vw, 56px);
+  }
+  /* `center` y no `baseline`: con el enlace convertido en botón, cuadrar por la
+     línea base dejaba la caja colgando por debajo del titular. */
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 12px;
+  }
+  /* El tamaño se contiene en móvil para que el título quepa en una línea junto
+     al enlace: partido en dos se come el asomo que la portada le reserva. */
+  .head h2 {
+    font-size: clamp(1.5rem, 5vw, 2.6rem);
+    margin: 0;
+    text-wrap: nowrap;
+  }
+  /* «Los que destacan» mide 171 px, 12 más que «Lo que más sale», y en una
+     pantalla de 320 empujaba el botón 7 px fuera de ella. Por debajo de 340 el
+     título baja lo justo para medir lo que medía el de antes. */
+  @media (max-width: 339px) {
+    .head h2 {
+      font-size: 1.4rem;
+    }
+  }
+  /* Botón de verdad, no texto con una flecha: el mismo hueco con relieve que
+     «Ver la carta completa» más abajo, encogido para caber en la línea del
+     titular. El alto se fija en 44px —el mínimo de un dedo— en vez de dejarlo
+     al relleno, que se quedaba en 41. */
+  .more {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 15px;
+    font-size: 0.86rem;
+  }
+  /* La ventana solo cuenta en el ordenador (ver abajo). En el móvil la tira y el
+     mazo van de borde a borde, con su propio margen, como si no estuviera. */
+  .ventana {
+    display: contents;
+  }
+  .strip {
+    --hueco: 14px;
+    display: flex;
+    gap: var(--hueco);
+    list-style: none;
+    margin: 0;
+    /* El relleno de abajo es para la sombra roja de las fichas, no para el
+       aire: `overflow-x: auto` obliga al eje vertical a recortar también, así
+       que sin él la sombra se cortaba en seco por debajo y su esquina de abajo
+       a la derecha aparecía en pico. Los cuatro píxeles que mide la sombra,
+       más un poco de holgura. */
+    padding: 0 max(5vw, env(safe-area-inset-right, 0px)) 10px max(5vw, env(safe-area-inset-left, 0px));
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    /* Sin esto, la primera ficha aparecía pegada al borde de la pantalla pese
+       al relleno: el `scroll-snap` alinea contra el borde del área de scroll,
+       que ignora el `padding`, así que el navegador desplazaba esos mismos
+       veinte píxeles para cuadrar la ficha y se comía el margen. El
+       `scroll-padding` le dice dónde está de verdad el borde, y la tira arranca
+       a plomo con el titular y con el resto de la hoja. */
+    /* Con el mismo margen que `.wrap`, que libra la isla del móvil tumbado. */
+    scroll-padding-inline: max(5vw, env(safe-area-inset-left, 0px)) max(5vw, env(safe-area-inset-right, 0px));
+  }
+  .strip::-webkit-scrollbar {
+    display: none;
+  }
+  .strip:focus-visible {
+    outline: 2px solid var(--rojo);
+    outline-offset: 3px;
+  }
+  .card {
+    flex: 0 0 68vw;
+    max-width: 280px;
+    scroll-snap-align: start;
+    border: 2px solid var(--ink);
+    border-radius: var(--r-marco);
+    overflow: hidden;
+    background: var(--paper);
+    box-shadow: 4px 4px 0 var(--rojo);
+  }
+  /* Sin foto, el nombre y el precio van arriba del todo: la portada deja
+     asomar la primera ficha por el borde de la pantalla, y lo que tiene que
+     asomar es información, no un rectángulo vacío. Con foto manda la imagen y
+     esta regla no aplica. */
+  .card.flat {
+    display: flex;
+    align-items: flex-start;
+    min-height: 132px;
+  }
+  /* La foto va en proporción y no a un alto fijo (2026-10-29). Con 190 px fijos,
+     la ficha se ensanchaba con la pantalla y la foto se quedaba en una franja:
+     de un plato cuadrado se veía el 58 % del alto en un iPhone, el 26–35 % en un
+     plegable abierto o una tableta en vertical y el 38 % en una pantalla de
+     3440. En proporción se ve lo mismo en todas: 16:10 en el móvil, que es
+     prácticamente el alto que tenía en un iPhone, y el plato entero en la fila
+     del ordenador. */
+  .shot {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+  .body {
+    padding: 12px 14px 14px;
+    width: 100%;
+  }
+  .body h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 6px;
+    line-height: 1.25;
+  }
+  .price {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .turnos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+    margin-top: 18px;
+  }
+  /* Apagado es un punto; en turno se estira a barra. La transición del ancho es
+     la corta, porque el cambio de forma acompaña al desplazamiento de la tira y
+     tiene que llegar a la vez. */
+  .turno {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--paper-3);
+    overflow: hidden;
+    transition: width var(--dur-out) var(--ease);
+  }
+  .turno[data-activo] {
+    width: 34px;
+  }
+  .turno i {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--rojo);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  /* La cuenta del turno en curso. Arranca sola cada vez que el atributo salta a
+     otro hermano, así que no hay que reiniciar nada a mano. Lineal: una barra
+     de tiempo que acelera o frena miente sobre lo que queda. */
+  @keyframes rellena {
+    to {
+      transform: scaleX(1);
+    }
+  }
+  /* `--espera` la pone el script con lo que de verdad falta para el cambio,
+     que el primer turno no es un turno entero (`compas.ts`). */
+  .turnos[data-corriendo] .turno[data-activo] i {
+    animation: rellena var(--espera, var(--dur-turno)) linear forwards;
+  }
+  /* Parado —porque alguien ha tocado la tira, o porque pide menos movimiento—
+     el turno en curso se queda lleno: sigue diciendo por dónde va, sin prometer
+     que se vaya a mover. */
+  .turno[data-activo] i {
+    transform: scaleX(1);
+  }
+  .turnos[data-corriendo] .turno[data-activo] i {
+    transform: scaleX(0);
+  }
+
+  /* El mazo. Todas las cartas en la misma celda de una rejilla, así que el mazo
+     mide lo que la más alta sin medir nada. Va de borde a borde de la sección:
+     la de delante, pegada a la derecha y a plomo con «Ver la carta»; las dos de
+     detrás asoman por la izquierda en tiras rectas de `--paso`, a plomo con el
+     título. Mario pidió dos cosas en el boceto: que fuera simétrico —estaba
+     corrido 39 px y las de detrás, giradas, asomaban en cuña— y que asomaran
+     por la izquierda, que es por donde sale la de delante. */
+  .highlights[data-mazo] .strip {
+    --paso: 16px;
+    display: grid;
+    overflow: visible;
+    scroll-snap-type: none;
+    touch-action: pan-y;
+    user-select: none;
+  }
+  .highlights[data-mazo] .card {
+    grid-area: 1 / 1;
+    justify-self: end;
+    width: calc(100% - 2 * var(--paso));
+    max-width: none;
+    /* Las de detrás encogen desde su borde izquierdo: pierden alto por igual
+       arriba y abajo, y lo que asoma es una tira recta. Sin giro en reposo: el
+       giro es del gesto, no de la pila. */
+    transform: translateX(calc(var(--puesto, 0) * var(--paso) * -1))
+      scale(calc(1 - var(--puesto, 0) * 0.05));
+    transform-origin: 0% 50%;
+    z-index: var(--capa, 1);
+    /* La sombra roja solo la lleva la de delante: en las de detrás se sumaba a
+       la tira que asoma y la ensanchaba por un lado. */
+    box-shadow: none;
+    transition:
+      transform var(--dur-in) var(--ease),
+      opacity var(--dur-in) var(--ease);
+  }
+  .highlights[data-mazo] .card[data-delante] {
+    box-shadow: 4px 4px 0 var(--rojo);
+  }
+  .highlights[data-mazo] .card[data-escondida] {
+    opacity: 0;
+  }
+  /* Todas igual de altas: con nombres de una y dos líneas, la de detrás asomaba
+     por abajo unas veces sí y otras no. */
+  .highlights[data-mazo] .body h3 {
+    min-height: 2.5em;
+  }
+  /* La de delante sale por la izquierda torciéndose, pasa por detrás a mitad
+     de viaje y vuelve al fondo, ya escondida. */
+  @keyframes al-fondo {
+    0% {
+      transform: translateX(0) rotate(0deg);
+      opacity: 1;
+      z-index: 20;
+    }
+    48% {
+      transform: translate(-112%, -4px) rotate(calc(var(--tuerce) * -1.5));
+      opacity: 1;
+      z-index: 20;
+    }
+    52% {
+      z-index: 0;
+    }
+    100% {
+      transform: translateX(calc(var(--puesto, 0) * var(--paso) * -1))
+        scale(calc(1 - var(--puesto, 0) * 0.05));
+      opacity: 0;
+      z-index: 0;
+    }
+  }
+  .highlights[data-mazo] .card[data-sale] {
+    animation: al-fondo var(--dur-baraja) var(--ease-telon) both;
+  }
+  /* Para volver al plato anterior, la carta entra por la izquierda por
+     encima del mazo, ya a la vista, y se asienta al frente: es la mitad
+     visible de `al-fondo`, al revés, y dura lo que esa mitad.
+
+     Hasta el 2026-10-27 hacía el viaje entero al revés —salía del fondo por
+     detrás del mazo y cruzaba a mitad de camino—, y el plato no se veía nada
+     hasta los 400 ms ni entero hasta los 900, cuando hacia el otro lado se ve
+     al 80% a los 300. Mario: «debería verse el plato más rápidamente». Lo de
+     ir por detrás no aportaba nada: la carta del fondo está escondida, así
+     que puede aparecer fuera de la pantalla sin que se note el salto. */
+  @keyframes del-fondo {
+    0% {
+      transform: translate(-112%, -4px) rotate(calc(var(--tuerce) * -1.5));
+    }
+    100% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+  }
+  .highlights[data-mazo] .strip {
+    --dur-vuelta: calc(var(--dur-baraja) * 0.5);
+  }
+  .highlights[data-mazo] .card[data-vuelve] {
+    z-index: 20;
+    opacity: 1;
+    animation: del-fondo var(--dur-vuelta) var(--ease-telon) both;
+  }
+  /* Mientras entra, el resto del mazo espera quieto y se recoloca cuando ya
+     está tapado por ella. Sin esa espera, la de delante perdía la sombra en el
+     primer fotograma y se encogía al fondo en 150 ms —la quíntica—, y Mario lo
+     vio como «se hunde de golpe». La sombra cambia de dueña en ese mismo
+     instante: `0s` con retardo es un cambio diferido, no una animación de la
+     sombra. */
+  .highlights[data-mazo] .strip[data-atras] .card:not([data-vuelve]) {
+    transition:
+      transform var(--dur-in) var(--ease) var(--dur-vuelta),
+      opacity var(--dur-in) var(--ease) var(--dur-vuelta),
+      box-shadow 0s linear var(--dur-vuelta);
+  }
+  .highlights[data-mazo] .strip[data-atras] .card[data-vuelve] {
+    transition: box-shadow 0s linear var(--dur-vuelta);
+  }
+
+  @media (min-width: 861px) {
+    /* En el ordenador la tira va dentro de la ventana, que lleva el margen de la
+       página (`.wrap`): así la rueda recorta justo donde acaba la fila, y la
+       fila queda a plomo con el título. */
+    .ventana {
+      display: block;
+    }
+    /* Seis tarjetas a la vista, del mismo ancho que cuando los seis platos
+       llenaban la fila. El relleno de la derecha es para la sombra roja de la
+       última, que si no se cortaba en seco, y el margen negativo lo devuelve
+       para que la fila no se estreche. */
+    .strip {
+      --visibles: 6;
+      /* En unidades de la tira (`cqw`) y no en % de la tarjeta: para mover la
+         rueda, Safari toma el % con el ancho de la tarjeta redondeado, y a 1440
+         la sexta se quedaba 1,7 px corta del botón. */
+      --ancho: calc((100cqw - (var(--visibles) - 1) * var(--hueco)) / var(--visibles));
+      container-type: inline-size;
+      padding: 0 6px 10px 0;
+      margin-right: -6px;
+      scroll-padding-inline: 0;
+    }
+    .card {
+      flex: 0 0 var(--ancho);
+      max-width: none;
+    }
+    .shot {
+      aspect-ratio: 1;
+    }
+    /* La rueda no tiene una carta «de delante» que señalar, y sin JavaScript la
+       tira se recorre igual que una página. */
+    .turnos {
+      display: none;
+    }
+
+    /* La rueda (ver el script). Todas las tarjetas en la celda de una rejilla
+       del ancho de una, y cada una en su `--sitio`: el 0 es la primera de la
+       izquierda. La tira ya no se desliza, y lo que queda fuera lo recorta ella. */
+    .highlights[data-rueda] .strip {
+      display: grid;
+      overflow: hidden;
+      scroll-snap-type: none;
+      touch-action: pan-y;
+      user-select: none;
+    }
+    .highlights[data-rueda] .card {
+      grid-area: 1 / 1;
+      width: var(--ancho);
+      transform: translateX(calc(var(--sitio, 0) * (var(--ancho) + var(--hueco))));
+      transition: transform var(--dur-rueda) var(--ease-telon);
+    }
+    /* La que da la vuelta, de un extremo al otro por fuera de la vista. */
+    .highlights[data-rueda] .card[data-salta] {
+      transition: none;
+    }
+  }
+  /* Tumbado y bajo no hay mazo (ver el script), y sin mazo no hay turno. */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .turnos {
+      display: none;
+    }
+  }
+</style>

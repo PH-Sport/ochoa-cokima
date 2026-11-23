@@ -1,0 +1,164 @@
+---
+// apps/cokima/src/components/Highlights.astro
+import { Image } from "astro:assets";
+import { formatEuro, dishImageKey, type MenuEntry } from "@tombo/content";
+import { showPhotoGuides } from "@tombo/config/photo-guides";
+import PhotoGuide from "@tombo/ui/PhotoGuide.astro";
+import { dishImages } from "../data/dish-images.ts";
+
+// Andamio, nunca producción: la decisión la toma @tombo/config, no este archivo.
+const guides = showPhotoGuides();
+
+interface Props {
+  dishes: MenuEntry[];
+  locale: "es" | "en";
+  href: string;
+}
+const { dishes, locale, href } = Astro.props;
+const es = locale === "es";
+const t = es
+  ? { title: "Los imprescindibles", more: "Ver la carta", list: "Platos destacados" }
+  : { title: "The must-haves", more: "Full menu", list: "Featured dishes" };
+
+const cards = dishes.map((d) => ({
+  dish: d,
+  image: d.image ? dishImages[d.image] : undefined,
+}));
+---
+
+<section class="highlights">
+  <div class="wrap head">
+    <h2>{t.title}</h2>
+    <a href={href} class="more">{t.more} →</a>
+  </div>
+
+  {/* tabindex="0" para poder recorrer la tira con el teclado: es una región
+      con scroll y sin nada enfocable dentro. Va en el HTML, no puesto por
+      script, para que también funcione sin JavaScript. */}
+  <ul class="strip" tabindex="0" aria-label={t.list}>
+    {cards.map(({ dish, image }) => (
+      <li class:list={["card", { flat: !image && !guides }]}>
+        {image && (
+          <Image
+            src={image}
+            alt={dish.name}
+            widths={[320, 640]}
+            sizes="(max-width: 860px) 68vw, 280px"
+            quality={72}
+            loading="lazy"
+            class="shot"
+          />
+        )}
+        {!image && guides && (
+          <PhotoGuide
+            file={`apps/cokima/src/assets/dishes/${dishImageKey(dish.name)}.jpg`}
+            ratio="4 / 3"
+            note={`${dish.name}. Luz dura sobre fondo oscuro, como en su Instagram.`}
+          />
+        )}
+        <div class="body">
+          <h3>{dish.name}</h3>
+          <span class="price">
+            {formatEuro(typeof dish.price === "number" ? dish.price : dish.price.full)}
+          </span>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  /* El relleno superior va apretado a propósito: la portada deja asomar una
+     franja fija y todo lo que gaste este encabezado es ficha de plato que no
+     se ve. */
+  .highlights {
+    padding: clamp(16px, 4vw, 44px) 0 clamp(30px, 5vw, 56px);
+  }
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 12px;
+  }
+  /* El tamaño se contiene en móvil para que el título quepa en una línea junto
+     al enlace: partido en dos se come el asomo que la portada le reserva. */
+  .head h2 {
+    font-family: var(--sans);
+    font-weight: 800;
+    font-size: clamp(1.3rem, 4.4vw, 2.4rem);
+    letter-spacing: -0.02em;
+    margin: 0;
+    text-wrap: nowrap;
+  }
+  .more {
+    font-size: 0.92rem;
+    color: var(--ember);
+    white-space: nowrap;
+  }
+  .strip {
+    display: flex;
+    gap: 14px;
+    list-style: none;
+    margin: 0;
+    padding: 0 clamp(20px, 5vw, 48px);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .strip::-webkit-scrollbar {
+    display: none;
+  }
+  .strip:focus-visible {
+    outline: 2px solid var(--vermilion);
+    outline-offset: 3px;
+  }
+  .card {
+    flex: 0 0 68vw;
+    max-width: 280px;
+    scroll-snap-align: start;
+    border: 1px solid var(--ground-3);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--ground-2);
+  }
+  /* Sin foto, el nombre y el precio van arriba del todo: la portada deja
+     asomar la primera ficha por el borde de la pantalla, y lo que tiene que
+     asomar es información, no un rectángulo vacío. Con foto manda la imagen y
+     esta regla no aplica. */
+  .card.flat {
+    display: flex;
+    align-items: flex-start;
+    min-height: 132px;
+  }
+  .shot {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+  }
+  .body {
+    padding: 12px 14px 14px;
+    width: 100%;
+  }
+  .body h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 6px;
+    line-height: 1.25;
+  }
+  .price {
+    font-size: 0.95rem;
+    color: var(--ember);
+    font-weight: 600;
+  }
+  @media (min-width: 861px) {
+    .strip {
+      max-width: var(--maxw);
+      margin: 0 auto;
+    }
+    .card {
+      flex: 1 1 0;
+      max-width: none;
+    }
+  }
+</style>

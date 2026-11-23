@@ -1,0 +1,502 @@
+# Fotografía
+
+> **Estado: vivo** · revisado 2026-11-19 · Ochoa tiene foto en nueve de sus diez destacados (el bikini de lacón espera la foto nueva), una portada de siete fotos y un mosaico de diez en La casa; Cokima, desde el 2026-10-31, las de Brasa (dieciséis desde el 2026-11-02). Los vídeos de Instagram de Ochoa están en la fototeca desde el 2026-11-04, sin usar en la web (§La fototeca)
+
+## Estado
+
+**Cokima, desde el 2026-10-31: la web es Brasa** (`cokima-el-rediseno.md` §3), y lo que este
+documento cuenta de su portada con foto, sus destacados y su casa es de la web anterior, que ya no
+se publica. **El collage de Nosotros, desde el 2026-11-04, no usa fotos: cinco cortes de vídeo de
+@cokimamadrid con su primer fotograma, en `apps/cokima/src/assets/video/`, con el tramo de cada uno en
+`scripts/video-nosotros.sh`.** Con eso se quedan sin uso, sin borrar, `bomba`, `manos`, `martin`, `neon`, `sala`
+y `vacio`. Brasa usa quince fotos de la fototeca de @cokimamadrid, en `apps/cokima/public/images/`
+—arroz, bomba, croquetas, dumpling, gyozas, katsu, manos, martin, neon, puerta, sala, tacos,
+tarta, torrija y vacio—, reducidas para el boceto y sin pasar por la optimización de Astro. **No
+quedó apuntado de qué publicación sale cada una**, y ya no coinciden con sus originales. Desde el
+2026-11-02 hay una dieciséis, `sala-entera.jpg`, que sí lo tiene: es *Cokima 5*, la sala entera de
+las seis del local de Mario (abajo), en sRGB y a 1400 px, en la muestra de Nosotros del Inicio. Y
+**Desde el 2026-11-13, `gyozas.jpg` tampoco se usa**: el restaurante avisó de que las gyozas ya no se emplatan así, con tanta salsa, y La carta abre «Compartir es vivir» con las croquetas (`apps/cokima/src/carta.ts`). Y tres de producto de @cokimamadrid para el panel del producto del Inicio, a 1100 px y en sRGB:
+`producto-atun.jpg` (`producto_atun-rojo__Da0Z4XRNpRS-1`), que es la de fondo del panel,
+`producto-tomates.jpg` (`producto_tomates__DYR0DNYjTQL-1`) y, desde el 2026-11-03, la fila de
+tres es `producto-atun-marcado.jpg` (`producto_atun-marcado__DZZ8pJvDU6c-2`),
+`producto-steak-tartar.jpg` (`plato_steak-tartar__DYpmMUtjcoO-1`) y los tomates. **Llegó ahí en
+cuatro vueltas el mismo día**, todas de Mario: el atún se repetía (de fondo y en la fila); la carne
+fue la otra foto de la picaña, que no le convenció ni de foto ni de texto; el aperitivo —el aceite en
+la bandeja— tenía el texto largo en el móvil y no seguía los rojos; y de tres opciones probadas en la
+página quitó también los carabineros y se quedó con el atún marcado, el steak tartar y los tomates,
+**todas rojas y sobre fondo oscuro**. Las de la picaña, los carabineros y el aperitivo se quitaron.
+**Desde el 2026-11-18, la primera de la fila es `producto-cuchillo.jpg`** (`cocina_cuchillo__DZZ8pJvDU6c-1`,
+1100 × 1467, sRGB, 127 KB), y `producto-atun-marcado.jpg` queda sin usar. El restaurante dijo que el atún marcado, que
+es la base del tataki y el tataki ya no está en carta, *«tampoco sería la idónea»*, y Mario dejó la elección al agente.
+**El cuchillo es la primera foto de la misma publicación**, cuyo texto es justo *«Más cuchillo. Más producto.»*: la
+frase del panel sale de ahí. Fondo negro, como las otras dos. **No es roja**, que era el otro criterio de Mario, y se
+aceptó así porque las rojas que quedan ya las había quitado él (la picaña, los carabineros) o no son producto sobre
+fondo oscuro: el lomo bajo es un plato sobre mármol claro, la maracuyá es amarilla y la cebolla morada sale en blanco y
+negro. Se comprimió más que las otras (calidad 60 de `sips`), porque la textura del fondo engorda el archivo; a tamaño
+real no se ven artefactos. Y el panel de
+los imprescindibles lleva, desde el mismo día, `imprescindibles-arroz.jpg`
+(`plato_arroz-de-carabinero__DZM_hMUDRFG-1`, 1100 px, sRGB) en lugar del katsu con patatas, que a
+Mario no le parecía *«la más premium»*: el arroz de carabinero es el más caro de los cinco. Detrás
+de su portada va el vídeo, con su póster; desde el 2026-11-03, de planos de su Instagram (abajo).
+
+**Desde el 2026-08-14, Cokima tiene mejor material que Ochoa.** Aparecieron **diecinueve fotos
+suyas** en la misma web vieja del grupo, que nadie había mirado, y Mario aportó **seis más del
+local** el 16. Veinticinco en total, cuando la web usaba una.
+
+- `wp-content/uploads/2021/09/` → `cokima-1-1`, `cokima-2-1`, `cokima-3-1`, `cokima-4-1`,
+  `cokima-5-1`, `cokima-6`, `cokima-7`, `cokima-8`. Todas `.jpg` a 1000×1000.
+- `wp-content/uploads/2022/10/` → `1`, `2`, `3`, `1-copia`, `2-copia`, `3-copia`, `1-copia-2`,
+  `2-copia-2`, `1-copia-3`, `1-PORTADA`, `2-PORTADA`. **A 4000×4000**, mejor que nada de Ochoa.
+- Las seis de Mario, en su iCloud Drive (carpeta «Fotos Cokima»; **copiadas el 2026-10-26 a
+  `fototeca/icloud/cokima/`**), **apaisadas** a ~3500×2500. Cinco en Display P3 y una (`Cokima 2`)
+  en sRGB, medido ese día — **hay que convertir las P3 a sRGB al procesarlas** o el ocre de las sillas se va
+  hacia el verde. Con `sharp` es `.withIccProfile('srgb')`.
+
+**Lo que enseñan, y que no sabíamos:** el local tiene **dos murales**, no uno —el sol sobre
+hormigón y un segundo con un personaje de ojos en aspa bajo la palabra *Madness*, rodeado de los
+nombres de sus propios platos escritos a mano—; un **neón de pared entera** que dice «Orgasm, at
+the first bite» sobre una rejilla con cientos de polaroids de clientes; y que **las sillas son
+ocre mostaza, no naranjas** (en la foto antigua engañaba la luz).
+
+**Lo que sigue faltando: saber qué plato es cada foto.** De las doce de plato solo dos son
+seguras —la tarta de queso y las croquetas—. **Una foto solo se asigna a un plato cuando hay
+certeza de que es ese plato**, así que las otras diez no pueden entrar en la carta. Se le preparó
+a Mario una hoja de contactos numerada para que el restaurante las identifique; está pendiente.
+Para fondos y ambiente sí se usan, porque ahí no afirman nada.
+
+**Desde el 2026-10-26 la portada y «La casa» de Cokima llevan fotos recientes de su
+Instagram** (§La fototeca), no de este material. **Las seis del local de Mario no se tuvieron en
+cuenta en ese reparto**, porque se hizo desde `preview` antes de juntarla con la rama del rediseño,
+que era la única que sabía de ellas. **Para la sala, `Cokima 5` —la sala entera, con el neón, el
+mural de *Madness* y las sillas ocre— encaja mejor que la mesa puesta que se usó**; está marcada
+como candidata en el catálogo y espera a Mario. **Desde el 2026-11-02 está en Brasa**, como
+`sala-entera.jpg`, en la muestra de Nosotros del Inicio (`cokima-el-rediseno.md` §3).
+
+En `para-el-video/` (en su iCloud y en `fototeca/icloud/cokima/`) hay cinco elegidas para el vídeo de la entrada,
+**todas sin manos a la vista**: los generadores de vídeo deforman dedos y en un plano cerrado de
+comida eso canta. **Desde el 2026-11-03 no hacen falta:** la portada ya no lleva un vídeo hecho
+con IA sino diez planos de los vídeos de Instagram de Cokima —siete desde el 2026-11-13, cuando salieron el tataki,
+el soft shell crab y la torrija, que ya no están en carta—, y en vídeo real las manos y los
+guantes del pase sí valen. Los planos, con su vídeo y su segundo, están en
+`scripts/video-entrada.sh`; el porqué, en `cokima-el-rediseno.md` §3. Las ocho fotos que se
+prepararon para hacerlo con Seedance, recortadas a 16:9, se quedaron en `fototeca/para-seedance/`.
+
+---
+
+**Ochoa ya tiene fotos reales del local.** El 2026-07-30 aparecieron **nueve fotos
+en la web vieja del grupo** que nadie había mirado:
+`grupotombo.com/wp-content/uploads/2021/09/LosOchoa-1..9.jpg`, a 1000×1000. Con ellas se
+resolvieron la portada de Ochoa y las cuatro de «la casa». **Las croquetas (`LosOchoa-2`) se
+pusieron el 2026-10-22** y el 2026-10-26 se cambiaron por una de Instagram de 2025, a 1440 px
+(§La fototeca). Las otras tres de 2021 que esperaban a Mario —un huevo frito sobre una base, un
+brioche con carne deshilachada, un bocadillo en las manos— ya no hacen falta para los destacados.
+
+**Ojo al mezclar fichas con y sin foto en la tira de destacados.** En producción una ficha sin
+foto se pinta solo con el nombre y el precio, pero se estira al alto de la que sí la tiene: con
+una sola foto puesta, las demás miden lo mismo (293px a 390 de ancho, medido sobre el build de
+producción) y quedan con el texto arriba y un hueco blanco debajo. **Desde el 2026-10-26 pasa solo
+en Cokima**, que sigue sin ninguna: Ochoa tiene foto en las seis. En `dev` y en las
+previews no se ve, porque ahí las rejillas guía ocupan ese hueco.
+
+**Instagram ya se puede descargar, desde el 2026-10-26** (§La fototeca). Las 31 fotos de las 12
+últimas publicaciones de cada cuenta están bajadas y revisadas: **cubren la portada y las cuatro
+de la casa de Cokima**. Y con la sesión de Mario se bajaron después **172 fotos de Ochoa desde
+2024**, que dan foto a **sus seis destacados**.
+
+Lo que sí está hecho: las imágenes existentes pasan por `<Image>` de Astro desde
+`src/assets/`, así que **sustituir una foto es dejar el archivo con el mismo nombre**. No
+hay que tocar ni una línea de layout.
+
+## Qué hace falta
+
+### Portadas — lo más urgente
+
+Una foto por marca, **vertical o cuadrada** (se sirve a pantalla completa en móvil), a la
+mayor resolución disponible.
+
+| Destino | Qué buscamos |
+|---|---|
+| `apps/cokima/src/assets/hero.jpg` | ✅ **`DepAPTwNTvJ-1`, puesta el 2026-10-26**: la sartén en llamas en el fogón (cuadrada, 1440), con su copia a 1200 en `public/images/` para las redes. Sustituye a la burrata de 2021. Es la misma foto que el pase de «la casa», pero **en pantalla no se repite: la portada con foto (`Hero.astro`) quedó huérfana al entrar el rediseño en `preview` el 2026-10-26**, y la cabecera es el vídeo. Esta foto se veía solo al compartir el enlace; **el 2026-11-02 su copia de `public/images/` fue la foto del primer panel del Inicio de Brasa**, «Cokima», hasta que ese mismo día el panel se fundió con «Ven», que lleva la de la puerta. **Desde el 2026-11-03 tampoco es la imagen al compartir el enlace** (lo es `compartir.jpg`, §Nota técnica): se queda como foto del local para los buscadores. Mientras la portada vieja estuvo puesta, a 390px el tramo rojo del titular caía sobre el fuego y se leía mal; con la burrata pasaba lo mismo o peor (titular blanco sobre la burrata blanca), y otras dos fotos oscuras tampoco lo resolvían. Era el velo de esa portada, no la foto. **Si `Hero.astro` vuelve a usarse, revisar eso antes.** |
+| `apps/ochoa/src/assets/portada/*.jpg` | ✅ **Desde el 2026-10-29, ocho fotos de Instagram que no salen en el resto de la home; siete desde el 2026-11-13**, cuando salió `brioche.jpg`: es el brioche de mollejas, que ya no está en carta (lo vio el restaurante; los de hoy son el de pintxo donostiarra y el de sobrasada y miel). El archivo se queda sin uso, sin borrar (la serie, sus encuadres y sus textos, en `src/data/portada.ts`; en el móvil, telón; en el ordenador, la tira, `ochoa-inicio-vivo.md`). En orden: `brindis.jpg` (`DMsOEbToHc4-1`, brindis con vino y caña), `clienta.jpg` (`DPeYU5ziIo6-2`), `brioche.jpg` (`C66BbqHtC1M-1`, el camarero con un brioche; la única a 2060 px), `vermu-gilda.jpg` (`DHQbxoKiBLd-1`), `brindis-barra.jpg` (`DPyg6SPCGH5-3`, caña y vermú), `cana.jpg` (`DLAgINkIMFS-1`, tirando una caña), `cristal.jpg` (`C2Pz8szNUrq-10`, el rótulo del cristal) y `vino.jpg` (`DNF9_F0IzXV-1`). Copiadas de la fototeca tal cual, a su tamaño de Instagram. Mario las eligió en la tercera ronda del probador: la serie anterior no le convencía, *«principalmente por las fotos»*. Fuera de la elección, con su motivo: las de Navidad, que caducan; la de la camiseta del Madrid, que es de un equipo; y la del guante de Spiderman, que es más de Cokima. **Las seis de antes salen de la portada y sus archivos se quedan sin uso, sin borrar:** `sala.jpg` (`DHdb1_hCOls-1`), `barra-clientas.jpg` (`DQe2dPqiJwV-1`), `cocinero.jpg` (`DQB1FAiCKup-1`), `barra-rotulos.jpg` (`DV_ZtJHCPRQ-1`), `sirviendo.jpg` (`DPeYU5ziIo6-1`) y `rotulo-exterior.jpg` (`DPyg6SPCGH5-1`); fueron la portada del 2026-10-27 al 29. La fachada (`hero.jpg`, `LosOchoa-5`) tampoco se ve en la portada desde el 2026-10-27, y **desde el 2026-10-30 ya no es la imagen al compartir el enlace**: se queda como foto del local para los buscadores (§Nota técnica). El archivo de `src/assets/hero.jpg` sigue sin uso y sin borrar. |
+
+**El encuadre de la portada de Ochoa solo cuenta en el móvil.** Ahí la portada llena la pantalla
+y cada foto se recorta por los lados, así que lleva su `encuadre` (`object-position`) en
+`portada.ts`, hacia lo que cuenta y no al centro: `brindis` y `clienta` `42% 50%`, `vermu-gilda` `95% 50%`, `brindis-barra` `46% 50%`, `cana` `15% 50%` y `vino`
+`100% 50%`. **El rótulo del cristal no sale en el móvil:** en vertical se leía «S OCHO». **La del
+vino y la de la caña llevan, desde el 2026-10-29, un encuadre que se calcula para cada pantalla**:
+dicen qué tiene que verse (`foco`) y qué letrero no puede salir partido (`letrero`) —las letras
+del servilletero en la del vino, el logotipo del delantal en la de la caña—, y el telón las coloca
+y, si hace falta, las acerca hasta 1,6 veces para dejar el letrero fuera; si haría falta más, lo
+deja entero. El 15 % fijo de antes, medido solo a 390×844, partía las letras del servilletero en
+otros anchos («OCHOA» a 320 y 375, «HOA» a 412×800). El cómo, en `ochoa-inicio-vivo.md` §3.4. En
+el ordenador la tira
+las enseña enteras, a su proporción y al alto de la portada, y el encuadre no cuenta: medido a
+1440×900 y densidad 2, se ve todo el ancho y el 86 % del alto de cada una, a entre 0,88 y 1,10×
+(con el telón a todo lo ancho, el 36-47 % del alto, a 1,98×). **Al cambiar o añadir una foto, mirar
+las dos pantallas, y si lleva letras que el recorte pueda partir, darle su `letrero`.**
+
+### Fotos de plato
+
+Las fichas de destacados están construidas para funcionar **con o sin foto**: sin imagen
+se resuelven tipográficamente, así que la home no se rompe mientras tanto. Añadir una foto
+son dos pasos:
+
+1. Dejar el archivo en `apps/<app>/src/assets/dishes/<clave>.jpg`, con la clave en
+   kebab-case (por ejemplo `tataki-de-atun.jpg`).
+2. Añadir `"image": "tataki-de-atun"` al plato **en `menu-es.json` y en `menu-en.json`**,
+   o la versión inglesa se queda sin foto.
+
+Platos destacados que hoy salen sin imagen. **La clave no es una sugerencia: es el nombre
+exacto que espera el código**, y sale del nombre del plato con `dishImageKey()`
+(`packages/content`). Es el mismo que escribe cada rejilla guía en pantalla, así que se puede
+copiar de ahí.
+
+| App | Plato | Archivo |
+|---|---|---|
+| Cokima | Gyozas de langostino | `gyozas-de-langostino.jpg` |
+| Cokima | Tacos del gobernador de gambón | `tacos-del-gobernador-de-gambon.jpg` |
+| Cokima | Katsu sando de solomillo de ternera | `katsu-sando-de-solomillo-de-ternera.jpg` |
+| Cokima | Arroz meloso de carabinero a la brasa | `arroz-meloso-de-carabinero-a-la-brasa.jpg` |
+| Ochoa | Bravas de feria con alioli | ✅ `DCR57pgNXtP-1` (nov. 2024): la bandeja con sus dos salsas. Sustituyó a la oreja de cerdo, que ya no está en la carta. La de la salsa cayendo (`DPWEvvIiM0c`) perdía las patatas al recortarla a 4:3 |
+| Ochoa | Huevos rotos con puntilla y grasa de jamón | ✅ `C_dBFM7N2jr-1` (sep. 2024), sobre la cortina roja; el texto los nombra. Ya no hace falta `LosOchoa-6` |
+| Ochoa | Cachopín de ternera | ✅ `C7CXyVLNCBt-1` (may. 2024): el queso fundiéndose, el original más grande (3155 px, reducido a 1440) |
+| Ochoa | Croissant de rabo de toro | ✅ `C_lHe3MtsXM-1` (sep. 2024), la única que hay; el texto lo nombra. Ya no hace falta `LosOchoa-7` |
+| Ochoa | Ración de croquetas de jamón Joselito | ✅ `DLua8GqoiNn-1` (jul. 2025): la huevera, a 1440. Sustituye a `LosOchoa-2`, de 2021 y a 1000 |
+| Ochoa | Ensaladilla rusa casera | ✅ `DMSamLoo0l1-1` (jul. 2025): se ven el atún, el polvo de jamón y la yema |
+| Ochoa | Brioche de sobrasada, Brie y miel | ✅ `Degkd45I31h-1` (oct. 2026), desde el 2026-10-30 como las tres siguientes: en la mano, con la caña detrás; el texto lo nombra. Vertical (1440 × 1920), y en la ficha apaisada del móvil el brioche sigue entero |
+| Ochoa | Bikini de lacón | ⏳ **Sin foto desde el 2026-11-13: la que había es de una versión anterior del bikini**, y el restaurante ofreció una actual (llegará por su Drive). En las previews la ficha enseña su rejilla guía; en producción, nombre y precio. La que había, sin uso y sin borrar: `DEr4EREtm0N-1` (ene. 2025): abierto con las dos manos y el queso estirándose, sobre la cortina roja. De las cuatro que hay, la que aguanta el recorte apaisado del móvil: en `DAQdoMDtO9h-1` se perdía la parte de arriba |
+| Ochoa | Pulpo a la plancha | ✅ `Dd02u7EIpSm-1` (sep. 2026): sobre las revolconas, con la cortina detrás; el texto cuenta que vuelve a la carta |
+| Ochoa | Tarta de queso BRUTAL con helado de Idiazábal | ✅ `DeKBZtIoDva-1` (oct. 2026): la porción con su bola de helado; el texto dice que tiene «su sitio asegurado» en la carta |
+
+**Una foto solo se asigna a un plato cuando hay certeza de que es ese plato.** Las seis de Ochoa
+la tienen porque el texto de la publicación nombra el plato. Además, se ve lo que dice la carta.
+`LosOchoa-9` (un bocadillo en las manos con el banco rojo) sigue sin uso: no identifica plato.
+
+### Fotos de la casa — el local, no el plato
+
+Las webs enseñaban solo comida y faltaba la casa: la barra, la sala, la gente. La sección «La
+casa» de cada home es eso. **En las dos casas está resuelta con fotos reales y se publica:** cuatro
+en Cokima y, en Ochoa, diez que se turnan en el mosaico vivo desde el 2026-10-29 (abajo).
+En Cokima van apaisadas 4:3 en dos columnas desfasadas, en castellano y en inglés (la versión
+inglesa no tenía la sección; se le puso el 2026-10-26 con el texto traducido). Las fotos y sus
+descripciones viven en `apps/cokima/src/data/casa.ts`, compartido por los dos idiomas.
+
+| App | Archivo | Estado |
+|---|---|---|
+| Ochoa | `src/assets/casa/barra.jpg` | ✅ `LosOchoa-8`: la barra con el espejo rotulado a mano. |
+| Ochoa | `src/assets/casa/rotulo.jpg` | ✅ `LosOchoa-1`: el rótulo pintado en el cristal. Abre el mosaico en la grande, con encuadre `50% 20%`. |
+| Ochoa | `src/assets/casa/vermu.jpg` | ✅ `LosOchoa-4`: vermú con banderilla sobre mármol. |
+| Ochoa | `src/assets/casa/comedor.jpg` | ✅ `LosOchoa-3`: banco corrido rojo y mesas de mármol. |
+| Ochoa | `src/assets/casa/canas.jpg` | ✅ `DCUbNe1tkBq-1`: un camarero tirando cañas con clientes en la barra. Mosaico, como las cinco siguientes; entraron con el muro el 2026-10-28. |
+| Ochoa | `src/assets/casa/delantal.jpg` | ✅ `DO6RuaSCJJP-2`: Guille poniéndose el delantal (el texto lo nombra). Vertical, encuadre `50% 18%`. Era candidata al hueco del equipo de «Conócenos», que Mario decidió quitar el 2026-10-29 (fila de `equipo.jpg`). |
+| Ochoa | `src/assets/casa/cafe.jpg` | ✅ `Dc-g3Ofonrw-1`: una camarera sirviendo la leche en el café. Vertical, `50% 45%`. |
+| Ochoa | `src/assets/casa/gafas-de-cana.jpg` | ✅ `DUla9WSCIlS-1`: un cliente con la camiseta de la casa y dos cañas por gafas. Vertical, `50% 30%`. |
+| Ochoa | `src/assets/casa/futbol.jpg` | ✅ `DDj0by3N125-1`: clientes viendo el fútbol en la barra. |
+| Ochoa | `src/assets/casa/bandeja.jpg` | ✅ `DJE_GP0CEZO-1`: un camarero llevando unas bravas (el plato, a la vista; el texto habla de «extra de salsa»). Vertical, `50% 30%`. |
+| Ochoa | `src/assets/casa/botellas.jpg` | ✅ `DI9SX5Ri98B-1`: la pared de botellas con la etiqueta de la casa. Fondo del manifiesto: en blanco y negro y multiplicada sobre el rojo, así que se lee como rojo y negro. |
+| Ochoa | `src/assets/casa/equipo.jpg` | Hueco en «Conócenos», 4:3 junto al texto del equipo. **Ya no se busca:** el 2026-10-29 Mario decidió centrar «Conócenos» *«únicamente en la experiencia del restaurante»*, y la sección del equipo se quita. El hueco sigue en el código hasta que llegue el rediseño de la página, que se prepara en el probador. Los candidatos que hubo (2026-10-26): el cocinero con el cuchillo sobre la cortina roja (`DQB1FAiCKup-1`) y Guille poniéndose el delantal (`DO6RuaSCJJP`) |
+| Cokima | `src/assets/casa/pase.jpg` | ✅ `DepAPTwNTvJ-1`: la sartén en llamas, la misma de la portada. |
+| Cokima | `src/assets/casa/sala.jpg` | ✅ `Dd0yh8eKSfB-1`: vino sirviéndose en una mesa puesta. **Es una sustituta:** no hay foto de la sala en las publicaciones recientes, y la mesa es la sala vista de cerca. Si aparece una de la sala de noche, se cambia. |
+| Cokima | `src/assets/casa/producto.jpg` | ✅ `Deh1PKrtAKZ-1`: maracuyá abierto en macro. No es el «fondo negro, luz dura» del encargo, pero sí lo que dice el texto de la sección: «el producto crudo antes de que le pase nada». |
+| Cokima | `src/assets/casa/equipo.jpg` | ✅ `Dd6QjErCvhW-2`: un cocinero salseando un plato. Vertical en un hueco 4:3: lleva `object-position: 50% 20%` en `casa.ts` para que el recorte no le corte la cara. |
+
+**Desde el 2026-10-29, las diez de Ochoa se turnan en el mosaico vivo de La casa**
+(`ochoa-inicio-vivo.md` §3.3), en las dos homes. La serie, su orden, sus encuadres, sus textos y
+sus etiquetas viven en `src/data/casa.ts`. Las seis de Instagram entraron el 2026-10-28 con el muro
+que cambiaba solo, al que sustituyó el mosaico; salen de `fototeca/instagram/tasquita.losochoa/`
+tal cual, a su tamaño de Instagram (1440 de ancho, o 1351 la de las gafas), solo recomprimidas con
+`sips` a calidad 82. Ninguna nombra un plato de la carta, así que no hace falta `confirmar`.
+
+**La foto grande del mosaico lleva su nombre, como una chapa:** El cristal (`rotulo`), La barra
+(`barra`), Las cañas (`canas`), El vermú (`vermu`), Las bravas (`bandeja`), El café (`cafe`), El
+comedor (`comedor`), El fútbol (`futbol`), Las gafas (`gafas-de-cana`) y El equipo (`delantal`). Dos
+las cambió Mario el 2026-10-29 porque no se entendían: «La ronda» pasó a «Las gafas», que es lo que
+se ve, y «El delantal» a «El equipo». En inglés van traducidas tal cual: The glass, The bar, The
+beers, The vermouth, The bravas, The coffee, The dining room, The football, The glasses y The team.
+
+## La fototeca: las fotos recientes de Instagram
+
+**Mario quiere las fotos que el equipo sube ahora, no las de la web vieja.** El 2026-10-26 se
+encontraron 68 fotos aprovechables en la biblioteca de medios de `grupotombo.com` (algunas en
+original de 4000 px), y se descartaron como fuente principal por eso mismo: son de 2021 y 2022, y
+una web nueva no se hace con contenido de hace cuatro años. Siguen ahí si hicieran falta
+(`/wp-json/wp/v2/media`); **la tanda de 2022 mezcla las tres casas: Cokima, Los Ochoa y La Torcida**, otro local del grupo.
+(El 2026-10-26 se escribió aquí que solo mezclaba Ochoa y La Torcida; la rama del rediseño ya había
+identificado sus fotos de Cokima en agosto, §Estado.)
+
+**Lo que se descartó para Instagram, con su motivo:**
+
+- **Exportación oficial de la cuenta y API de Meta:** las dos exigen acceso a las cuentas, y el
+  2026-10-26 no lo había (depende de otros departamentos). Si llega, la exportación es la vía
+  limpia y completa.
+- **Leer el perfil con una petición directa a la API interna de Instagram:** el filtro de
+  seguridad del agente la bloqueó por saltarse las protecciones de Instagram. No se insiste.
+- **Descargadores masivos (Instaloader, gallery-dl):** van contra las condiciones de Instagram y
+  exponen a bloqueo la cuenta con la que se inicia sesión.
+
+**Lo que funciona:** abrir el perfil público en un navegador normal y leer las fotos que la página
+ya enseña, como se haría a mano con el inspector. Dos piezas:
+
+1. `scripts/fototeca-recoger.js` se ejecuta en la página de Instagram. En el perfil lista las
+   publicaciones; en cada publicación devuelve sus fotos y sus vídeos en alta (el carrusel entero),
+   el texto y la fecha. Lo ejecuta el agente en el navegador, o cualquiera en la consola.
+2. `python3 scripts/fototeca.py recogida.jsonl` descarga las fotos y los vídeos a
+   `fototeca/instagram/<cuenta>/<código>-<n>.<ext>` y los apunta en `fototeca/catalogo.json`, que
+   guarda la decisión sobre cada pieza: tipo, plato, hueco, estado y nota. Volver a ejecutarlo no
+   pisa lo escrito a mano.
+
+Los vídeos entraron después, con la versión 2 de estos scripts (abajo, «Los vídeos»).
+
+**`confirmar`: el plato es una suposición.** Desde el 2026-10-28 Mario quiere usar también las
+fotos cuyo plato no está asegurado, marcadas para preguntarle al equipo. Esas fichas llevan el
+campo `confirmar` con la pregunta tal cual habría que hacérsela («¿Son las gyozas de pollo
+teriyaki? Salen en vaporera; el texto solo dice "gyozas"»). Se da por asegurado lo que nombra el
+texto de su publicación, también cuando un carrusel enumera sus platos en orden; lo identificado
+solo a la vista va con `confirmar`. Al resolverlo, se corrige `dish` si hace falta y se borra el
+campo. El script lo conserva al volver a ejecutarse, como el resto de lo escrito a mano.
+
+**Toda la carpeta `fototeca/` queda fuera de git, catálogo incluido.** Las fotos se vuelven a bajar
+abriendo la publicación. El catálogo se quedó fuera por decisión de Mario el 2026-10-26: el repo es
+público y el catálogo lleva notas internas sobre el contenido del cliente. **La consecuencia es que
+el catálogo vive solo en la máquina donde se hizo la recogida, hoy el Mac.** En la otra no existe:
+hay que repetir la recogida o llevar la carpeta a mano. Lo que sí viaja es esta sección, con el
+resumen de lo decidido.
+
+**Medido el 2026-10-26:**
+
+- Sin iniciar sesión, el perfil solo enseña **las 12 publicaciones más recientes**: unas siete
+  semanas en las dos cuentas. Las publicaciones sueltas sí se abren todas. Con sesión, el perfil
+  entero (Ochoa: 411 publicaciones, 313 con foto).
+- Las fotos llegan a **1440 px de ancho** (1440×1919, 1440×1800 o 1440×1440).
+- Las URLs van firmadas y **solo funcionan enteras**: recortarles parámetros da `403`. Además
+  caducan en unos días, así que se descarga justo después de recoger.
+- Esta primera recogida se saltaba los vídeos, también los de dentro de un carrusel. Ya no es así
+  (abajo, «Los vídeos»).
+- Una espera fija de 1,5 s dejó una publicación sin foto; el fragmento espera ahora a que aparezca
+  la foto grande, hasta 8 s.
+
+**Con sesión iniciada (Ochoa, 2026-10-26).** Mario tiene la sesión en Brave, y el agente lo
+maneja con la extensión del navegador. Desde ahí no se pueden sacar los datos: Brave bloquea en
+silencio las descargas que lanza una página, incluso tras un clic simulado. La extensión no deja
+pasar las direcciones firmadas, que fue lo que bloqueó en julio. Y la página de Instagram no puede
+pedir nada a `localhost` (CSP). **La salida es navegar:** `fototeca-recoger.js` (con
+`ENVIAR = true`) va a `127.0.0.1:8765` con los datos en la dirección, y
+`scripts/fototeca-receptor.py` los apunta en `recogida.jsonl`. El receptor devuelve la pestaña
+al instante a la siguiente publicación, así que cada publicación es una sola acción. **Si la
+pestaña se queda en la página del receptor, la extensión bloquea todo** («no puede verificar el
+sitio») hasta que alguien la cierra a mano: pasó una vez y por eso existe la redirección.
+
+Trampas de esa recogida, todas medidas:
+
+- Con sesión, cada publicación añade «Más publicaciones» con fotos igual de grandes; la primera
+  prueba bajó seis fotos de una publicación que tenía una. Se distinguen porque van dentro de un
+  enlace a otra publicación.
+- En la ventana emergente del perfil las fotos no pasan de 1080; en la página propia, 1440. Por
+  eso se abre cada publicación.
+- La fecha sale del código de la publicación: es su id en base 64, y los bits altos son
+  milisegundos desde la época de Instagram. Comprobado contra dos fechas conocidas.
+- Alguna foto antigua se queda en 942 px, por debajo del mínimo de 1000 que se usaba; el mínimo es
+  ahora 900. Tres llegaron en WebP con extensión `.jpg` y se convirtieron.
+- Un texto llevaba U+2028, que `splitlines()` toma por salto de línea: el `.jsonl` se lee
+  partiendo solo por `\n`.
+
+**Nombres que dicen qué es.** `python3 scripts/fototeca.py --nombrar` renombra cada foto revisada
+a `<tipo>_<etiqueta>__<código>-<n>.jpg` (`plato_cachopin-de-ternera__C7CXyVLNCBt-1.jpg`), con el
+tipo y la etiqueta del catálogo. Las fotos de una casa quedan agrupadas por tipo, y el código sigue
+ahí para volver a la publicación.
+
+**Los vídeos: el método (Cokima el 2026-10-30, Ochoa el 2026-11-04).** Cokima los trajo en una
+versión 2 de los tres scripts que se quedó fuera del repo, en las notas de aquella sesión; **desde el
+2026-11-04 está en `scripts/`**, y por eso esta sección ya puede contarlo. Lo descartado sigue
+descartado: ni descargadores masivos ni peticiones a la API interna. Se lee lo que la página ya trae.
+
+1. **Con la sesión de Mario en Brave**, `python3 scripts/fototeca-receptor.py <carpeta> 2024-01-01`
+   escuchando, y `fototeca-recoger.js` en el perfil (`/<cuenta>/`) y en la pestaña de reels
+   (`/<cuenta>/reels/`). Cada lista va a `lista.jsonl`.
+2. **Una publicación por vez, por tandas de ocho.** El script se guarda en el `localStorage` de
+   instagram.com, cada publicación es la orden corta `await eval(localStorage.getItem('fototeca_v2'))`,
+   y el receptor devuelve la pestaña a la siguiente de la cola. Si se corta, se retoma sola. Al acabar
+   se borra lo guardado.
+3. **`python3 scripts/fototeca.py [--solo-videos] <carpeta>/recogida.jsonl`** baja cada vídeo con su
+   portada y, si no es H.264, su copia `-compatible.mp4`.
+4. **Revisar y nombrar:** rellenar las fichas y `--nombrar`. Antes de nombrar, comprobar que no mueve
+   ninguna otra ficha, porque recorre el catálogo entero.
+
+Lo que hay detrás de esos pasos, todo medido:
+
+- **Los datos salen del JSON que la página trae dentro** (sus `<script type="application/json">`), no de
+  las `<img>`: ahí está el carrusel entero, y los vídeos, que en pantalla son un `blob:`, tienen
+  dirección.
+- **Manda el tamaño, no el formato.** Cada vídeo viene en dos versiones: la «progresiva» (imagen y sonido
+  juntos) y la DASH (por separado; ffmpeg las junta sin recomprimir). En los de 2026 suele ganar la DASH
+  y en los de 2025 hacia atrás, muchas veces la progresiva (1920 de alto frente a 640). La primera pasada
+  de Cokima prefirió siempre la DASH y bajó 27 vídeos a 360.
+- **Sin sesión no hay progresiva**, además de los 12 del perfil. Probado el 2026-11-04 con tres reels de
+  Ochoa en el navegador integrado: los datos y la descarga funcionan, pero un reel de 2025 se queda
+  en lo que traiga su DASH. Para recoger de verdad hace falta la sesión.
+- **El Mac no abre VP9** (QuickLook se colgó con él el 2026-10-30), de ahí la copia compatible: la
+  progresiva de Instagram si es H.264, o convertida aquí a CRF 18. `compatible_origen` dice cuál.
+- **La fecha buena es la de publicación**, no la del código: se programan hasta una semana antes.
+
+Trampas de la recogida de Ochoa, el 2026-11-04:
+
+- **Saltar al fondo de la página atasca la rejilla:** se paró en 120 y luego en 132 publicaciones, con
+  catorce intentos seguidos sin cargar nada. Bajando a pasos llegó hasta el corte de fecha en menos de un
+  minuto, y las 120 publicaciones que ya había en el catálogo salieron todas en la lista. El script ya
+  baja a pasos; esa lista se sacó con el mismo bucle pegado a mano, y la versión del fichero no se ha
+  vuelto a ejecutar.
+- **En la pestaña de reels, Instagram no deja `eval`** (su CSP, la regla de seguridad de la página). En el
+  perfil y en las publicaciones sí. Ahí hay que pegar el fragmento de listar entero.
+- **Una tanda de dieciséis se pasó de tiempo** en la herramienta del navegador, aunque terminó por detrás.
+  Con ocho, no. Tampoco se pierde nada si pasa: la cola sabe por dónde va.
+- **La extensión dijo una vez «no puede ayudar con esta página»**, con todo ya recogido: se miró el
+  receptor antes de repetir nada, y no hizo falta.
+- **`--solo-videos` existe por las fotos de Ochoa:** se recogieron con la versión 1, numeradas sin contar
+  los vídeos, y sus fichas ya estaban revisadas. Las fotos constan en `publicaciones.json` sin fichero.
+  Ningún vídeo cayó en el número de una foto.
+
+**Los vídeos de Ochoa: lo que hay (2026-11-04).** De las 148 publicaciones desde 2024 —abiertas todas, sin
+errores ni avisos de Instagram—, **31 vídeos: 28 reels y 3 dentro de carruseles**, 8 min 40 s en total, de
+1,4 a 57 s con mediana de 16 s, y 253 MB en la carpeta con fotos incluidas (221 MB entre vídeos, copias y
+portadas). 28 verticales (14 a 1080×1920, 13 a 720×1280 y uno a 910×1618) y 3 cuadrados (dos a 1080 y
+uno a 720). Los dos cuadrados a 1080 no tienen sonido. Lo anterior a 2024 se quedó fuera, como con Cokima:
+de las 411 publicaciones, unas 260.
+
+- **Usan las ocho divisiones de Cokima** (`plato` 13, `cocina` 10, `bebida` 3, `ambiente` 4, `grafico` 1).
+  Las fotos de Ochoa siguen con sus tipos de antes, `gente` incluido.
+- **4 son de otras cuentas**, en colaboración, y van `descartada`: los derechos son de quien las publicó,
+  como en Cokima. **3 van `dudosa`:** la de 1,4 s con bandas negras, la que lleva incrustada la marca de
+  CapCut (un editor de vídeo) y el pase con rótulos añadidos. **5 llevan `confirmar`**, con la pregunta para
+  el restaurante, y `dish` vacío hasta entonces.
+- **Cómo se miraron:** diez fotogramas de cada uno de los 27 propios, cuatro de los cuatro ajenos, y sin
+  escuchar el sonido. Lo que se ve entre fotogramas no está mirado, así que `caras` en false quiere decir
+  «ninguna en los fotogramas mirados». Las duraciones de logos y cierres de las notas son aproximadas.
+- **La marca que se repite:** muchos de 2025 cierran con el logo encima o sobre negro, unos 2 s que se
+  pueden cortar. Donde no se puede es en las gambas al ajillo, que lo llevan todo el vídeo. **Dónde se usan,
+  ninguno todavía:** lo decide Mario.
+
+**Lo que dio la primera recogida** (detalle de cada foto en el catálogo del Mac y, para mirarlas,
+en el artifact privado de Mario https://claude.ai/artifact/Y9xkL8LhfVpZtRgHsnjjAe):
+
+- **31 fotos:** 4 puestas en Cokima (portada y las cuatro de la casa; la de la llama hace doble
+  papel), 8 útiles sin hueco, 8 dudosas y 11 descartadas. Las descartadas son piezas gráficas o
+  fotos con texto encima.
+- **Ningún destacado que falte sale en estas fotos.** Sí hay platos de carta con foto clara y
+  nombrados en el texto: pulpo a la plancha, bikini de lacón, brioche de sobrasada y tarta de
+  queso de Ochoa, y el soft shell crab de Cokima. **No se han hecho destacados para que salgan con
+  foto, ni siquiera con el reparto delegado:** las fotos de plato solo se ven en la tira de
+  destacados, y esa tira se titula «Lo que más sale». Marcar un plato porque tiene foto sería
+  afirmar algo sobre sus ventas que nadie ha dicho. Lo decide Mario con el restaurante.
+  **El 2026-10-30 Mario cambió el título a «Los que destacan»** —*«no queremos confundir al
+  cliente con algo que puede no ser objetivo»*— y pidió cuatro platos más. Entraron justo los
+  cuatro de Ochoa de esta lista (tabla de fotos de plato), elegidos por el agente.
+- **Ochoa no recibió ninguna foto en ese primer reparto.** Lo cambió la recogida con sesión.
+
+**Lo que dio la recogida con sesión de Ochoa** (120 publicaciones con foto desde 2024; las 193
+anteriores, de 2021 a 2023, se dejaron fuera a propósito, porque Mario no quiere contenido de hace
+años):
+
+- **172 fotos:** 114 de platos, 12 del local, 12 de gente (equipo y clientes), 15 de bebida y
+  ambiente, y 19 piezas gráficas descartadas.
+- **Los seis destacados tienen foto con el plato nombrado en el texto**, y están puestos (tabla
+  de arriba). Desde el 2026-10-30 son diez, con la misma regla.
+- **Del local y de gente hay material de verdad:** el camarero en la barra con los rótulos
+  pintados, la sala con «La tasca que te mereces» y clientes, el comedor con «Conservas», el
+  cocinero, Guille poniéndose el delantal, clientes viendo el fútbol. Seis de ellas fueron la
+  portada de Ochoa del 2026-10-27 al 29; desde entonces la portada es otra serie de ocho (tabla de
+  portadas).
+- **La pannacotta andina y la «nueva versión de oreja» de su Instagram ya están en la carta**
+  desde el 2026-11-04: lo confirmó el PDF oficial (`cokima-el-rediseno.md` §3). Ninguna de las dos
+  tiene foto puesta en la web, y `torrija.jpg` se queda sin usar.
+
+## Las rejillas guía
+
+Cada hueco de foto se dibuja en pantalla con su proporción, la regla de tercios y el nombre
+del archivo que hay que dejar. **Quedan seis** (2026-10-26): los cinco destacados de Cokima y la
+del equipo de Ochoa, que nació con «Conócenos». Los destacados de Ochoa y la casa de las dos webs
+ya son fotos reales.
+
+**Desde el 2026-08-04 hay también rejillas de texto** (`CopyGuide.astro`), que marcan el
+párrafo que falta y dicen qué hay que contar en él. Son cuatro, todas en «Conócenos», y pasan
+por la misma puerta: `showPhotoGuides()`. Se explican solas en pantalla, así que la lista de
+lo que hay que preguntarle al restaurante se lee en la propia página en vez de en un documento.
+
+Se ven en `dev` y en las previews por rama, y **no existen en producción**: no es cuestión de
+acordarse de apagarlas, lo decide `showPhotoGuides()` (`packages/config/src/photo-guides.mjs`)
+y hay tests que lo fijan. Un despliegue público siempre tiene `SITE_URL` o `VERCEL_ENV=production`,
+y cualquiera de las dos las apaga.
+
+**Una foto solo se asigna a un plato cuando hay certeza de que es ese plato.** Ilustrar un
+cachopín con la foto de otra cosa es información falsa en una carta con precios.
+
+## Pendiente de confirmar con el cliente
+
+- **Derechos.** Las cuentas son del grupo, pero la calidad indica fotógrafo profesional.
+  Conviene confirmar que la cesión cubre la web y no solo redes sociales.
+- **Originales en alta.** Lo de Instagram sale recomprimido y a 1440 px de ancho (medido el
+  2026-10-26): suficiente para móvil, justo para escritorio a pantalla completa.
+
+## Nota técnica
+
+Las fotos de portada viven duplicadas a propósito: en `src/assets/` las procesa Astro, y en
+`public/images/` se sirven tal cual como `og:image` de las redes sociales, que necesita una URL
+estable. Al sustituir una portada hay que cambiar **las dos copias**.
+
+**En Ochoa, desde el 2026-10-30, la imagen al compartir el enlace es un cartel y no una foto:**
+`/images/compartir.jpg`, «Los Ochoa» en blanco sobre el rojo de la casa, con el mármol del fondo en
+blanco, como el toldo. Hasta entonces era la fachada (`/images/hero.jpg`), elegida para que la vista
+previa fuera lo primero que ve quien entra; dejó de serlo cuando la portada pasó a fotos de
+Instagram, y Mario pidió una imagen propia para WhatsApp, *«jugando con los colores, el efecto de
+mármol, la fuente de letra»*. Se le enseñaron tres: el titular de la portada sobre el mármol blanco,
+este toldo y el nombre con las palabras de la barra alrededor. Eligió el toldo, con las vetas *«un
+poquiiiito»* más blancas. **La fachada sigue siendo la foto del local para los buscadores:** el
+`image` del JSON-LD sale de `schemaImage` y no de `ogImage` (`Seo.astro`), porque a un buscador se
+le enseña el sitio y no un cartel. **Cokima hace lo mismo desde el 2026-11-03** (abajo).
+
+**Cómo está hecha, para rehacerla.** 1200×630, que es lo que WhatsApp enseña en grande, en JPEG de
+calidad 86: 59 KB (para WhatsApp se suelen recomendar menos de 300; la fachada pesa 428). Fondo
+`--rojo`. Las vetas son las del vermú de `fondo.ts`, solo la red y sin palabras, quietas en el
+segundo 30, en blanco, a opacidad 0,34 (0,26 en la primera prueba) y escala 0,8. «Los Ochoa» va en
+Anton a 238 px, en blanco, con la sombra dura de `.cartel` (0,045 em y 0,05 em, `--ink`); «Tasquita»
+y «Madrid», en Archivo 700 al 84 % de ancho, a 36 px y con 0,34 em de espaciado, y un filete de
+110×3 px a cada lado de «Madrid». Se pintó con Chromium a densidad 1 desde un HTML de una sola vez
+que no está en el repo: con estos números se rehace. No lleva texto que traducir, así que es la
+misma en los dos idiomas. WhatsApp recuerda la vista previa de un enlace ya compartido (sabido, no
+comprobado aquí): para ver la nueva en uno que ya se mandó, añadirle `?v=2`.
+
+**En Cokima, desde el 2026-11-03, la imagen al compartir el enlace es `/images/compartir.jpg`:** la
+portada de Brasa en pequeño, con tres planos del vídeo en columnas y «Cokima» encima con algo de calor.
+Hasta entonces era la sartén en llamas (`/images/hero.jpg`), cuadrada, que los chats suelen enseñar
+pequeña al lado del texto; **se queda como foto del local para los buscadores** (`schemaImage`), en la
+home y en las legales, como la fachada en Ochoa. Se le enseñaron tres en un artifact: esta, «Al rojo»
+—el nombre en el degradado de la entrada, sin fotos— y «Brasa» —el nombre en hueso con chispas, el
+equivalente al cartel de Ochoa—. Eligió esta y pidió dos cosas: *«un poco más de ese naranja
+incandescente, pero sin llegar a ser tan exagerado como el de "Al rojo"»*, y más densidad de chispas,
+que *«apenas se aprecian»*. **Lo descartado del ajuste:** poner encima, a media opacidad, el degradado
+de «Al rojo» tal cual: sus rojos oscuros de arriba, mezclados con el hueso, daban un rosa salmón y no
+un naranja.
+
+**Desde el 2026-11-19 lleva el logo en lugar del nombre escrito**: se lo pidieron a Mario para la
+portada y la barra, y él lo quiso también en lo que se comparte por WhatsApp. Lo demás es lo mismo, y las chispas siguen la misma
+receta, aunque no caen donde caían.
+
+**Cómo está hecha, para rehacerla: `scripts/compartir-cokima.js`**, que se pega en la consola del build
+servido y la descarga; arriba del archivo están los pasos, con los segundos de cada fotograma. La de
+antes salió de un HTML que no se guardó; esta se guarda para que la próxima salga igual, y sale igual:
+ejecutado de nuevo, da el mismo archivo byte a byte. 1200×630, JPEG de calidad 86, 77 KB. Tres
+columnas de 400 con 3 px de `--ground` entre ellas, de fotogramas de los planos de
+`scripts/video-entrada.sh` con su mismo oscurecido: el ceviche en su segundo 1,6, el enoki en el 0,8 y
+la tarta en el 1,6 (contados desde el principio de cada plano), escalados a 400 de ancho y recortados
+al centro. Encima, un velo como el de la portada, de `--ground` de arriba abajo al 42 %, al 50 % a
+media altura, al 80 % al 85 % y al 92 % abajo, y un óvalo de `--ground` al 50 % detrás del logo, para
+que se lea en pequeño. **El logo**, el claro de la web, a 560 de ancho y a la altura del nombre de
+antes: cabe con margen en el cuadrado del centro, que es lo que se ve si un chat la recorta (el nombre
+escrito medía unos 620 y quedaba justo). **El calor va solo en las letras:** el mismo degradado que
+llevaba el nombre, de abajo arriba `#ffd890` → `#ffa94e` (45 %) → `#ff7f2a` a opacidad 0,85, y la «x»
+en su rojo, que con el degradado encima se perdía. «Kitchen Madness», en Bricolage 500 a 23 px,
+mayúsculas, 0,32 em de espaciado, `--bone-2`. Las chispas son las del fondo de `brasa.js` quietas, con
+un azar fijo (mulberry32, semilla 7) y 150 pasos de 1/30 s: 132 (2,1 veces la densidad de la web), con
+el trazo un 60 % más largo y un 20 % más grueso, porque en una imagen quieta es lo que dice que vuelan.
+No lleva texto que traducir. **Sin probar en WhatsApp de verdad**, como la anterior; recuerda la vista
+previa de lo ya compartido, así que en un enlace que ya se mandó puede salir la de antes (`?v=2`).
+`/images/mesa.jpg` es el cenital de la mesa, que sirve la sección «la tasca».

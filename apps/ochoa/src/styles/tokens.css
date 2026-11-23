@@ -1,22 +1,248 @@
-/* Tokens de marca Tasquita Los Ochoa — tasca castiza a plena luz (boceto v1). */
+/* Tokens de marca Tasquita Los Ochoa.
+
+   Rojo bandera sobre blanco, que es la identidad real de la marca: la que se
+   ve en su rótulo, en los mandiles y en todo su Instagram. La versión anterior
+   (papel crema con tinta marrón, rojo solo de acento) era una interpretación
+   de "tasca de 1950" que nos habíamos inventado nosotros y que no se parecía
+   ni al local ni a sus redes. */
 :root {
   color-scheme: light;
 
-  --paper: #f4eee2;
-  --paper-2: #ece4d3;
-  --paper-3: #e2d8c3;
-  --ink: #23201b;
-  --ink-dim: #6e6558;
-  --ink-faint: #9c927f;
+  --paper: #ffffff;
+  --paper-2: #f7f4f2;
+  --paper-3: #ebe5e2;
+  --ink: #1a1a1a;
+  --ink-dim: #5c5654;
+  --ink-faint: #918a87;
   --rojo: #c6222b;
   --rojo-2: #a81b23;
-  --crema: #f7e9c8;
-  --line: rgba(35, 32, 27, 0.18);
-  --maxw: 1140px;
+  --line: rgba(26, 26, 26, 0.16);
+  /* Sin tope desde el 2026-09-19: Mario pidió que la web ocupe el 90% de la
+     pantalla a cualquier ancho —primero la carta, luego entera—. El 90% lo
+     hace el margen de `5vw` por lado de `.wrap` (y de `.strip`, que lo copia);
+     hasta entonces era `clamp(20px, 5vw, 48px)` y el contenido se paraba en
+     1140px. Si vuelve el tope, es aquí y en esos dos rellenos. */
+  --maxw: none;
 
+  /* Sin serif: la itálica de Georgia era la que fabricaba el aire nostálgico.
+     La condensada del rótulo manda, y el resto es sans.
+
+     Archivo (Omnibus-Type) sustituye a la fuente del sistema, que era lo que
+     hacía que Ochoa pareciera menos diseñada que Cokima: hasta ahora Anton
+     aparecía solo en los titulares y todo el cuerpo caía en Segoe UI. Es una
+     grotesca de origen editorial y de rótulo, con dos ejes variables —peso
+     100..900 y ancho 62..125— en un solo archivo de 90 KB. El eje de ancho es
+     el que permite hablar el idioma del rótulo (versales apretadas) sin traer
+     una tercera familia, y el que dejará apretar la carta a dos columnas. */
   --display: "Anton", "Arial Narrow", Impact, sans-serif;
-  --serif: Georgia, "Times New Roman", serif;
-  --sans: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --sans: "Archivo", Arial, Helvetica, sans-serif;
+
+  /* Los tres anchos que se usan, y solo esos. El navegador mapea
+     `font-stretch` al eje `wdth` de la variable. */
+  --wd-text: 100%;
+  --wd-carta: 92%; /* la carta aprieta un punto para ganar caracteres por línea */
+  --wd-rotulo: 84%; /* versales de etiqueta, en la proporción del rótulo */
+
+  /* Escala tipográfica, ratio ~1.25 desde el cuerpo. Nombres por papel, no por
+     valor: si mañana el cuerpo sube, el resto sube con él. */
+  --fs-micro: 0.8rem; /* notas al pie, avisos */
+  --fs-label: 0.875rem; /* etiquetas y eyebrows en versal */
+  --fs-body: 1.0625rem; /* 17px con el ajuste del usuario respetado */
+  --fs-lead: 1.33rem; /* entradillas */
+  --fs-h3: 1.66rem;
+  --fs-h2: clamp(2.08rem, 5vw, 3.1rem);
+  --fs-cartel: clamp(2.6rem, 9.5vw, 5rem);
+
+  /* Interlineado inverso al ancho de la línea: el cartel casi se toca, el
+     cuerpo respira. */
+  --lh-cartel: 0.96;
+  --lh-title: 1.18;
+  --lh-body: 1.6;
+
+  /* Movimiento: una curva, dos duraciones y un desplazamiento. Cualquier
+     animación de esta marca sale de aquí; no hay milisegundos sueltos por los
+     componentes. La curva es una ease-out quíntica —frena como frena un objeto
+     real— y por eso no rebota: el bounce delata plantilla y envejece mal.
+     `--dur-in` es para lo que entra, `--dur-out` para lo que responde a un dedo,
+     que siempre tiene que sentirse instantáneo. */
+  /* Curvatura por tamaño de pieza, no una sola para todo. Un radio de 3px en
+     un botón de 44px se ve redondeado y ese mismo radio en una tarjeta de 300
+     parece un canto vivo: la esquina se percibe en proporción a lo que
+     enmarca, no en píxeles absolutos. Así que la curva crece con la pieza —y
+     deja de crecer en las grandes, donde seguir subiendo la convertiría en una
+     pastilla—. Cuatro escalones y ninguno suelto por los componentes. */
+  --r-chapa: 4px; /* etiquetas y chapas, por debajo de ~36px */
+  --r-btn: 7px; /* botones, ~44px */
+  --r-caja: 9px; /* fichas de contacto y piezas de ~55-90px */
+  --r-marco: 12px; /* fotos, mapa y tarjetas grandes */
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* La quíntica de arriba frena tan pronto que sobre un recorrido largo se
+     convierte en un golpe: medida en el navegador, la persiana del menú se
+     comía el 90% de sus 844px en 161ms y luego se arrastraba 260ms más en un
+     movimiento que ya no se ve. Está calibrada para los 14px de `--shift`, no
+     para cruzar una pantalla. Esta reparte: la misma persiana pasa por los tres
+     enlaces a los 179, 197 y 214ms y llega al pie a 322ms, que es un ritmo que
+     el ojo sigue. Se usa solo en lo que recorre la pantalla entera. */
+  --ease-telon: cubic-bezier(0.45, 0.02, 0.55, 1);
+  --dur-in: 420ms;
+  --dur-out: 160ms;
+  /* Lo que tarda el botón en recuperar su sitio al soltarlo.
+     Esto fue primero un retardo antes de la vuelta, y era un callejón: medido
+     en el navegador, entre soltar un enlace y tener la página nueva pasan unos
+     230ms, y los ocho botones de esta web son enlaces. Cualquier cosa que
+     empiece *después* de levantar el dedo se la lleva la navegación por
+     delante —en el iPhone no se veía nada—. Así que ya no se espera: la subida
+     arranca en el mismo instante en que se suelta y dura lo que cabe antes de
+     que la página se vaya. */
+  --dur-sube: 240ms;
+  --shift: 14px;
+  /* El escalón va al ritmo al que el telón pasa por las piezas, que medido son
+     18ms de un enlace al siguiente, no al ritmo de un gesto. Con los 55ms de
+     antes la cascada iba al triple de lento que la persiana y el tercer enlace
+     terminaba de aparecer 56ms después de que ya estuviera al descubierto. */
+  --stagger: 30ms;
+  /* Lo que la cascada espera antes de arrancar. Es lo que tarda el telón en
+     llegar al bloque de enlaces, y sirve para que el reveal se esté viendo
+     cuando pasa por encima en vez de haber terminado ya. Sin esta espera las
+     piezas estaban puestas 73ms antes de ser descubiertas y no se veía ninguna
+     animación: aparecían hechas. Con ella, cada una está entre el 40% y el 90%
+     de su reveal en el instante en que el telón la descubre. */
+  --reveal: 90ms;
+  /* La cinta rotulada es el único movimiento que no entra ni responde a un
+     dedo: recorre. Por eso no puede salir de `--dur-in` ni de `--dur-out`, que
+     miden gestos, y por eso su curva es lineal y no la quíntica de la marca —un
+     rótulo que recorre a velocidad variable se lee como un fallo. Es la sexta
+     pieza del sistema de movimiento, no un milisegundo suelto. */
+  --dur-cinta: 34s;
+  /* Lo que dura una foto de la portada antes de que el telón traiga la
+     siguiente. Es un movimiento que no responde a un dedo: espera. Tres segundos
+     y medio era el turno de la tira de platos, y para una foto que se mira de un
+     vistazo sigue siendo el justo. */
+  --dur-pase: 3.5s;
+  /* EL MUELLE DE MOCHI (2026-10-28, Mario eligió «Sí, como Mochi»). Es el
+     muelle `morph` de su librería (src/motion/spring.ts y tokens.ts), escrito
+     como curva `linear()` con 41 puntos de su misma fórmula: no es un parecido,
+     es él. Rebota un 0,50%, que no se ve: por eso cabe en la regla 1 con su
+     excepción escrita. La duración es lo que tarda en quedarse a menos de una
+     milésima del final. Desde el 2026-10-29 no lo usa nada: lo usaba la foto
+     que llegaba al muro de La casa, y el muro lo sustituyó el mosaico vivo,
+     que se recompone con `--ease-telon`. Se queda porque la decisión de Mario
+     sigue en pie: un muelle nuevo sale de aquí, no se escribe a ojo. El menú
+     tampoco lo usa: probó a crecer desde su botón y volvió a la persiana
+     (`docs/movimiento.md`, «Qué se mueve hoy»). */
+  --ease-muelle: linear(0, 0.0215, 0.0756, 0.15, 0.2352, 0.3243, 0.4125, 0.4966, 0.5745, 0.6449, 0.7074, 0.762, 0.8089, 0.8488, 0.8821, 0.9097, 0.9322, 0.9503, 0.9648, 0.976, 0.9847, 0.9913, 0.9961, 0.9996, 1.002, 1.0035, 1.0045, 1.0049, 1.005, 1.0049, 1.0046, 1.0042, 1.0038, 1.0033, 1.0029, 1.0025, 1.0021, 1.0017, 1.0014, 1.0012, 1);
+  --dur-muelle: 590ms;
+  /* El cambio de contenido de Mochi: lo que llega lo hace desenfocado y se
+     enfoca mientras se asienta (su `swap`, 12 px). Hoy, la foto nueva del
+     mosaico de La casa. */
+  --desenfoque: 12px;
+  /* LA HOME VIVA (2026-10-28: «que se sienta viva, no algo plano y estático»).
+     El fondo del manifiesto hace un paneo de ida y vuelta en `--dur-paneo`: tan
+     lento que no se ve moverse, se nota que está vivo. */
+  --dur-paneo: 26s;
+
+  /* LO QUE MARIO ELIGIÓ EN EL PROBADOR (2026-10-29). El porqué de cada pieza y
+     lo que se descartó, en `docs/ochoa-inicio-vivo.md`; las excepciones a las
+     reglas, en `docs/movimiento.md`. */
+  /* La tira de la portada en el ordenador: las siete fotos en fila, pasando de
+     derecha a izquierda sin parar. Es una velocidad, en píxeles por segundo, y
+     no una duración: lo que tarda una vuelta depende de lo que mida la fila, y
+     eso cambia con el alto de la pantalla. Fue 22 en el probador; Mario la pidió
+     «ligeramente» más rápida. */
+  --vel-tira: 28px;
+  /* El relieve: la sombra de los rótulos de la barra y del titular cae al lado
+     contrario del cursor, y lo sigue acercándose cada fotograma esta fracción
+     de lo que le falta. Es la curva del gesto, no una duración: con 0,22 llega
+     al 90% en diez fotogramas, sin saltos aunque el ratón los dé. */
+  --relieve-suave: 0.22;
+  /* Las palabras del fondo vivo. Cada una vive lo que le toque de
+     `--vidas-palabra` y la siguiente espera lo que le toque de
+     `--esperas-palabra`, por turnos: las dos listas no casan entre sí, así que
+     no hay compás que seguir (regla 18). Las esperas son un 25% más cortas que
+     en la segunda ronda, que es lo que Mario pidió («ligeramente» más a menudo);
+     con las vidas también más cortas salían casi el triple, y se dejaron. */
+  --vidas-palabra: 8.2s 10.4s 9.1s 11.3s 9.7s 8.8s;
+  --esperas-palabra: 1.3s 2.3s 1.7s 2.8s 1.5s 2.2s;
+  /* Lo que tarda el pincel en pintar una palabra de izquierda a derecha, y lo
+     que tarda en borrarse. */
+  --dur-pincel: 1.7s;
+  --dur-borrado: 1.4s;
+  /* Si no hay blanco libre donde pintar, se vuelve a buscar al cabo de esto. */
+  --reintento-palabra: 0.9s;
+  /* Cada cuánto se mira si una palabra ha quedado tapada al bajar la página:
+     si es así, se borra antes de tiempo. */
+  --revisa-palabra: 0.65s;
+  /* El mosaico vivo de La casa. Lo que tarda en recomponerse solo —recorre el
+     mosaico entero, así que va con `--ease-telon` (regla 9)— y lo que tarda
+     cuando alguien pulsa una foto, que responde a un dedo y por eso es más
+     corto. */
+  --dur-mosaico: 1.2s;
+  --dur-mosaico-elige: 720ms;
+  /* La pausa entre un cambio y el siguiente, por turnos y sin compás: con lo
+     que tarda el cambio, uno cada 2,5 a 3,3 s, «más o menos cada tres». Y la
+     espera del primero, nada más asomar el mosaico. */
+  --respiros-mosaico: 1.7s 1.3s 2.1s 1.5s 1.9s;
+  --espera-mosaico: 1.1s;
+  /* Con el ratón encima, cada foto se desplaza un poco al contrario dentro de
+     su ventana, y la sigue con esta demora. */
+  --dur-ventana: 900ms;
+  /* Lo que dura un plato al frente del mazo de «Los que destacan» antes de irse
+     al fondo. Fue 3,5 s mientras la tira era lo único que se movía solo; con el
+     telón encima los dos cambiaban a la vez y la página latía (regla 18), así
+     que el 2026-10-27 el mazo tomó su propio ritmo, más lento que la portada:
+     además de mirarse, una carta se lee —nombre y dos precios—. Cuando alguien
+     toca el mazo, esta cuenta se apaga para siempre: quien desliza ha dicho que
+     prefiere conducir. Desde el 2026-10-30 es también lo que espera la rueda del
+     ordenador entre una tarjeta y la siguiente, por lo mismo: se leen. */
+  --dur-turno: 5.5s;
+  /* Cuánto más tarda el primer cambio del mazo que un turno entero. No es una
+     duración: es la fase. Con 3,5 y 5,5 s los cambios de los dos caen en
+     múltiplos de medio segundo, y este cuarto es lo que les impide coincidir.
+     Solo funciona contado desde el reloj común de `compas.ts`. */
+  --desfase-turno: 0.25s;
+  /* Lo que tarda la carta de delante en salir por la izquierda, torcerse y
+     volver al fondo del mazo. Cruza casi el ancho de la pantalla, así que va con
+     `--ease-telon` (regla 9), y es más larga que `--dur-recogida` —1,4 veces—
+     porque hace dos viajes: salir y volver por detrás. Es la del boceto que
+     aprobó Mario. */
+  --dur-baraja: 980ms;
+  /* Lo que tarda la rueda de «Los que destacan», en el ordenador, en correrse
+     una tarjeta hacia la derecha. Recorre el ancho de una, unos 220 px a 1440:
+     mucho más que los 14 px de `--shift`, así que va con `--ease-telon`, que
+     reparte el recorrido (regla 9). Y más que `--dur-in`, porque no responde a
+     nadie: pasa sola, cada `--dur-turno`, y una fila entera corriéndose de golpe
+     se lee como un tirón. */
+  --dur-rueda: 700ms;
+  /* La entrada a la web. Tres valores que no cabían en los cinco de base porque
+     no miden ni entrar ni responder a un dedo.
+
+     Suman 1,4s, y el reparto es mitad y mitad a propósito: 700ms para que el
+     rótulo se plante y se lea, 700ms para que se vaya a su sitio. La primera
+     versión duraba 740ms en total y Mario dijo que «se nota muy poco» — el
+     problema no era la velocidad del movimiento, era que no daba tiempo a leer
+     el nombre antes de que empezara a marcharse.
+
+     Lo que la sombra dura tarda en despegarse del rótulo. Es el gesto de un
+     cartel pintado, y no es «entrar»: el rótulo ya está ahí, lo que aparece es
+     su relieve. Se anima moviendo una segunda capa de tinta con `transform`,
+     nunca animando `text-shadow`, que repinta en cada fotograma. */
+  --dur-firma: 280ms;
+  /* El retardo de la recogida, contado desde el arranque —no una duración—.
+     Deja 420ms de rótulo quieto y entero después de la firma, que es lo que se
+     tarda en leer un nombre de tres sílabas sin prisa. */
+  --espera-firma: 700ms;
+  /* Lo que la plancha tarda en recogerse hasta ser la barra. No sale de
+     `--dur-in`: ese mide un panel que aparece, y esto recorre la pantalla
+     entera de arriba abajo. Es el mismo motivo por el que la curva es
+     `--ease-telon` y no la quíntica de la marca (regla 9). */
+  --dur-recogida: 700ms;
+  /* Cuánto se tuerce lo que llega antes de encajar. Es a la rotación lo que
+     `--shift` es al desplazamiento: la medida de un gesto, no un adorno. Un
+     rótulo de bar se monta pieza a pieza y nunca queda a plomo, y cuatro
+     grados es lo que hace falta para que se note que lo colgó alguien y no una
+     imprenta —por debajo no se lee, por encima parece un error de maquetación. */
+  --tuerce: 4deg;
 
   /* Mapeo a las variables neutras de @tombo/ui */
   --t-text: var(--ink);
@@ -25,10 +251,29 @@
   --t-line: var(--line);
   --t-surface: var(--paper-2);
   --t-accent: var(--rojo);
-  --t-accent-contrast: #fff9ee;
-  --t-radius: 6px;
+  --t-accent-contrast: #ffffff;
+  --t-radius: var(--r-marco);
+  --t-radius-control: var(--r-btn);
+  /* El relieve de los botones que viven en @tombo/ui. Es la misma pieza que
+     usa el `.btn` de esta casa, publicada para que el cartel de cookies —que
+     es de todos— se hunda igual que todo lo demás sin que @tombo/ui sepa nada
+     de este rojo ni de esta tinta. */
+  --t-shadow-btn: 3px 3px 0 var(--ink);
+  --t-shadow-btn-x: 3px;
+  --t-shadow-btn-y: 3px;
+  --t-shadow-btn-active: 0 0 0 var(--ink);
   --t-card-border: 2px solid var(--ink);
-  --t-shadow: 8px 8px 0 rgba(35, 32, 27, 0.85);
+  --t-shadow: 6px 6px 0 rgba(26, 26, 26, 0.9);
+
+  /* Sin `--t-open`: el verde oliva era una cuarta familia de color que nadie
+     de marca validó. El punto del estado de apertura cae al acento rojo, y
+     quien informa de verdad es el texto que lo acompaña. */
+
+  /* Alto de la cabecera sticky, del que cuelga el offset del interruptor de la
+     carta: 60px de .nav-in + 2px de su borde. Es solo el punto de partida para
+     que el sticky sea correcto sin JavaScript; Nav.astro lo reescribe en
+     cliente con el alto medido en cuanto monta. */
+  --t-header-h: 62px;
 
   --t-heading-font: var(--display);
   --t-menu-title-size: clamp(1.9rem, 5vw, 3rem);
@@ -44,7 +289,7 @@
   --t-price-color: var(--ink);
   --t-price-font: var(--sans);
   --t-price-width: 4.4rem;
-  --t-desc-style: italic;
+  --t-desc-style: normal;
   --t-dish-weight: 600;
   --t-leader: 2px dotted var(--ink-faint);
   --t-section-gap: clamp(38px, 5vw, 58px);

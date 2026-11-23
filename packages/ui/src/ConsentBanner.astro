@@ -30,22 +30,57 @@ const t =
   </div>
 </div>
 
+{/* Las notas del script van aquí y no dentro (2026-11-18): un `is:inline` se publica tal cual, notas
+    incluidas, en cada página de las dos casas. Lo que explican, por orden:
+
+    MIENTRAS EL CARTEL ESTÁ A LA VISTA, SE MARCA EL <html> (`data-consent-pendiente`). Es un atributo de
+    contrato, como los `data-intro-*`: aquí solo dice «hay una decisión pendiente y este cartel la está
+    pidiendo», y cada casa decide si eso le cambia algo. Cokima aparta los botones de su entrada mientras
+    dure, para que el cartel no se plante encima de ellos; Ochoa no lo lee y no se entera.
+
+    SE MARCA LO PENDIENTE Y NO LO DECIDIDO, a propósito: así el atributo solo existe si este script ha
+    corrido y hay cartel de verdad. Sin JavaScript no hay marca, y quien se cuelgue de ella se queda en su
+    estado normal en vez de esconder algo para siempre esperando un aviso que no va a llegar.
+
+    `--t-consent-h`: el cartel se apoya en el borde inferior, que es justo donde la portada ancla su
+    titular. Publica su alto para que quien lo necesite le reserve sitio, y lo devuelve a cero al decidir:
+    sin esto, el cartel tapa el titular durante toda la primera visita.
+
+    LA MARCA SE QUITA CON LAS DOS RESPUESTAS, y esto no es un detalle: el evento `tombo:consent` solo se
+    emite al aceptar —porque solo entonces se puede medir—, así que colgar de él lo que se destapa dejaría
+    a quien rechaza sin ver nunca lo que hay debajo. Eso convertiría el cartel en un muro que solo se abre
+    pagando, que es exactamente lo que no se puede hacer. Rechazar tiene que liberar igual que aceptar. */}
 <script is:inline>
   (function () {
     var el = document.getElementById("tombo-consent");
     if (!el) return;
+    var raiz = document.documentElement;
     var m = document.cookie.match(/(?:^|; )tombo_consent=([^;]*)/);
     if (m) {
       if (m[1] === "granted") window.dispatchEvent(new Event("tombo:consent"));
       return;
     }
+
+    raiz.setAttribute("data-consent-pendiente", "");
+    var setHeight = function (px) {
+      document.documentElement.style.setProperty("--t-consent-h", px + "px");
+    };
     el.hidden = false;
+    setHeight(el.offsetHeight);
+    if (typeof ResizeObserver === "function") {
+      new ResizeObserver(function () {
+        if (!el.hidden) setHeight(el.offsetHeight);
+      }).observe(el);
+    }
+
     el.addEventListener("click", function (e) {
       var btn = e.target && e.target.closest ? e.target.closest("[data-consent]") : null;
       if (!btn) return;
       var value = btn.getAttribute("data-consent");
       document.cookie = "tombo_consent=" + value + "; Max-Age=" + 60 * 60 * 24 * 180 + "; Path=/; SameSite=Lax";
       el.hidden = true;
+      setHeight(0);
+      raiz.removeAttribute("data-consent-pendiente");
       if (value === "granted") window.dispatchEvent(new Event("tombo:consent"));
     });
   })();
@@ -72,6 +107,12 @@ const t =
     align-items: center;
     justify-content: space-between;
   }
+  /* Sin esto el `display: flex` de arriba gana al atributo `hidden` y el cartel
+     no se va nunca: ni al aceptar, ni al rechazar, ni en las visitas siguientes
+     con el consentimiento ya guardado. */
+  .consent[hidden] {
+    display: none;
+  }
   .consent p {
     margin: 0;
     font-size: 0.9rem;
@@ -92,14 +133,72 @@ const t =
     font-weight: 600;
     background: var(--t-accent);
     color: var(--t-accent-contrast, #fff);
-    border: 0;
-    border-radius: 4px;
+    /* Borde transparente, no `border: 0`: al repartir con `flex-basis: 0`,
+       flexbox divide el content-box y luego suma padding y borde, así que un
+       botón con borde y otro sin él salen con anchos distintos. Rechazar y
+       aceptar tienen que medir exactamente lo mismo. */
+    border: 1px solid transparent;
+    /* El radio sale de la app, con el valor de antes como respaldo: es la misma
+       curva que sus botones, y una esquina distinta en el único control que
+       aparece encima de todo lo demás se nota. */
+    border-radius: var(--t-radius-control, 4px);
     padding: 9px 16px;
     cursor: pointer;
+    /* El mismo relieve hundible que el resto de botones de la casa, si la app
+       lo define. `--t-shadow-btn` es la pieza de marca: sin ella —Cokima hoy—
+       esto se queda plano y solo se hunde un píxel, que es el comportamiento
+       de antes. El recorrido sale del propio desplazamiento de la sombra, así
+       que no hay ningún número repetido aquí. */
+    box-shadow: var(--t-shadow-btn, none);
+    transition:
+      transform var(--dur-out, 160ms) var(--ease, ease),
+      box-shadow var(--dur-out, 160ms) var(--ease, ease);
+  }
+  /* Respaldo para quien navegue sin JavaScript; con él, quien manda es el
+     `data-tacto` que pone la app. */
+  .consent-btn:active {
+    transform: translate(var(--t-shadow-btn-x, 0px), var(--t-shadow-btn-y, 1px));
+    box-shadow: var(--t-shadow-btn-active, none);
   }
   .consent-btn--ghost {
     background: transparent;
     color: var(--t-text);
     border: 1px solid var(--t-line);
+  }
+
+  /* Móvil: franja a lo ancho apoyada en el borde inferior. Desde que la reserva
+     vive en la cabecera, abajo no queda ninguna barra fija con la que competir.
+     El safe-area evita que los botones caigan bajo el indicador de iOS. */
+  @media (max-width: 640px) {
+    .consent {
+      left: 0;
+      right: 0;
+      bottom: 0;
+      max-width: none;
+      border-radius: 0;
+      border-inline: 0;
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+      gap: 8px;
+    }
+    .consent p {
+      font-size: 0.8rem;
+      line-height: 1.4;
+      max-width: none;
+      flex: 1 1 100%;
+    }
+    .consent-actions {
+      flex: 1 1 100%;
+    }
+    /* `min-width: 0` es imprescindible: con el `auto` por defecto, cada botón
+       reclama su ancho de min-content y "Rechazar" acaba midiendo más que
+       "Aceptar" por ser palabra más larga. Rechazar tiene que pesar
+       exactamente lo mismo que aceptar, así que el reparto manda sobre el
+       contenido; el padding se afloja para que el texto siga cabiendo. */
+    .consent-btn {
+      flex: 1;
+      min-width: 0;
+      padding-inline: 12px;
+      min-height: 44px;
+    }
   }
 </style>

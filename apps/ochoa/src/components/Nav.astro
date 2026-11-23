@@ -1,96 +1,567 @@
 ---
+import OpenState from "@tombo/ui/OpenState.astro";
+import Contacto from "./Contacto.astro";
+import { RESTAURANT } from "../site.ts";
+
 interface Props {
   locale: "es" | "en";
   altPath: string;
 }
 const { locale, altPath } = Astro.props;
 const es = locale === "es";
+
+// "La carta" abre la cascada porque es lo que se viene a buscar. Reservar va
+// segundo aunque también esté fijo en la barra: quien abre el menú está
+// decidiendo, y ahí es donde tiene que encontrarlo.
+// «Conócenos» cierra la cascada a propósito: es contenido de marca, y ponerlo
+// por delante empujaría hacia abajo lo que se viene a buscar y lo que convierte.
+// El escalonado de la persiana sale de `--i`, así que el cuarto elemento entra
+// solo, sin tocar una línea de CSS.
 const links = es
   ? [
       { href: "/carta", label: "La carta" },
-      { href: "/reservas", label: "Reservas" },
+      { href: "/reservas", label: "Reservar" },
       { href: "/#visita", label: "Dónde estamos" },
+      { href: "/conocenos", label: "Conócenos" },
     ]
   : [
       { href: "/en/menu", label: "Menu" },
-      { href: "/en/reservations", label: "Reservations" },
+      { href: "/en/reservations", label: "Book" },
       { href: "/en/#visit", label: "Find us" },
+      { href: "/en/about", label: "About us" },
     ];
 const home = es ? "/" : "/en/";
 const reserve = es ? "/reservas" : "/en/reservations";
+// EL RELIEVE (2026-10-29): en el ordenador, la barra enseña las secciones en vez
+// del botón «Menú». Mario lo pidió al ver la home viva —en el ordenador quería las
+// secciones a la vista y no un menú, con algo que reaccionara al cursor— y eligió
+// esta forma en el probador (docs/ochoa-inicio-vivo.md). Son las del menú menos
+// «Reservar», que ya es el botón de al lado, con las mismas etiquetas que el panel
+// en cada idioma. «Dónde estamos» no sale de la home si ya se está en ella.
+const sinBarra = (ruta: string) => ruta.replace(/\/$/, "") || "/";
+const enInicio = sinBarra(Astro.url.pathname) === sinBarra(home);
+const secciones = es
+  ? [
+      { href: "/carta", label: "La carta" },
+      { href: enInicio ? "#visita" : "/#visita", label: "Dónde estamos" },
+      { href: "/conocenos", label: "Conócenos" },
+    ]
+  : [
+      { href: "/en/menu", label: "Menu" },
+      { href: enInicio ? "#visit" : "/en/#visit", label: "Find us" },
+      { href: "/en/about", label: "About us" },
+    ];
+// El otro idioma, que en el móvil vive en el pie del panel.
+const otro = es ? { corto: "EN", lang: "en", nombre: "English" } : { corto: "ES", lang: "es", nombre: "Español" };
+// El botón dice la palabra en vez de dibujar tres rayas, así que estos dos
+// textos dejan de ser solo el nombre accesible y pasan a verse. Por eso «Cerrar»
+// y no «Cerrar el menú»: en la barra hay sitio para una palabra, y el estado ya
+// lo canta `aria-expanded` para quien lo escucha.
+const t = es
+  ? { menu: "Menú", close: "Cerrar", reserve: "Reservar", call: "Llamar" }
+  : { menu: "Menu", close: "Close", reserve: "Book", call: "Call" };
+
 ---
 
 <nav class="nav">
   <div class="wrap nav-in">
-    <a class="brand cartel" href={home}>Los Ochoa<small>Tasquita · Madriz</small></a>
-    <div class="nav-right">
-      <div class="nav-links">
-        {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    {/* `data-intro-destino`: es aquí donde aterriza el rótulo de la entrada, y
+        de donde se dispara al volver a la home desde otra página. */}
+    {/* `data-relieve`: lo más larga que puede ser su sombra cuando el cursor la
+        tiene cerca, en `em` (ver `relieve.ts`). */}
+    <a class="brand cartel" href={home} data-intro-destino data-relieve="0.085">Los Ochoa</a>
+    {/* `data-intro-aparta`: lo que la entrada saca fuera de la ventana para que
+        vuelva deslizándose por el borde derecho. El nombre de la clase es cosa
+        de esta casa, así que el contrato con @tombo/ui va por atributo. Las
+        secciones y el idioma van dentro para entrar igual que los botones:
+        fuera, se habrían visto puestas sobre la plancha desde el primer
+        fotograma. */}
+    <div class="nav-actions" data-intro-aparta>
+      <div class="secciones">
+        {secciones.map((s) => (
+          <a href={s.href} class="seccion" data-relieve="0.12">{s.label}</a>
+        ))}
       </div>
-      <span class="lang">
-        {es ? <><b>ES</b> · <a href={altPath}>EN</a></> : <><a href={altPath}>ES</a> · <b>EN</b></>}
-      </span>
-      <a href={reserve} class="btn">{es ? "Reservar" : "Book"}</a>
+      <a href={reserve} class="btn">{t.reserve}</a>
+      <button
+        type="button"
+        class="menu-btn"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="nav-panel"
+      >
+        <span class="rotulo" data-label-open={t.menu} data-label-close={t.close}>{t.menu}</span>
+      </button>
+      <a href={altPath} class="idioma" lang={otro.lang} hreflang={otro.lang} aria-label={otro.nombre}>{otro.corto}</a>
     </div>
   </div>
 </nav>
+
+<div class="panel" id="nav-panel" data-state="closed" inert>
+  <div class="wrap panel-in">
+    <ul class="panel-links">
+      {links.map((l, i) => (
+        <li style={`--i:${i}`}>
+          <a href={l.href} class="cartel">
+            <span class="idx" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+            <span class="lbl">{l.label}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="panel-foot" style={`--i:${links.length}`}>
+      <div class="foot-row">
+        <OpenState hours={RESTAURANT.openingHours} locale={locale} />
+        <span class="lang">
+          {es ? <><b>ES</b> · <a href={altPath}>EN</a></> : <><a href={altPath}>ES</a> · <b>EN</b></>}
+        </span>
+      </div>
+      <Contacto locale={locale} compacto />
+      <p class="addr">{RESTAURANT.streetAddress} · {RESTAURANT.addressLocality}</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { initMenuOverlay } from "@tombo/ui/menu-overlay.ts";
+  import { montaRelieve } from "../relieve.ts";
+
+  initMenuOverlay();
+
+  /* El relieve se vuelve a montar en cada página: el router cambia la barra
+     entera, y con ella las piezas que llevan `data-relieve`. */
+  let sueltaRelieve: (() => void) | null = null;
+  document.addEventListener("astro:page-load", () => {
+    sueltaRelieve?.();
+    sueltaRelieve = montaRelieve();
+  });
+
+  /* Desde 861 px el botón «Menú» no existe y su sitio lo ocupan las secciones.
+     Si el menú estaba abierto al ensanchar la ventana, se cierra: si no, el
+     panel seguiría tapando la página, con el scroll bloqueado y sin el botón
+     que lo cierra a la vista. */
+  matchMedia("(min-width: 861px)").addEventListener("change", (e) => {
+    const boton = document.querySelector<HTMLButtonElement>(".nav [data-menu-toggle]");
+    if (e.matches && boton?.getAttribute("aria-expanded") === "true") boton.click();
+  });
+</script>
 
 <style>
   .nav {
     position: sticky;
     top: 0;
-    z-index: 20;
-    background: rgba(244, 238, 226, 0.88);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line);
+    /* Por encima del panel: la barra no se va a ninguna parte al abrir el menú,
+       y el botón que abre es el mismo que cierra, en el mismo sitio. */
+    z-index: 60;
+    background: var(--rojo);
+    border-bottom: 2px solid var(--ink);
+    /* La vuelta del filete al cerrar tiene que durar lo que dura la persiana en
+       recogerse: `close()` retira la clase `menu-open` de golpe, así que sin
+       esto la línea negra reaparece de un salto sobre el rojo que todavía se
+       está retirando. */
+    transition: border-bottom-color var(--dur-out) var(--ease);
+  }
+  /* Con el menú abierto el documento deja de tener scroll, y una cabecera
+     `sticky` sin scroll del que colgar cae a su posición en el flujo: si la
+     página venía desplazada, se va fuera de la pantalla y el botón de cerrar
+     desaparece con ella. Mientras dura el menú, se ancla al viewport. El hueco
+     que deja al salir del flujo lo tapa el propio panel. */
+  :global(html.menu-open) .nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    /* Y el filete se apaga. El panel es `fixed; inset: 0` con relleno superior,
+       así que su rojo ya llega por detrás de la barra: basta con quitar la
+       línea para que las dos piezas se suelden, sin que nada se mueva de sitio.
+       Se transparenta el color en vez de quitar el borde porque
+       `syncHeaderHeight()` mide la barra con `getBoundingClientRect()` —el
+       borde incluido— para publicar `--t-header-h`, y quitarlo la encogería dos
+       píxeles arrastrando el relleno del panel y el offset de la carta. */
+    border-bottom-color: transparent;
   }
   .nav-in {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    height: 66px;
+    height: 60px;
   }
+  /* El rótulo de la barra lleva la sombra dura de `.cartel` como el resto de los
+     titulares de la casa: la traía por la clase y aquí se le estaba apagando, así
+     que era el único sitio donde el nombre salía plano. No se repite el valor —se
+     deja que gane el de `.cartel`— para que siga a la fórmula si algún día cambia.
+     En `em`, así que la sombra crece con el cuerpo igual que en el titular de
+     portada: aquí, a 1,4rem, es del orden de un píxel. */
   .brand {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    color: var(--paper);
   }
-  .brand small {
-    font-family: var(--serif);
-    font-style: italic;
-    text-transform: none;
-    color: var(--ink-dim);
-    font-size: 0.8rem;
-    text-shadow: none;
-    margin-left: 0.6ch;
-    letter-spacing: 0;
-  }
-  .nav-right {
+  .nav-actions {
     display: flex;
     align-items: center;
-    gap: 22px;
+    gap: 10px;
+  }
+  /* El botón de la cabecera invierte el .btn global: sobre el rojo de la barra,
+     un botón rojo no se vería. */
+  .nav-actions .btn {
+    padding: 9px 16px;
+    font-size: 0.92rem;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    background: var(--paper);
+    color: var(--rojo);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .nav-actions .btn:hover {
+    background: var(--paper);
+    color: var(--rojo-2);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  /* Este era el único botón de la casa que no se hundía, y no por su culpa:
+     al reescribir aquí su `box-shadow` —tiene que ser blanco sobre el rojo de
+     la barra— ganaba en especificidad al `:active` de la hoja global, que se
+     quedaba sin efecto. Cada estado que se reescribe hay que reescribirlo
+     entero. */
+  .nav-actions .btn:active {
+    background: var(--paper);
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--ink);
+  }
+  /* Y lo mismo para el estado que gobierna el dedo, que es el que se ve en el
+     móvil: la hoja global lo declara con `[data-tacto].tocando`, pero aquí el
+     `[data-astro-cid-…]` de los estilos con scope le añade un punto a
+     `.nav-actions .btn` y le gana. Sin esto, el botón bajaba arrastrando su
+     sombra en vez de apoyarse en el papel. */
+  .nav-actions .btn.tocando {
+    box-shadow: 0 0 0 var(--ink);
+  }
+  /* Sin borde: era el recuadro lo que lo hacía parecer un control de sistema
+     metido en un cartel pintado. Manda el área de toque, no la caja dibujada.
+     Y sin las tres rayas: son el icono más genérico que existe y ninguna marca
+     se reconoce en ellas. Un bar rotula —el rótulo, el espejo, los mandiles—,
+     así que el botón dice la palabra. El texto ya estaba en el markup para
+     quien usa lector de pantalla; ahora se ve, que es una cosa menos que
+     traducir de un dibujo. */
+  .menu-btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    color: var(--paper);
+  }
+  .menu-btn:focus-visible {
+    outline: 2px solid var(--paper);
+    outline-offset: 4px;
+  }
+  /* La versal apretada de Archivo, la misma bisagra que usan las etiquetas de
+     sección: habla el idioma del rótulo sin competir con «Los Ochoa», que sí es
+     Anton y tiene que seguir siendo lo más grande de la barra. */
+  .rotulo {
+    position: relative;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-stretch: var(--wd-rotulo);
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-size: var(--fs-label);
+    line-height: 1;
+    padding-bottom: 5px;
+    /* El ancho lo fija la palabra más larga de las dos, para que «Reservar» no
+       dé un salto de trece píxeles al abrir el menú. En `em` y no en `ch`: la
+       `ch` de esta versal apretada es mucho más estrecha que sus mayúsculas y
+       se quedaba corta. Alineada a la derecha, que es el borde que tiene que
+       quedar a plomo con el resto de la hoja. */
+    min-width: 4.4em;
+    text-align: right;
+  }
+  /* El subrayado es el que responde al dedo: se recoge al abrir y se estira al
+     cerrar. Sustituye a la pirueta de las rayas convirtiéndose en aspa por algo
+     que no dibuja nada, solo confirma que el botón ha hecho caso. */
+  .rotulo::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: currentColor;
+    transform-origin: right center;
+    transition: transform var(--dur-out) var(--ease);
+  }
+  .menu-btn[aria-expanded="true"] .rotulo::after {
+    transform: scaleX(0.4);
+    transform-origin: left center;
+  }
+
+  /* EL RELIEVE. En el móvil sigue el botón «Menú» con la cortina; desde 861 px
+     la barra enseña las secciones en letra de rótulo y el idioma, y el botón
+     desaparece. 861 es el corte de toda la home: donde la portada deja de ser
+     el telón y pasa a ser la tira. */
+  .secciones,
+  .idioma {
+    display: none;
+  }
+  @media (min-width: 861px) {
+    .menu-btn {
+      display: none;
+    }
+    .secciones {
+      display: flex;
+    }
+    .idioma {
+      display: inline-flex;
+    }
+  }
+  /* El aire hasta «Reservar» es el del probador que vio Mario, donde las
+     secciones iban fuera de este grupo con los 16 px de hueco de la barra: aquí
+     el hueco es de 10, y los seis que faltan van en el margen. */
+  .secciones {
+    align-items: center;
+    margin-right: calc(6px + clamp(2px, 0.8vw, 12px));
+  }
+  /* Anton en versal, como el rótulo de la casa pero un punto más suelta y más
+     pequeña: tiene que leerse como sección, no competir con «Los Ochoa». La
+     sombra es tinta sobre el rojo, como la del rótulo, y la mueve el cursor. */
+  .seccion {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 12px;
+    color: var(--paper);
+    font-family: var(--display);
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: 1.24rem;
+    letter-spacing: 0.035em;
+    white-space: nowrap;
+    text-shadow: var(--relieve-x, 0.06em) var(--relieve-y, 0.07em) 0 var(--ink);
+    transition: transform var(--dur-out) var(--ease);
+  }
+  /* Al pasar por encima se despega un poco del rojo; al pulsar baja hasta su
+     sombra y se apoya, que es lo que hacen los botones de la casa. */
+  .seccion:hover {
+    transform: translate(-1px, -2px);
+  }
+  .seccion:active {
+    transform: translate(var(--relieve-x, 0.06em), var(--relieve-y, 0.07em));
+    text-shadow: 0 0 0 var(--ink);
+  }
+  .seccion:focus-visible,
+  .idioma:focus-visible {
+    outline: 2px solid var(--paper);
+    outline-offset: 2px;
+    border-radius: var(--r-chapa);
+  }
+  /* La versal apretada de las etiquetas, la misma del botón «Menú» al que
+     sustituye: es un ajuste, no una sección. */
+  .idioma {
+    align-items: center;
+    min-height: 44px;
+    padding: 0 0 0 10px;
+    color: var(--paper);
+    font-family: var(--sans);
+    font-weight: 700;
+    font-stretch: var(--wd-rotulo);
+    letter-spacing: 0.09em;
+    font-size: var(--fs-label);
+  }
+
+  /* El panel cubre la pantalla entera por debajo de la barra. `visibility`, y no
+     solo opacidad, para que cerrado no intercepte ni un clic; se retrasa hasta
+     el final de la transición para que el desvanecido llegue a verse. */
+  /* El panel cae como una persiana en vez de aparecer con un fundido: se
+     descubre de arriba abajo, desde el borde de la barra. `clip-path` y no un
+     `translate` porque la persiana descubre el contenido donde ya está —los
+     nombres de sección no viajan— y así el escalonado de los enlaces se lee
+     como lo que cae detrás del telón, no como un segundo movimiento peleando
+     con el primero. Al cerrar, la misma persiana se recoge hacia arriba. */
+  /* El fondo es el rojo de la barra y no el papel: era esa costura —una plancha
+     de rótulo y debajo un folio— lo que partía la pantalla en dos materiales.
+     Con el mismo color, la persiana además se ve por primera vez: cayendo
+     blanca sobre contenido blanco no se notaba que caía. */
+  .panel {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: var(--rojo);
+    padding-top: var(--t-header-h);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    /* El recorte arranca donde acaba la barra y no en cero: los primeros 62px
+       del barrido se gastaban por detrás de ella, donde no se ven, y la
+       persiana parecía tardar en arrancar. */
+    clip-path: inset(var(--t-header-h) 0 100% 0);
+    visibility: hidden;
+    transition:
+      clip-path var(--dur-out) var(--ease-telon),
+      visibility 0s linear var(--dur-out);
+    /* Sobre el rojo, las piezas neutras que caen aquí dentro tienen que leerse
+       con los colores al revés. Se les reescriben los tokens que consumen en
+       vez de parchearlas desde fuera —lo mismo que hace `.copy` en la portada—,
+       así que cualquier pieza de @tombo/ui que se meta mañana se adapta sola.
+       `--t-open` arregla un fallo que hoy no se ve: sin declararlo, el punto de
+       «Abierto ahora» cae al acento de la marca, que es este mismo rojo, y
+       sobre el panel desaparecería. */
+    --t-text: var(--paper);
+    --t-text-dim: rgba(255, 255, 255, 0.9);
+    --t-text-faint: rgba(255, 255, 255, 0.62);
+    --t-open: var(--paper);
+  }
+  .panel[data-state="open"] {
+    clip-path: inset(var(--t-header-h) 0 0 0);
+    visibility: visible;
+    transition:
+      clip-path var(--dur-in) var(--ease-telon),
+      visibility 0s;
+  }
+  .panel-in {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 32px;
+    padding-block: clamp(24px, 6vh, 56px) clamp(20px, 4vh, 40px);
+  }
+  /* El bloque de enlaces flota entre la barra y el pie en vez de apoyarse
+     arriba: con tres secciones y una pantalla alta, pegarlo al techo deja medio
+     folio en blanco que se lee como contenido que falta. */
+  .panel-links {
+    list-style: none;
+    margin-block: auto;
+    padding: 0;
+  }
+  /* La cascada va DETRÁS del telón, no por su cuenta.
+     Esto estaba mal medido y era lo que hacía que el menú no se sintiera de una
+     pieza: los nombres tardaban en aparecer `--dur-in` —lo mismo que el telón
+     entero en cruzar la pantalla—, así que el telón descubría «La carta» a los
+     35ms y el texto no terminaba de materializarse hasta los 420. Durante casi
+     medio segundo se veía una plancha roja vacía con letras llegando encima.
+     Una pieza que aparece detrás de un telón no puede tardar lo mismo que el
+     telón: no viaja, se revela. Por eso ahora entra en `--dur-out`, que es la
+     duración de lo que responde en vez de recorrer. */
+  .panel-links li,
+  .panel-foot {
+    opacity: 0;
+    transform: translateY(var(--shift));
+    /* Al cerrar no se desvanecen: las tapa el telón. El salto a invisible se
+       retrasa hasta que ha terminado de recogerse, así que nunca se ve un texto
+       apagándose sobre un rojo que todavía sigue ahí. Cerrar responde a un dedo
+       y tiene que sentirse inmediato: cuanto menos se anime, mejor. */
+    transition:
+      opacity 0s linear var(--dur-out),
+      transform 0s linear var(--dur-out);
+  }
+  .panel[data-state="open"] .panel-links li,
+  .panel[data-state="open"] .panel-foot {
+    opacity: 1;
+    transform: none;
+    /* Con la quíntica de la marca este reveal no se veía: frena tan pronto que
+       a mitad de su tiempo ya estaba al 97%, así que cuando el telón llegaba la
+       pieza estaba puesta y no se apreciaba ninguna animación. Va con la curva
+       del telón porque es a él a quien acompaña —al descubrirla, la pieza está
+       en torno al 70% de su entrada y se ve terminar. */
+    transition:
+      opacity var(--dur-out) var(--ease-telon),
+      transform var(--dur-out) var(--ease-telon);
+    transition-delay: calc(var(--reveal) + var(--i) * var(--stagger));
+  }
+  /* El área del enlace se ciñe a su texto: estirada a todo el ancho, el foco
+     encerraba un metro de vacío y el puntero cambiaba en sitios donde no hay
+     nada que pulsar. */
+  .panel-links a {
+    display: flex;
+    width: fit-content;
+    align-items: baseline;
+    gap: 0.5ch;
+    padding: clamp(10px, 2.4vh, 20px) 0;
+    font-size: clamp(2.1rem, 10vw, 3.4rem);
+    color: var(--paper);
+    text-shadow: none;
+  }
+  /* La fórmula del rótulo, invertida: sobre rojo la tinta pasa a ser el papel y
+     la sombra dura la pone la tinta. Es lo mismo que hace el titular de la
+     portada sobre la foto, con los papeles cambiados. La sombra vive en `.lbl`
+     y no en el enlace porque el hover tiene que poder retirarla sin llevarse
+     por delante la del número. */
+  /* Aquí se probó un reveal de cortina sobre la palabra, recortándola de arriba
+     abajo con `clip-path` para acompañar al telón. Se retiró tras verlo: una
+     máscara sobre texto quieto no revela, corta —se quedaba media letra
+     flotando y se leía como un fallo de pintado—. Un reveal de cortina solo
+     funciona si la palabra se desplaza dentro de la máscara, y eso pedía un
+     envoltorio más y recortar la tilde de «DÓNDE» y la sombra dura. El
+     desplazamiento corto de abajo hace el mismo trabajo sin ninguna de esas
+     aristas. */
+  .lbl {
+    text-shadow: 0.045em 0.05em 0 var(--ink);
+    transition:
+      color var(--dur-out) var(--ease),
+      text-shadow var(--dur-out) var(--ease);
+  }
+  /* Respuesta sin movimiento: el nombre baja a tinta y suelta la sombra. Antes
+     viraba al rojo de la casa, que sobre este fondo no se vería. */
+  .panel-links a:hover .lbl,
+  .panel-links a:focus-visible .lbl {
+    color: var(--ink);
+    text-shadow: none;
+  }
+  .panel-links a:focus-visible {
+    outline: 2px solid var(--paper);
+    outline-offset: 4px;
+  }
+  /* El número es de la misma familia del cuerpo, apretado como una etiqueta de
+     rótulo: ordena la cascada sin competir con el nombre de la sección. */
+  .idx {
+    font-family: var(--sans);
+    font-size: var(--fs-label);
+    font-weight: 700;
+    font-stretch: var(--wd-rotulo);
+    /* En rojo sobre rojo era invisible. En tinta es el único elemento oscuro
+       del panel y hace de contrapunto al nombre en papel. Es `aria-hidden` y
+       puramente ordinal —el nombre de sección lleva toda la información—, así
+       que le aplica el 3:1 de componente no textual, que cumple sobre este
+       rojo. */
+    color: var(--ink);
+    letter-spacing: 0.06em;
+  }
+  /* Su entrada la declara la regla de la cascada, arriba, junto a la de los
+     enlaces: el pie es un escalón más de la misma y repetirla aquí —que es lo
+     que había— la pisaba, porque esta va después en la hoja. */
+  .panel-foot {
+    /* El filete sigue ordenando el pie, pero en papel: en tinta volvía a partir
+       el color en dos, que es justo lo que se venía a quitar. */
+    border-top: 2px solid var(--paper);
+    padding-top: 16px;
+    display: grid;
+    gap: 10px;
+  }
+  .foot-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  /* Estos tres se cuelgan de los tokens que el panel reescribe, no de la tinta
+     de la marca: así el día que cambie el fondo no hay tres colores sueltos que
+     buscar. */
+  .addr {
+    margin: 0;
+    font-size: var(--fs-micro);
+    color: var(--t-text-dim);
   }
   .lang {
     font-family: var(--sans);
-    font-size: 0.88rem;
-    color: var(--ink-dim);
+    font-size: 0.9rem;
+    color: var(--t-text-dim);
   }
   .lang b {
-    color: var(--ink);
+    color: var(--paper);
     font-weight: 600;
-  }
-  .nav-links {
-    display: flex;
-    gap: 24px;
-    font-family: var(--sans);
-    font-size: 0.95rem;
-    color: var(--ink-dim);
-  }
-  .nav-links a:hover {
-    color: var(--rojo);
-  }
-  @media (max-width: 780px) {
-    .nav-links {
-      display: none;
-    }
   }
 </style>

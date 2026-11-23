@@ -1,0 +1,255 @@
+# Método: cómo se decide y cómo se verifica
+
+> **Estado: vivo** · revisado 2026-11-03
+
+**Las dos técnicas que este repo ya ha pagado caras.** Decidir lo visual enseñando variantes en
+vez de describirlas, y sostener toda afirmación sobre cómo se ve la web en una medición hecha en
+el navegador, no en la lectura del código.
+
+> Escrito el 2026-09-07 volcando lo que solo vivía en la memoria local del agente en el HP. La
+> memoria no cruza de ordenador; esto sí. Ver `trabajar-con-mario.md` para el porqué del volcado.
+
+---
+
+## 1. Bocetos comparables antes de elegir
+
+Cuando la decisión es sobre **cómo se mueve** algo, describirla no sirve: se juzga viéndola. El
+método funcionó dos veces seguidas el 2026-08-06 con la entrada de Ochoa, y Mario eligió variante
+las dos veces **sin una sola vuelta de aclaración**.
+
+1. **Un solo HTML autocontenido** que simule la pieza real: la tipografía y los colores
+   verdaderos —fuentes en base64 desde `apps/<app>/public/fonts/`, foto desde `public/images/`— y
+   **los tiempos sacados de `tokens.css`, no inventados**. Un boceto con tiempos de fantasía no
+   decide nada, porque no es la pieza.
+2. **3–4 variantes, cada una con su botón, más la que ya existe como referencia** para comparar en
+   caliente. Y un interruptor de cámara lenta: un factor `--k` que multiplica todas las duraciones
+   vía `calc()`.
+3. **Publicarlo con la herramienta Artifact**, no solo mandar el archivo. Mario lo prueba en el
+   móvil, que es donde se juzga de verdad.
+
+**Detalles que hacen que funcione:**
+
+- Cada variante se activa con un `data-v` en un contenedor, y **la mecánica común no se duplica**:
+  si cada variante es un bloque independiente, dejan de ser comparables.
+- **Nombrarlas por su gesto, en lenguaje de la casa** —«¡Marchando!», «El colgante», «Montado a
+  mano»—, nunca «Opción A/B/C». Es lo que le permite decidir con criterio de marca en vez de por
+  descarte.
+- **Decir siempre cuál se recomienda y por qué**, y señalar sin adornos la que rompa una regla del
+  sistema. Mario eligió una que no se recomendaba, y acertó.
+- Hay andamiaje reutilizable: el patrón de placeholders (`{{ANTON_B64}}`) más un script que los
+  sustituye por el base64 de la fuente. Montarlo desde cero cuesta más que copiarlo.
+
+**El corolario que costó una iteración:** una solución puede estar medida, ser correcta y cumplir
+todas las reglas, y **aun así ser inadecuada**. Una cortina es sobria por naturaleza, y Los Ochoa
+es una tasca. Cuando Mario pida «más juguetón» o «que grite tapa y caña», no es un ajuste de
+parámetros: es cambiar el gesto entero.
+
+**Dos lecciones del 2026-09-20, del mapa de Ochoa, sobre pedirle nota a un juez automático:**
+
+- **Un cambio que hay que medir para saber que existe no cuenta.** Se pusieron sombras al 7-11 % y
+  líneas de contacto de 0,5 px; en la medición estaban, y dos jueces seguidos dijeron «no hay
+  sombra» teniéndola delante. Lo visual se juzga a ojo: si no se ve de un vistazo, no está.
+- **Cada juez con contexto limpio mueve el listón.** Cinco rondas dieron 5, 6, 6, 6, 7 con criterios
+  que se contradecían entre rondas (uno pidió las manzanas más oscuras que la calle; otro, la calle
+  más oscura que el papel). La nota no es una escala que subir: sirve para lo estructural que repiten
+  todos, y a partir de ahí quien decide es Mario mirándolo en el móvil.
+
+**Y el fallo que ninguna medición podía cazar:** en la segunda vuelta detectó de un vistazo que el
+rótulo decía «Los Ochoa» y la barra «LOS OCHOA». El aterrizaje era **exacto en píxeles**, pero
+sobre otra palabra. Medir prueba la geometría, no el sentido.
+
+---
+
+## 2. Verificar en el navegador, midiendo
+
+Toda afirmación sobre cómo se ve o se comporta la web se sostiene en una medición hecha en el
+navegador a ~390 px. **No en la lectura del código.** El 2026-07-28 falló en las dos direcciones
+el mismo día:
+
+- **Falso negativo.** Se comprobó que el cartel de cookies se cerraba mirando el atributo
+  `hidden`. Estaba puesto, pero `display: flex` le ganaba y el cartel seguía ocupando la pantalla.
+  El bug era real y se dio por bueno. Lo correcto:
+  `getBoundingClientRect().height > 0 && getComputedStyle(el).display !== 'none'`.
+- **Falso positivo.** El navegador mostraba el botón «Reservar» oculto en móvil por una regla CSS
+  **que ya no existía en el fuente**: caché obsoleta de Vite. Se estuvo a punto de reportar un bug
+  inexistente. Se descarta con `rm -rf node_modules/.vite apps/*/node_modules/.vite` y rearrancando,
+  o confirmando contra un build limpio.
+
+### 2.1 Lo que NO se puede medir desde la terminal — y hay que decirlo, no fingirlo
+
+Con la ventana de Chrome **sin foco** —que es siempre, trabajando desde el agente— el documento
+está en `visibilityState: "hidden"`, y eso rompe tres cosas:
+
+1. **`requestAnimationFrame` no avanza.** Los muestreos frame a frame devuelven 1–2 muestras y
+   parecen «sin salto» cuando en realidad **no se ha medido nada**.
+2. **Las animaciones CSS se congelan.** Las capturas salen a medias y no reflejan el movimiento.
+3. **Chrome no registra FCP ni LCP.** Las métricas de pintado salen vacías.
+4. **`IntersectionObserver` no avisa hasta que se pinta un fotograma.** Con el panel del navegador
+   de la app de escritorio oculto, la portada de Cokima no se enteraba de que estaba a la vista y
+   sus vídeos no arrancaban; se pasaron quince segundos midiendo `readyState: 0` como si fuera un
+   fallo (2026-11-03). Una captura de pantalla fuerza el fotograma. **Antes de dar por roto algo que
+   cuelga de un observador, forzar un pintado y volver a medir.**
+
+**El ritmo de una animación y su LCP los juzga Mario. El agente mide geometría y estado.** Decirlo
+así es más útil que entregar un número que no significa nada.
+
+### 2.2 Técnicas que sí funcionan sin foco
+
+- **Congelar una animación en un punto exacto:** `animation-delay` negativo + `animation-play-state:
+  paused`. Determinista, y sirve para capturar el fotograma que se quiera.
+- **Verificar estados en vez de trayectorias.** Comparar la geometría en los estados extremos —sin
+  entrada / puesta / animándose / retirada— prueba «esto no toca el layout» mejor que un muestreo
+  por frames, y no depende del reloj.
+- **Nunca `await` con bucles de `rAF`** en la herramienta de JavaScript: agota el CDP a los 45 s.
+  Lanzar el muestreo sin `await`, guardar en `window.__x` y consultar en una segunda llamada. Y
+  nunca un bucle bloqueante: congela la pestaña.
+- **Las capturas *fullPage* de Playwright no son fiables** para elementos `position: fixed`: pueden
+  no aparecer aunque estén en pantalla.
+
+### 2.3 Las cinco trampas de método
+
+1. **Medir a una sola altura de scroll.** El 2026-08-01 dos tandas enteras se midieron a
+   `scrollY 0` y dieron por limpia la portada, que era la culpable. Al medir a cuatro alturas
+   apareció además un desbordamiento lateral de 138 px dado por bueno dos veces.
+2. **Medir a mitad de una transición.** El 2026-08-07 pasó **tres veces en la misma tanda**: un
+   `border-color` que parecía no aplicarse, un `transform` que parecía no aplicarse, y una posición
+   que devolvió −1284 px en vez de la real. Las tres veces el valor era correcto y lo que fallaba
+   era leerlo en vuelo. **Antes de medir un elemento que no escribiste tú, mira qué transiciones
+   arrastra y apágalas durante la medida.**
+3. **Mezclar observaciones de estados distintos del árbol.** El 2026-08-01 se descartó una causa
+   razonando «lo llevaban las dos páginas y solo fallaba una, luego no es». Sonaba sólido y era
+   falso: la observación que decía «esta página va bien» era **posterior** a haber quitado justo
+   eso. **Cada observación se anota con el commit en el que se tomó**, y solo se comparan
+   observaciones del mismo estado.
+4. **Arreglar lo que no está roto.** En esa misma sesión salieron tres falsos positivos propios: un
+   frame de 88 ms que no se reproducía (era el instrumental compitiendo con la animación), un
+   «salto» que era el `scroll-behavior: smooth` aún llegando a destino, y un scroll horizontal que
+   era la tira de platos, preexistente y por diseño. **Medir dos veces antes de tocar.**
+5. **Medir el móvil con la pantalla entera.** Los paneles fijos del Inicio de Cokima se dieron por
+   buenos a 390×844 y 430×932, que son las pantallas de un iPhone; pero Safari, con sus barras a la
+   vista, deja entre 548 y 739 px de alto, y ahí no cabían en ninguno. En un iPhone de verdad nunca
+   se fijaban, y Mario lo vio como un fallo («no bajaba»), que además no salía en 1.360 pasos de
+   navegación al azar porque el navegador de pruebas tenía la pantalla entera. **Lo que dependa del
+   alto se mide con el alto de Safari con las barras** —el `100svh`—: SE 375×548, XS/11 Pro 375×635,
+   12-14 390×664, 15-16 393×659, Plus/Pro Max 430×739 (2026-11-03).
+
+### 2.4 `dev` no es lo que se despliega
+
+El 2026-08-17 se verificó el vídeo de la entrada en `pnpm dev` —vídeo reproduciéndose,
+`readyState` 4, todo correcto—, se dio el build por bueno porque decía `Complete!`, se subió, y
+Mario abrió la preview en su iPhone y **seguía viendo el póster**. El HTML publicado no traía la
+etiqueta `<video>`: la condición que la pintaba usaba `new URL(..., import.meta.url)`, que en `dev`
+apunta al fichero fuente y al construir apunta al chunk empaquetado. Funcionaba en local y fallaba
+en producción **sin dar un error**.
+
+Cuando el cambio dependa de algo que resuelve el bundler —rutas, existencia de ficheros, imports
+condicionales—, `dev` no prueba nada. Verificar sobre la salida real
+(`grep "<video" .vercel/output/static/index.html`) y, si ya está desplegado, sobre el HTML
+publicado antes de decirle a Mario que lo mire. **`Complete!` dice que compiló, no que el HTML diga
+lo que debe.** La regla está también en `CLAUDE.md`; el caso completo, en `cokima-el-rediseno.md` §5
+— en `preview` desde el 2026-10-26.
+
+### 2.5 Si el fallo es de un motor concreto, medir en Chromium no vale de nada
+
+**Preguntar el dispositivo antes de construir el diagnóstico.** El nombre del navegador no dice el
+motor: **Brave en Android es Chromium y Brave en iPhone es WebKit**, porque Apple obliga, y el
+razonamiento entero cambia.
+
+El 2026-08-01 se dio por hecho «Brave = Chromium/Android» y se razonaron cuatro vueltas sobre
+mecanismos de Chromium. Mario grabó un vídeo y era **un iPhone**. Los arreglos hechos hasta ahí
+eran válidos y los saltos desaparecieron de verdad, pero la explicación de por qué funcionaban no
+aplicaba a su navegador, y un arreglo entero (`theme-color`) no hacía nada en su pantalla. Otras
+cuatro vueltas se dieron midiendo en Chromium de escritorio, **donde el bug sencillamente no
+existe**: de ahí salieron descartes en falso y un «sospechoso principal» que no lo era.
+
+**Lo que lo resolvió en una tanda:** montar una página de laboratorio de dos modos —idénticos salvo
+una única línea—, desplegarla (basta el conector de Vercel; no hace falta ni CLI ni repo) y pedirle
+a Mario treinta segundos de su iPhone. Su respuesta fue inmediata y binaria.
+
+**Cuando algo solo se ve en un dispositivo, la prueba tiene que correr en ese dispositivo**, y el
+camino más corto es una A/B de una variable en sus manos, no más instrumentación en la del agente.
+
+Si hay una grabación de pantalla, mirarla pronto: se extraen fotogramas y se monta una hoja de
+contactos con `ffmpeg -vf "fps=1,scale=200:-1,tile=8x3"`, que se lee con la herramienta de
+imágenes. Ahí se ve el dispositivo, la barra del sistema y el comportamiento real.
+
+El caso completo está en `archivo/barra-del-navegador-ios.md` (cerrado). La receta portable, en
+`receta-barra-ios-astro.md`.
+
+**Y para lo que es de motor pero no de dispositivo, hay un WebKit en el Mac sin pedirle nada a
+Mario.** El 2026-09-21 los nombres del mapa de Ochoa salían descolocados en su iPhone y perfectos
+en todas las capturas de Chromium: Safari no respeta `transform-box: fill-box` en los `<text>` del
+SVG. Se confirmó y se verificó el arreglo en el WebKit que Playwright deja en
+`~/Library/Caches/ms-playwright/` (`webkit-2336` en esa fecha), lanzado desde un script Node de
+veinte líneas con el `playwright-core` de la misma versión que hay en las cachés locales (`npx`,
+runtimes de otros agentes: buscar `playwright-core/browsers.json` y casar la revisión de `webkit`;
+si no casa, pide descargar otro). El script abre el build servido en local, esconde el cartel de
+cookies, espera a que pase el telón de entrada (1,4 s; si no, la captura sale roja), mide el
+`getBoundingClientRect()` de cada `<text>` respecto al marco y captura el elemento. Es geometría y
+estado, que es lo que sí se puede medir sin foco (§2.1). No sustituye al iPhone real —barra del
+navegador, gestos, DPR—, pero para «esto lo pinta distinto Safari» sobra.
+
+### 2.6 Si no hay explicación, se dice
+
+De aquel mismo caso salió un error que no es de medición sino de honestidad: se presentó
+`theme-color` como un arreglo «de percepción» cuando el problema era **de comportamiento**. No era
+un arreglo: era una forma de tapar que no había explicación.
+
+**Cuando no se sabe por qué algo funciona o deja de funcionar, se dice.** Un «no lo sé todavía» es
+información útil; un arreglo con una explicación inventada alrededor cuesta las vueltas siguientes,
+porque nadie vuelve a mirar ahí. Vale igual para lo que no se ha podido medir: se dice que no se ha
+medido, no se rellena con una impresión.
+
+---
+
+### 2.7 El simulador de iOS, y el dedo que baja la página
+
+**En el Mac hay simulador de iOS** (Xcode, con iPhone 17, 17e, Air, 18 Pro y 18 Pro Max y varios
+iPad; ningún plegable). Su Safari es el WebKit del iPhone con sus gestos de verdad, y llega al
+build servido en local en `http://localhost:<puerto>`, sin tocar Vercel. Se arranca con
+`xcrun simctl boot <id>` y se le abre la página; los toques y deslizamientos se le mandan desde
+el agente. Con él se reprodujo el 2026-10-29 lo que Mario veía en su iPhone y en Chromium de
+escritorio no salía: la portada se apagaba al bajar con el dedo encima (`movimiento.md`, regla 6).
+
+Tres cosas que despistan: **girarlo recarga la pestaña**, así que lo que se cronometra después
+empieza de cero; **cada página abierta desde fuera es una pestaña nueva**, y las de detrás llevan
+los relojes frenados; y **la GPU es la del Mac**, así que lo que cuesta el fondo en un iPhone no
+se mide aquí.
+
+**El dedo que baja la página no se imita con `page.mouse`**, que no desplaza nada, ni con
+`touchscreen.tap`, que es un toque. En Chromium, el gesto táctil de desplazamiento de verdad se
+pide por CDP —`Input.synthesizeScrollGesture` con `gestureSourceType: "touch"`— y da lo mismo que
+un dedo: `pointerdown` y, al empezar a bajar, `pointercancel`. Así se comprobó el arreglo en los
+dos motores, junto con el simulador. **Una prueba de «se para al tocar» que no incluye bajar con
+el dedo encima no prueba nada en un móvil.**
+
+## 3. El entorno de trabajo, y sus averías conocidas
+
+- **Los `pnpm dev` lanzados en segundo plano desde el agente se mueren solos**, en las dos máquinas,
+  a veces a los pocos segundos de responder con HTTP 200. Para una verificación puntual, levantarlo
+  y usarlo en el mismo turno. Para que Mario lo mire, **pedirle que lo lance desde su terminal**
+  (`! pnpm --filter ochoa dev`) o mandarle al alias de preview de la rama, que no depende de la
+  sesión. No relanzarlo más de una vez sin que lo pida.
+- **El perfil de Playwright se queda bloqueado** con un `lockfile` en uso si una llamada muere a
+  medias, y entonces **los dos** servidores fallan con «Browser is already in use». Se arregla
+  cerrando los `chrome.exe` cuya línea de comandos contenga el perfil `ms-playwright-mcp/mcp-chrome-*`
+  —filtrando por `CommandLine`—. **Nunca matar todos los Chrome:** se lleva por delante las
+  pestañas de Mario.
+- **`claude-in-chrome` sirve de alternativa, con un aviso:** ahí `resize_window` **no cambia el
+  viewport**, así que no vale para verificar móvil.
+- **El servidor de `cokima-build` y `ochoa-build` no sirve por rangos** (es el `http.server` de
+  Python), y sin rangos **no se puede saltar dentro de un vídeo**: `seekable` va de 0 a 0 y todo
+  `currentTime = x` cae en el segundo 0. Vercel sí sirve por rangos. Para probar algo que salta
+  —el reloj común de las columnas de Cokima—, hace falta un servidor que los sirva; el del
+  2026-11-03 fue un `SimpleHTTPRequestHandler` con respuesta `206`, de cuarenta líneas. Como hacía
+  `chdir` a la carpeta del build, al volver a construir se quedaba en la borrada y daba error en
+  cada petición: hay que reiniciarlo después de cada build.
+- **No sondear las previews de Vercel en bucle.** Activa el checkpoint anti-bot y a partir de ahí
+  todo devuelve `403` a curl y a Playwright: los `grep` empiezan a dar cero y parece que el
+  despliegue ha fallado. El estado se pregunta a la API de Vercel (`list_deployments` →
+  `state: READY`).
+
+---
+
+Ver también: `trabajar-con-mario.md` (a quién se le reporta y cómo), `movimiento.md` (las reglas
+numeradas, vinculantes), `archivo/barra-del-navegador-ios.md` §8 y `recursos.md`.

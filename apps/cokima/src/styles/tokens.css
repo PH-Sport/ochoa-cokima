@@ -1,21 +1,32 @@
-/* Tokens de marca Cokima — mundo oscuro "mecha encendida" (boceto v3). */
+/* Tokens de marca Cokima — mundo oscuro "mecha encendida" (boceto v3).
+   Desde el 2026-10-31 la web es Brasa (docs/cokima-el-rediseno.md §3), y el fondo, la brasa y
+   la línea son los suyos: un negro más hondo (antes #150f0c), una brasa más clara (antes
+   #ff7a18) y la línea un punto más visible (antes 0.12). Lo demás es de la web anterior, que
+   siguen usando las páginas legales. */
 :root {
   color-scheme: dark;
 
-  --ground: #150f0c;
+  --ground: #0e0907;
   --ground-2: #1e1611;
   --ground-3: #271c16;
   --bone: #f3eadd;
   --bone-dim: #a99c8c;
   --bone-faint: #6c6055;
+  /* El hueso de Brasa a dos intensidades, para el texto secundario y el terciario, y el panel
+     translúcido de las pestañas y los atajos de la carta. */
+  --bone-2: rgba(243, 234, 221, 0.72);
+  --bone-3: rgba(243, 234, 221, 0.48);
+  --panel: rgba(14, 9, 7, 0.86);
   --vermilion: #ed1c24;
   --vermilion-2: #ff3b33;
-  --ember: #ff7a18;
-  --line: rgba(243, 234, 221, 0.12);
+  --ember: #ff9a52;
+  --line: rgba(243, 234, 221, 0.14);
   --maxw: 1180px;
 
   --sans: "Bricolage Grotesque", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --serif: Georgia, "Times New Roman", serif;
+  /* La voz de Brasa: las frases de la casa y las descripciones de la carta, en cursiva. */
+  --voz: "Cormorant Garamond", Georgia, "Times New Roman", serif;
 
   /* Mapeo a las variables neutras de @tombo/ui */
   --t-text: var(--bone);
@@ -25,9 +36,84 @@
   --t-surface: var(--ground-2);
   --t-accent: var(--vermilion);
   --t-accent-contrast: #fff;
-  --t-radius: 6px;
+
+  /* CURVATURA. Ochoa tiene cuatro escalones que crecen con la pieza —4, 7, 9 y
+     12— y su comentario dice que dejan de crecer en las grandes «donde seguir
+     subiendo la convertiría en una pastilla». Cokima toma la decisión contraria
+     en ese mismo eje, y ahí está media diferencia entre las dos casas:
+
+       lo que se PULSA  -> píldora siempre, sin escala. El radio no es un valor,
+                           es la mitad de la altura de la pieza, así que un
+                           botón alto y uno bajo salen igual de redondos.
+       lo que se MIRA   -> escala proporcional de tres pasos, que sí crece con
+                           el tamaño. Una foto grande no puede llevar la misma
+                           esquina que una etiqueta.
+
+     Y no hay un radio único suelto: el 6px plano que había antes se usaba igual
+     para un botón que para una tarjeta. */
+  --r-control: 999px; /* botones, chapas, cualquier cosa pulsable */
+  --r-caja: 10px; /* fichas y piezas de ~55-90px */
+  --r-panel: 14px; /* paneles y bloques medianos */
+  --r-marco: 20px; /* fotos, mapa y superficies grandes */
+
+  --t-radius: var(--r-panel);
+  --t-radius-control: var(--r-control);
   --t-card-border: 1px solid var(--ground-3);
   --t-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+
+  --t-open: var(--ember);
+  /* Alto de la cabecera sticky, del que cuelga el offset de cualquier otro
+     elemento pegajoso (las tabs de MenuDeck): 60px de .nav-in + 1px de su
+     border-bottom. Desde que los enlaces viven en el panel de la hamburguesa,
+     la cabecera es una sola fila en todos los anchos y ya no envuelve. Es solo
+     el punto de partida sin JavaScript; Nav.astro lo reescribe en cliente con
+     ResizeObserver con el alto real medido. */
+  --t-header-h: 61px;
+
+  /* Movimiento: una curva, dos duraciones y un desplazamiento. La curva es la
+     misma que en Ochoa —una ease-out quíntica, que frena como frena un objeto
+     real y nunca rebota—, pero el ritmo diverge a propósito: este mundo es
+     oscuro y denso, y se mueve un punto más despacio y más lejos que la tasca,
+     que es seca. Cualquier animación de la marca sale de aquí. */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-in: 520ms;
+  --dur-out: 180ms;
+  --shift: 18px;
+  --stagger: 65ms; /* escalón entre hermanos en cascada */
+  /* Lo que aparece al bajar en Brasa: lento a propósito, como sube una brasa. */
+  --dur-revela: 1100ms;
+  /* El viaje de «Reservar» y «Ver carta» entre la portada de Brasa y la barra (2026-11-02). Cruza
+     de 280 a 670 px de pantalla, y la quíntica frena tan pronto que en ese recorrido sería un golpe
+     (regla 9 de movimiento.md): va con una curva que reparte el camino, la forma de --ease-telon. Con
+     las dos se reparten también las franjas de los paneles del Inicio al abrir otro. */
+  --ease-viaje: cubic-bezier(0.45, 0.02, 0.55, 1);
+  --dur-viaje: 640ms;
+  /* Los botones de Brasa son un neón (2026-11-02, Mario entre tres en una maqueta): lo que tarda en
+     arrancar con el ratón encima —a trompicones y en fundido, «como si le costase arrancar»— y, en el
+     móvil, que no tiene ratón que lo apague, lo que se queda encendido tras el toque. Y su tubo: el
+     de los botones de borde y la luz que suelta, poca, que el brillo sobrado ya se descartó. */
+  --dur-encender: 1120ms;
+  --dur-neon-toque: 1800ms;
+  --neon: #ffe2c6;
+  --neon-luz: rgba(255, 150, 80, 0.32);
+  /* La entrada de Brasa (2026-11-02): lo que tarda «Cokima» en destaparse de abajo arriba, y lo que
+     tarda en enfriarse del rojo al hueso, que empieza a mitad del destape. */
+  --dur-aviva: 760ms;
+  --dur-enfria: 1000ms;
+  /* El collage de Nosotros (2026-11-04): lo que tarda un cambio y las pausas entre uno y otro, que suman
+     unos 3 s, los que pidió Mario, con unas décimas de diferencia para que no se le oiga el compás (regla
+     18 de movimiento.md). Y lo que tarda en volver el automático tras tocar una tarjeta sin hacer nada más. */
+  --dur-cambio: 1100ms;
+  --pausas-collage: 1.7s 2.1s 1.8s 2s 1.9s;
+  --espera-vuelta: 6s;
+  /* La mecha de Visítanos (2026-11-04, mecha.js): lo que tarda desde que se ve la primera hasta que llegan a
+     Cokima, contado desde que se ven y no desde que arrancan (regla 32 de movimiento.md), y lo que tarda la luz
+     en abrirse por el barrio. Y el color del barrio encendido, una luz de brasa sobre las casas y más clara en
+     las calles. */
+  --dur-mecha: 2600ms;
+  --dur-mecha-barrio: 1500ms;
+  --mecha-casa: #ff8c3c;
+  --mecha-calle: #ffc48c;
 
   --t-heading-font: var(--serif);
   --t-menu-title-size: 1.6rem;

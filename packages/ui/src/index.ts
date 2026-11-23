@@ -13,4 +13,12 @@ export interface RestaurantInfo {
   /** Formato schema.org, p. ej. "Mo-Su 09:00-00:00". */
   openingHours: string[];
   instagram?: string;
+  /** El nombre corto de la web, el que Google pone encima de cada resultado
+   *  ("Cokima", no "Cokima — Kitchen Madness"). Con él, Seo.astro declara la
+   *  ficha `WebSite` y `og:site_name`; sin él, Google se lo deduce del título. */
+  siteName?: string;
+  /** Ruta de la carta, p. ej. "/carta": el `hasMenu` de la ficha. */
+  menuPath?: string;
+  /** Ruta donde se reserva, p. ej. "/reservas": el `acceptsReservations`. */
+  reservationsPath?: string;
 }

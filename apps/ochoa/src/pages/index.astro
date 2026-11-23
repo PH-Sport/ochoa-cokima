@@ -1,5 +1,17 @@
 ---
+import { getCollection } from "astro:content";
+import { pickFeatured } from "@tombo/content";
 import Base from "../layouts/Base.astro";
+import Fondo from "../components/Fondo.astro";
+import Hero from "../components/Hero.astro";
+import Highlights from "../components/Highlights.astro";
+import Ticker from "../components/Ticker.astro";
+import Manifiesto from "../components/Manifiesto.astro";
+import Casa from "../components/Casa.astro";
+import Mapa from "../components/Mapa.astro";
+import Contacto from "../components/Contacto.astro";
+
+const featured = pickFeatured((await getCollection("menu-es")).map((e) => e.data));
 ---
 
 <Base
@@ -8,43 +20,34 @@ import Base from "../layouts/Base.astro";
   locale="es"
   altPath="/en/"
 >
-  <header class="hero" id="top">
-    <div class="wrap hero-grid">
-      <div>
-        <p class="eyebrow">Tasquita · En plena Castellana</p>
-        <h1 class="cartel">La tasca que te mereces</h1>
-        <p class="kicker">
-          Un local que recuerda a los bares madrileños de toda la vida, pero con una gastronomía
-          renovada: un buen vermú, tapas con un toque diferente y la mejor calidad de producto.
-        </p>
-        <div class="hero-cta">
-          <a href="/reservas" class="btn">Reservar mesa</a>
-          <a href="/carta" class="btn ghost">Ver la carta</a>
-        </div>
-      </div>
-      <div class="hero-photo">
-        <img src="/images/hero.jpg" alt="Mesa de mármol con el aperitivo de Los Ochoa servido" width="1400" height="787" loading="eager" fetchpriority="high" />
-        <span class="stamp cartel">Madriz</span>
-        <span class="tag">El aperitivo, servido</span>
-      </div>
-    </div>
-  </header>
+  {/* LA HOME VIVA (2026-10-28 y 29). Mario pidió que «se sienta viva, no algo
+      plano y estático», y eligió cada pieza en un probador montado sobre la web
+      real: el fondo vivo, la portada (telón en el móvil, tira en el ordenador),
+      el manifiesto rojo con las botellas y el mosaico de La casa. El porqué, y
+      lo que se descartó, en docs/ochoa-inicio-vivo.md. */}
+  <Fondo />
+  <Hero locale="es" />
 
-  <section class="manifesto">
-    <div class="wrap">
-      <div class="rule"></div>
-      <blockquote>«Aperitivos de esos que se alargan hasta la noche, <strong>como filosofía de vida</strong>.»</blockquote>
-      <p class="sub">
-        Un espacio divertido en plena Castellana donde beberte un buen vermú y acompañarlo de tapas
-        con un toque diferente. El tapeo de toda la vida, con sabores nuevos.
-      </p>
-    </div>
-  </section>
+  <Highlights dishes={featured} locale="es" href="/carta" />
+
+  {/* Va debajo de la tira y no debajo de la portada: ahí arriba el hueco está
+      medido para que asome la primera ficha de plato, y meter una banda lo
+      gastaría entero. Aquí hace de corte entre los platos y el manifiesto. */}
+  <Ticker locale="es" />
+
+  <Manifiesto>
+    <blockquote>«Aperitivos de esos que se alargan hasta la noche, <strong>como filosofía de vida</strong>.»</blockquote>
+    <p class="sub">
+      Un espacio divertido en plena Castellana donde beberte un buen vermú y acompañarlo de tapas
+      con un toque diferente. El tapeo de toda la vida, con sabores nuevos.
+    </p>
+  </Manifiesto>
 
   <section class="tasca">
+    <div class="wrap"><div class="rule"></div></div>
     <div class="wrap tasca-grid">
-      <div class="tasca-photo">
-        <img src="/images/tasca.jpg" alt="Rótulo rojo de Los Ochoa en la ventana del local" width="900" height="900" loading="lazy" />
+      <div class="tasca-photo" data-paralaje>
+        <img src="/images/mesa.jpg" alt="Mesa de mármol con varios platos de la carta servidos para compartir" width="1920" height="1080" loading="lazy" data-vel="-0.08" data-vel-tacto="-0.12" data-tope="22" data-ventana />
       </div>
       <div>
         <p class="eyebrow">La tasca</p>
@@ -54,35 +57,50 @@ import Base from "../layouts/Base.astro";
           nuevos</em> y con la mejor calidad de producto — de la ensaladilla al cachopín, pasando
           por unas gyozas de txistorra.
         </p>
-        <p><a href="/carta" class="btn ghost">Ver la carta completa</a></p>
+        {/* El enlace de contexto va aquí y no en el pie: «La tasca» es donde la
+            home insinúa que hay una historia detrás, así que es donde tiene
+            sentido ofrecerla. Es además lo que le da peso interno a la página
+            nueva, que si solo cuelga del menú no lo tiene. */}
+        <p class="acciones">
+          <a href="/carta" class="btn ghost">Ver la carta completa</a>
+          <a href="/conocenos" class="btn ghost">Conócenos</a>
+        </p>
       </div>
     </div>
   </section>
 
+  <Casa locale="es">
+    Barra, mármol y vermú de media tarde. <em>El tapeo que se alarga hasta que alguien mira
+    el reloj</em> y resulta que ya es de noche. Los Ochoa por dentro.
+  </Casa>
+
   <section class="visita" id="visita">
     <div class="wrap">
+      <div class="rule"></div>
       <p class="eyebrow">Dónde estamos</p>
       <h2 class="cartel">En plena Castellana</h2>
+      {/* El mapa abre la sección en vez de cerrarla: quien llega hasta aquí ya
+          sabe que quiere venir, y lo primero que necesita es situarse. Detrás,
+          las dos acciones —llamar y mirar el Instagram— y solo después los
+          datos en frío. */}
       <div class="visit-grid">
-        <dl class="info">
-          <div class="block"><dt>Dirección</dt><dd>P.º de la Castellana, 117<small>28046 Madrid</small></dd></div>
-          <div class="block"><dt>Teléfono</dt><dd><a href="tel:+34912876820">912 87 68 20</a></dd></div>
-          <div class="block">
-            <dt>Horario</dt>
-            <dd>
-              <div class="hours">
-                <span>Lunes a jueves</span><b>9:00 – 1:00</b>
-                <span>Viernes</span><b>9:00 – 2:30</b>
-                <span>Sábado</span><b>12:00 – 2:30</b>
-                <span>Domingo</span><b>12:00 – 1:00</b>
-              </div>
-            </dd>
-          </div>
-          <div class="block"><dt>Instagram</dt><dd><a href="https://instagram.com/tasquita.losochoa">@tasquita.losochoa</a></dd></div>
-        </dl>
-        <div class="mapbox" role="img" aria-label="Mapa orientativo: Paseo de la Castellana 117, Madrid">
-          <div class="pin"><i class="dot"></i><span>Castellana 117</span></div>
-          <span class="ph">Mapa · pendiente de integrar</span>
+        <Mapa locale="es" />
+        <div class="datos">
+          <Contacto locale="es" />
+          <dl class="info">
+            <div class="block"><dt>Dirección</dt><dd>P.º de la Castellana, 117<small>28046 Madrid</small></dd></div>
+            <div class="block">
+              <dt>Horario</dt>
+              <dd>
+                <div class="hours">
+                  <span>Lunes a jueves</span><b>9:00 – 1:00</b>
+                  <span>Viernes</span><b>9:00 – 2:30</b>
+                  <span>Sábado</span><b>12:00 – 2:30</b>
+                  <span>Domingo</span><b>12:00 – 1:00</b>
+                </div>
+              </dd>
+            </div>
+          </dl>
         </div>
       </div>
     </div>
@@ -90,101 +108,14 @@ import Base from "../layouts/Base.astro";
 </Base>
 
 <style>
-  .hero {
-    padding: clamp(46px, 8.5vw, 104px) 0 clamp(40px, 7vw, 80px);
-  }
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1.04fr 0.96fr;
-    gap: clamp(28px, 5vw, 60px);
-    align-items: center;
-  }
-  @media (max-width: 860px) {
-    .hero-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  .hero h1 {
-    font-size: clamp(3.2rem, 10vw, 7rem);
-    margin: 0.25em 0 0;
-  }
-  .kicker {
-    max-width: 47ch;
-    color: var(--ink-dim);
-    font-size: 1.12rem;
-    margin: 1.4rem 0 0;
-  }
-  .hero-cta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 2.1rem;
-  }
-  .hero-photo {
-    position: relative;
-    border: 2px solid var(--ink);
-    border-radius: 4px;
-    overflow: hidden;
-    box-shadow: 8px 8px 0 rgba(35, 32, 27, 0.85);
-    aspect-ratio: 16 / 10;
-  }
-  .hero-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .hero-photo .tag {
-    position: absolute;
-    left: 14px;
-    bottom: 14px;
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 1rem;
-    color: var(--ink);
-    background: rgba(244, 238, 226, 0.92);
-    border: 1px solid var(--ink);
-    padding: 6px 12px;
-    border-radius: 3px;
-  }
-  .stamp {
-    position: absolute;
-    right: 16px;
-    top: 16px;
-    transform: rotate(6deg);
-    font-size: 1rem;
-    letter-spacing: 0.06em;
-    border: 2.5px solid var(--rojo);
-    border-radius: 6px;
-    padding: 6px 12px;
-    background: rgba(244, 238, 226, 0.85);
-    text-shadow: none;
-  }
-  .manifesto {
-    padding: clamp(44px, 7vw, 84px) 0;
-  }
-  .manifesto .rule {
-    margin-bottom: clamp(30px, 5vw, 52px);
-  }
-  blockquote {
-    margin: 0;
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
-    line-height: 1.32;
-    max-width: 26ch;
-    text-wrap: balance;
-  }
-  blockquote strong {
-    color: var(--rojo);
-  }
-  .sub {
-    font-size: 1.08rem;
-    color: var(--ink-dim);
-    max-width: 56ch;
-    margin: 1.5rem 0 0;
-  }
   .tasca {
-    padding: clamp(24px, 4vw, 48px) 0 0;
+    padding: clamp(32px, 6vw, 56px) 0 0;
+  }
+  /* Cada sección abre con el mismo filete doble que ya usaba el manifiesto: la
+     hoja de bar se lee como un cartel pautado, no como bloques flotando. */
+  .tasca .rule,
+  .visita .rule {
+    margin-bottom: clamp(22px, 4vw, 40px);
   }
   .tasca-grid {
     display: grid;
@@ -192,22 +123,46 @@ import Base from "../layouts/Base.astro";
     gap: clamp(28px, 5vw, 60px);
     align-items: center;
   }
+  /* Dos botones en hueco, uno al lado del otro. Envuelven en vez de encogerse
+     porque los dos llevan sombra dura y su recorrido al pulsar cuenta con tener
+     los tres píxeles libres: apretados en una línea se pisarían al hundirse. */
+  .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
   @media (max-width: 860px) {
     .tasca-grid {
       grid-template-columns: 1fr;
     }
   }
+  /* Apaisada 16:9, la proporción del propio archivo: aquí vive el cenital de la
+     mesa y recortarlo a cuadrado se comía media mesa. */
   .tasca-photo {
     border: 2px solid var(--ink);
-    border-radius: 4px;
+    border-radius: var(--r-marco);
     overflow: hidden;
     box-shadow: -8px 8px 0 rgba(198, 34, 43, 0.9);
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 16 / 9;
   }
   .tasca-photo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  /* La mesa es la capa lejana del paralaje dentro de su marco: sobresale un 8%
+     por arriba y por abajo para tener recorrido. Y un 4% por cada lado, que es
+     por donde se asoma con el ratón encima (`data-ventana`, en `paralaje.ts`).
+     En reposo se ve exactamente lo mismo que antes: la foto ya medía ese ancho y
+     lo recortaba su propia caja. */
+  .tasca-photo img {
+    position: relative;
+    top: -8%;
+    left: -4%;
+    width: 108%;
+    max-width: none;
+    height: 116%;
+    transition: translate var(--dur-ventana) var(--ease);
   }
   .tasca h2 {
     font-size: clamp(2.2rem, 6vw, 3.6rem);
@@ -222,8 +177,9 @@ import Base from "../layouts/Base.astro";
   .txt em {
     color: var(--ink);
   }
+
   .visita {
-    padding: clamp(48px, 8vw, 92px) 0 0;
+    padding: clamp(32px, 6vw, 56px) 0 0;
   }
   .visita h2 {
     font-size: clamp(2.2rem, 6vw, 3.6rem);
@@ -248,9 +204,12 @@ import Base from "../layouts/Base.astro";
     border-bottom: 1px solid var(--line);
   }
   .block dt {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 1.02rem;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-stretch: var(--wd-rotulo);
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-size: var(--fs-label);
     color: var(--rojo);
     margin: 0 0 0.4rem;
   }
@@ -273,50 +232,36 @@ import Base from "../layouts/Base.astro";
   .hours span {
     color: var(--ink-dim);
   }
-  .mapbox {
-    position: relative;
-    border: 2px solid var(--ink);
-    border-radius: 6px;
-    overflow: hidden;
-    min-height: 300px;
-    background:
-      radial-gradient(circle at 40% 45%, rgba(198, 34, 43, 0.14), transparent 45%),
-      repeating-linear-gradient(0deg, rgba(35, 32, 27, 0.07) 0 1px, transparent 1px 46px),
-      repeating-linear-gradient(90deg, rgba(35, 32, 27, 0.07) 0 1px, transparent 1px 46px),
-      #efe8d8;
+  /* Las acciones separadas de los datos: entre pulsar «llamar» y leer el
+     horario hay un cambio de marcha, y el hueco lo dice mejor que una regla. */
+  .datos {
+    display: grid;
+    gap: clamp(18px, 3vw, 26px);
+    align-content: start;
   }
-  .pin {
-    position: absolute;
-    left: 40%;
-    top: 45%;
-    transform: translate(-50%, -100%);
-    text-align: center;
-  }
-  .dot {
-    display: block;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--rojo);
-    margin: 0 auto;
-    box-shadow: 0 0 0 6px rgba(198, 34, 43, 0.2), 2px 2px 0 var(--ink);
-  }
-  .pin span {
-    font-family: var(--sans);
-    font-size: 0.82rem;
-    color: var(--paper);
-    background: var(--ink);
-    padding: 4px 10px;
-    border-radius: 3px;
-    margin-top: 8px;
-    display: inline-block;
-  }
-  .ph {
-    position: absolute;
-    left: 14px;
-    bottom: 12px;
-    font-family: var(--sans);
-    font-size: 0.8rem;
-    color: var(--ink-faint);
+
+  /* Móvil: la hoja de bar es densa y vertical, no aireada. Nada de scroll
+     lateral en esta marca — es justo lo que la separa de Cokima. Va al final
+     de la hoja porque comparte especificidad con las reglas de arriba. */
+  @media (max-width: 860px) {
+    .visita {
+      padding-top: 28px;
+    }
+    /* Las dos secciones que cargan fotografía —esta y La casa, que lo lleva en
+       su componente— respiran casi el doble que el resto. La densidad de la
+       hoja se mantiene donde es texto —que es lo que la hace una hoja de bar y
+       no un folleto—, pero una foto pegada a la anterior se lee como error de
+       montaje y no como ritmo. */
+    .tasca {
+      padding-top: 52px;
+    }
+    .tasca .rule,
+    .visita .rule {
+      margin-bottom: 20px;
+    }
+    .txt {
+      font-size: 1rem;
+      margin-top: 0.9rem;
+    }
   }
 </style>

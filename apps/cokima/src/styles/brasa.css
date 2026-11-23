@@ -1,0 +1,415 @@
+/* Brasa: la web de Cokima desde el 2026-10-31 (docs/cokima-el-rediseno.md §3).
+   Es el boceto que eligió Mario: de fondo, chispas de brasa que suben (eran un lecho de brasas hasta
+   el 2026-11-02); la Bricolage fina en los títulos y la Cormorant en la voz; cuatro secciones
+   —Inicio, La carta, Nosotros y Visítanos—, y Reservar, cada una en su página; y en La carta la foto
+   de un plato abre cada parte, con los demás debajo (Mario eligió esa manera entre tres el 2026-11-02).
+   Colores, letras, curva y duraciones salen de tokens.css. Esta página no carga global.css, que
+   es el de la web anterior: por eso declara aquí su letra y su apagado de movimiento. */
+@font-face{font-family:"Bricolage Grotesque";src:url("/fonts/bricolage-400.woff2") format("woff2");font-weight:200 800;font-display:swap}
+:root{
+  --gl:max(20px,env(safe-area-inset-left,0px));--gr:max(20px,env(safe-area-inset-right,0px));
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+  --barra:60px;
+}
+html,body{margin:0;background:var(--ground);color:var(--bone)}
+/* Sin la barra del navegador: la sustituye la línea de progreso, al pie de la barra de arriba (.progreso) */
+html{scrollbar-width:none}
+html::-webkit-scrollbar{display:none}
+body{font:300 17px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:var(--sb)}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+/* El fondo son chispas de brasa que suben (brasa.js; antes, el lecho de brasas de Rescoldo, hasta el
+   2026-11-02). Es transparente donde no hay chispa, para que se vea lo de detrás: el suelo, o el vídeo
+   en la portada. Si el lienzo no arranca, se queda el suelo: el fuego pintado ya no se pide. */
+.fondo{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+/* Las chispas de delante: la bocanada al cambiar de sección y las que salta un botón al pulsarlo. Por
+   encima de todo, barra incluida, y sin recibir el toque. */
+.chispazos{position:fixed;inset:0;width:100%;height:100%;z-index:8;display:block;pointer-events:none}
+main{position:relative;z-index:1}
+/* El vídeo de la entrada detrás de la portada, debajo de las chispas: un punto oscurecido entero y
+   mucho más abajo, hasta el suelo, donde nacen más. Se va con la portada al bajar y no está en las
+   otras secciones. */
+.cine{position:absolute;top:0;left:0;right:0;height:100svh;z-index:0;overflow:hidden;pointer-events:none}
+.cine img,.cine video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cine video{opacity:0;transition:opacity var(--dur-in) var(--ease)}
+.cine video.puesta{opacity:1}
+/* En el ordenador apaisado, tres vídeos verticales en columnas en lugar de uno (2026-11-03): los de
+   Instagram son verticales, y recortados a horizontal se quedaban en un tercio de su alto. Cada vídeo
+   se recorta en su columna; la raya entre ellas es el suelo. La misma condición está en brasa.js, que
+   decide cuál se descarga. La fila va fija al alto de la portada: si no, crece hasta el alto propio
+   del vídeo —755 px en una pantalla de 1280×720— y el recorte se va todo abajo en vez de quedar
+   centrado. */
+.cine .tres{position:absolute;inset:0;display:none;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:3px}
+.cine .tres video{position:relative;inset:auto;min-height:0}
+@media (min-width:900px) and (min-aspect-ratio:9/10){
+  .cine .tres{display:grid}
+  .cine:has(.tres) video.uno{display:none}
+}
+.cine::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(14,9,7,.42) 0%,rgba(14,9,7,.5) 45%,rgba(14,9,7,.86) 78%,var(--ground) 100%)}
+.wrap{padding-left:var(--gl);padding-right:var(--gr);max-width:1160px;margin-left:auto;margin-right:auto}
+.etq{margin:0;font:500 .66rem/1.2 var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--ember)}
+.tit{margin:12px 0 0;font:200 clamp(2.3rem,9.4vw,4.4rem)/1.02 var(--sans);letter-spacing:-.02em;text-wrap:balance}
+.voz{margin:14px 0 0;max-width:32ch;font:italic 400 clamp(1.2rem,4.6vw,1.5rem)/1.4 var(--voz);color:var(--bone-2);text-wrap:pretty}
+.pill{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 24px;border-radius:999px;font:500 .92rem/1 var(--sans);text-decoration:none;color:var(--bone);border:1px solid rgba(243,234,221,.32);background:rgba(14,9,7,.55);cursor:pointer}
+.pill.solid{background:var(--bone);color:#1a110c;border-color:var(--bone)}
+.pill.peq{min-height:38px;padding:0 18px;font-size:.86rem}
+/* Los botones son un neón (Mario, 2026-11-02, entre tres en una maqueta; docs/cokima-el-rediseno.md §3).
+   El de borde es un tubo apagado; con el ratón encima arranca a trompicones, en fundido, y se queda
+   encendido hasta que el ratón se va. Al pulsar se hunde un poco y salta un puñado de chispas (brasa.js),
+   sin tocar el tubo. En el móvil no hay ratón: el toque lo enciende (.encendido) y se apaga solo. Solo
+   opacidad y transform; el brillo del tubo es una sombra fija que se enciende con la opacidad. */
+.pill,.contacto a,.mas{position:relative;transition:transform var(--dur-out) var(--ease)}
+.pill:not(.solid),.contacto a{border-color:rgba(243,234,221,.16)}
+.pill::after,.contacto a::after,.mas::after{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;border:1.5px solid var(--neon);
+  box-shadow:0 0 7px var(--neon-luz),inset 0 0 5px var(--neon-luz);opacity:0;transition:opacity var(--dur-out) var(--ease)}
+.pill.solid::after{border-color:var(--ember)}
+@keyframes encender{0%{opacity:0}8.75%{opacity:.55}15%{opacity:.18}23.75%{opacity:.48}31.25%{opacity:.1}43.75%{opacity:.1}53.75%{opacity:.72}60%{opacity:.45}71.25%{opacity:.88}78.75%{opacity:.68}91.25%,100%{opacity:1}}
+@media (hover:hover){.pill:hover::after,.contacto a:hover::after,.mas:hover::after{animation:encender var(--dur-encender) ease-in-out forwards}}
+.pill.encendido::after,.contacto a.encendido::after,.mas.encendido::after{animation:encender var(--dur-encender) ease-in-out forwards}
+.pill.tocando,.contacto a.tocando,.mas.tocando{transform:scale(.965)}
+.hueco{margin:18px 0 0;max-width:36ch;padding:10px 14px;border:1px dashed rgba(243,234,221,.3);border-radius:10px;font:400 .8rem/1.4 var(--sans);color:var(--bone-3)}
+
+/* Barra de arriba: la marca, las secciones (ordenador) y Reservar */
+.barra{position:fixed;left:0;right:0;top:0;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  height:var(--barra);padding:var(--st) var(--gr) 0 var(--gl);
+  background:linear-gradient(to bottom,rgba(14,9,7,.92) 0%,rgba(14,9,7,.7) 60%,rgba(14,9,7,0) 100%);
+  transition:opacity var(--dur-in) var(--ease),transform var(--dur-in) var(--ease)}
+/* La línea de progreso (Mario, 2026-11-04): de izquierda a derecha según se baja, con el mismo brasa que
+   marca la sección actual. Va dentro de la barra para aparecer con ella: en la portada no hay nada encima.
+   Con el desplegable abierto se quita, porque barra y lista son una pieza. brasa.js la pinta. */
+.progreso{position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--line);pointer-events:none;transition:opacity var(--dur-out) var(--ease)}
+.progreso i{display:block;height:100%;background:var(--ember);transform:scaleX(0);transform-origin:left}
+.progreso.sin,.menu-abierto .progreso{opacity:0}
+/* El logo de la barra (2026-11-18). En el móvil, 79 px: lo que medía «Cokima» escrito, y ni uno más, porque a
+   320 la marca, el desplegable con «Visítanos» y «Reservar» ya llenan la barra con los huecos al mínimo. */
+.marca{display:block;flex:none;text-decoration:none}
+.marca img{display:block;width:79px;height:auto}
+.secciones{display:none;gap:30px}
+.secciones a{text-decoration:none;position:relative}
+.secciones a{font:400 .94rem/1 var(--sans);color:var(--bone-2);padding:8px 0}
+.secciones a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ember);transform:scaleX(0);transform-origin:left;transition:transform var(--dur-out) var(--ease)}
+.secciones a[aria-current="page"]{color:var(--bone)}
+.secciones a[aria-current="page"]::after{transform:scaleX(1)}
+/* En el móvil, las secciones en un desplegable (Mario, 2026-11-02, entre tres en una maqueta: «es la
+   que menos sitio ocupa y la más limpia»). En la barra va la sección en la que estás; al tocarla baja
+   la lista, y la barra se vuelve opaca para que barra y lista sean una pieza. Sustituye a la píldora
+   flotante de abajo. En el ordenador no existe: allí están las secciones de la barra. Abrir es entrar
+   (--dur-in) y cerrar es responder (--dur-out), regla 3 de movimiento.md. */
+.desp{display:inline-flex;align-items:center;gap:7px;margin-left:auto;padding:10px 2px;border:0;background:none;cursor:pointer;
+  font:400 .9rem/1 var(--sans);color:var(--bone);-webkit-tap-highlight-color:transparent}
+.desp svg{width:11px;height:11px;fill:none;stroke:var(--bone-2);stroke-width:1.6;transition:transform var(--dur-out) var(--ease)}
+.menu-abierto .desp svg{transform:rotate(180deg)}
+.menu-abierto .barra{background:var(--ground)}
+.desplegable{position:fixed;left:0;right:0;top:calc(var(--st) + var(--barra));z-index:5;padding:4px var(--gr) 16px var(--gl);
+  background:var(--ground);border-bottom:1px solid var(--line);opacity:0;visibility:hidden;transform:translateY(-10px);
+  transition:opacity var(--dur-out) var(--ease),transform var(--dur-out) var(--ease),visibility 0s linear var(--dur-out)}
+.menu-abierto .desplegable{opacity:1;visibility:visible;transform:none;transition:opacity var(--dur-in) var(--ease),transform var(--dur-in) var(--ease)}
+.desplegable>a{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);text-decoration:none;
+  font:200 1.9rem/1.1 var(--sans);letter-spacing:-.015em;color:var(--bone-2)}
+.desplegable>a:last-of-type{border-bottom:0}
+.desplegable>a::before{content:"";flex:none;width:7px;height:7px;border-radius:50%}
+.desplegable>a[aria-current="page"]{color:var(--bone)}
+.desplegable>a[aria-current="page"]::before{background:var(--ember)}
+/* Al pie de la lista, el teléfono y el Instagram, como en el menú de Ochoa (Mario, 2026-11-02) */
+.desp-pie{margin-top:10px;padding-top:16px;border-top:1px solid var(--line)}
+/* Con el teléfono y el Instagram, la lista ya no cabe en un móvil tumbado: se desplaza por dentro, sin
+   arrastrar la página (lo que se sale se recorta en la pieza, regla 15 de movimiento.md). */
+.desplegable{max-height:calc(100svh - var(--st) - var(--barra));overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box}
+.velo{position:fixed;left:0;right:0;bottom:0;top:calc(var(--st) + var(--barra));z-index:4;background:rgba(14,9,7,.55);
+  opacity:0;visibility:hidden;transition:opacity var(--dur-out) var(--ease),visibility 0s linear var(--dur-out)}
+.menu-abierto .velo{opacity:1;visibility:visible;transition:opacity var(--dur-in) var(--ease)}
+.oculta{opacity:0;pointer-events:none}
+.barra.oculta{transform:translateY(-10px)}
+/* El viajero (2026-11-02): al cruzar el límite de la portada, «Reservar» y «Ver carta» no se apagan
+   en un sitio para salir en otro, viajan. Lo que se mueve es una copia sin función, por encima de
+   todo, y las piezas de verdad esperan en .vuela hasta que llega: nunca hay dos «Reservar» a la vez.
+   La cápsula se recorta con clip-path y no se escala, porque una píldora escalada en dos ejes deforma
+   sus puntas y la letra con ellas. brasa.js, «El viaje». */
+.viajero{position:fixed;left:0;top:0;z-index:7;display:grid;place-items:center;pointer-events:none;will-change:transform}
+.viajero[hidden]{display:none}
+.viajero .cap,.viajero .aro{position:absolute;inset:0}
+.viajero span{grid-area:1/1;white-space:nowrap}
+.vuela{opacity:0}
+
+.vista{transition:opacity var(--dur-in) var(--ease),transform var(--dur-in) var(--ease)}
+.vista.saliendo{opacity:0;transition-duration:var(--dur-out)}
+.vista.entrando{opacity:0;transform:translateY(10px);transition:none}
+.cab-vista{padding-top:calc(var(--barra) + var(--st) + clamp(36px,8vh,90px))}
+
+/* ===== Inicio ===== */
+.portada{position:relative;min-height:100svh;display:grid;place-items:center;box-sizing:border-box;padding-bottom:12svh}
+.portada h1{margin:0;display:grid;justify-items:center;gap:clamp(8px,1.6vw,16px);text-align:center;font-weight:inherit}
+/* El nombre es el logo desde el 2026-11-18, al mismo ancho que tenía escrito en la Bricolage (3,22 veces su cuerpo,
+   medido): así la composición de la portada no se mueve. */
+.portada h1 .nombre{position:relative;display:block;--calor:0}
+.portada h1 .nombre img{display:block;width:clamp(237px,70.8vw,670px);height:auto}
+/* La entrada (2026-11-02; Mario juntó dos de la maqueta: «que se enfríe tras avivarse»). La decide el
+   <head> antes del primer pintado (data-entrada): así la portada no asoma un fotograma ya puesta. Desde
+   ahí, «Cokima» tapado y al rojo —una copia en degradado de brasa encima, cuya opacidad es --calor—, y lo
+   demás apagado; brasa.js lo destapa, lo enfría y lo suelta. Con el logo, la copia es el degradado recortado
+   con la forma del propio logo (una máscara): la entrada es la misma que con el nombre escrito. */
+.portada h1 .nombre::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:var(--calor);
+  background:linear-gradient(to top,#ffd08a 0%,#ff8a2e 38%,#d4410f 72%,#8a1f07 100%);
+  -webkit-mask:url(/images/cokima-logo.png) 0 0/100% 100% no-repeat;mask:url(/images/cokima-logo.png) 0 0/100% 100% no-repeat}
+html[data-entrada] .portada h1 .nombre{clip-path:inset(100% -10% -10% -10%);--calor:1}
+html[data-entrada] .portada h1 .sub,html[data-entrada] .portada .acc,html[data-entrada] .cine{opacity:0}
+/* «Kitchen Madness» bajo el nombre (Mario, 2026-10-31). Primero fue en la cursiva de la voz; al
+   verlo lo pidió en la letra de los textos, en mayúsculas y pequeño (2026-11-01). Va espaciado
+   como las etiquetas de la página, y el margen negativo devuelve el espacio que la última letra
+   deja a su derecha: sin él, la línea se ve corrida a la izquierda bajo el nombre. */
+.portada h1 .sub{font:500 clamp(.72rem,2.4vw,.95rem)/1 var(--sans);letter-spacing:.32em;margin-right:-.32em;text-transform:uppercase;color:var(--bone-2)}
+.portada .acc{position:absolute;left:var(--gl);right:var(--gr);bottom:calc(28px + var(--sb));display:flex;gap:10px;justify-content:center;transition:opacity var(--dur-in) var(--ease)}
+.portada .acc .pill{flex:0 1 170px}
+/* Cuando sale el menú, los dos botones de la portada se van: no hay dos «Reservar» a la vez */
+.portada .acc.oculta{opacity:0;pointer-events:none}
+.estado{display:inline-flex;align-items:center;gap:10px;margin:22px 0 0;font:400 .9rem/1.3 var(--sans);color:var(--bone-2)}
+.estado::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--bone-3)}
+.estado.abierta::before{background:var(--ember);box-shadow:0 0 12px 2px rgba(255,120,40,.55)}
+/* El Inicio: cuatro paneles (2026-11-02). Ninguno cambia de tamaño, que recalcularía la página en cada
+   fotograma (regla 2 de movimiento.md): todos ocupan la zona entera, uno encima de otro, y cada uno
+   se deja ver por su franja recortado con clip-path; su foto, del tamaño del panel abierto, y su rótulo
+   se colocan con transform. brasa.js reparte las franjas en el mismo fotograma (regla 27). En el
+   ordenador son columnas; en el móvil, bandas, y la zona mide siempre lo mismo: no salta al abrir.
+   Si la zona cabe en la pantalla bajo la barra, brasa.js le pone .fija: se queda quieta mientras se baja
+   (sticky, a --fijo-arriba) y cada tramo abre el panel siguiente. El recorrido lo pone el ::after, que es
+   lo que deja viajar al sticky dentro de su padre. En el móvil, fija, la zona llena la pantalla —el
+   pequeño, 100svh, que no se mueve con la barra del navegador (regla 15)— menos la barra y 4px arriba y
+   abajo (los MARGEN de brasa.js), y va más justa: los imprescindibles sin descripción, que están en La
+   carta, y sin los dos párrafos largos (.pan-largo), el de los imprescindibles y el de buscadores de
+   Visítanos. Sin eso no cabía en ningún iPhone con las barras de Safari a la vista (2026-11-03: en un
+   XS faltaban 184 px); se quedan en el HTML, en el ordenador y en el móvil con los paneles sueltos. */
+.pan-zona{padding:clamp(40px,8vh,90px) var(--gr) 0 var(--gl)}
+.pan-zona.fija{--alto-paneles:calc(100svh - var(--barra) - var(--st) - 8px)}
+.pan-zona.fija::after{content:"";display:block;height:var(--recorrido,0px)}
+.paneles{position:relative;height:var(--alto-paneles,640px)}
+.pan-zona.fija .paneles{position:sticky;top:var(--fijo-arriba,0px)}
+.pan-zona.fija .pan-platos small,.pan-zona.fija .pan-largo{display:none}
+.pan-zona.fija .pan-cont{padding-block:16px}
+.pan{position:absolute;inset:0;overflow:hidden;clip-path:inset(0 0 100% 0);background:#160f0c}
+.pan-foto{position:absolute;left:0;top:0;width:100%;height:var(--tam-abierto,100%);object-fit:cover;opacity:.55;transition:opacity var(--dur-in) var(--ease)}
+.pan.abierto .pan-foto{opacity:.9}
+.pan::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(14,9,7,.97) 0%,rgba(14,9,7,.84) 40%,rgba(14,9,7,.25) 78%,rgba(14,9,7,.08) 100%)}
+.pan-abrir{position:absolute;inset:0;z-index:3;width:100%;padding:0;border:0;background:none;color:var(--bone);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pan.abierto .pan-abrir{visibility:hidden}
+.pan-rotulo{position:absolute;left:20px;top:0;font:200 1.5rem/1 var(--sans);letter-spacing:-.01em;white-space:nowrap;transition:opacity var(--dur-out) var(--ease)}
+.pan-rotulo small{display:none}
+.pan.abierto .pan-rotulo{opacity:0}
+/* Lo de un panel cerrado no se toca ni recibe el foco: si no, el toque cae en sus botones invisibles */
+.pan-cont{position:absolute;left:0;top:0;z-index:2;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-end;width:100%;height:var(--tam-abierto,100%);padding:24px 20px;
+  opacity:0;visibility:hidden;transition:opacity var(--dur-out) var(--ease),visibility 0s linear var(--dur-out)}
+.pan.abierto .pan-cont{opacity:1;visibility:visible;transition:opacity var(--dur-in) var(--ease) var(--dur-out)}
+.pan-cont>*{flex:none}
+.pan-cont .voz{max-width:46ch}
+.pan-tit{margin:10px 0 0;font:200 clamp(2rem,8vw,3.4rem)/1.04 var(--sans);letter-spacing:-.022em;text-wrap:balance}
+.pan-tit i{font-family:var(--voz);font-style:italic;font-weight:400}
+.voz i{font-style:normal}
+.pan-trio{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:620px}
+.pan-trio img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:3px}
+.pan-trio p{margin:8px 0 0;font:200 clamp(.98rem,1.3vw,1.2rem)/1.2 var(--sans)}
+.pan-platos{list-style:none;margin:16px 0 0;padding:0;border-top:1px solid var(--line);max-width:620px}
+.pan-platos li{display:flex;justify-content:space-between;gap:14px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line);font:300 clamp(1rem,1.2vw,1.12rem)/1.25 var(--sans)}
+.pan-platos small{display:block;margin-top:2px;font:italic 400 .98rem/1.3 var(--voz);color:var(--bone-2)}
+.pan-platos b{color:var(--ember);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pan-dato{margin:14px 0 0;font:400 .9rem/1.4 var(--sans);color:var(--bone-2)}
+/* El texto para buscadores del último panel (Mario, 2026-11-02): se lee, no es letra pequeña */
+.pan-seo{margin:14px 0 0;max-width:52ch;font:300 1rem/1.5 var(--sans);color:var(--bone-2);text-wrap:pretty}
+.pan-acc{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 0}
+
+/* ===== La carta ===== */
+.chips{position:sticky;top:calc(var(--barra) + var(--st));z-index:4;margin-top:30px;background:var(--panel);border-block:1px solid var(--line)}
+.chips .wrap{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-block:10px}
+.chips a{flex:none;font:500 .82rem/1 var(--sans);color:var(--bone-2);text-decoration:none;padding:9px 13px;border-radius:999px;border:1px solid transparent}
+.chips a.on{color:var(--bone);border-color:var(--line);background:rgba(243,234,221,.07)}
+.parte{scroll-margin-top:calc(var(--barra) + var(--st) + 70px);padding-top:clamp(40px,8vh,80px)}
+.parte>.wrap>h2,.parte h2.sec{margin:0;font:200 clamp(1.9rem,7vw,2.8rem)/1.05 var(--sans);letter-spacing:-.02em}
+.lista ul{max-width:760px}
+/* La última parte llega arriba aunque la carta se acabe: si no, el atajo de los postres se queda corto */
+.parte:last-of-type{min-height:calc(100svh - var(--barra) - 140px)}
+.lista ul{list-style:none;margin:16px 0 0;padding:0}
+.pl{padding:16px 0;border-bottom:1px solid var(--line)}
+.pl .ln{display:flex;justify-content:space-between;gap:16px;align-items:baseline;font:400 1.02rem/1.35 var(--sans)}
+.pl .ln b{font-weight:500;color:var(--ember);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pl .d{display:block;margin-top:4px;font:italic 400 1.04rem/1.4 var(--voz);color:var(--bone-3)}
+.pl .vl{display:block;margin-top:8px;font:italic 400 1.18rem/1.35 var(--voz);color:var(--bone-2)}
+/* El pan y el aperitivo, al pie de la carta como en la suya: una fila más, sin parte */
+.aperitivo{margin-top:clamp(28px,5vw,48px)}
+.aperitivo ul{border-top:1px solid var(--line)}
+/* Los alérgenos, en números bajo el plato y leyenda al pie, como en Ochoa (Mario, 2026-11-04). Con --bone-2 y
+   no --bone-3: es dato de salud y tiene que leerse sin buscarlo, sin competir con el precio. */
+.al{display:flex;flex-wrap:wrap;gap:.6em;margin-top:6px;font:500 .8rem/1.4 var(--sans);color:var(--bone-2)}
+.pf .al{margin-top:10px}
+.al-oculto{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.chuleta{max-width:760px;margin-top:clamp(28px,5vw,48px);padding-top:16px;border-top:1px solid var(--line)}
+.chuleta-tit{margin:0;font:500 .66rem/1.2 var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--bone-2)}
+.chuleta dl{display:grid;grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr));gap:6px 16px;margin:14px 0 0;font:400 .85rem/1.4 var(--sans)}
+.chuleta dl div{display:flex;gap:8px}
+.chuleta dt{min-width:1.2em;font-weight:600;color:var(--bone)}
+.chuleta dd{margin:0;color:var(--bone-2)}
+.chuleta-nota{margin:14px 0 0;font:400 .8rem/1.45 var(--sans);color:var(--bone-2)}
+.imp{display:inline-block;margin-left:8px;font:600 .54rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--ember);border:1px solid rgba(255,154,82,.5);border-radius:999px;padding:3px 6px;vertical-align:2px;white-space:nowrap}
+
+/* El plato en foto, como en Aliento: la foto a sangre se disuelve y el texto se apoya en lo disuelto */
+.pf{margin:0;position:relative}
+.pf img{width:100%;aspect-ratio:4/5;object-fit:cover;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 16%,#000 58%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0%,#000 16%,#000 58%,transparent 100%)}
+.pf figcaption{position:relative;margin-top:-36%}
+.pf .vg{margin:10px 0 0;font:italic 300 clamp(2rem,8.6vw,3.3rem)/1.04 var(--voz);text-wrap:balance}
+.pf .linea{display:flex;justify-content:space-between;gap:14px;align-items:baseline;max-width:440px;margin:18px 0 0;padding-top:12px;border-top:1px solid var(--line);font:500 .95rem/1.3 var(--sans)}
+.pf .linea b{color:var(--ember);font-weight:500;white-space:nowrap}
+.pf .d{margin:8px 0 0;max-width:30ch;font:400 1.08rem/1.45 var(--voz);color:var(--bone-2)}
+/* La foto que abre cada parte de la carta */
+.portadilla{margin-top:6px}
+
+/* ===== Nosotros (2026-11-04): el collage, la ficha y el cierre =====
+   Lo eligió Mario en una maqueta, con la idea del mosaico vivo de La casa de Ochoa y piezas de esta casa
+   (docs/cokima-el-rediseno.md §3, «Nosotros, en maqueta»). El collage ocupa una pantalla; lo mueve collage.js.
+   Cada pieza es una capa del tamaño de la caja, recortada a su hueco con clip-path, y lo de dentro se coloca con transform. */
+.escena{box-sizing:border-box;height:100svh;min-height:460px;max-height:1040px;max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:12px;
+  padding:calc(var(--barra) + var(--st) + 14px) var(--gr) calc(14px + var(--sb)) var(--gl)}
+.cabeza{display:flex;align-items:center;justify-content:space-between;gap:16px;flex:none}
+.cabeza .etq{max-width:calc(100% - 130px)}
+.pausar{min-height:44px;padding:0 16px;font-size:.8rem;flex:none}
+.collage{position:relative;flex:1 1 auto;min-height:0;overflow:hidden}
+.pieza{position:absolute;inset:0;cursor:pointer;-webkit-tap-highlight-color:transparent;clip-path:inset(50% 50% 50% 50%)}
+.pieza video,.pieza-foto{position:absolute;left:0;top:0;width:540px;height:960px;max-width:none;transform-origin:0 0}
+.pieza-foto{background:var(--ground-2)}
+.pieza-velo{position:absolute;left:0;top:0;width:100px;height:100px;transform-origin:0 0;pointer-events:none;
+  background:linear-gradient(to top,rgba(14,9,7,.94) 0%,rgba(14,9,7,.8) 30%,rgba(14,9,7,.42) 48%,rgba(14,9,7,0) 68%)}
+.pieza-nombre{position:absolute;left:0;top:0;white-space:nowrap;color:var(--bone);transition:opacity var(--dur-out) var(--ease)}
+.pieza-txt{position:absolute;left:0;top:0;box-sizing:border-box;padding:0 18px 16px;opacity:0;transition:opacity var(--dur-in) var(--ease);pointer-events:none}
+.pieza.grande .pieza-txt{opacity:1}
+.pieza.grande .pieza-nombre{opacity:0}
+.pieza-tit{margin:0;font:200 clamp(1.5rem,3.6vh,2.3rem)/1.08 var(--sans);letter-spacing:-.01em}
+.pieza-frase{margin:6px 0 0;max-width:34ch;font:italic 400 clamp(1rem,2.3vh,1.25rem)/1.32 var(--voz);color:rgba(243,234,221,.86);text-wrap:pretty}
+/* Leer más: el botón redondo va arriba a la derecha de la ampliada, para no pisar el texto, y sigue a su ventana.
+   Es un neón como los demás botones; el sitio lo lleva su envoltorio, porque el botón se hunde con transform. */
+.pieza-boton{position:absolute;left:0;top:0;width:44px;height:44px;opacity:0;visibility:hidden;transition:opacity var(--dur-out) var(--ease),visibility 0s linear var(--dur-out)}
+.pieza.grande .pieza-boton{opacity:1;visibility:visible;transition:opacity var(--dur-in) var(--ease)}
+.mas{width:44px;height:44px;padding:0;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(243,234,221,.32);background:rgba(14,9,7,.55);color:var(--bone);cursor:pointer;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.mas svg{width:18px;height:18px}
+.mas .cierra{display:none}
+.pieza.leyendo .mas .abre{display:none}
+.pieza.leyendo .mas .cierra{display:block}
+/* El bloque: la ventana crece hasta toda la caja, y encima se funde una capa oscura y entra el texto largo. El texto
+   está en el HTML desde el principio, para los buscadores: esta sección es la de captar búsquedas. */
+.pieza.desplegada{background:var(--ground);cursor:default}
+.pieza-oscuro{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity var(--dur-in) var(--ease);
+  background:linear-gradient(to top,var(--ground) 0%,rgba(14,9,7,.93) 52%,rgba(14,9,7,.5) 100%)}
+.pieza.leyendo .pieza-oscuro{opacity:1}
+.pieza.leyendo .pieza-txt,.pieza.leyendo .pieza-nombre{opacity:0}
+.pieza-leer{position:absolute;left:0;right:0;bottom:0;max-height:calc(100% - 60px);box-sizing:border-box;overflow-y:auto;overscroll-behavior:contain;padding:0 20px 20px;cursor:auto;
+  opacity:0;visibility:hidden;transition:opacity var(--dur-out) var(--ease),visibility 0s linear var(--dur-out)}
+.pieza.leyendo .pieza-leer{opacity:1;visibility:visible;transition:opacity var(--dur-in) var(--ease) calc(var(--dur-viaje) * .55)}
+.leer-tit{margin:0;font:200 clamp(1.9rem,8vw,3rem)/1.06 var(--sans);letter-spacing:-.02em}
+.pieza-leer p:not(.leer-tit){margin:12px 0 0;max-width:52ch;font:300 1rem/1.58 var(--sans);color:var(--bone-2);text-wrap:pretty}
+.pieza-leer p.leer-voz{font:italic 400 clamp(1.15rem,4.4vw,1.4rem)/1.36 var(--voz);color:rgba(243,234,221,.9)}
+.leer-enlace{display:inline-block;margin-top:18px;font:500 .9rem/1 var(--sans);color:var(--ember);text-decoration:none;border-bottom:1px solid rgba(255,154,82,.4);padding-bottom:3px}
+/* En el ordenador, y en un móvil tumbado, el vídeo en la mitad izquierda y el texto a la derecha, sobre el negro. La misma
+   condición que en collage.js. */
+@media (min-width:900px),(min-width:640px) and (orientation:landscape){
+  .pieza-oscuro{background:linear-gradient(to right,rgba(14,9,7,.1) 0%,rgba(14,9,7,.3) 34%,var(--ground) 50%)}
+  .pieza-leer{left:50%;top:0;max-height:none;display:flex;flex-direction:column;padding:60px clamp(28px,4vw,64px) 24px clamp(20px,3vw,48px)}
+  /* Centrado, pero si no cabe se puede subir hasta el principio */
+  .pieza-leer>:first-child{margin-top:auto}
+  .pieza-leer>:last-child{margin-bottom:auto;align-self:flex-start}
+}
+.ficha{padding-top:clamp(56px,10vh,110px)}
+.ficha .tit{font-size:clamp(1.9rem,6vw,2.8rem)}
+.ficha-txt{margin:16px 0 0;max-width:62ch;font:300 1.08rem/1.65 var(--sans);color:var(--bone-2)}
+.ficha .datos{margin-top:34px;max-width:62ch}
+@media (min-width:900px){.ficha-cuerpo{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:0 64px;align-items:start}.ficha .datos{margin-top:16px}}
+.cierre{margin-top:clamp(80px,13vh,150px)}
+.cierre .acc{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.cierre-nota{margin:26px 0 0;font:500 .64rem/1.2 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--bone-3)}
+
+/* ===== Visítanos =====
+   La mecha (2026-11-04, Mario entre tres en una maqueta; mecha.js): la primera pantalla son las calles de
+   Argüelles, con el título encima, y la ficha va debajo. El nombre de Cokima está aquí colocado sobre el punto que
+   mecha.js toma como el portal, y no al revés: sin lienzo sigue en su sitio, y los dos comparten la regla (regla 20
+   de movimiento.md). Se esconde mientras arde y aparece al llegar. */
+.mecha{position:relative;height:max(100svh,520px);overflow:hidden}
+.mapa{position:absolute;inset:0;width:100%;height:100%;display:block}
+.velo-mapa{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to bottom,var(--ground) 0,rgba(14,9,7,.92) 30%,rgba(14,9,7,0) 56%,rgba(14,9,7,0) 86%,var(--ground) 100%)}
+.mecha-cab{position:absolute;left:0;right:0;top:0}
+.mecha-cab .tit{font-size:min(9.4vw,5.6svh)}
+.destino{position:absolute;left:50%;top:67%;transition:opacity var(--dur-in) var(--ease) var(--dur-out)}
+.mecha.arde .destino{opacity:0;pointer-events:none;transition:none}
+.punto{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:var(--ember)}
+.destino-txt{position:absolute;left:16px;top:-16px;width:min(176px,44vw);display:grid;gap:3px;text-shadow:0 0 12px var(--ground),0 0 4px var(--ground)}
+.destino-txt b{font:300 1.5rem/1.05 var(--sans);letter-spacing:-.01em;color:var(--bone)}
+.destino-txt span{font:400 .84rem/1.25 var(--sans);color:var(--bone-2)}
+.destino-txt a{justify-self:start;margin-top:5px;font:500 .84rem/1 var(--sans);color:var(--ember);text-decoration:none;border-bottom:1px solid rgba(255,154,82,.4);padding-bottom:3px}
+.osm{position:absolute;left:var(--gl);bottom:8px;font:400 .64rem/1 var(--sans);color:var(--bone-3)}
+@media (min-aspect-ratio:21/20){.destino{left:60%;top:52%}}
+.visita-ficha{display:grid;gap:34px;padding-top:30px}
+.visita-ficha .voz{margin:0}
+.datos{display:grid;gap:26px;margin:0}
+.datos dt{font:500 .64rem/1.2 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--ember);margin-bottom:6px}
+.datos dd{margin:0;font:300 1.12rem/1.5 var(--sans)}
+.datos dd+dd{margin-top:4px}
+.datos .enlace{display:inline-block;margin-top:8px;font:500 .9rem/1 var(--sans);color:var(--ember);text-decoration:none;border-bottom:1px solid rgba(255,154,82,.4);padding-bottom:3px}
+.datos .estado{margin-top:10px}
+/* El teléfono y el Instagram como dos acciones (components/Contacto.astro; Mario, 2026-11-02, «tal y
+   como hicimos con Ochoa»): icono, lo que hace y cuál es. Píldoras, porque se pulsan (tokens.css,
+   curvatura), con el borde —el tubo apagado del neón— y el fondo de .pill. Una debajo de otra hasta que caben las dos en fila:
+   «@cokimamadrid» no cabe en media pantalla de 390. En Visítanos van antes que los datos, como en
+   Ochoa: quien llega ahí ya quiere venir. */
+.contacto{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.contacto li{display:grid}
+.contacto a{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"icono etq" "icono dato";align-items:center;column-gap:14px;row-gap:3px;
+  min-height:58px;box-sizing:border-box;padding:9px 24px 9px 20px;border:1px solid rgba(243,234,221,.16);border-radius:var(--r-control);
+  background:rgba(14,9,7,.55);color:var(--bone);text-decoration:none}
+.contacto svg{grid-area:icono;width:20px;height:20px;color:var(--ember)}
+.contacto .etq{grid-area:etq}
+.contacto .dato{grid-area:dato;font:300 1rem/1.2 var(--sans)}
+@media (min-width:430px){.contacto{grid-template-columns:1fr 1fr}}
+.visita-datos{display:grid;gap:34px;align-content:start}
+/* ===== Reservar (2026-11-02) =====
+   El motor de CoverManager dentro de la web, como en Ochoa, con la piel de Brasa (/covermanager.css).
+   En el ordenador, el texto y el recuadro juntos; el recuadro con tope, como en Ochoa: el motor pasa
+   a dos columnas hacia los 777px. */
+.reserva{display:grid;gap:32px}
+.reserva-txt{margin:18px 0 0;max-width:38ch;font:300 1.05rem/1.55 var(--sans);color:var(--bone-2)}
+.reserva-txt a{color:var(--bone);white-space:nowrap}
+.pie{margin-top:clamp(80px,14vh,140px);padding-block:22px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px 22px;font:400 .8rem/1.4 var(--sans);color:var(--bone-3)}
+
+.rv{opacity:0;transform:translateY(22px);transition:opacity var(--dur-revela) var(--ease),transform var(--dur-revela) var(--ease)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv,.vista,.vista.entrando{opacity:1;transform:none;transition:none}.desplegable,.velo,.menu-abierto .desplegable,.menu-abierto .velo,.desp svg{transition:none}
+  .pill,.contacto a,.mas,.pill::after,.contacto a::after,.mas::after{transition:none;animation:none!important}.pill:hover::after,.contacto a:hover::after,.mas:hover::after,.pill.encendido::after,.contacto a.encendido::after,.mas.encendido::after{opacity:1}
+  .pieza-nombre,.pieza-txt,.pieza-boton,.pieza-oscuro,.pieza-leer,.pieza.leyendo .pieza-leer,.destino{transition:none}}
+
+@media (min-width:900px){
+  body{padding-bottom:0}
+  .desp,.desplegable,.velo{display:none}
+  .secciones{display:flex}
+  .barra{--barra:72px}
+  :root{--barra:72px}
+  /* En el ordenador sobra sitio, y a 79 px el logo se quedaba en 16 de alto en una barra de 72 */
+  .marca img{width:104px}
+  .pan-zona{padding-top:clamp(50px,10vh,110px)}
+  .paneles{height:clamp(600px,84vh,800px)}
+  .pan-zona.fija .pan-platos small,.pan-zona.fija .pan-largo{display:block}
+  .pan-zona.fija .pan-cont{padding:40px 44px}
+  .pan-foto{width:var(--tam-abierto,100%);height:100%}
+  .pan-cont{width:min(700px,var(--tam-abierto,100%));height:100%;padding:40px 44px}
+  .pan-rotulo{left:0;top:auto;bottom:30px;writing-mode:vertical-rl;font-size:2rem}
+  .pan-rotulo small{display:block;margin-bottom:14px;font:500 .6rem/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--ember)}
+  .pan-tit{font-size:clamp(2.2rem,3.4vw,3.4rem)}
+  .pf img{aspect-ratio:16/11;
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 16%,#000 58%,transparent 100%),linear-gradient(to right,transparent 0%,#000 14%,#000 86%,transparent 100%);
+    -webkit-mask-composite:source-in;
+    mask-image:linear-gradient(to bottom,transparent 0%,#000 16%,#000 58%,transparent 100%),linear-gradient(to right,transparent 0%,#000 14%,#000 86%,transparent 100%);
+    mask-composite:intersect}
+  .pf figcaption{margin-top:-24%;padding-left:8%}
+  .portadilla{max-width:1160px;margin-left:auto;margin-right:auto}
+  .portadilla figcaption{padding-left:0}
+  .velo-mapa{background:linear-gradient(to right,var(--ground) 0,rgba(14,9,7,.9) 24%,rgba(14,9,7,0) 50%),linear-gradient(to bottom,var(--ground) 0,rgba(14,9,7,0) 16%,rgba(14,9,7,0) 86%,var(--ground) 100%)}
+  .mecha-cab .tit{max-width:min(44vw,600px);font-size:clamp(2.2rem,3.6vw,3.5rem)}
+  .visita-ficha{grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:56px;align-items:start}
+  .reserva{grid-template-columns:minmax(0,1fr) minmax(0,44rem);column-gap:clamp(40px,5vw,96px);align-items:start}
+}

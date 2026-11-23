@@ -3,8 +3,8 @@
 Monorepo pnpm con las dos webs (Astro 6) y la fontanería compartida.
 
 > **El desarrollo no ocurre en esta rama.** `main` es producción. El trabajo vivo, la
-> documentación y las instrucciones para agentes están en `preview` y en la rama `tmp/*`
-> de turno. Si acabas de clonar, antes de nada: `git checkout preview`, y desde ahí
+> documentación y las instrucciones para agentes están en `preview`, la única rama de trabajo.
+> Si acabas de clonar, antes de nada: `git checkout preview`, y desde ahí
 > `CLAUDE.md` (arranque de sesión) y `docs/estado.md` (punto de entrada de todo lo demás).
 
 ```
@@ -40,6 +40,9 @@ Por app: `pnpm --filter cokima dev` / `pnpm --filter ochoa dev`.
 
 ## Documentación
 
-- Spec de diseño: `docs/superpowers/specs/2026-07-18-webs-grupo-tombo-design.md`
-- Plan de implementación: `docs/superpowers/plans/2026-07-18-monorepo-implementation.md`
+- **Empezar por aquí: `docs/estado.md`** — estado actual, qué falta y cómo levantarlo.
+- Si eres un agente: `CLAUDE.md` manda, y después `docs/trabajar-con-mario.md` (cómo se reporta
+  aquí), `docs/metodo.md` (cómo se decide lo visual y cómo se verifica) y `docs/recursos.md`
+  (identificadores y material).
+- Casos cerrados y documentos de diseño de cada fase: `docs/archivo/` (ver su `README.md`).
 - Despliegue en Vercel: `docs/deploy.md` (un repo → dos proyectos; pendiente de ejecutar)

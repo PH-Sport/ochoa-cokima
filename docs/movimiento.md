@@ -1,0 +1,590 @@
+# Movimiento
+
+> **Estado: vivo** · revisado 2026-11-18
+
+Pocas animaciones, concretas, y todas saliendo de los mismos cinco valores. **No hay un solo
+milisegundo suelto en los componentes**: si algo se mueve, su duración y su curva vienen de
+`tokens.css` de cada app. Añadir un `0.2s ease` a mano es la forma de romper esto.
+
+## Los valores
+
+Viven en `apps/<app>/src/styles/tokens.css`.
+
+| Token | Ochoa | Cokima | Para qué |
+|---|---|---|---|
+| `--ease` | `cubic-bezier(0.22, 1, 0.36, 1)` | igual | La curva. Una sola, en las dos marcas. |
+| `--dur-in` | `420ms` | `520ms` | Lo que entra: un panel que aparece. |
+| `--dur-out` | `160ms` | `180ms` | Lo que responde a un dedo: pulsar, cerrar, un hover. |
+| `--shift` | `14px` | `18px` | Cuánto se desplaza lo que entra. |
+| `--stagger` | `30ms` | `65ms` | El escalón entre hermanos en cascada. |
+
+**Veintiocho más, solo en Ochoa,** para movimientos que no son ni entrar ni responder a un dedo. Cada
+uno existe porque no cabía en los cinco de arriba, no porque hiciera falta un número nuevo. Los
+trece últimos llegaron el 2026-10-29 con la home viva (`ochoa-inicio-vivo.md`); tres son listas, para
+los ritmos sin compás, y dos no son duraciones sino una velocidad y una fracción, porque también
+salen de aquí:
+
+| Token | Ochoa | Para qué |
+|---|---|---|
+| `--ease-telon` | `cubic-bezier(0.45, 0.02, 0.55, 1)` | La curva de lo que **recorre la pantalla entera**. Ver la regla 9. |
+| `--dur-cinta` | `34s` | La cinta rotulada **recorre**. Lineal, no con la curva: un rótulo que acelera se lee como un fallo. |
+| `--dur-pase` | `3,5s` | Lo que una foto de la portada **espera** antes de que el telón traiga la siguiente. |
+| `--ease-muelle` / `--dur-muelle` | `linear(…)` / `590ms` | El muelle `morph` de Mochi: lo que **se asienta**. Rebota un 0,50%, que no se ve (regla 1). **Sin uso desde el 2026-10-29:** lo usaba la foto que llegaba al muro de La casa, y el mosaico vivo que lo sustituyó se recompone con `--ease-telon`. |
+| `--desenfoque` | `12px` | El cambio de contenido de Mochi: lo que llega lo hace desenfocado y se enfoca al asentarse (regla 2). Hoy, la foto nueva del mosaico de La casa. |
+| `--dur-paneo` | `26s` | Lo que tarda el fondo del manifiesto en **ir de un lado al otro**; luego vuelve. Con `--ease-telon`, que frena en los dos extremos: con la quíntica, cada vuelta daría un tirón. |
+| `--vel-tira` | `28px` | Lo que **avanza la tira** de la portada en el ordenador, en píxeles por segundo. Una velocidad y no una duración: lo que tarda una vuelta depende de lo que mida la fila, y eso cambia con el alto de la pantalla. Lineal, como la cinta. |
+| `--relieve-suave` | `0.22` | La fracción de lo que le falta que **recorre la sombra de El relieve** en cada fotograma para alcanzar al cursor: al 90% en diez fotogramas. |
+| `--vidas-palabra` / `--esperas-palabra` | `8.2s 10.4s …` / `1.3s 2.3s …` | Lo que **vive** cada palabra del fondo y lo que **espera** la siguiente, por turnos. Dos listas que no casan entre sí: no hay compás (regla 18). |
+| `--dur-pincel` / `--dur-borrado` | `1.7s` / `1.4s` | Lo que tarda una palabra del fondo en **pintarse** de izquierda a derecha, y en **borrarse**. |
+| `--reintento-palabra` / `--revisa-palabra` | `0.9s` / `0.65s` | Cuándo se vuelve a **buscar hueco** si no lo había, y cada cuánto se mira si una palabra ha quedado **tapada** al bajar (entonces se borra antes). |
+| `--dur-mosaico` / `--dur-mosaico-elige` | `1.2s` / `720ms` | Lo que tarda el mosaico de La casa en **recomponerse** solo, y cuando alguien **pulsa** una foto. Los dos con `--ease-telon`: recorren el mosaico entero (regla 9). |
+| `--respiros-mosaico` / `--espera-mosaico` | `1.7s 1.3s …` / `1.1s` | La **pausa** entre un cambio del mosaico y el siguiente, por turnos y sin compás, y la del primero al asomar. Con su propio reloj y no con `compas.ts`: el mosaico no comparte pantalla con la portada ni con el mazo (regla 25). |
+| `--dur-ventana` | `900ms` | Lo que tarda la foto del mosaico en **seguir al ratón** dentro de su ventana. |
+| `--dur-turno` | `5,5s` | Lo que un plato **espera** al frente del mazo antes de irse al fondo, y desde el 2026-10-30 lo que espera la rueda del ordenador entre una tarjeta y la siguiente. Fue 3,5 s; se alargó el 2026-10-27 para no ir al compás de la portada (regla 25). |
+| `--desfase-turno` | `0,25s` | No es una duración, es la **fase**: cuánto más tarda el primer cambio del mazo. Es lo que impide que coincida con la portada (regla 25). |
+| `--dur-baraja` | `980ms` | Lo que tarda la carta de delante en **salir torciéndose y volver al fondo** del mazo. Dos viajes, así que 1,4 veces `--dur-recogida`, con `--ease-telon`. |
+| `--dur-rueda` | `700ms` | Lo que tarda la rueda de «Los que destacan», en el ordenador, en **correrse una tarjeta**. Unos 220 px a 1440, así que con `--ease-telon` (regla 9); más que `--dur-in` porque no responde a nadie: pasa sola. |
+| `--dur-sube` | `240ms` | Lo que un botón tarda en **recuperar su sitio** tras soltarlo. |
+| `--dur-firma` | `280ms` | Lo que la sombra dura tarda en **despegarse** del rótulo en la entrada. No es entrar: el rótulo ya está ahí, lo que aparece es su relieve. |
+| `--espera-firma` | `700ms` | El **retardo** de la recogida de la entrada, contado desde el arranque —no una duración—. Deja 420ms de rótulo quieto y entero después de la firma. |
+| `--dur-recogida` | `700ms` | Lo que la plancha de la entrada tarda en **recogerse hasta ser la barra**. No sale de `--dur-in`: ese mide un panel que aparece y esto recorre la pantalla entera. |
+| `--tuerce` | `4deg` | Cuánto se **tuerce** lo que llega antes de encajar. Es a la rotación lo que `--shift` es al desplazamiento: la medida de un gesto. Un rótulo de bar se monta pieza a pieza y nunca queda a plomo. |
+
+**Diez más, solo en Cokima**, para Brasa:
+
+| Token | Cokima | Para qué |
+|---|---|---|
+| `--dur-revela` | `1100ms` | Lo que **aparece al bajar**: lento a propósito, como sube una brasa. |
+| `--dur-viaje` | `640ms` | Lo que tardan «Reservar» y «Ver carta» en **viajar entre la portada y la barra** (2026-11-02). |
+| `--ease-viaje` | `cubic-bezier(0.45, 0.02, 0.55, 1)` | La curva de ese viaje, que cruza de 280 a 670 px: la forma de `--ease-telon` (regla 9). Es también la del reparto de los paneles del Inicio. |
+| `--dur-encender` | `1120ms` | Lo que tarda el **neón de un botón en arrancar** con el ratón encima: a trompicones, en fundido, «como si le costase arrancar». Sin el primer pulso, que alargaba la espera. |
+| `--dur-neon-toque` | `1800ms` | Lo que el neón se queda **encendido tras un toque** en el móvil, que no tiene ratón que lo apague. |
+| `--dur-aviva` | `760ms` | Lo que tarda **«Cokima» en destaparse** de abajo arriba en la entrada. |
+| `--dur-cambio` | `1100ms` | Lo que tarda **un cambio del collage** de Nosotros. |
+| `--pausas-collage` | `1.7s 2.1s 1.8s 2s 1.9s` | Las **pausas entre cambios** del collage. Con el cambio, unos 3 s, los que pidió Mario, con unas décimas de diferencia para que no se le oiga el compás (regla 18). |
+| `--espera-vuelta` | `6s` | Lo que tarda en **volver el automático del collage** tras tocar una tarjeta sin hacer nada más. |
+| `--dur-enfria` | `1000ms` | Lo que tarda «Cokima» en **enfriarse del rojo al hueso** en la entrada; empieza a mitad del destape, con `--ease-viaje`, que lo reparte parejo. |
+
+Y una escala de curvatura, que no es movimiento pero sigue la misma disciplina de no escribir
+números sueltos en los componentes: `--r-chapa` 4px, `--r-btn` 7px, `--r-caja` 9px, `--r-marco`
+12px. La esquina se percibe en proporción a lo que enmarca, así que crece con la pieza en vez de
+repetirse igual en todas.
+
+**La curva es la misma en las dos marcas** porque es una decisión de calidad, no de identidad:
+una *ease-out* quíntica, que arranca rápida y frena como frena un objeto de verdad. **El ritmo
+sí diverge a propósito:** Cokima es un mundo oscuro y denso y se mueve un punto más despacio y
+más lejos; Ochoa es una tasca y es seca.
+
+## Las reglas
+
+1. **Nunca bounce ni elástica.** Envejece mal y delata plantilla. Las cosas reales
+   desaceleran, no rebotan. **Excepción, decidida por Mario el 2026-10-28:** el muelle `morph`
+   de Mochi, que rebota un 0,50% y no se ve. Es `--ease-muelle`, generado con la fórmula de
+   Mochi, y no hay otro: un muelle nuevo se genera igual, no se escribe a ojo. **Desde el
+   2026-10-29 no lo usa nada** —lo usaba el muro de La casa, y el mosaico vivo que lo sustituyó
+   se mueve con `--ease-telon`—; la excepción se queda mientras siga en pie la decisión.
+2. **Solo `transform` y `opacity`.** (Y `clip-path`, que ya se usaba en el telón y en el menú.)
+   **Excepción, decidida por Mario el 2026-10-28:** `filter: blur()` en los cambios de
+   contenido, que es el gesto de Mochi (`--desenfoque`). Solo en lo que entra o cambia —hoy,
+   la foto nueva del mosaico de La casa—, nunca en una foto a pantalla completa ni ligado al
+   scroll, que es donde el desenfoque cuesta. **Otra, del 2026-10-29: `text-shadow` en El
+   relieve**, la luz del cursor sobre los rótulos del ordenador, que Mario eligió en el
+   probador. Una sombra que cambia se repinta en cada fotograma, y eso es justo lo que esta regla
+   evita; se admite porque son cinco rótulos (las tres secciones de la barra, «Los Ochoa» y el
+   titular de la portada), solo con ratón y solo mientras la luz alcanza al cursor: cuando lo
+   alcanza, no se pide ni un fotograma más (`relieve.ts`). Animar `width`, `height`, `padding` o `margin` obliga al
+   navegador a recalcular la disposición en cada fotograma. La portada lo hacía —el titular se
+   apartaba del cartel de cookies moviendo su `padding-bottom`— y ahora se aparta con
+   `translateY`, con el mismo resultado en pantalla.
+3. **Entrar es lento, responder es rápido.** `--dur-in` para lo que aparece; `--dur-out` para
+   lo que contesta a una pulsación. Un menú que tarda lo mismo en cerrarse que en abrirse se
+   siente lento aunque el número sea idéntico.
+4. **La cascada solo al entrar.** `--stagger` escalona los hermanos cuando aparecen; al salir
+   se van todos a la vez. Cerrar con cascada es hacer esperar a quien ya ha decidido irse.
+5. **El apagado vive en un sitio.** La regla `prefers-reduced-motion` de `global.css` anula
+   todas las transiciones y también las de View Transitions, que el navegador ejecuta por su
+   cuenta. Ningún componente necesita su propio `@media` de apagado. **Con una excepción, y por
+   una razón que conviene entender: la entrada.** Ese bloque no la dejaría puesta —su
+   `animation-duration: 0.01ms !important` la retiraría al instante—, pero eso es justo lo que
+   hay que evitar: un **destello rojo a pantalla completa de un fotograma**, que para quien pide
+   menos movimiento es peor que la animación entera. La regla vale cuando lo que se apaga es
+   *cómo* se mueve algo que va a estar ahí de todas formas; no vale cuando la pieza **solo
+   existe para moverse**. Esas no se atenúan: no se pintan, y eso hay que decidirlo antes del
+   primer pintado, en el script. Ver `intro.ts`.
+   **La entrada de Brasa (2026-11-02) es una de esas piezas:** la decide un script en el `<head>` de
+   `apps/cokima/src/pages/index.astro`, antes del primer pintado, y con «reducir movimiento» no la
+   pinta. **Brasa, la home de Cokima desde el 2026-10-31, no carga `global.css`** —es el de la web
+   anterior— y lleva su propio apagado en `brasa.css`. Si Brasa pasa a componentes, el apagado
+   vuelve a vivir en un sitio.
+6. **Nada que se mueva solo sigue moviéndose después de que alguien lo toque.** El mazo de
+   platos avanza solo hasta el primer gesto y ahí se apaga para siempre: quien desliza ha dicho
+   que prefiere conducir. Y no corre mientras no se la ve, ni con la pestaña en segundo plano.
+   **Esto vale para todo lo que se mueva solo, y la cinta rotulada se lo había saltado:** vivía
+   en la franja 1144-1185 de una portada de casi 4000, o sea animándose en el 70% del recorrido
+   sin que nadie la mirase. No es solo batería. **Chromium revalida todas las animaciones
+   activas cada vez que le cambia el alto al viewport**, y ocultar y devolver la barra de
+   direcciones al deslizar es exactamente eso: medido, la portada hacía 20 recálculos de estilo
+   donde la carta hacía 10, y parando la cinta baja a esos mismos 10. Se pausa con
+   `animation-play-state`, no se anula: al volver a la vista el rótulo sigue por donde iba en
+   vez de recomponerse desde el principio.
+
+   **Excepción, decidida por Mario el 2026-10-29: el fondo vivo de la home** («Vermú y
+   palabras», `fondo.ts`). Es un lienzo de WebGL2 detrás de toda la página que pinta en la GPU
+   en cada fotograma mientras se ve, y no se para al tocar: no es contenido que alguien esté
+   leyendo y le quite el sitio, es el fondo, y tocar la página es como se baja por ella. Lo que sí
+   cumple: con la pestaña oculta no pinta ni un fotograma, con «reducir movimiento» pinta uno
+   quieto y solo lo repite al bajar o al cambiar el tamaño, y al salir de la home suelta la GPU.
+   Lo que cuesta en un móvil modesto **no está medido**; si se nota, la palanca es la densidad
+   a la que pinta (`MAX_DPR` y `ESCALA`).
+
+   **Excepción, decidida por Mario el 2026-11-04: el collage de Nosotros de Cokima** (`collage.js`). Tocar una
+   tarjeta lo para, pero no para siempre: *«Podrías hacer que se reanudase a los 6s de inactividad?»*. Vuelve a
+   los 6 s (`--espera-vuelta`) sin un toque ni el ratón en movimiento, y no cuenta mientras se lee, en pausa o
+   fuera de la vista. «Pausar» sí lo para hasta que se pulse «Reproducir», y con «reducir movimiento» no vuelve.
+
+   **Excepción, decidida por Mario el 2026-10-31: el fondo de Brasa** (`apps/cokima/src/brasa.js`).
+   Era el fuego de Rescoldo, que eligió él de entre los bocetos; **desde el 2026-11-02 son chispas
+   de brasa que suben**, como en una barbacoa, porque prefirió *«quitar el "fuego" de fondo»* por
+   algo que abarque más el alto de la pantalla, sutilmente. Es el mismo caso que el de Ochoa: un
+   lienzo detrás de toda la página, que no se para al tocar. Desde la segunda versión es un lienzo
+   2D con partículas, no WebGL (`cokima-el-rediseno.md` §3). Cumple con la pestaña oculta (no pinta:
+   va con `requestAnimationFrame`, y al volver el salto de tiempo se queda en un paso) y con
+   «reducir movimiento» (un fotograma quieto, que no sigue al scroll y solo se repite al cambiar de
+   tamaño la ventana). Pinta a la densidad de la pantalla, hasta 2×, y a 30 fotogramas por segundo
+   como mucho, y **no para**: Brasa es una sola página y el fondo está en todas sus secciones. Lo
+   que cuesta en un móvil modesto **no está medido**; las palancas son cuántas chispas hay (una por
+   cada 12.000 px², entre 36 y 120), la densidad y el tope de fotogramas. El vídeo de su portada sí sigue la regla: se pausa fuera
+   de la vista, con la pestaña oculta y en las otras secciones, y la regla 20 tal cual.
+
+   **Qué es tocar (2026-10-29).** Un toque o un gesto sobre la pieza; **no el dedo que baja la
+   página pasando por encima**. La portada, el mazo y el manifiesto se apagaban con
+   `pointerdown`, que en un móvil llega en cuanto el dedo se apoya, también para bajar, y desde
+   que la portada del móvil ocupa la pantalla entera, el primer gesto de cualquiera la apagaba
+   antes de la segunda foto. Mario lo vio en su iPhone —*«se quedan paradas y no se mueven»*— y
+   se reprodujo en el simulador de iOS; en el ordenador no pasaba, porque la rueda no pulsa nada.
+   Ahora, con el dedo apoyado la pieza espera; si el navegador se queda el gesto para desplazar
+   la página (`pointercancel`), sigue; y solo se apaga si el dedo se suelta sobre ella
+   (`pointerup`). Con el ratón, pulsar ya es tocar. Está en `apps/ochoa/src/toque.ts`; el mazo
+   hace lo mismo a mano, porque sus gestos de lado pasan carta. **Se comprueba con un dedo de
+   verdad** —el simulador de iOS, o el gesto táctil de desplazamiento de Chromium
+   (`metodo.md` §2.7)—: `page.mouse` no desplaza la página y no reproduce la trampa.
+7. **La respuesta al dedo no sale de `:active`.** En Safari de iOS ese estado no se aplica de
+   forma fiable sin un listener táctil en la página. Va por `pointerdown`/`pointerup` desde el
+   script del layout, marcando las piezas con `data-tacto`; `:active` se queda de respaldo para
+   quien navegue sin JavaScript. Ver §3.quater de `estado.md`.
+8. **Comprobar que la regla existe no es comprobar que se ve.** Un efecto de pulsación se
+   verifica simulando el toque —`page.mouse.down()` / `up()`— y muestreando la posición real a
+   lo largo del tiempo. Leer el CSSOM dio dos versiones por buenas que en el móvil no se veían.
+9. **La curva se elige por la distancia que recorre, no por la marca.** La quíntica frena tan
+   pronto que sobre un recorrido largo deja de ser una frenada y se vuelve un golpe: medida a
+   390px, la persiana del menú se comía el 90% de sus 844px en 161ms y arrastraba 260ms más en
+   un movimiento que ya no se percibe. Está calibrada para los 14px de `--shift`. Lo que cruza
+   una pantalla usa `--ease-telon`, que reparte el recorrido.
+10. **Lo que aparece detrás de algo que se mueve no puede tardar lo que tarda ese algo.** Una
+    pieza que se revela tras un telón no viaja: entra en `--dur-out`, no en `--dur-in`. El menú
+    tenía las dos cosas en `--dur-in` y el resultado era que el telón descubría «La carta» a los
+    35ms y el texto no acababa de aparecer hasta los 420 — medio segundo de plancha roja vacía
+    con letras llegando encima. **La comprobación es cruzada:** para cada pieza, en qué
+    milisegundo la descubre el telón y en cuál está puesta. El desfase tiene que ser negativo —
+    puesta antes de ser descubierta—, nunca positivo.
+11. **Al cerrar, lo que se tapa no se desvanece.** El salto a invisible se retrasa con
+    `transition: opacity 0s linear var(--dur-out)` hasta que el telón ha terminado de pasar. Si
+    se desvanece a la vez, se ve un texto apagándose sobre un fondo que todavía sigue ahí, que
+    son otra vez dos movimientos discutiendo.
+12. **Lo que sale del flujo deja un hueco, y hay que devolverlo.** La barra pasa a `fixed`
+    mientras dura el menú, así que la página de debajo perdía su alto de golpe y daba un tirón
+    hacia arriba de exactamente 62px justo al abrir. Se ve porque el telón todavía está cayendo
+    y no la tapa. `html.menu-open body { padding-top: var(--t-header-h) }` ocupa ese sitio. **Se
+    comprueba muestreando la posición de un elemento del fondo en cada frame de la apertura y
+    exigiendo que el máximo sea 0**, no mirando el estado final: el estado final ya era correcto
+    y el salto pasaba igual.
+13. **El reveal se calibra contra el movimiento al que acompaña, no en abstracto.** Un fade con
+    la quíntica estaba al 97% a mitad de su tiempo: cuando el telón llegaba, la pieza ya estaba
+    puesta y no se veía ninguna animación. Con `--ease-telon` y la espera de `--reveal`, cada
+    pieza está entre el 33% y el 60% cuando la descubren, y se ve terminar.
+14. **Una máscara sobre texto quieto no revela, corta.** Se probó un reveal de cortina con
+    `clip-path` sobre los nombres del menú y se retiró al verlo: dejaba media letra flotando y se
+    leía como un fallo de pintado. Un reveal de cortina exige que la palabra se desplace *dentro*
+    de la máscara, lo que pide un envoltorio más y recorta tildes y sombras duras. Para el menú
+    basta un desplazamiento corto.
+
+    **La entrada llegó a usarla y se retiró igual, esta vez no por un fallo técnico.** Se hizo
+    cumpliendo la condición —la palabra se desplazaba dentro de la máscara— y las tres objeciones
+    quedaron resueltas: dos envoltorios, versales sin tildes que recortar y el recorte aplicado
+    solo por arriba, dejando aire a la derecha para la sombra. Medido, el texto no sobresalía ni
+    un píxel. Y aun así Mario la cambió por el encaje de dos mitades, porque **una cortina es
+    sobria por naturaleza y esta casa es una tasca**. Vale la pena recordarlo cuando una técnica
+    esté impecable: correcta no es lo mismo que adecuada.
+15. **El movimiento que hace el navegador también es movimiento nuestro.** En Chromium, ocultar
+    y devolver la barra de direcciones al deslizar **redimensiona el viewport de verdad**; en
+    Safari desde iOS 15 no, y por eso el vaivén solo se veía a trompicones en Brave. Ese resize
+    no se puede evitar, pero sí se puede dejar de estorbar, y había dos reglas heredadas
+    estorbando: `body { overflow-x: hidden }`, que al propagarse al viewport convertía el
+    documento en un scroller con desbordamiento tapado, y `scroll-behavior: smooth` en el
+    `<html>`, que animaba los reajustes de scroll que el navegador se da a sí mismo. **Las dos
+    eran vestigios:** medido en las dieciséis rutas de las dos webs a 360px, el ancho
+    desplazable sin el recorte es igual al visible, y no existe en el monorepo ni un `href="#"`
+    ni un `scrollIntoView` que el `smooth` pudiera animar —el único scroll suave, el de la tira
+    de platos, pedía su `behavior` en la propia llamada; desde el 2026-10-27 la tira es un mazo en
+    el móvil y ya no hace scroll—. Lo que se salga se recorta en la pieza
+    que se sale, nunca en el documento. Y la altura de la portada cuelga de `svh`, que por
+    definición no se mueve cuando la barra colapsa: `dvh` ahí habría hecho bailar la página
+    entera en cada gesto.
+16. **Nada que ocupe media pantalla dimensiona su alto desde el viewport.** Cuando la portada
+    cambia de alto empuja todo lo que tiene debajo e **invalida la capa entera del documento**:
+    se repinta la página completa, no el rectángulo que cambió. Por eso el vaivén de la barra se
+    notaba igual arriba que abajo, y por eso costó dar con ello —mirando solo la primera
+    pantalla, la portada parecía inocente—. Medido con un trace, diez cambios de alto disparaban
+    55 tareas de rasterizado desde cualquier posición de scroll, contra 0 en la carta; con el
+    alto congelado, 0 también, y el pintado baja de 11,5 ms a 3,3. El `calc(100svh …)` se queda
+    en el CSS como respaldo y como valor del primer pintado, y el script lo congela en píxeles.
+    **Y el congelado puede bajar, pero no subir.** El 2026-09-07 se vio que congelar una sola vez
+    tenía trampa: si la página se carga con la barra del navegador retraída —recargar estando ya
+    bajado—, la primera medida es la del viewport grande y la portada se queda **94px más alta**
+    para toda la sesión, porque solo se volvía a medir al cambiar el ancho. Con el mismo ancho,
+    un alto menor es el viewport pequeño llegando tarde y se acepta; uno mayor es el vaivén de
+    barras y se ignora. Una rotación cambia el ancho y empieza de cero. La lógica está en
+    `@tombo/ui/alto-congelado.ts`, con test, y se mide sobre una **referencia** fuera del flujo
+    con el mismo `calc()`: así se lee el valor sin congelar sin quitar y volver a poner la variable.
+17. **El desbordamiento lateral se mide recorriendo la página, no en el primer pantallazo.**
+    `.wall` le sacaba 138px de scroll lateral a la portada y se dio por limpia dos veces seguidas
+    porque se midió a `scrollY 0`, y esa retícula vive a mitad de página. La causa era
+    `grid-template-columns: repeat(2, 1fr)` con fotos dentro: un track `1fr` es en realidad
+    `minmax(auto, 1fr)`, y el mínimo automático de una imagen es su tamaño intrínseco —estas
+    declaran 1000px—, así que el track se negaba a encoger por mucho `width: 100%` que llevara la
+    foto. Se arregla con `minmax(0, 1fr)`, **en la pieza y no tapándolo en el documento**.
+18. **`animationend` burbujea, y quien escucha el final de una secuencia tiene que filtrar por
+    objetivo.** En la entrada se animan tres piezas a la vez —la plancha, el rótulo y su sombra—
+    y el listener vive en la plancha, que es la que manda porque es la que tapa. Sin
+    `if (e.target === plancha)`, la firma de la sombra —que termina a los 210ms, dentro del
+    rótulo— habría retirado la entrada a mitad del viaje. **No lo habría cazado ningún test
+    unitario**, porque la lógica de decisión estaba bien: el fallo estaba en quién escucha a
+    quién. Lo mismo vale para `transitionend`.
+19. **Una animación que depende de una medida no puede arrancar sola desde el CSS.** El rótulo de
+    la entrada viaja hasta donde esté el de la barra, y eso se mide en cliente. Si el CSS
+    arrancase el movimiento al pintar, un módulo que llegue tarde lo mandaría a un sitio
+    inventado. Por eso hay dos estados y no uno: `data-intro="si"` lo pinta quieto y
+    `data-intro="va"` lo suelta, y entre los dos ocurre la medida. Dos corolarios, los dos
+    medidos: **la fuente tiene que estar cargada antes de medir** —con la de respaldo el rótulo
+    mide otra cosa y el aterrizaje cae torcido—, con tope de tiempo porque una fuente que no
+    llega no puede dejar media web tapada; y **lo que se mide en `display: none` mide cero**, así
+    que la pieza se oculta con `visibility` o se mide después de declararla visible. Con el cero,
+    el rótulo encogía en el sitio en lugar de aterrizar, y eso **no se ve en una captura**.
+20. **Dos piezas que tienen que encajar comparten la regla, no una copia de sus valores.** El
+    rótulo de la entrada aterriza sobre el de la barra, y los dos son «el rótulo de la casa»: la
+    fórmula está en `.cartel`. Se reimplementó a mano —familia e interlineado— y salieron dos
+    fallos de la misma raíz, uno métrico y otro visible a simple vista: el `line-height: 1` propio
+    contra el `0.96` heredado dejaba las letras 0,67px por debajo de su sitio, y **faltaban el
+    `text-transform` y el `letter-spacing`, así que la entrada decía «Los Ochoa» mientras la barra
+    decía «LOS OCHOA»**. Lo cazó Mario al primer vistazo, no la medición: ninguna de las
+    comprobaciones de geometría podía verlo, porque el aterrizaje era exacto — sobre otra palabra.
+    Poniéndole la clase, el residuo de alto baja de 0,43px a **0,01px**, que es la señal de que el
+    problema nunca fue el redondeo del glifo sino no compartir proporciones. Y es el mismo
+    argumento por el que `.brand` borró su `text-shadow` en vez de copiar el valor.
+21. **Un `z-index` alto no sirve de nada dentro de un contexto de apilamiento ajeno.** Los botones
+    de la barra tenían que entrar por encima de la plancha de la entrada, y ponerles `z-index: 81`
+    contra el 80 de la plancha no hizo absolutamente nada: la barra es `sticky` con `z-index: 60`,
+    o sea que **crea su propio contexto** y todo lo que hay dentro se ordena solo respecto a sus
+    hermanos. Quien tiene que subir es la barra entera. Y al subirla, su fondo tapaba el rótulo que
+    viaja por debajo, así que se apaga —el fondo y el filete— y hace de fondo la plancha, que es
+    exactamente el mismo rojo. **Lo que sube es siempre el contexto, no la pieza**, y subirlo
+    obliga a revisar qué tapaba antes.
+22. **En Astro, un `:global()` por trozos deja fuera lo que hay entre medias.** Escrito como
+    `:global(html[data-intro]) :global(.nav-actions) > *`, el combinador y el `*` se quedan sin
+    envolver y el compilador les añade el ámbito **del componente que escribe la regla**: salió
+    `.nav-actions > [data-astro-cid-<el-de-Intro>]`, y los botones llevan el de `Nav.astro`, así
+    que la regla no le aplicaba a nada. No hay error, no hay aviso: sencillamente no pasa nada.
+    **Cuando una regla cruza la frontera de un componente, se envuelve la cadena entera en un solo
+    `:global(...)`.** Es pariente de lo que ya documenta la regla del hundido: lo que se estiliza
+    desde fuera hay que comprobarlo en el CSS de salida, no darlo por escrito.
+23. **Una transición heredada convierte en movimiento lo que querías instantáneo — y falsea
+    cualquier medida que tomes en ese momento.** Los botones de la barra llevan
+    `transition: transform` para el hundido al tacto. La entrada los aparta fuera de la ventana
+    antes de empezar, y esa transición hacía dos estropicios a la vez: **se les veía salir**
+    deslizándose hacia la derecha durante los primeros 160ms en vez de estar ya fuera —el «se
+    asoma ligeramente» que cazó Mario—, y al anular el desplazamiento para medir su posición real,
+    `getBoundingClientRect()` devolvía **la posición en curso de la transición**, no la de reposo:
+    a un botón le salió una distancia negativa de 1284px, que lo habría hecho entrar por el lado
+    contrario cruzando la pantalla entera. Las dos curas son la misma: `transition: none` mientras
+    dure el estado, y apagarla también durante la medida. **Antes de posicionar o medir algo que
+    no escribiste tú, mira qué transiciones arrastra.**
+24. **Un valor de reserva tiene que ser seguro, no aproximado.** Para sacar los botones de la
+    pantalla se puso `translateX(160%)`, que suena razonable y no lo es: el porcentaje es del ancho
+    de **cada pieza**, así que uno de 62px se apartaba 99px y con el margen de la barra en
+    escritorio seguía dentro del viewport. Ahora la distancia real se mide y se publica en
+    `--fuera`, y el `var()` cae en `100vw`, que saca cualquier cosa esté donde esté. La medida no
+    está para que funcione —de eso se encarga la reserva— sino para que el viaje sea el justo en
+    vez de cruzar la pantalla entera, que es lo que convierte la quíntica en un golpe (regla 9).
+
+18. **El movimiento ambiental se delata por la cadencia, no por el efecto.** Mario pidió botones
+    «vivos» y un aviso de scroll, y en los dos avisó: nada de patrones típicos de IA. Lo típico
+    —el brillo que barre la pieza, el halo que late, el borde de degradado girando, el ratoncito
+    con la ruedita, la flecha que rebota— no se reconoce por *qué* hace, sino porque **se le oye
+    el compás** y porque el gesto no dice nada del sitio. Las dos piezas de la entrada de Cokima
+    se hicieron contra eso, con tres condiciones que valen para cualquier movimiento que solo
+    esté ahí para dar vida:
+
+    - **Lento hasta que no se vea moverse.** El rescoldo de los botones recorre 6px en horizontal
+      y 3,9 en vertical a lo largo de 19 segundos: **0,52 píxeles por segundo**. No se ve
+      moverse; se nota que no está muerto, que no es lo mismo.
+    - **Poco.** Escala entre 1 y 1,03, opacidad entre 0,36 y 0,52. Si se aprecia el
+      desplazamiento, ya es demasiado.
+    - **Sin compás.** Los fotogramas caen en 23%, 41%, 68% y 86% —no equidistantes— y las dos
+      piezas llevan duraciones distintas y primas entre sí (19s y 26s), con retardo negativo. No
+      coinciden nunca, así que no hay pulso que seguir.
+
+    Y el gesto sale del sitio: Cokima es un mundo de brasa y de neón —sus colores se llaman
+    `vermilion` y `ember`, y el local tiene un mural de fuego—, así que los botones respiran como
+    un rescoldo y el aviso de scroll es una chispa que baja por un riel, como se enciende un tubo.
+    Se anima un pseudo-elemento con `transform`, nunca la `box-shadow` del botón: una sombra
+    animada repinta en cada fotograma y esto se compone en la GPU.
+
+    **Dos excepciones, decididas por Mario el 2026-10-29 viéndolas en el probador**
+    (`ochoa-inicio-vivo.md`). Las dos se mueven a la vista y no son pequeñas; las dos guardan la
+    tercera condición, **sin compás**:
+
+    - **El fondo vivo.** Las vetas rojas del vermú se ven moverse, y las palabras se ven
+      pintarse y borrarse. Mario pidió justo eso —*«detalles sutiles rojos por el fondo que
+      vayan moviéndose, haciendo formas»*— y el sitio lo da el gesto: la luz de un vaso sobre el
+      mármol y las palabras del espejo de la barra. El compás no se oye: las vidas y las esperas de
+      las palabras son dos listas que no casan (`--vidas-palabra`, `--esperas-palabra`), y la luz
+      que pasea sin ratón suma senos de periodos que no casan entre sí.
+    - **La tira de la portada en el ordenador.** Las ocho fotos pasan sin parar a 28 px/s, y
+      ocupan la portada entera. Es la forma de enseñar fotos verticales enteras en una franja
+      apaisada (en la de antes se veía el 36-47 % de su alto). No tiene compás porque no tiene
+      cambios: es un avance lineal y continuo, como la cinta rotulada. Se para para siempre al
+      primer toque y no corre con menos de media portada a la vista (regla 6).
+
+19. **Tocar una animación por la Web Animations API la desacopla del CSS, y eso falsea la
+    comprobación siguiente.** Al verificar que el rescoldo se pausaba fuera de pantalla salió que
+    no se pausaba. La regla estaba bien: el test había hecho antes `anim.currentTime = ...` y
+    `anim.play()` para muestrear el recorrido, y a partir de ahí la animación deja de obedecer al
+    `animation-play-state` del CSS. En página limpia se pausaba. **Cuando una medición contradice
+    a otra, sospechar del instrumento antes que del código**, y repetirla en una página recién
+    cargada. Es la hermana de la regla 8.
+
+20. **`autoplay` no pasa por el interruptor de `prefers-reduced-motion`, y esconder no es apagar.**
+    La cinta de la entrada de Cokima llevaba `autoplay` en la etiqueta y un guard de movimiento
+    reducido en el script. Parecía correcto y no lo era: el guard solo impedía añadir la clase que
+    la hace visible, así que quien pedía no ver movimiento **se descargaba los 0,94 MB y el vídeo
+    se reproducía a 30 fps detrás de una capa a opacidad 0**. Medido el 2026-08-17: `paused: false`
+    y `currentTime` avanzando de 2,46 a 3,98 s. Pagarlo todo y no recibir nada, y encima `autoplay`
+    invalida el `preload="none"` que tenía al lado.
+
+    **Quien arranca un medio es el script, no el atributo**, porque el atributo no sabe lo que ha
+    pedido quien mira. Sin `autoplay` y con `preload="none"`, en movimiento reducido ahora no hay
+    ni una petición de red (`readyState: 0`) y manda el póster.
+
+    Y la comprobación que lo demuestra no es «¿se ve?», sino **`networkState`, `readyState`,
+    `paused` y si `currentTime` avanza**. Es la regla 8 aplicada al ancho de banda: comprobar que
+    algo está oculto no es comprobar que está apagado.
+
+    **La regla 6 vale también para el vídeo, y se estaba incumpliendo.** Los botones y la chispa se
+    paran con `data-sobre-entrada`, pero a la cinta no la paraba nadie: medido, seguía a 30 fps a
+    pantalla completa con la página en el pie (`currentTime` de 5,05 a 7,06 s). Ahora lleva su
+    propio `IntersectionObserver` —y no el atributo del `<html>`, que lo pone un centinela de 1px
+    al final de la sección: para pausar lo que importa es si **el vídeo** está en pantalla, no si lo
+    está el final de su sección— más `visibilitychange` para la pestaña en segundo plano. Y
+    `play()` se llama con `.catch()`: al deslizar rápido, la promesa se rechaza porque el elemento
+    se pausa antes de arrancar, y eso no es un error sino el resultado correcto.
+
+    **Y su contracara (2026-11-03):** con `preload="none"`, esperar a `canplay` antes del `play()`
+    no acaba nunca, porque `load()` no pide un byte hasta el `play()`. Las columnas de la portada de
+    Cokima, que esperan a estar las tres listas para arrancar juntas, se quedaban en el póster sin un
+    error. Quien espera a `canplay` pone `preload = "auto"` desde el script en el momento de
+    cargar, no en la etiqueta (`cokima-el-rediseno.md` §5).
+
+21. **Lo que decide un estado visible no puede esperar a `astro:page-load`.** La entrada de Cokima
+    colgaba de ese evento la marca que aparta la cabecera y el arranque de la cinta. El evento no
+    llega hasta que han bajado y corrido los módulos de Astro, y **medido en carga fría eso fueron
+    957 ms**: durante ese segundo la cabecera se veía puesta —rótulo y hamburguesa— y luego
+    desaparecía, y el vídeo ni se había empezado a pedir. Lo reportó Mario desde el iPhone, donde
+    por datos se nota mucho más que en local.
+
+    **No era un parpadeo de estilo sino de estado.** El CSS estaba bien; lo que llegaba tarde era
+    quién decide. Se arregla con un `<script is:inline>` justo detrás de la sección: corre durante
+    el parseo, con el marcado ya en el DOM y antes del primer pintado. El módulo se queda con lo
+    que sí puede esperar —observadores y medidas—, y no vuelve a arrancar lo ya arrancado.
+
+    Después: la petición del vídeo baja de **957 a ~137 ms**, y **en el primer fotograma pintado la
+    marca ya está puesta**. Esa es la comprobación que vale, y no «cuándo se pone»: con
+    `requestAnimationFrame` no se puede observar nada antes del primer frame, así que medir el
+    instante da una cota del instrumento —salían 358 ms— y no el dato. La pregunta correcta es
+    **«¿llegó a pintarse sin ella?»**, y se responde mirando el estado dentro del primer `rAF`.
+
+    Lo que NO se hizo, y conviene que siga sin hacerse: `preload="auto"` para adelantar más. Eso
+    deja al navegador bajando la cinta desde el principio, compitiendo con el póster, que es el LCP.
+
+25. **Dos movimientos que se ven a la vez no comparten compás, y el desfase solo existe con un
+    reloj común.** En el móvil, la portada (el telón) y «Los que destacan» (el mazo) están en la
+    misma pantalla. Con los dos cada 3,5 s y arrancando juntos cambiaban a la vez y la página latía
+    —Mario lo vio en el boceto el 2026-10-27—. Se separaron: la portada cada `--dur-pase`, el mazo
+    cada `--dur-turno` (5,5 s) y su primer cambio `--desfase-turno` más tarde. Con 3,5 y 5,5 los
+    cambios caen en múltiplos de medio segundo, y ese cuarto los deja siempre a 0,25 s o más; sin
+    él, uno de cada siete coincidía exacto. **La trampa es que el desfase no sobrevive a dos relojes
+    sueltos:** el mazo arranca cuando se ve la mitad, que es al bajar, y los dos se paran fuera de
+    pantalla. Cada vez que uno vuelve, su fase saldría al azar. Por eso ninguno cuenta su espera:
+    los dos preguntan a `apps/ochoa/src/compas.ts` cuándo les toca, contado desde el `timeStamp`
+    del mismo `astro:page-load`. **Medido sobre el build a 390 px, 40 s:** separaciones de 1,25 /
+    0,75 / 0,75 / 1,25 / 0,25 / 0,25 s, las mismas que en el boceto; y bajando a los 7,45 s, el
+    mazo cambió a los 11,28, en su hueco y no al azar.
+
+    **Con la home viva (2026-10-29), cómo queda cada pieza.** En el móvil, el telón y el mazo
+    siguen preguntando a `compas.ts`. En el ordenador, la portada es la tira, que no cambia sino
+    que avanza sin parar, así que no tiene compás con el que coincidir; la rueda de «Los que
+    destacan» (2026-10-30) pregunta a `compas.ts` igual que el mazo, aunque allí no tenga con qué
+    coincidir. El mosaico de La casa lleva su propio reloj porque nunca comparte pantalla con la
+    portada ni con el mazo: medido sobre el build el 2026-10-30, ya sin la raya del manifiesto,
+    empieza al menos 1.312 px por debajo de «Los que destacan» a 390 (pantalla de 844) y 1.445 por
+    debajo de la portada a 1024 (los mínimos entre Chromium y WebKit; el 2026-10-29 eran 1.381 y
+    1.555). Y su ritmo no es un compás: pausas por turnos de una
+    lista (`--respiros-mosaico`). Las palabras del fondo sí pueden salir en la misma pantalla que
+    el mazo o el mosaico, pero tampoco llevan compás —sus vidas y sus esperas son listas que no
+    casan— y no cambian de golpe: se pintan en 1,7 s y se borran en 1,4.
+
+    **Y en Cokima, los vídeos de la portada (2026-11-03).** En el ordenador son tres columnas que
+    cortan a 1 s una de otra. El desfase va dentro de cada archivo, pero son bucles de 6, 6 y 9 s
+    (12, 9 y 9 hasta el 2026-11-13). Por eso mismo, dos planos que no deben verse a la vez no pueden ir
+    en columnas distintas: al deslizarse los bucles, cada plano acaba pasando junto a todos los del
+    vecino (la fideuá y su enoki, juntos en una columna desde el 2026-11-18). Y son bucles,
+    cada uno con el reloj de su `<video>`, y cada vuelta o cada parón puede separarlos. Arrancan
+    juntas, cuando las tres pueden reproducirse, y `brasa.js` toma la primera como reloj, con sus
+    vueltas contadas: cada segundo, la columna que se haya ido más de 0,3 s de donde le toca vuelve
+    a su sitio, y solo si `seekable` llega hasta ahí. Ese segundo y esos 0,3 s no son duraciones de
+    movimiento sino la cadencia de un control, y por eso no están en `tokens.css`. **Medido sobre el
+    build:** una columna adelantada 2 s a propósito volvió en 0,6 s, y pasadas las vueltas de 9 y
+    12 s las tres seguían a menos de 2 centésimas de donde les toca.
+
+    **Y en un mazo, recolocar no es animar.** Hacia atrás el mazo solo se recolocaba, y la carta
+    que volvía del fondo saltaba de capa en el primer fotograma: aparecía fundiéndose *encima* de
+    la de delante, las dos a medio transparentar —Mario lo vio en su iPhone el 2026-10-27—. El
+    `z-index` no se transiciona, cambia de golpe. Lo que cambia de capa necesita una animación que
+    diga en qué momento cruza. **Y el resto del mazo tiene que esperar a estar tapado.** Con la
+    vuelta ya animada, Mario seguía viendo que «se hunde de golpe y luego comienza la animación»:
+    medido, la de delante perdía la sombra en el primer fotograma y en 150 ms ya estaba encogida
+    al fondo —la quíntica—, cuando la que volvía seguía al 18% de opacidad. Ahora lo demás se
+    recoloca con retardo, ya tapado, y la sombra cambia de dueña en ese mismo instante con
+    `box-shadow 0s linear` y el mismo retardo.
+
+    **Los dos sentidos tienen que enseñar el plato a la vez.** La vuelta hacía el viaje entero de
+    la ida al revés —salir del fondo por detrás del mazo y cruzar a mitad de camino— y el plato no
+    se veía hasta los 400 ms ni entero hasta los 900, cuando hacia el otro lado está al 80% a los
+    300. Mario: «debería verse el plato más rápidamente». Ir por detrás no aportaba nada: la carta
+    del fondo está escondida, así que puede aparecer fuera de la pantalla sin que se note. Ahora
+    entra por la izquierda por encima, en `--dur-baraja` × 0,5 (la mitad visible de la ida).
+    Medido sobre el build a 390 px, porcentaje del plato nuevo a la vista: 40 / 80 / 100% a los
+    200 / 300 / 400 ms **en los dos sentidos**; la de delante, quieta hasta quedar tapada (1% a
+    la vista a los 500 ms) y retirándose debajo después.
+
+26. **Una mezcla dentro de algo que se mueve con `transform` solo se mezcla con lo de dentro.**
+    El `transform` hace de su elemento una capa aparte, y un `mix-blend-mode` en uno de sus hijos
+    ya no ve lo que hay detrás de esa capa. El fondo del manifiesto (rama `feat/inicio-vivo`,
+    2026-10-28) multiplicaba la foto de las botellas sobre el rojo de la sección. Al poner el
+    paralaje en su envoltorio, la foto salió gris, sin rojo con el que mezclarse, y sin dar un
+    solo error. **La mezcla va en el elemento que se mueve, no dentro**, y la sección lleva
+    `isolation: isolate` para que no se mezcle con nada más allá de ella.
+
+27. **Dos piezas que tienen que moverse juntas no se confían a dos transiciones de propiedades
+    distintas.** El navegador no las lleva en el mismo sitio: la de `transform` (y la de
+    `opacity`) corre en el compositor, y la de `clip-path`, en el hilo principal. Mientras el
+    hilo principal va desahogado no se nota; cuando va cargado, la del compositor se adelanta.
+    Pasó en el mosaico de La casa (2026-10-29): la ventana se recortaba con una transición de
+    `clip-path` y la foto se colocaba con una de `transform`, y con el lienzo del fondo vivo
+    ocupando la CPU, al empezar un cambio asomaba una franja de 26 px sin foto al pie de la
+    tesela. **La medición con estilos calculados decía que la foto cubría siempre su ventana**,
+    porque los dos valores calculados cuadraban; lo que no cuadraba era lo pintado, y solo se
+    vio en capturas. La cura es calcular las dos en el mismo `requestAnimationFrame`
+    (`mosaico.ts`), con las curvas de `tokens.css` (`leeCurva` en `compas.ts`): si el hilo va a
+    tirones, van a tirones juntas. Lo que puede adelantarse sin destapar nada —el fundido de la
+    foto que entra— se queda en CSS. **Se comprueba con capturas a mitad del cambio, con carga
+    en la página, no leyendo `getComputedStyle`.**
+28. **Lo que espera tapado por un `clip-path` no se descarga solo en Chromium.** Las fotos del
+    telón esperan recogidas con `clip-path: inset(0 0 0 100%)`, y con `loading="lazy"` Chromium
+    no las pedía nunca: tras recorrer la home entera en un móvil, 1 de 7 descargadas, y el telón
+    no pasaba de la primera, se tocara o no. Quitándole el recorte a una, llegaba. WebKit las
+    pide igual, y por eso en el iPhone no se veía (medido el 2026-10-29). **Lo que una animación
+    va a destapar se pide a mano antes de destaparlo:** el telón, un turno antes
+    (`loading = "eager"`); la tira ya las pedía todas al montarse.
+29. **Lo que le sobra a una capa se mide en la página, no se deduce del CSS.** El paralaje de la
+    mesa de La tasca llevaba un tope fijo de 22 px, y en un móvil a la foto le sobraban 15: a más
+    de 200 px del centro de la pantalla asomaba el fondo dentro del marco (6,5 px). Y calcular lo
+    que sobra con el CSS —`top: -8%; height: 116%`, centrada— destapaba 1,5 px en el iPhone:
+    WebKit resuelve ese `height` contra la caja con el borde de un marco con `aspect-ratio`, y el
+    `top` contra la de dentro, así que allí sobran 15,5 px por arriba y 20 por abajo (Chromium:
+    15,5 y 15,5). `paralaje.ts` mide lo que sobra por cada lado, sin el desplazamiento puesto, al
+    montar y cada vez que la sección cambia de tamaño.
+30. **Un token que se lee desde JavaScript se lee al usarlo y con su unidad.** Dos trampas que no
+    dan ningún error, cazadas el 2026-11-02 en el viaje de los botones de Brasa. **La primera: el
+    build reescribe las duraciones.** `640ms` llega a la página como `.64s`, y `180ms` como `.18s`,
+    así que `parseFloat` devuelve 0,64 y 0,18: milisegundos donde había segundos. **La segunda:
+    WebKit devuelve las variables vacías mientras carga la página.** `brasa.js` las leía al
+    arrancar (`document.readyState` en `interactive`) y en WebKit salían `""`, así que el viaje caía
+    en su valor de reserva y en una curva lineal; Chromium sí las devolvía, pero en segundos. Las
+    dos se taparon una a la otra: en el iPhone la reserva escondía el error de unidad. Ochoa no las
+    sufre porque `leeDuracion` (`compas.ts`) mira la unidad y lee en `astro:page-load`. **Brasa lee
+    `--dur-viaje` y `--ease-viaje` al empezar cada viaje, con la unidad.** El cambio de sección de
+    Brasa tenía la misma trampa con `--dur-out`: en Chromium no esperaba al fundido de salida —a
+    los 60 ms del clic la sección vieja ya estaba escondida; en WebKit, no—. Arreglado ese mismo
+    día, a petición de Mario, con la misma lectura: medido, la sección vieja se esconde a los
+    196–209 ms en los dos motores, a 390 y a 1440.
+31. **Un vídeo que cambia de sitio necesita su foto fija debajo.** Cazado el 2026-11-03 en la
+    maqueta del collage de Nosotros de Cokima, donde cinco vídeos cambian de tamaño solos, y sin
+    ningún error. Tres cosas dejan una pieza sin imagen durante uno o varios fotogramas: **rebobinar**
+    (`currentTime = 0`) la deja en negro mientras busca, en WebKit; **`load()`**, o pasar del póster
+    al primer fotograma, deja uno sin imagen en Chromium; y **arrancarlo** con `play()` dejó en
+    WebKit dos capturas seguidas sin pintar. La geometría medida decía que el vídeo cubría su
+    ventana en todos los fotogramas; solo las capturas lo enseñaron, midiendo si cada pieza era un
+    color plano. **Lo que se hace:** no rebobinar los que se paran, `play()` sin `load()`, y debajo de
+    cada vídeo su primer fotograma como `<img>`, con el mismo `transform` en el mismo fotograma
+    (regla 27). Medido así, 0 piezas planas en unas 1.100 capturas, en los dos motores, a 390 y a 1440. En la web
+    desde el 2026-11-04 (`apps/cokima/src/collage.js`). **Ojo al medirlo:** un vídeo con un tramo muy oscuro también
+    da una pieza plana (media de 0,7 sobre 255); una sin pintar da el color de lo que tiene detrás, 10 o 23.
+
+32. **El tiempo de una animación se cuenta desde que se ve, no desde que arranca.** Cazado el 2026-11-04 en La mecha de
+    Visítanos, por Mario en el móvil, antes que por ninguna medida: *«tarda un poquito en aparecer»*. El código decía que
+    todo duraba 3,5 s y era verdad, pero la mecha más larga salía de un metro que en el móvil queda fuera de la pantalla, y
+    las que se ven no arrancaban hasta el final, para llegar a la vez. Mirando los píxeles del lienzo, 1,17 s sin ver nada en
+    el móvil y 0,52 s en el ordenador: **el mismo código, y el doble de espera según lo que quepa en la pantalla.** Ahora el
+    reparto se calcula con el tramo que queda a la vista en esa pantalla (`mecha.js`), y lo tapado arde a su paso sin contar.
+    **Lo que se mide es el primer píxel que cambia donde se mira, no el `currentTime` de nada.**
+
+## Qué se mueve hoy
+
+| Dónde | Qué | Con qué |
+|---|---|---|
+| Menú a pantalla completa | El panel cae como una persiana y se recoge al cerrar. En Ochoa se probó el 2026-10-28 que el botón «MENÚ» creciera hasta ser el panel, con el muelle de Mochi, y Mario volvió a la persiana ese mismo día: «queda más simétrico» | `clip-path`, `--dur-in` / `--dur-out` |
+| Menú a pantalla completa | Las secciones entran en cascada | `translateY(--shift)`, `--dur-in`, `--stagger` |
+| Botón del menú | El subrayado se recoge al abrir | `transform`, `--dur-out` |
+| Enlaces del menú | Color al pasar por encima (y la brasa, en Cokima) | `color`/`box-shadow`, `--dur-out` |
+| Botones, fichas de contacto y mapa | Se hunden al tocar y recuperan al soltar | `data-tacto`, `--dur-sube` |
+| Cinta rotulada (Ochoa) | Recorre en bucle | `translateX`, `--dur-cinta` |
+| Portada en el móvil (Ochoa) | El telón: cada foto entra de derecha a izquierda sobre la anterior | `clip-path`, `--dur-pase`, `--dur-recogida`, `--ease-telon`; con `compas.ts`; se para con un toque, no al bajar con el dedo encima (`toque.ts`); cada foto se pide un turno antes (regla 28) |
+| Portada en el ordenador y en el móvil tumbado (Ochoa) | La tira: las ocho fotos en fila, enteras, pasan de derecha a izquierda sin parar; la serie va dos veces para que la vuelta no se note | `translateX` con la Web Animations API, lineal, a `--vel-tira`; con media portada a la vista y la pestaña delante; se para con un toque; quieta con «reducir movimiento» |
+| Paralaje (Ochoa) | Tres fondos van más lentos que la página: la portada un 25% (tope 60 px), las botellas del manifiesto un 12% (tope 40) y la foto de La tasca un 8% dentro de su marco (tope 22) | `transform` desde `apps/ochoa/src/paralaje.ts`; nada con «reducir movimiento». Sin ratón, la de La tasca va al 12 % y frena suave antes de su borde; con el ratón encima se asoma como las de La casa (`translate`, `--dur-ventana`). Ninguna pasa nunca de lo que le sobra por cada lado, medido (regla 29) |
+| Manifiesto (Ochoa, en los dos idiomas) | La pared de botellas, en blanco y negro y multiplicada sobre el rojo, va y viene de lado | `transform`, `--dur-paneo`, `--ease-telon`; solo a la vista, se para con un toque (no al bajar con el dedo encima); nada con «reducir movimiento» |
+| Mosaico de La casa (Ochoa) | Cada 2,5 a 3,3 s la tesela grande se encoge y una vecina crece en su hueco con una foto nueva, que llega desenfocada; con el ratón encima, cada foto se desplaza un poco en su ventana | `clip-path` + `transform` desde `mosaico.ts`, en el mismo fotograma (regla 27), con `--dur-mosaico`, `--respiros-mosaico` y `--ease-telon`; `opacity` + `filter` en CSS; con un 30% a la vista y la pestaña delante; se para con el ratón encima y para siempre al pulsar una foto; nada con «reducir movimiento». Sin ratón, cada foto se desplaza en su ventana al bajar, al 12 % y hasta 24 px, sin destapar el fondo ni a medio cambio |
+| «Conócenos» (Ochoa) | Al llegar a cada momento, su foto entra con el telón de derecha a izquierda y el texto sube detrás; una sola vez | `clip-path`, `--dur-recogida`, `--ease-telon`; `translateY` y `opacity`, `--dur-in`, escalonado con `--dur-out`; las fotos se piden una pantalla antes (regla 28); nada escondido con «reducir movimiento» |
+| Fondo de la home, de «Conócenos», de La carta y de Reservar (Ochoa) | Las vetas rojas del vermú se mueven sin parar, y en la home y en «Conócenos» las palabras del espejo se pintan en el blanco libre, viven unos segundos y se borran; en La carta y Reservar, solo las vetas | WebGL2 desde `fondo.ts`, en cada fotograma mientras se ve la página (excepción de las reglas 6 y 18); `--vidas-palabra`, `--esperas-palabra`, `--dur-pincel`, `--dur-borrado`; nada con la pestaña oculta; un fotograma quieto con «reducir movimiento». Sin ratón, las vetas van más rojas (0,38 en vez de 0,24), más densas (escala 0,7), un 40 % más deprisa, las enciende la luz que pasea y bajan con la página al 12 % |
+| Barra del ordenador (Ochoa) | El relieve: la sombra de las secciones, del rótulo y del titular de la portada cae al lado contrario del cursor | `text-shadow` desde `relieve.ts` (excepción de la regla 2), `--relieve-suave`; solo con ratón |
+| Rueda de platos (Ochoa, solo ordenador) | «Los que destacan»: seis tarjetas a la vista; cada turno la fila se corre una hacia la derecha, entra por la izquierda la que esperaba fuera y sale la sexta, sin fin | `transform`, `--dur-turno`, `--desfase-turno`, `--dur-rueda`, `--ease-telon`; con `compas.ts`; con media fila a la vista y la pestaña delante; espera con el ratón encima y se para para siempre con un clic, las flechas o un gesto; quieta con «reducir movimiento»; las fotos de fuera se piden al montarla (regla 28) |
+| Mazo de platos (Ochoa, solo móvil) | La de delante sale por la izquierda torciéndose y vuelve al fondo; deslizando a la derecha, la anterior entra por la izquierda por encima, en la mitad del tiempo; el turno se rellena | `transform` + `opacity`, `--dur-turno`, `--desfase-turno`, `--dur-baraja`, `--ease-telon`; `scaleX`; se apaga con un toque o una carta pasada, no al bajar con el dedo encima. En el móvil tumbado no hay mazo: la tira de fichas que se desliza |
+| Portada | El titular se aparta del cartel de cookies | `translateY`, `--dur-out` |
+| Portada de Brasa (Cokima) | Al pasar el 60% de la pantalla, «Reservar» y «Ver carta» viajan hasta la barra cambiando de tamaño —«Ver carta» se vuelve «La carta», la del menú de arriba—, y vuelven al subir por debajo del 50%. En el móvil solo viaja «Reservar»: «La carta» está en el desplegable cerrado | un viajero desde `brasa.js`: `transform` y `clip-path` en el mismo fotograma (regla 27), `--dur-viaje`, `--ease-viaje`; parte de donde va si se cruza de vuelta; directo con «reducir movimiento», en un salto largo o al cambiar de sección |
+| Inicio de Brasa (Cokima) | Cuatro paneles (cinco hasta el 2026-11-02): al abrir uno, las franjas se reparten —columnas en el ordenador, bandas en el móvil— y su foto se recoloca. Si la zona cabe en la pantalla, se queda fija al bajar y cada tramo abre el siguiente; tocar uno lo abre y lleva la página a su tramo. Si no cabe, se abren al tocarlos. No pasan solos | `clip-path` y `transform` desde `brasa.js` en el mismo fotograma (regla 27), `--ease-viaje`, `--dur-viaje`; el texto entra con `opacity` tras `--dur-out`; la zona, `position: sticky`, que no es animación; cambia pasada la mitad del tramo con un 8 % de holgura; directo con «reducir movimiento» |
+| Barra del móvil de Brasa (Cokima) | El desplegable de secciones baja bajo la barra con un velo detrás, y la flecha gira | `opacity` + `translateY`, `--dur-in` al abrir y `--dur-out` al cerrar (regla 3); la flecha, `rotate`, `--dur-out`; sin transición con «reducir movimiento» |
+| Fondo de Brasa (Cokima) | Chispas de brasa que suben: salen de abajo empujadas por el aire caliente, frenan, dan bandazos, se enfrían de amarillo a rojo y se apagan; algunas aparecen ya en el aire, para que las haya en todo el alto. Un trazo fino a lo largo del vuelo, con la cabeza más clara mientras está caliente, sin halo; al bajar la página, las de cerca suben un poco más. Sustituyen al fuego de Rescoldo desde el 2026-11-02 | Lienzo 2D desde `brasa.js`, partículas con su física, a 30 fps, en cada fotograma mientras se ve (excepción de la regla 6); nada con la pestaña oculta; un fotograma quieto, sin seguir al scroll, con «reducir movimiento» |
+| Botones de Brasa (Cokima) | Un neón: el de borde es un tubo apagado; con el ratón encima arranca a trompicones y se queda encendido hasta que el ratón se va. Al pulsar, el botón se hunde un poco y salta un puñado de chispas, sin tocar el tubo. En el móvil, el toque lo enciende y se apaga solo | `opacity` del tubo (un pseudo con su sombra fija), `@keyframes encender`, `--dur-encender`, `ease-in-out`; al pulsar, `scale(.965)` con `--dur-out`, al menos `--dur-out`; las chispas, en el lienzo de delante; en el móvil, `--dur-neon-toque`; encendido sin arranque con «reducir movimiento» |
+| Nosotros de Brasa (Cokima), el collage | Automático: dos ampliadas, cuatro tarjetas a la vista y una fuera; cada 3 s más o menos se mueve un carril (columna en el móvil, fila en el ordenador): o entra la de fuera empujando a las demás, o la pequeña crece y la ampliada se encoge. Suenan las ampliadas. Al tocar una, solo esa ampliada y las cinco a la vista; a los 6 s sin hacer nada, vuelve (excepción de la regla 6). El botón redondo trae la tarjeta al primer plano sobre todo el collage | `collage.js`: ventana con `clip-path` y vídeo con `transform` en el mismo fotograma (reglas 2 y 27), con `--dur-cambio`, `--pausas-collage`, `--espera-vuelta` y, al abrir el bloque, `--dur-viaje`; todo con `--ease-viaje`. Su foto fija debajo (regla 31). Nada con la sección cerrada, la zona fuera de la vista o la pestaña oculta; «Pausar» lo para. Con «reducir movimiento», una ampliada y las cinco a la vista, sin animar, sin que suene ni se descargue nada hasta pulsar «Reproducir» |
+| Entrada de Brasa (Cokima) | La primera vez de la sesión, al llegar al Inicio: sube una bocanada de chispas desde un fondo vacío, «Cokima» se destapa de abajo arriba al rojo y se enfría hasta el hueso; «Kitchen Madness», los botones y el vídeo entran detrás. Unos 1,5 s | `clip-path` y `transform` del nombre, `opacity` de una copia en degradado de brasa (`--calor`) y de lo demás, desde `brasa.js`; `--dur-aviva`, `--dur-enfria`, `--dur-in`, `--ease`, `--ease-viaje`; la decide el `<head>` antes del primer pintado; tocar, desplazar o una tecla la terminan; sin entrada con «reducir movimiento» (regla 5) |
+| Vídeo de la portada de Brasa (Cokima) | En el móvil, un vertical de siete planos de 3 s; en el ordenador apaisado, tres verticales en columnas que cortan a 1 s una de otra | el vídeo, horneado (`scripts/video-entrada.sh`); entra con la entrada (`opacity`, `--dur-in`); se pausa fuera de la vista y con la pestaña oculta (regla 6); no se pide con «reducir movimiento» ni con ahorro de datos (regla 20); las columnas, con reloj común (regla 25) |
+| Cambio de sección de Brasa (Cokima) | El fundido corto de siempre y, encima, una bocanada de chispas que sube desde abajo por toda la pantalla, bastante más densa que el fondo | la sección, `opacity` con `--dur-out` y `--dur-in`; las chispas, en el lienzo de delante (una por cada 6.000 px², entre 70 y 220); sin chispas con «reducir movimiento» |
+| Línea de progreso de Brasa (Cokima) | Al pie de la barra de arriba, se llena de izquierda a derecha según se baja. Sustituye a la barra del navegador. No se mueve sola: la mueve quien baja, así que no le aplica la regla 6 y sigue igual con «reducir movimiento» | `transform: scaleX`, sin transición, desde `brasa.js`; se quita con `opacity` y `--dur-out` si se abre el desplegable |
+| La mecha de Visítanos (Cokima) | Al abrir la sección, cuatro mechas arden por las calles reales desde los metros más cercanos, sueltan chispas y llegan a la vez a Cokima; entonces la luz se abre por el barrio y aparece su nombre. Una vez por cada vez que se abre y solo a la vista: si se baja hasta perderla, se pone el final (regla 6). Con «reducir movimiento», el final | lienzo 2D, `--dur-mecha`, `--dur-mecha-barrio`; el nombre, `opacity`, `--dur-in` |
+| Entrada (Cokima) | Los dos botones respiran como un rescoldo | pseudo con `transform`, 19s y 26s |
+| Entrada (Cokima) | Una chispa baja por un riel, avisando de que hay más | `stroke-dashoffset`, 3,2s |
+| Entrada (Cokima) | La cabecera, el cartel de cookies y el aviso entran al deslizar | `opacity` + `visibility`, `--dur-in` / `--dur-out` |
+| Entre páginas | Barrido lateral, bidireccional | `translateX`, `--dur-in` |
+| Entrada a la web (Ochoa) | «LOS» y «OCHOA» llegan torcidas de lados opuestos y encajan, se les despega la sombra, y la plancha se recoge hasta ser la barra con el rótulo aterrizando dentro | `transform`, `--dur-in`, `--tuerce`, `--stagger`, `--dur-firma` |
+| Entrada a la web (Ochoa) | La plancha se recoge y los botones de la barra —en el ordenador, también las secciones y el idioma— entran desde el borde derecho | `clip-path` + `transform`, `--espera-firma`, `--dur-recogida`, `--ease-telon` |
+
+Y ya. Todo lo demás está quieto a propósito.

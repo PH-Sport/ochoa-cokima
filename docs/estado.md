@@ -1,0 +1,1781 @@
+# Estado del proyecto
+
+> **Estado: vivo** · corte 2026-11-19 · **el punto de entrada del repo**
+
+- **Corte:** 2026-11-19
+- **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
+  nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
+  de decidir, que no se fusionan: `feat/inicio-paralaje`, el Inicio de Ochoa en paralaje, parada,
+  y `feat/cokima-brasa`, el boceto Brasa como página suelta, que sobra desde que Brasa está en
+  `preview` (§0). Si se borran lo decide él; la otra rama de prueba, `feat/inicio-vivo`, ya se
+  borró (§0)
+- **Este documento es el punto de entrada.** Lo demás cuelga de aquí.
+- **Hay una sola versión de este documento**, la de `preview`. Hasta el 2026-10-26 hubo dos —la de
+  `tmp/entrada-cokima`, que era la buena, y la de `preview`—; se juntaron ese día (§1).
+
+---
+
+## 0. Por dónde seguir
+
+**2026-11-18: el dominio de Cokima es `cokima.es`, y su SEO se repasa antes de apuntarlo.** El cliente ya
+tiene los dominios, pero no son nuevos, y Mario no quería romper nada. Mirada la zona DNS en DonDominio: de
+21 registros, solo dos son de la web; el resto es un correo @cokima.es que está activo y no se toca. Lo que
+sirve hoy el dominio es un WordPress vacío, sin direcciones antiguas que redirigir. **El 2026-11-23 se dio
+de alta en Vercel, con `www.cokima.es` como principal; DonDominio sigue sin tocar**: los dos registros que
+hay que cambiar y sus valores están en `deploy.md` §Dominios y SEO. Falta decidir qué publica producción,
+porque `main` no tiene ningún despliegue que haya funcionado: si se cambian los DNS antes, `cokima.es`
+enseña un error de Vercel.
+
+En el mismo repaso, cuatro arreglos de SEO en el código. Medidos sobre el build con
+`SITE_URL=https://cokima.es`, en las 9 páginas:
+
+- `/en`, que solo redirige a la portada, **sale del sitemap** (8 direcciones).
+- **Las tres legales ya no declaran `hreflang`**: decían que su versión inglesa era `/en/`. Era la deuda
+  apuntada desde agosto. Se resolvió quitando `altPath` del `Seo` en el `Base.astro` de Cokima, sin el
+  `altSeoPath` de Ochoa: el `Base` de Cokima solo lo usan las legales, y no hay inglés.
+- **La ficha `Restaurant` lleva siempre la portada como `url`**, en lugar de la página en que está, más
+  `@id`, `hasMenu` (`/carta`) y `acceptsReservations` (`/reservas`).
+- **Se añade la ficha `WebSite` con el nombre «Cokima»**, que es de donde saca Google el nombre del sitio
+  en los resultados, y `og:site_name`.
+- `twitter:card` grande, para que X no enseñe la miniatura pequeña.
+
+**Toca a Ochoa también**, porque `Seo.astro` es compartido: su ficha pasa a llevar la portada como `url`
+y gana `twitter:card`. Medido en su build. No gana `WebSite` mientras su `site.ts` no dé `siteName`.
+
+**Descartado, con su porqué:**
+
+- Las **coordenadas**: no hay una fuente en el repo, y no se inventan; Google las saca de la dirección y
+  de la ficha de Maps.
+- El **`logo`** en la ficha, que **queda por decidir, y lo decide Mario**. El de la web, en hueso sobre
+  transparente, no se vería en el fondo blanco de Google; el original del restaurante, en negro
+  (`cokima-black.png`, que tiene Mario y no está en el repo), sí. Ponerlo es subir ese archivo a `public/`
+  y darle su ruta a la ficha.
+- El **icono del iPhone**: el favicon es provisional, a la espera del logo vectorial.
+- El **«sin alt» de la imagen del vídeo** era un falso positivo de la medición: Astro escribe `alt` sin
+  valor, que equivale a `alt=""`.
+
+**Lo que pesa más y no es código, de Mario:**
+
+- Que la ficha de Google Business apunte a `cokima.es` con los mismos datos que la web. La web dice
+  «lunes a domingo, 9:00 a 00:00».
+- El 301 de `grupotombo.com/cokima-kitchenmadness/`, que **sigue respondiendo 200**.
+- Search Console (§5).
+
+**2026-11-18, en la revisión antes de subir: lo que venía de antes.**
+
+- **Las parejas de idioma de Ochoa ya apuntan a la dirección exacta de la otra página.** La carta decía que
+  su versión inglesa era `/en/menu`, y la inglesa se declaraba `/en/menu/`: pasaba en todas, y Google puede
+  no reconocer una pareja así. Se arregló en `Seo.astro`, que ahora da a la ruta del otro idioma la misma
+  forma que la canónica de la página, y no en cada página de Ochoa: así no vuelve a pasar. Medido sobre el
+  build: 24 parejas, todas a una canónica real y recíprocas. Cokima no cambia (no declara ninguna).
+- **Las notas internas ya no se publican.** Llegaban a los archivos servidos unas 100 en Cokima y 250 en
+  Ochoa, con comparaciones entre las dos casas. Salían de tres sitios, y queda la regla de cada uno: **en
+  las páginas, `{/* */}` y nunca `<!-- -->`**, que se publica; **dentro de un `<script is:inline>`, ninguna
+  nota**, porque se publica tal cual (van encima, en `{/* */}`, o en el bloque de arriba del componente); y
+  **las hojas de las reservas**, que se sirven en crudo, se limpian al servir (`covermanager.css.ts` de
+  cada casa). Medido sobre los dos builds: cero notas en HTML y CSS; las hojas de reservas, idénticas regla
+  a regla sin las notas, de 25 a 11 KB en Cokima y de 30 a 10 en Ochoa; el aviso de cookies, el filtro del
+  historial, la entrada de Ochoa y Conócenos, funcionando en el navegador.
+
+**2026-11-18: el logo de Cokima, en la portada y en la barra.** Se lo pidieron a Mario y trajo el logo del restaurante,
+que es negro y sobre el fondo de Brasa no se veía. La versión clara (letras en el hueso de los textos, la «x» en su rojo)
+se sacó de ese mismo archivo, y ocupa el sitio exacto del nombre escrito: el mismo ancho en la portada y los mismos
+79 px en la barra del móvil, porque a 320 no cabe más. La entrada, que avivaba y enfriaba el nombre, hace lo mismo con
+el logo. Medido sobre el build; **la entrada en marcha no se vio** (panel oculto) y **sin mirar en un iPhone**. Las
+legales y el «Cokima» del mapa de Visítanos siguen en texto, porque no se pidieron. El cómo y lo medido, en
+`cokima-el-rediseno.md` §3, «El logo». **Desde el 2026-11-19 va también en la imagen que sale al compartir el
+enlace**, que se rehace con `scripts/compartir-cokima.js` (`fotografia.md`). Sin probar en WhatsApp de verdad.
+
+**2026-11-13: lo que el restaurante vio en las previews, y lo que se quitó.** Lorena y Alberto, del restaurante,
+revisaron las dos webs y Mario trajo sus mensajes. Su criterio, el mismo de él: *«fotos que veáis que no
+corresponden, las quito»*. Hecho en las dos casas:
+
+- **Ochoa, portada:** fuera la foto del camarero con el brioche, que es el de mollejas y ya no está (los brioches
+  de hoy son el de pintxo donostiarra y el de sobrasada y miel). La serie pasa de ocho a siete; en el móvil, seis.
+- **Ochoa, «Los que destacan»:** el bikini de lacón se queda sin foto, porque la que había es de una versión
+  anterior. En las previews su ficha enseña la rejilla guía. **Lorena ofreció mandar una actual**, y va a dar a
+  Mario acceso a su Drive con el material.
+- **Cokima, vídeo de portada:** salen los planos del tataki —el que vio Lorena—, el soft shell crab y la torrija,
+  que dejaron la carta con el PDF oficial del 2026-11-04. Quedan siete, 21 s en el móvil y columnas de 6, 6 y 9 s
+  en el ordenador. No se sustituyeron por planos nuevos que Mario no haya visto. **Retocado el 2026-11-18**, en
+  la revisión antes de subir: con ese reparto la fideuá y su enoki salían a la vez 3 s de cada 18, en columnas
+  vecinas, y ahora van en la misma (`cokima-el-rediseno.md` §3). Los mismos siete planos; el del móvil no cambia.
+- **Cokima, La carta:** las gyozas ya no se emplatan así, con tanta salsa, y su foto deja de abrir «Compartir es
+  vivir»; abre con las croquetas, el primer plato de la parte, con su foto y su frase.
+
+Lo demás que pedían en la carta de Cokima —la torrija pasa a panna cotta, sin tataki ni el cangrejo (el soft
+shell crab)— **ya estaba** desde el PDF oficial del 2026-11-04. El PDF que mandó Alberto, *Cokima 2026.pdf*, de dos
+páginas, se da por el mismo: Mario lo confirmó el 2026-11-18, sin cotejarlo aquí. Alberto avisa de que en diciembre
+cambiarán más platos.
+
+Medido sobre el build el 2026-11-13: la portada de Ochoa con siete fotos y la tira del ordenador más ancha que la
+pantalla hasta 3440 px; la carta de Cokima a 375 con las croquetas arriba y las gyozas en la lista, y los ocho
+archivos del vídeo nuevo servidos con su duración. **El vídeo no se vio reproducirse**: el navegador estaba en
+segundo plano. Sin mirar en un iPhone.
+
+**La foto del tataki del panel del producto del Inicio** («más cuchillo, más producto»), que según Lorena *«tampoco
+sería la idónea»*, **se cambió el 2026-11-18** por el cuchillo japonés de la misma publicación de la frase. Mario dejó
+la elección al agente; el porqué, en `fotografia.md`. Medido sobre el build a 390 y 1440: las tres fotos de la fila
+cargadas y recortadas en su cuadrado, los textos en las mismas líneas que antes y el panel sin desbordar. Sin mirar en
+un iPhone.
+
+**Ochoa, 2026-11-04: sus vídeos de Instagram ya están en la fototeca, sin usar en la web.** Mario vio
+que Ochoa no llevaba ninguno y preguntó por qué: no se habían bajado nunca, porque su recogida del 26 de
+octubre se los saltaba. Son 31, desde 2024. **Falta que Mario diga dónde van**; el 2026-11-18 lo dejó para más adelante. La fototeca no viaja por
+git: están en el Mac. El método, las trampas y el recuento, en `fotografia.md` §La fototeca; los scripts de
+la fototeca pasan a la versión 2, la que usó Cokima.
+
+**Cokima, 2026-10-31: la web en `preview` es «Brasa», y se itera sobre ella.** Es la séptima
+ronda de bocetos en Artifacts —el porqué de cada rechazo y lo que Mario eligió de cada una, en
+`cokima-el-rediseno.md` §3—. De Brasa dijo *«Me gusta más este diseño, lo veo mejor»*, y al verla
+en línea pidió *«la rama "preview" exclusiva para esta nueva versión»*. Oscura, con el fuego de
+brasas de fondo, títulos en la Bricolage fina, menú por secciones (Inicio, La carta, Nosotros,
+Visítanos) en una sola página y, en La carta, tres maneras de enseñar los platos con foto sin
+quitarle sitio a los que no la tienen, que se cambian en una barra de boceto hasta que elija. Ese
+mismo día pidió tres retoques, ya puestos: el fuego un poco más rápido, «Kitchen Madness» bajo el
+nombre de la portada y el vídeo de la entrada detrás, oscurecido, con el fuego encima. El
+2026-11-01, «Kitchen Madness» pasó de la cursiva a la letra de los textos, en mayúsculas pequeñas.
+El 2026-11-02, «Reservar» y «Ver carta» dejaron de apagarse en la portada para salir en la barra:
+viajan hasta su sitio al bajar y vuelven al subir. Mario eligió esa entre tres; las otras dos, y
+por qué no, en `cokima-el-rediseno.md` §3. Ese mismo día, en el móvil, la píldora de secciones de
+abajo dejó paso a un desplegable en la barra de arriba, que Mario eligió en una maqueta entre tres:
+*«Es la que menos sitio ocupa y la más limpia»*. Con él, en el móvil solo viaja «Reservar».
+
+**Y ese día, más tarde:** La carta se queda con la foto que abre cada parte y todos los platos
+debajo —Mario eligió esa manera de las tres, y la barra de boceto se va—, y la puerta de Nosotros
+del Inicio cambia a Martín por la sala entera (*Cokima 5*). **Con un fallo arreglado:** el
+desplegable se llamó primero como la lista de platos de La carta, y durante una tanda La carta
+estuvo en `preview` sin un plato a la vista; la trampa quedó escrita en `cokima-el-rediseno.md`
+§3. Medido sobre el build en WebKit y Chromium a 390 y 1440: los 21 platos a la vista bajo sus
+tres fotos, `#carta-2` lleva a La carta, la foto nueva carga, y el desplegable y el viaje siguen
+igual. Sin mirar en un iPhone.
+
+**Y al final del día, una dirección para Brasa** (`cokima-el-rediseno.md` §3, «La dirección de
+Brasa»). Mario paró las ideas sueltas —*«estamos soltando parches»*— y descartó la maqueta *Brasa
+con sazón* entera, con su motivo escrito allí. Con una web de referencia que trajo él, se decidió
+que el Inicio cuente por bloques qué es Cokima y adelante cada sección, con los textos de la web
+del Grupo Tombo. **Está montado en `preview`:** la frase de la casa, el producto con tres fotos, los
+imprescindibles de la carta, y las muestras de Nosotros y Visítanos, cada una con su enlace.
+Medido sobre el build en WebKit y Chromium a 1440, 390 y 320; sin mirar en un iPhone. **No le
+convenció**, y de tres maneras de presentarlo en una maqueta eligió **los paneles**: desde esa misma
+tarde el Inicio son cinco paneles a todo lo ancho en el ordenador, y cinco bandas en el móvil.
+Hechos con recortes y no cambiando de tamaño, por la regla 2 de `movimiento.md`. **Y se abren al
+bajar**, que pidió Mario para que el Inicio tenga recorrido: si la zona cabe en la pantalla, se queda
+fija y cada tramo de scroll abre el siguiente; tocar uno lo abre y lleva la página a su tramo. Ya no
+pasan solos. En el móvil, para caber, las bandas cerradas son más finas y los imprescindibles van sin
+descripción; en los móviles pequeños no cabe y siguen abriéndose al tocarlos. Medido en siete
+tamaños y los dos motores; **sin mirar en un iPhone, donde puede que no se fije**
+(`cokima-el-rediseno.md` §3, «Se abren al bajar»). **Por la noche, cuatro cosas más que pidió:**
+los dos primeros paneles llevan botones; **Reservar es una sección de Brasa con el motor de
+CoverManager dentro**, con la piel de la casa, como en Ochoa, y ya no se sale a su página; y el
+fondo ya no es el fuego sino **chispas de brasa que suben** —en una segunda versión, porque la
+primera, puntos con halo, le parecieron estrellas: ahora son trazos finos con su vuelo, que se
+enfrían de amarillo a rojo, sin halo—. La cuarta, la carta siempre a la vista
+en el móvil, **no cabe en la barra sin quitar el nombre de la sección del desplegable**, y eso
+espera a Mario (`cokima-el-rediseno.md` §3, «Reservar dentro, chispas y la carta a mano»). Y, como
+en Ochoa, **el teléfono y el Instagram como dos acciones**, en Visítanos y al pie del desplegable del
+móvil, y en los pies de página (mismo §3, «El teléfono y el Instagram»). **Y el Inicio, reordenado
+como pidió:** cuatro paneles —Imprescindibles primero, El producto, La sala y Ven, que junta Cokima y
+Ven con un texto para buscadores— (mismo §3, «El Inicio, reordenado»). **Y lo último de la noche,
+ya en preview:** la entrada —«Cokima» se aviva con una bocanada de chispas y se enfría del rojo al
+hueso—, una bocanada de chispas más densa al cambiar de sección y los botones de neón, que se hunden y
+sueltan chispas al pulsarlos (mismo §3, «En preview: la entrada, la bocanada y el neón»). En La carta,
+el plato de la foto de cada parte ya no se repite en la lista de debajo.
+
+**El 2026-11-03**, tres fotos del Inicio cambiadas por Mario: el panel de los imprescindibles lleva
+el arroz de carabinero en lugar del katsu con patatas, que no le parecía *«la más premium»*, y en El
+producto el atún ya no se repite —se queda de fondo— y la fila de tres es carabineros, la otra foto de
+la picaña y los tomates (`fotografia.md`, arriba). **El fallo que contó en Safari —bajar no abría los paneles— no era un fallo:** en un iPhone, con las
+barras de Safari, la zona no cabía y caía siempre en «se abren al tocarlos»; se había medido con la
+pantalla entera. Ahora, en el móvil fijo, todo va más junto y sin dos párrafos largos, y se fija del XS
+al Pro Max; en el SE, no (`cokima-el-rediseno.md` §3, «El "fallo" del scroll en el iPhone»; la trampa,
+en `metodo.md` §2.3). Y, el
+mismo día, los textos: **nada inventado** —todos salen de la web original, de su carta o de su
+Instagram, salvo botones, etiquetas y tres textos del agente—; Nosotros pierde el nombre de Martín y
+el hueco de las reseñas, La carta gana al pie el pan y aperitivo de 3 € de la suya, la fila de El
+producto pasa a ser el atún marcado, el steak tartar y los tomates, y el último panel se llama Visítanos (`cokima-el-rediseno.md` §3,
+«Textos, de dónde sale cada uno»).
+
+**Y ese día, la portada estrena vídeo: planos de su Instagram, no el de IA.** Mario iba a rehacerlo
+con Seedance y lo paró al ver los vídeos de @cokimamadrid —*«los de IG son mucho mejores»*—; de la
+maqueta dijo *«me parece top»*. Son diez planos de 3 s de platos de la carta actual, sin texto ni
+caras y sin repetir ninguno de Nosotros, que se queda con el local y el equipo. **En el móvil, un
+vertical de 30 s; en el ordenador apaisado, tres verticales en columnas** que cortan a 1 s una de
+otra, con un reloj común que las recoloca si se separan (regla 25 de `movimiento.md`). Van menos
+oscurecidos que el de IA, que a estos los dejaba negros, y pesan más: 2,14 MB el del móvil y 2,67 MB
+las tres columnas. La receta, `scripts/video-entrada.sh`, los monta ahora desde la fototeca
+(`cokima-el-rediseno.md` §3, «La portada con los vídeos de Instagram»). Medido sobre el build en
+WebKit y Chromium, del móvil con las barras de Safari a 2560×1440, y con «reducir movimiento» sin
+descargar nada; **sin mirar en un iPhone**.
+
+**Y la imagen al compartir el enlace de Cokima es, desde ese día, la portada en pequeño:** tres planos
+del vídeo en columnas, «Cokima» con un naranja incandescente suave encima y chispas, a 1200×630.
+Mario la eligió entre tres y pidió más calor en el nombre —sin llegar al de la entrada— y más chispas.
+La sartén en llamas, que era la de antes y cuadrada, se queda como foto del local para los
+buscadores, en la home y en las legales. Cómo está hecha y lo descartado, en `fotografia.md` §Nota
+técnica. **Sin probar en WhatsApp de verdad.**
+
+**Y Nosotros, desde el 2026-11-04, es el collage, ya en `preview`.** Salió de cinco formatos descartados
+en maqueta —el primero por lineal; la escena con índice y el mosaico, porque hay que tocar para leer cada
+descripción; el texto delante y las cinco a la vez, sin motivo concreto—. **Mario eligió el collage, con
+el fuelle de reserva en la maqueta**: la idea del mosaico vivo de La casa de Ochoa, que trajo él como
+referencia, con piezas de Cokima. Dos ampliadas que rotan cada 3 s, cuatro tarjetas a la vista y la quinta
+fuera; al tocar una, solo esa ampliada y las cinco a la vista, y a los 6 s sin hacer nada vuelve el
+automático; y un botón redondo de leer más que trae la tarjeta al primer plano. Debajo, una ficha con datos
+comprobados para los buscadores y los asistentes, y un cierre. Medido sobre el build en WebKit y Chromium,
+en siete tamaños; **sin mirar en un iPhone**. Por el camino salió lo que manda sobre el formato: **Nosotros
+no puede atraer búsquedas mientras sea `#nosotros` dentro de la portada.** Las maquetas, los motivos
+y la recomendación —una dirección propia para cada sección—, en `cokima-el-rediseno.md` §3,
+«Nosotros, en maqueta»; la trampa de los vídeos que salió al medir, regla 31 de `movimiento.md`.
+
+**El 2026-11-04, una línea de progreso en vez de la barra del navegador.** Mario, viendo los paneles
+del Inicio: *«se navega un poco "a ciegas"»*. Es una línea fina al pie de la barra de arriba, en todas
+las secciones, que se llena de izquierda a derecha al bajar; la barra del navegador ya no sale. La
+portada sigue sin nada encima. Medido sobre el build; **sin mirar en un iPhone**
+(`cokima-el-rediseno.md` §3, «La línea de progreso»).
+
+**Y una dirección para cada sección: `/`, `/carta`, `/nosotros`, `/visitanos` y `/reservas`.** Mario, al ver
+que no se podía volver atrás: *«vayamos adelante con ello»*. A la vista no cambia nada: se cambia de sección
+sin recargar, con la misma bocanada. Cambia que volver y avanzar funcionan, cada sección a la altura en que
+se dejó, y que cada página lleva en su HTML solo lo suyo, con su título, su descripción y su `h1`; la carta, con
+todos los platos escritos, que antes pintaba JavaScript. Los enlaces viejos con almohadilla llevan a su página.
+**Los títulos y las descripciones los escribió el agente, y falta que los revise Mario.** Medido sobre el
+build; **sin mirar en un iPhone** (`cokima-el-rediseno.md` §3, «Una dirección para cada sección»).
+
+**Y Visítanos, desde el 2026-11-04, es La mecha, ya en `preview`.** Mario la veía *«muy plana»* y la eligió entre tres en
+una maqueta. Las calles reales de Argüelles a oscuras, y desde los cuatro metros más cercanos, una mecha por el camino de
+verdad que llega a la vez a Cokima; entonces la luz se abre por el barrio. La foto del rótulo sale de esta sección, y los
+textos y los datos siguen, debajo. **Su primera corrección ya está:** *«tarda un poquito en aparecer»*, y medido, 1,17 s en
+el móvil sin ver nada; ahora, entre 0,22 y 0,37 s desde que se pulsa, y dura 2,6 s en vez de 3,9. **Espera a que la vea en el móvil
+y la ajuste.** Medido sobre el build en WebKit y Chromium, en once tamaños y entrando por las dos vías; **sin mirar en un
+iPhone**. Lo descartado, de dónde sale cada dato y las trampas, en `cokima-el-rediseno.md` §3, «Visítanos: La mecha»; la
+regla que dejó, la 32 de `movimiento.md`.
+
+**Y las cartas, desde el 2026-11-04, siguen los PDF oficiales del restaurante.** Mario: *«Ambos PDFs son
+oficiales del restaurante si, debemos seguir la información que indican»*. Están en `docs/`, como
+`carta-alergenos-cokima-oficial-2026-11-04.pdf` y `alergenos-ochoa-oficial-2026-11-04.pdf`. **Cokima** cambia la
+carta (entran los tacos de tartar de atún, la «oreja brava» y la panna cotta; salen el tataki, los minutejos, la
+torrija y el soft shell crab; el ceviche pasa a 21 € y los huevos rotos a 26 €) y enseña por primera vez sus
+alérgenos, **en números y no en iconos** (*«los iconos desentonarían bastante»*), los mismos de Ochoa, con leyenda
+al pie. **Ochoa** solo tenía un error: la cesta de pan decía sulfitos y la hoja no los marca. Eran 89 números en
+la carta y son 88; el «cuadra con la hoja» del 2026-09-19, más abajo, era ese error. **Espera al restaurante, no a
+Mario:** el 2026-11-05 dijo *«no tengo la info»* de lo que queda abierto en las dos casas, y que se suba lo que se
+pueda. Lo abierto y lo que no se comprobó, en `cokima-el-rediseno.md` §3, «La carta del PDF oficial», y en §4 de aquí.
+
+Es el boceto pasado tal cual, para iterar sobre lo mismo que vio. **Las páginas de la web anterior
+dejaron de publicarse** —`/carta` y `/reservas` son ahora las de Brasa, y el inglés lleva a ellas— y las
+legales siguen con su aspecto de antes. **Antes de producción falta lo que se dejó a propósito**:
+el cartel de cookies y la medición, que en la home no están; la Cormorant servida desde la web y
+no desde Google; el inglés; y las legales con el aspecto nuevo. La lista y el porqué, en
+`cokima-el-rediseno.md` §3.
+
+Medido sobre el build, en WebKit a 390 y a 1440: el recorrido entero sin errores ni scroll
+lateral, las dos letras cargadas, y el vídeo arrancando en la portada, en pausa al bajar y en las
+otras secciones, y sin descargarse con «reducir movimiento». Sin mirar en un iPhone.
+
+El viaje de los botones, medido fotograma a fotograma con el reloj de la página en la mano, en
+WebKit y Chromium a 390 y a 1440: un solo «Reservar» y una sola carta a la vista en cada
+fotograma, bajando, subiendo y dándose la vuelta a medio camino; en el penúltimo fotograma, a
+menos de 0,7 px de su sitio; y sin viaje con «reducir movimiento», en un salto largo o al cambiar
+de sección. Salió una trampa sin error, ya regla 30 de `movimiento.md`: el build reescribe
+`640ms` como `.64s`, y WebKit devuelve vacíos los tokens mientras carga la página. Por la misma
+trampa, en Chrome el cambio de sección no esperaba a su fundido; arreglado también, y medido: la
+sección vieja se esconde a los 200 ms en los dos motores. Sin mirar en un iPhone.
+
+El desplegable del móvil, medido sobre el build en WebKit y Chromium a 390 y a 320: la marca, la
+sección y «Reservar» caben en una fila sin pisarse ni scroll lateral; la lista se abre pegada a la
+barra (0 px) con la sección actual marcada, lleva a la que se elige y pone su nombre en la barra,
+y se cierra al tocar fuera, con Escape (el foco vuelve al botón), al mover la página y al volver
+a la portada; sin transición con «reducir movimiento». En el móvil viaja «Reservar» y no «Ver
+carta»; en el ordenador, los dos, y ni desplegable ni píldora. Sin errores. Sin mirar en un
+iPhone.
+
+**Ochoa, 2026-10-29: la home viva está en `preview`.** Mario la fue eligiendo en tres rondas de un
+probador montado sobre la web real, y está en las dos homes, la española y la inglesa. **El porqué
+de cada pieza, lo que se descartó en cada ronda y las cifras medidas están en
+`ochoa-inicio-vivo.md`**; aquí, lo justo para orientarse:
+
+- **En el ordenador, la barra enseña las secciones** («El relieve»): La carta, Dónde estamos y
+  Conócenos en letra de rótulo, y el cursor es la luz que mueve su sombra y la del titular. En el
+  móvil sigue el botón «Menú» con la cortina.
+- **Un fondo vivo, «Vermú y palabras»:** vetas rojas de luz de vermú y las palabras del espejo de
+  la barra pintándose a mano en el blanco libre. Trae una tercera letra, Yellowtail, servida desde
+  la web; su licencia es la Apache 2.0, no la OFL.
+- **La casa es un mosaico vivo** de diez fotos que cambian de forma y de sitio cada 3 s más o
+  menos, con el nombre de la foto grande como una chapa.
+- **La portada:** en el móvil, a pantalla completa bajo la cabecera, con el telón; en el
+  ordenador, «la tira», las ocho fotos en fila y enteras pasando despacio. Es una serie nueva de
+  ocho fotos de Instagram; las seis de antes salen de la portada, sin borrar (`fotografia.md`).
+- **De la rama `feat/inicio-vivo` se quedan** el paralaje de tres fondos, el manifiesto rojo con
+  las botellas y el menú de cortina. El muro de La casa y el telón del ordenador se sustituyeron.
+
+Lo que se mueve solo sigue la regla 6 de `movimiento.md`, y lo que no cabe en las reglas lleva su
+excepción escrita allí con fecha: el fondo, la sombra de El relieve y la tira. Una trampa nueva
+quedó como regla 27: la ventana del mosaico y su foto no pueden ir en dos transiciones de CSS,
+porque el navegador las lleva en sitios distintos y la foto se adelanta.
+
+**Medido sobre el build** (Chromium a 1440 y 1024, WebKit a 390; cifras en
+`ochoa-inicio-vivo.md` §6): sin errores de JavaScript ni scroll lateral; en el móvil, cabecera +
+portada = la pantalla; la tira, a 28 px/s, parada al tocarla, en pausa fuera de la vista y quieta
+con «reducir movimiento»; la foto del mosaico cubre siempre su ventana; la sombra de El relieve
+cambia con el cursor; las palabras, solo en Yellowtail. **Sin medir:** en un iPhone de verdad
+—sobre todo lo que cuesta el fondo en la GPU de un móvil modesto—, con un ratón de verdad y en una
+conexión lenta.
+
+**Mario la vio en su iPhone esa misma noche, y se ajustó** (el porqué y las cifras, en
+`ochoa-inicio-vivo.md` §3.4, §3.6 y §6):
+
+- **La portada y «Lo que más sale» se quedaban parados en el móvil:** se apagaban con el primer
+  dedo que bajaba la página. Ahora solo los apaga un toque de verdad (regla 6 de `movimiento.md`).
+  En los Android, además, la portada no pasaba nunca de la primera foto (regla 28).
+- **El paralaje de La casa y de La tasca también en el móvil**, al bajar y no con el dedo; en el
+  ordenador, la foto de La tasca se asoma con el ratón como las de La casa.
+- **El vermú del fondo, más visible y algo más vivo en el móvil.** En el ordenador, igual.
+- **Las pantallas:** el móvil tumbado —portada a pantalla completa con la tira, titular entero,
+  margen que libra la isla de la cámara—, las fotos de los platos en proporción, el encuadre del
+  vino y de la caña calculado para cada pantalla para que ninguna letra salga partida, y la tira
+  en tableta vertical. Lo que se dejó como está, con su motivo, en §3.6 de ese documento.
+
+Medido sobre el build en el simulador de iOS y en Chromium y WebKit, en 26 tamaños de pantalla.
+**Falta que lo vea Mario en su iPhone**, y un plegable de verdad no se ha probado: solo sus tamaños.
+
+**La imagen al compartir el enlace es, desde el 2026-10-30, un cartel y no una foto:** «Los Ochoa»
+en blanco sobre el rojo de la casa, con el mármol del fondo en blanco, como el toldo. Mario la eligió
+entre tres y pidió las vetas *«un poquiiiito»* más blancas. La fachada, que era la de antes, se queda
+como foto del local para los buscadores. El porqué, cómo está hecha y lo descartado, en
+`fotografia.md` §Nota técnica.
+
+**La carta y Reservar llevan, desde el 2026-10-30, el mármol de la home**, en los dos idiomas:
+Mario lo pidió así, *«añádele el efecto de mármol rojo a las páginas de La Carta y Reservar»*. Solo
+las vetas, sin las palabras del espejo: una palabra de la carta pintada junto a la carta de verdad
+se leería como un plato más. Detrás del texto baja al 28 %, como en la home, así que en el móvil,
+donde la carta ocupa casi todo el ancho, se nota sobre todo alrededor del título y entre
+secciones. El cómo y lo medido, en `ochoa-inicio-vivo.md` §3.2.
+
+**«Lo que más sale» se llama, desde el 2026-10-30, «Los que destacan»** («Standouts» en inglés), y
+tiene diez platos en vez de seis. Mario lo pidió así: *«no queremos confundir al cliente con algo
+que puede no ser objetivo»*; nadie ha medido qué se vende más. Los cuatro nuevos —brioche de
+sobrasada, bikini de lacón, pulpo a la plancha y tarta de queso— los eligió el agente: uno de cada
+sección de la carta, con foto de su Instagram que nombra el plato y que no sale en ningún otro sitio
+de la web. Van en el orden de la carta, así que el primero es ahora el brioche. **En el ordenador
+la fila gira:** seis tarjetas del mismo tamaño que antes y, cada 5,5 s, se corre una hacia la
+derecha, sin fin; espera con el ratón encima y se para para siempre con un clic o las flechas. En
+el móvil sigue el mazo, con diez cartas. **El manifiesto ya no abre con la doble raya blanca**,
+también a petición suya, y la cita sube a su hueco. El porqué, lo que eligió el agente y lo medido,
+en `ochoa-inicio-vivo.md` §3.7.
+
+**Lo que espera a Mario:**
+
+- **Seguir con los retoques de Brasa**, en el alias de Cokima de `preview`, y decir si los
+  nombres de las secciones valen (`cokima-el-rediseno.md` §3). Y si se borra `feat/cokima-brasa`, que ya sobra.
+- **Ver los paneles del Inicio en su móvil y en el ordenador** y seguir iterando sobre ellos
+  (`cokima-el-rediseno.md` §3, «La dirección de Brasa» y «Se abren al bajar»). Salieron de una
+  maqueta de tres maneras: https://claude.ai/artifact/VM1QDA4nP7nzN9NFVjZpPm. **Lo primero, en su
+  iPhone XS: que ahora la zona se queda fija al bajar** —medido con el alto de Safari, no en un iPhone
+  de verdad—; y si el tramo de scroll de cada panel se hace corto o largo. Después viene
+  Visítanos, sobre la misma dirección.
+- **Revisar el texto para buscadores del último panel del Inicio**, «Ven» (`cokima-el-rediseno.md`
+  §3, «El Inicio, reordenado»): lo escribió el agente con frases de la casa y datos comprobados.
+- **Ver en preview la entrada, la bocanada y los botones de neón**, en el ordenador y en su iPhone
+  (`cokima-el-rediseno.md` §3, «En preview: la entrada, la bocanada y el neón»). La entrada solo sale
+  la primera vez de cada sesión: para volver a verla, una pestaña privada nueva.
+- **Decidir cómo va «Carta» en la barra del móvil**: cabe si la marca abre el menú y el desplegable
+  deja de decir en qué sección estás (`cokima-el-rediseno.md` §3, «Reservar dentro, chispas y la
+  carta a mano»).
+- **Abrir Reservar en `preview`, en el ordenador y en su iPhone**, y ver que el motor sale con la
+  piel de Brasa: en el navegador de pruebas no se deja cargar (403), y la piel solo la enlaza desde
+  el despliegue. Y decir si las chispas del fondo se quedan así de sutiles.
+- **De dónde viene Cokima: el año de apertura no sale.** Su Instagram dijo el 2025-10-23 que cumplía cinco
+  años, lo que apunta a 2020, pero Mario no está seguro y su criterio, del 2026-11-04, es que solo va si lo pone
+  su Instagram: *«Si lo pone en su Instagram si, sino no»*. No lo pone: en las 232 publicaciones de la
+  fototeca, de febrero de 2024 a octubre de 2026, habla de los cinco años y nunca del año. Las anteriores no están en
+  la fototeca, así que si aparece ahí, se puede poner. Quién está detrás, no: Mario pidió no poner nombres.
+- **Revisar los títulos y las descripciones de cada sección de Cokima**, que es lo que sale en un
+  buscador, y volver atrás en su iPhone (`cokima-el-rediseno.md` §3, «Una dirección para cada sección»).
+- **Ver el collage de Nosotros en `preview`**, en el ordenador y en su iPhone (mismo apartado). El fuelle sigue de reserva en la maqueta:
+  https://claude.ai/artifact/8otJqwkVntRJ1ummPx4768.
+- **Ver en su móvil el desplegable de secciones y el viaje de «Reservar»**, y seguir iterando
+  sobre ellos (`cokima-el-rediseno.md` §3). El desplegable salió de una maqueta de tres:
+  https://claude.ai/artifact/TGPi5Le9WBSVTFXZGoLwhc.
+- **Probar la imagen nueva compartiendo el enlace de `preview` en WhatsApp.** Si sale la de antes,
+  añadir `?v=2` al final del enlace: WhatsApp recuerda la vista previa de lo ya compartido.
+- **Ver en su iPhone los ajustes de esa noche**, en el alias de `preview` desde el 2026-10-30, y
+  decir si el vermú del móvil se nota lo justo. La home viva está ahí desde el 2026-10-29; para
+  que llegara hubo que arreglar el filtro de despliegue, que se saltaba los push de varios commits
+  (`deploy.md` §Evitar que cada push reconstruya las dos webs). El mismo fallo
+  tenía la web de Cokima en `preview` sin actualizar desde el 2026-10-26: su entrada con vídeo
+  estaba en la rama y no en la web. Se desplegó con el arreglo, sin tocar nada de Cokima.
+- **Ver en su iPhone el mármol de La carta y Reservar** y decir si detrás de la carta se nota lo
+  justo (arriba).
+- **Ver la rueda de «Los que destacan» en el ordenador** y decir si el sentido —las tarjetas viajan
+  hacia la derecha— y el ritmo son los que pedía, y si los cuatro platos nuevos le valen
+  (`ochoa-inicio-vivo.md` §3.7).
+- **Decir si «Dónde estamos» pasa a ser una página.** Hoy el enlace del menú lleva a la sección de
+  la home (`#visita`, o `/#visita` desde las demás páginas). Mario preguntó el 2026-10-30 si dejarlo
+  así o hacer *«una página simple, pero dedicada»*, con alguna foto o *«un pie de texto
+  sencillito»*. Se le recomendó la página: es el único enlace del menú que no lleva a una página, y
+  en el móvil despista (se cierra la cortina, carga la home entera y baja sola); quien la busca
+  suele estar en la calle con el móvil, y una página con la dirección, el horario, el mapa y «Cómo
+  llegar» pesa mucho menos que la home; y tendría enlace propio para Instagram o WhatsApp. Llevaría
+  lo mismo que la sección de la home, sacado de los mismos datos, más la fachada y, de pie, *«Los
+  Ochoa te espera»* (Instagram, 2026-05-28). **La única foto de la fachada (`hero.jpg`,
+  `LosOchoa-5`) es de 2021:** sale alguien con mascarilla y la pizarra del desayuno con el precio de
+  entonces. Hay que pedirle una actual al restaurante; mientras tanto vale el cartel colgante de
+  cerca (`DWUBtsWiBZK-1`, de 2026). La sección de la home se queda como está.
+- **Revisar en Ochoa, cuando toque, lo mismo que en Cokima: qué dirección tiene cada página y qué
+  ve Google de ella.** Lo pidió Mario el 2026-11-03, al ver que Nosotros de Cokima no podía atraer
+  búsquedas por ser `#nosotros`. Ochoa está mejor de partida: La carta, Conócenos y Reservas ya son
+  páginas, con su título y su descripción, en los dos idiomas. Lo que va con almohadilla es «Dónde
+  estamos» (`#visita`, el punto de arriba), y Conócenos sigue fuera de Google a propósito
+  (`noindex`) mientras `EN_OBRAS` esté en `true` (`src/conocenos.ts`). Falta repasar los títulos y
+  las descripciones pensando en lo que se busca, y si a Ochoa le hace falta una ficha con datos
+  comprobados para los asistentes de IA, como la que se preparó para Cokima. Y una cosa medida en su
+  build: la canónica de sus páginas lleva barra al final (`/carta/`) y sus enlaces no (`/carta`); en
+  Cokima se resolvió con `trailingSlash: "never"`, que además deja `/carta/` redirigiendo a `/carta`.
+- **Decir si se montan en el probador las tres maneras nuevas de «Conócenos».** La que hay en
+  `preview` (abajo) la vio Mario el mismo 2026-10-30 y pidió darle una vuelta: *«hay algunas fotos
+  en Conócenos que vuelve a repetirse, o que directamente son muy parecidas al resto»* —solo le
+  convencen la tostada y el dado—; en el ordenador la ve *«algo vacía y plana»*, en el móvil
+  *«demasiado "vertical"»*, y sin *«la misma "vida"»* que el resto. Las tres cosas, medidas sobre el
+  build: cuatro de las siete fotos son casi gemelas de otras de la home (el comedor, la barra, el
+  aperol —de la misma sesión que el brindis de la portada— y el cartel, que repite el rótulo del
+  cristal); en el móvil la página mide 5,8 pantallas a 390×844, y la home entera 4,8; en el
+  ordenador, 6,1 pantallas a 1440×900, y cada momento ocupa 0,8 de pantalla para una foto y una
+  frase.
+
+  La propuesta, que espera su respuesta: contar la casa por **sus rituales**, que la home no
+  enseña. El desayuno (`DHkzXrsiMmu-1`), la tortilla con su caña (`DL5NAUeIv4v-1`), mojar pan
+  (`DQe2dPqiJwV-2`), el pan y el aceite (`DHGMm3iipxs-1`), los tercios en hielo (`DcQn2lFIH4h-1`) y
+  el dado (`DMf4a_eoWqt-1`), con tres de reserva: el bocata de calamares (`DBLrwVVtRR0-1`), la
+  vitrina con su pizarra (`C2Pz8szNUrq-4`) y el café en la barra (`DKq4fpCC4jt-1`). Ninguna sale en
+  el resto de la web, y cada una trae frase en su propia publicación. La gilda en la mano
+  (`DY4YiorCGi8-4`) es la foto de la publicación del titular, pero se queda fuera: la home ya tiene
+  dos gildas. De estructura se recomienda **«La pizarra»**: los rituales en lista, con letra de
+  rótulo, y al lado la foto del que se lee, que cambia con el telón. En el móvil la foto se queda
+  arriba y cambia al bajar (se calculan unas tres pantallas, sin medir); en el ordenador cambia al
+  pasar el ratón, se mueve con el cursor y pasa sola si no se toca nada. Se parece al gesto de «El
+  espejo» (`archivo/2026-10-28-ochoa-inicio-direcciones.md`), que era para la carta de la home. Para
+  comparar, **«El mosaico»** —el de La casa con los rituales: le gusta, pero repite una pieza de la
+  home— y **«La tira»** —los rituales pasando solos, como la portada del ordenador: la más corta,
+  pero obliga a leer frases en movimiento—. Se eligen viéndolas en el móvil (`metodo.md` §1).
+
+  Lo que hay hoy en `preview`, desde el 2026-10-30, porque Mario quiso verla con el resto de la web
+  en vez de elegir en el probador: *«sobre ello voy viendo posibles cambios»*. Es «En sus
+  palabras», la manera que el probador enseñaba de entrada (versión 5): cinco momentos —La mañana, La barra, La ronda, La mesa, El sitio—, cada uno con su
+  foto entera y una frase de la casa, alternando de lado, y cierra el cubo de madera. Cada foto
+  entra con el telón al llegar a ella, y lleva el fondo vivo de la home, como en el probador. La
+  otra manera, «Un día en Los Ochoa» —los mismos momentos como un día, con un reloj quieto que
+  cambia de hora al bajar—, sigue solo en el probador. Sigue con `noindex` (`EN_OBRAS`, en
+  `conocenos.ts`) hasta que Mario la dé por buena.
+
+  Lo decidido el 2026-10-29: la página va *«únicamente»* de la experiencia del restaurante, sin el
+  equipo, y con frases que la casa ya ha publicado —la del cubo, las de su Instagram—: *«cuánto
+  menos podamos inventarnos, mejor, al menos, por el momento»*. El titular es suyo: *«Madrid tiene
+  bares… y luego están las tascas, donde la comida acaba siendo la excusa para quedarse»*
+  (Instagram, 2026-05-28). Cada frase sale de la publicación de su propia foto cuando la tiene; lo
+  único escrito aquí son las etiquetas de los momentos y las notas de horario, que salen de
+  `site.ts`: si el horario cambia, el build se para en `Conocenos.astro` hasta que se corrijan.
+  **En inglés, las frases son traducción nuestra, sin revisar por Mario.** Las fotos, copiadas de la
+  fototeca tal cual: el comedor de «Conservas» (`DKKDXWDiK3x-1`), el desayuno (`DHkzXrsiMmu-1`), la
+  barra del espejo (`DHdb1_hCOls-2`), el aperol (`DPyg6SPCGH5-2`), la mesa rotulada
+  (`DLXrTlcoR2c-1`), el cartel de cerca (`DWUBtsWiBZK-1`) y el cubo (`DMf4a_eoWqt-1`). La historia
+  sigue sin poder contarse: no hay datos, y no se inventan.
+
+  Medido sobre el build, en Chromium a 360, 390, 768, 1280 y 1440 de ancho y en WebKit a 390 y
+  1440: sin scroll lateral ni errores, las siete fotos descargadas y las siete entradas hechas al
+  bajar, en los dos idiomas; con «reducir movimiento», nada escondido. Sin mirar en un iPhone.
+- **El vídeo con IA.** La recomendación es el fondo del manifiesto, en lugar de la foto de las
+  botellas:
+  - va en blanco y negro multiplicado sobre el rojo, que disimula los fallos típicos de la IA;
+  - está a media página, así que no frena la carga de la portada;
+  - es el sitio que ya le gusta.
+  Mejor animando una foto real con poco movimiento, sin caras ni manos en primer plano: una caña
+  tirándose, las botellas con luz, un vermú con hielo. En bucle de 5 a 8 s. La portada se
+  descartó como sitio: ya cambia sola —el telón en el móvil, la tira en el ordenador—, y en un
+  iPhone con ahorro de energía el vídeo no arranca.
+- **El menú del día**, si lo hay a mediodía, con su precio y lo que incluye. Lo anuncia su
+  Instagram («nuestro menú del día») y lo cuenta `.impeccable.md`, pero no está en la carta. La
+  investigación dice que a mediodía es lo primero que se compara
+  (`archivo/2026-10-28-ochoa-inicio-direcciones.md` §2).
+- **Si se borra `feat/inicio-paralaje`**, la rama de prueba del Inicio en paralaje, parada por
+  Mario el 2026-10-28 (el porqué, en `ochoa-inicio-vivo.md` §1). No está vacía: sus dos commits
+  (`47a3000` y `795eb07`) no están en `preview`, y borrarla los pierde. El 2026-10-30 Mario pidió
+  borrar las ramas vacías que solo eran ruido, y se borró `feat/inicio-vivo`, en local y en
+  GitHub: estaba entera dentro de `preview` desde el 2026-10-29. Esta no lo está: Mario preguntó
+  qué lleva —el Inicio de prueba con los platos recortados y, en el ordenador, un collage de tres
+  fotos— y, de momento, sigue.
+
+**Ochoa, 2026-10-27: la portada es un telón de seis fotos y «Lo que más sale» es un mazo en el
+móvil.** Mario lo eligió en dos bocetos. La portada deja la fachada y pasa a seis fotos de la casa
+con gente (`apps/ochoa/src/data/portada.ts`) que entran de derecha a izquierda cada 3,5 s. (Desde
+el 2026-10-29 la serie es otra, y en el ordenador la portada es la tira: ver arriba.) Los
+destacados, en el móvil, se apilan con las dos siguientes asomando por la izquierda, y la de
+delante se va al fondo cada 5,5 s; en el ordenador siguen siendo la fila quieta. Deslizar a la
+derecha trae la anterior entrando por la izquierda, por encima, y el resto del mazo espera quieto
+a quedar tapado; el plato se ve igual de rápido en los dos sentidos (40 / 80 / 100% a los 200 /
+300 / 400 ms). Costó tres arreglos el mismo día, los tres vistos por Mario en su iPhone: aparecía
+fundiéndose encima de la de delante, luego la de delante se hundía antes de verse nada, y luego
+el plato tardaba 900 ms en verse entero (`movimiento.md`, regla 25). Los dos se paran
+para siempre al primer toque, y no van al mismo compás: comparten un reloj para no cambiar nunca
+a la vez (`movimiento.md`, regla 25). **Medido sobre el build:** mazo simétrico a 390 px (19,5 px
+de margen a cada lado, tiras de 16 px, las seis cartas a 293 px), sin scroll lateral a cinco
+alturas, y separaciones entre cambios de 0,25 s o más. Encuadre de las fotos en `fotografia.md`.
+**Sin medir:** en un iPhone de verdad, con «reducir movimiento» activado (por código no arranca
+ninguno de los dos), y la carga en una conexión lenta (si la foto siguiente no ha llegado, el
+telón se salta ese turno). **Para Mario:** la vista previa en redes sigue siendo la fachada
+(`fotografia.md` §Nota técnica), y el hueco del equipo sigue sin foto (el 2026-10-29 Mario decidió
+quitar esa sección de «Conócenos»: ver arriba). Y un efecto de rebote: la
+hipótesis de §3.sexies sobre la barra de iOS —el scroll animado de la tira— ya no aplica en el
+móvil, porque el mazo no hace scroll.
+
+**Novedad del 2026-09-07: el repo ya no depende de la memoria local de ningún agente.** Lo que
+antes solo vivía ahí —con quién se trabaja, cómo se verifica y los identificadores que cuestan de
+recuperar— está en `trabajar-con-mario.md`, `metodo.md` y `recursos.md`. Esa memoria no cruzaba de
+ordenador, así que un agente sentándose en la otra máquina empezaba en blanco y repetía errores ya
+pagados. **Cuando algo nuevo de este tipo aparezca, su sitio es uno de esos tres, no una nota
+fuera del repositorio.**
+
+**Mario alterna entre las dos webs y dice al empezar la sesión a cuál ataca. Esperar a que lo
+diga, en vez de deducirlo de este documento.** Lo de abajo cuenta dónde quedó cada cosa, no qué
+toca hoy: que el trabajo a medias sea el de Cokima no significa que la sesión vaya de Cokima.
+Queda derogado el orden del 2026-08-04 —«primero Ochoa y Cokima después»—, que ya no rige.
+
+**COKIMA SE ESTÁ REHACIENDO ENTERA, y es lo que tiene trabajo abierto.** El trabajo vivía en la
+rama `tmp/entrada-cokima` y **desde el 2026-10-26 está en `preview`**, que es la única rama de
+trabajo por decisión de Mario.
+
+**Y esto se desarrolla desde dos ordenadores** —un Mac prestado y el HP de Mario—, que el
+2026-08-16 estuvo a punto de costar caro: el HP llevaba diez días sin `fetch`, con una rama local
+llamada `preview` que en realidad era otra cosa. **Antes de leer nada más, §1.1.** Se resume en
+`git fetch --all --prune` nada más sentarse, y en no pushear una rama sin mirar a dónde apunta.
+
+**Antes de tocar nada, leer `cokima-el-rediseno.md`.** Explica por qué se descartó todo lo que se
+propuso antes de llegar aquí, y sin eso la mitad de las decisiones de `Entrada.astro` parecen
+arbitrarias. En dos frases: Cokima era *literalmente* Ochoa con dos secciones menos —mismos
+componentes, mismos nombres de clase—, Mario lo paró, y la distinción que ordena el rediseño es
+suya: **Ochoa es transacción social** («pido lo de siempre, me siento y a charlar con mi gente»)
+y **Cokima es experiencia pícara**.
+
+**Lo construido:** la landing. `apps/cokima/src/components/Entrada.astro` — la pantalla entera es
+el plato, el nombre en el medio, dos botones píldora abajo, y **nada más**: el rótulo de la
+cabecera, la hamburguesa y el cartel de cookies aparecen al deslizar. Es una decisión explícita de
+Mario y no hay que erosionarla añadiendo «solo una cosita más».
+
+**Y desde el 2026-08-17 el fondo es el vídeo**, no el póster: llegó de Higgsfield en horizontal y
+claro, y entró recortado a vertical y con el grado horneado para que quede en segundo plano —que
+es como lo pidió Mario— en vez de pelearse con el rótulo. El póster sigue ahí y sigue haciendo
+falta: en iPhone con ahorro de energía es lo único que se ve. Detalle en `cokima-el-rediseno.md` §4.
+
+**LO SIGUIENTE, Y ESTÁ SIN DECIDIR: qué va debajo de la entrada.** Hoy debajo sigue la portada
+vieja —`Highlights`, manifiesto, casa, visita—, que es exactamente el esqueleto de Ochoa que se
+quería tirar. Mario dejó dicho «enseguida vamos con lo que ocurre al scrollear»: **es una
+conversación con él, no una tarea que ejecutar por cuenta propia.**
+
+**Lo que espera a Mario:**
+
+1. ~~El vídeo de la entrada.~~ **Entregado y puesto el 2026-08-17, y sustituido el 2026-11-03 por
+   planos de Instagram (§0).** Lo que sigue es del de entonces. Vino de Higgsfield en
+   horizontal (1920x1080, 27 s, 18,5 MB) y claro; se recortó a vertical `608x1080` y se le horneó
+   el grado de la casa para que case con el póster, que es casi negro. Pesa **1,05 MB en MP4 y
+   0,87 MB en WebM** (y 1,51 / 1,40 el corte de escritorio), y vive en `src/assets/video/`, no en
+   `public/`. **Mario avisó de que este vídeo es provisional, así que la receta está en
+   `scripts/video-entrada.sh`:** cambiarlo es un comando y revisar que el grado le siente bien al
+   material nuevo. El porqué de cada parámetro está en `cokima-el-rediseno.md` §4, y **la trampa que
+   costó un despliegue en falso está en su §5: `import.meta.url` no apunta al fuente después de
+   empaquetar, y `dev` no lo delata.** Queda anotado, sin decidir, si el corte del bucle merece un
+   fundido.
+2. **Identificar diez fotos de plato** con el restaurante. Sin eso no pueden ir en la carta. Ver
+   `fotografia.md`.
+3. ~~Decidir si `tmp/entrada-cokima` se fusiona en `preview`.~~ **Fusionada el 2026-10-26**: Mario
+   pidió trabajar solo en `preview`, y la rama se borró ese mismo día con su visto bueno. Lo que sigue
+   es el contexto de entonces: o se fusiona o se descarta, y se
+   borra en los dos casos. Es el mismo trato que tuvo `tmp/entrada-ochoa`, **que ya se cerró el
+   2026-08-16**: llevaba diez días parada con la tanda terminada y en verde dentro, y entró en
+   `preview` con `--no-ff` para que se pueda sacar de un tirón (§3.octies). **Esta no está en ese
+   punto**: la entrada nueva convive con la portada vieja debajo, y eso está a medias a propósito.
+4. ~~La clave de Google Maps~~ (cerrado el 2026-09-20), validar la carta en inglés, si «fríos» y «calientes» se separan, y
+   unificar «Idiazabal» / «Idiazábal». Detalle en §4.
+
+**El `hreflang` roto de las tres legales de Cokima** se arregló el 2026-11-18 (§0).
+
+**Y `Hero.astro` y `Embers.astro` de Cokima quedan huérfanos a propósito.** No se borran hasta
+que el rediseño cierre.
+
+---
+
+### Lo hecho en `preview` desde el 2026-09-07 (se juntó con el rediseño el 2026-10-26)
+
+La rama del rediseño se separó de `preview` el 2026-09-07 y no se volvieron a juntar hasta el
+2026-10-26.
+Lo de abajo es el §0 de `preview` de esas semanas, tal cual: casi todo es Ochoa, más la fototeca
+de Instagram, que toca a las dos casas.
+
+**Ochoa, 2026-10-26: sus seis destacados ya tienen foto, y hay 172 fotos suyas catalogadas.**
+Con la sesión de Mario en Brave se recorrió el perfil entero (411 publicaciones) y se bajaron las
+fotos de las 120 publicaciones con foto desde 2024. Lo de antes se dejó fuera a propósito: Mario
+no quiere contenido de hace años. Cada foto tiene un nombre que dice qué es
+(`plato_cachopin-de-ternera__…`), y el texto de la publicación nombra el plato en casi todas. Los
+seis destacados de «Lo que más sale» llevan foto, y la de las croquetas sustituye a la de 2021. La
+ficha pide ahora la foto hasta 960 px: a 390 de ancho, con 640, se estiraba 1,2 veces. **Medido
+sobre el build:** seis fotos en la tira en los dos idiomas, las seis fichas a 293 px de alto,
+foto de 261×190 a 390 y sin scroll lateral. Por qué se hizo con un receptor local y qué trampas
+salieron, en `fotografia.md` §La fototeca. **Pendiente de Mario:** quién va en el hueco del
+equipo. La portada de varias fotos que propuso está puesta desde el 2026-10-27 (arriba).
+
+**Las dos casas, 2026-10-26: las fotos recientes de Instagram ya se pueden bajar.** Sin acceso a
+las cuentas, un fragmento lee las fotos desde el perfil público en el navegador y un script las
+descarga a una fototeca fuera de git, con un catálogo que dice qué se usa y por qué
+(`fotografia.md` §La fototeca). **El catálogo tampoco va al repo**, porque el repo es público: vive
+solo en el Mac. Sin sesión solo se ven las 12 últimas publicaciones de cada cuenta.
+**La primera recogida (31 fotos) no cubre ningún destacado que falte.** Con el reparto delegado
+por Mario ese mismo día, **Cokima estrena portada (la sartén en llamas) y su sección «La casa»
+pasa de rejillas a cuatro fotos reales**, que ahora se publica y también sale en la versión inglesa,
+que no la tenía. Ochoa no cambia. Medido sobre el build: las cuatro a 4:3 exacto (169×127 a 390px,
+531×398 a 1280), sin scroll lateral en los dos idiomas. **La portada con foto ya no se ve:** desde
+que el rediseño entró en `preview` (§1), la cabecera de Cokima es el vídeo, y la llama queda solo
+como imagen al compartir el enlace. Con ella deja de verse el defecto que tenía —el tramo rojo del
+titular sobre el fuego— (`fotografia.md`, fila de la portada). **Las seis fotos del local que
+aportó Mario en agosto están ya en la fototeca** (`fototeca/icloud/`), y una de ellas encaja mejor
+como sala que la mesa puesta que se usó. Pendiente de Mario: si se cambia la sala, si algún plato
+con foto clara pasa a destacado y si inicia sesión en Instagram para ir más atrás.
+
+**Ochoa, 2026-10-22: se prepara para salir a producción, con prisa del cliente.** Mario pidió
+sacarla cuanto antes. Lo hecho: la foto de las croquetas (`LosOchoa-2`) ya está en su destacado;
+las otras tres fotos que quedan esperan a que Mario confirme el plato (`fotografia.md`). **Lo que
+impide publicar no es código**, y está medido sobre el proyecto de Vercel ese mismo día: el
+proyecto `ochoa` no tiene dominio propio (solo `ochoa-two.vercel.app`) ni **ninguna** variable de
+entorno, así que un despliegue de `main` fallaría a propósito por falta de `SITE_URL`. Faltan, de
+Mario: el dominio y quién controla sus DNS; la razón social, el CIF y el domicilio social para el
+aviso legal y la privacidad (hoy dicen «[pendiente]» en producción); y un correo para que la gente
+ejerza sus derechos de privacidad. **Y un riesgo que se detectó al mirar:** el equipo de Vercel
+está en el plan Hobby, que según las condiciones de Vercel es solo para uso no comercial; la web
+de un restaurante es comercial. Decidir con Mario antes de apuntar el dominio.
+
+**Ochoa, 2026-10-05: el recuadro de reservas lleva la piel de la casa.** Mario la vio en su
+iPhone sobre la preview (bf9515e) y destapó un fallo viejo de las dos casas: el iframe se quedaba en
+550px y se desplazaba por dentro —«dos desplazamientos verticales, dependiendo de dónde pongas el
+dedo»—, porque CoverManager movió su iframeResizer y la ruta que pedíamos da 404 (`recursos.md` §2).
+Con la ruta nueva, medido a 390px en la preview: el iframe crece de 550 a 752px y se ve entero.
+Arregla también Cokima, con el visto bueno de Mario. **Y el mismo día, el escritorio:** Bootstrap 3
+fija `html { font-size: 10px }` dentro del iframe, así que cada `rem` de los tokens medía 10px y las
+etiquetas salían a 8,75px (también en el móvil); la piel devuelve la raíz al 100%. Y como el iframe
+mide 563px a 1280 y 638 a 1440, el motor no llegaba a su corte de dos columnas (768) y el calendario
+se estiraba con los días a 80px: desde 540px de iframe la piel pone calendario y campos a medias, con
+«Personas» y «Hora» apilados, y el mes se encoge con el calendario (`cqi`). Medido sobre la preview
+con la hoja nueva servida por Playwright, de 360 a 1920px: márgenes de 30px a los dos lados, sin
+desbordar, y «SEPTIEMBRE 2026» —el mes más largo— a 17px como mínimo de las flechas; a 1440 el iframe
+baja de 741 a 578px.
+
+**Y la página de reservas de Ochoa se recompuso para escritorio el 2026-10-06** («Codo con codo a
+escala», elegida por Mario entre cuatro composiciones en un artifact con capturas reales de 1280 a
+2560 —hoy, «Codo con codo», «De arriba abajo» y esta—). Con el 90% de ancho las dos columnas se
+separaban en un monitor grande, y el pie subía a media pantalla porque la página es más corta que
+ella. Ahora, desde 821px, título y recuadro van juntos en un bloque centrado; desde 1440 el bloque
+crece (el título hasta 92px a 2560, en una línea) y se centra en el alto, con el pie al fondo
+(`body` en columna solo en esta página). **El recuadro también crece por dentro:** el contenido del
+motor mide ~580px de alto por ancho que se le dé, así que la piel lo amplía con `zoom` (×1,1 desde
+780px de iframe, ×1,2 desde 880, ×1,3 desde 980), y **eso obligó a cambiar cómo mide el alto
+`BookingEmbed`, que es de las dos casas**: `heightCalculationMethod: 'lowestElement'`, porque el
+método por defecto lee el alto sin ampliar y cortaba el contenido (582 frente a 751px). «De arriba
+abajo» se descartó porque en un portátil el recuadro llega justo al borde de la pantalla. Mario
+señaló lo que sobraba en pantallas grandes con «se pierde muchísimo espacio vertical». Medido sobre
+el build, servido a Playwright: de 390 a 2560px sin desbordar; el iframe mide 640px a 1920 y 757 a
+2560, con el contenido entero dentro. El motor de CoverManager vive en un iframe de su dominio y salía con su aspecto de
+serie. Se le pasa `?template=<URL>` y el motor enlaza esa hoja dentro del iframe (cómo se averiguó y
+qué más acepta, en `recursos.md` §2). La hoja es `/covermanager.css`, que sirve
+`apps/ochoa/src/pages/covermanager.css.ts` juntando las dos `@font-face`, `tokens.css` y la piel de
+`src/styles/covermanager.css`: ni un color ni una duración sueltos. `BookingEmbed` gana la prop
+`template` (sin marca: la URL la pone cada casa), y la usan las dos páginas de reservas de Ochoa;
+**Cokima también desde el 2026-11-02**, en la sección Reservar de Brasa, con su piel propia. Lo que se ve: Archivo en todo, el mes en Anton rojo con sombra, el día elegido como
+chapa roja, campos con borde de tinta y a 16px (por debajo, Safari de iPhone amplía al tocarlos),
+«Reservar» como el `.btn` de la casa y «Lista de espera» como su fantasma; la firma de CoverManager
+se queda. **Medido** inyectando la hoja construida en la página real del motor: a 347px el
+calendario y los campos arrancan y acaban en el mismo píxel (30–317) sin desbordar, la chapa del día
+mide 41px y no se estira, y a 777px el motor pasa a dos columnas y cuadra. Las fuentes cruzan de
+dominio porque Vercel sirve los estáticos con `access-control-allow-origin: *` (comprobado en el
+alias de preview). **Comprobado sobre la preview:** el motor carga la hoja él solo desde el despliegue. En local no
+puede, porque el motor es https. **Sin comprobar:** el paso de datos personales —solo se ve empezando una reserva
+real, y puede bloquear mesa unos minutos— y el hundido del botón en el iPhone, porque dentro del
+iframe no llega el `data-tacto` del layout.
+
+**Ochoa, cerrado el 2026-09-19: la portada ya no se queda grande al recargar.** Mario vio que
+«a veces, al recargar, la imagen del Hero aparecía más grande y ocupaba más espacio». Era real y
+medía **94px**: la portada congela su alto una sola vez, y si la recarga cae con la barra del
+navegador retraída congela el viewport grande y no se corrige nunca, porque solo se volvía a
+medir al cambiar el ancho. La regla nueva —**con el mismo ancho, el congelado baja pero no
+sube**— está en `movimiento.md` regla 16 y en `@tombo/ui/alto-congelado.ts`, con 6 tests.
+Medido sobre el build a 390px: desvío 0 en el caso de Mario (antes +94), crecer se ignora, 12
+recargas seguidas a 654px clavados, y la variable se retira y vuelve al navegar con el router.
+**Queda sin medir en un iPhone real**: la mecánica está probada cambiando el alto del viewport,
+no con la barra de Safari. **Y Cokima arrastra el mismo defecto** en su `Hero.astro` (huérfano)
+y en `Entrada.astro` (§3): mismo patrón, misma guarda por ancho. Se arregla importando el mismo
+módulo cuando se toque esa rama.
+
+**Ochoa, 2026-09-19: los alérgenos ya están en la carta, en números.** La hoja del restaurante
+llegó el 07 (foto de la impresa: 39 platos × los 14 alérgenos de declaración obligatoria; el
+original es `docs/alergenos-ochoa-original-2026-09-07.jpeg`). Se enderezó, se amplió y se
+transcribió **literalmente**: 37 platos casan con `menu-es.json` y llevan `allergens`; «Oreja de
+cerdo» y «Dúo de brioche» no están en la carta y se ignoran. Mario eligió cómo se ven entre
+cuatro bocetos con la tipografía real —«la chuleta»: números bajo el plato y leyenda al pie, como
+la carta de bar de toda la vida; se descartaron las palabras (que era lo propuesto), los iconos
+compartidos de Cokima y los sellos con versales—. Los números son los del Anexo II del Reglamento
+1169/2011, derivados del enum (`@tombo/content/allergens.ts`, 6 tests); la leyenda solo lista lo
+que la carta usa (10 de 14). Quien no ve los números oye el nombre entero. **Y la hoja trae cinco
+platos con el gluten marcado en amarillo sin decir por qué** (huevos rotos, alitas, brava de
+feria, entrecot, torrezno): van como `allergensToConfirm` en el JSON —campo nuevo del esquema,
+vacío por defecto—, en la carta salen «1\*» y la leyenda dice «pendiente de confirmar con el
+restaurante». Nada inventado sobre qué significa el amarillo. **Sin datos siguen 12 platos**
+(§4). Verificado sobre el build: 89 números en el HTML (cuadra con la hoja), los cinco «1\*», la
+chuleta en los dos idiomas; a 390px el brioche —nueve números, el peor— cabe en una línea sin tocar
+el precio.
+
+**Ochoa, 2026-09-20: el mapa de «Dónde estamos» es un dibujo de la manzana, y la clave de
+Google Maps ya no hace falta.** Mario lo cerró con estas palabras: «no nos metemos en tanto lío
+de claves de Google y demás». El recuadro sigue siendo lo que era —un enlace que abre la app de
+mapas del móvil, sin mapa interactivo, sin JavaScript ajeno ni cookies— pero en vez del hueco
+lleva la manzana dibujada. **Las huellas y alturas de los edificios, las calles y los jardines son
+los reales de OpenStreetMap** (el local está ahí como nodo, «Tasquita los Ochoa»; su edificio es el
+portal del 117, un solar de 442 m²). Lo genera `scripts/mapa-manzana.py` desde la descarga guardada
+al lado (`--descargar` la renueva) y sale a `apps/ochoa/src/assets/mapa-manzana.svg`, que
+`Mapa.astro` incrusta en línea: **el SVG lleva clases, no colores**, y los pone el CSS del
+componente con los tokens. Decidido por Mario sobre bocetos y capturas: el encuadre «la plaza» (el
+117, la Castellana en diagonal, el metro de Cuzco y el Ministerio de Defensa); fuera el punto rojo
+del pin (el bloque rojo canta solo; queda la chapa «Castellana, 117»); fuera árboles, pasos de
+cebra y líneas de carril («no aportan gran cosa», «no hace falta tanto detalle»); calzadas claras
+sobre la manzana en papel; nombres de calle sobre la parte visible de cada tramo. Hay **capa
+móvil**: por debajo de 640px se apagan las calles menores y la chapa, la Castellana, San Germán y
+los hitos crecen 1,6× sobre su sitio (`transform-box: fill-box`; el giro de cada rótulo va en un
+grupo padre porque un `transform` de CSS sustituye al del atributo). Va en las dos homes de Ochoa;
+**Cokima sigue con su `.mapbox` viejo**.
+
+**Y el mismo día se rehízo en perspectiva, con la cámara que eligió Mario entre cuatro bocetos:
+«El barrio entero».** La primera versión era isométrica y, comparada con la vista
+3D de Apple, a Mario le pareció «un render técnico», «pálido y gris». La causa era la proyección,
+y la segunda versión es una cámara de verdad (pinhole: posición, inclinación y focal): las calles
+convergen, lo cercano es más grande y se ven las fachadas más que los tejados. Lo que eso obligó a
+cambiar y no es obvio: las calles son bandas en el suelo y no trazos (un trazo mide lo mismo cerca
+que lejos); qué cara se ve la decide la posición de la cámara y no una dirección fija; el pintado
+va por la profundidad de la base de cada pieza en el suelo; las sombras arrojadas y de contacto se
+calculan en metros y se proyectan después; y los nombres de calle van pegados al suelo con la
+matriz afín local de la proyección (en un grupo padre, por la capa móvil). Los datos se volvieron a
+bajar con más radio (560 m: 291 edificios, 258 tramos) porque con cámara baja el fondo del marco
+llega a 400 m del local y las esquinas de arriba quedaban vacías. La piel: cuatro escalones de gris
+en las caras según una sola luz del suroeste, techo el más claro, todos los grises con `color-mix`
+de papel y tinta; el local en `--rojo` con la cara en sombra en `--rojo-2`. Pesa 31 KB comprimido
+(tope ~40): la geometría va en enteros y coordenadas relativas, la sombra solo barre las aristas
+que dan a la luz, y lo que no llega a un píxel no se escribe. **Lección de esta tanda:** en
+perspectiva el marco es estrecho por abajo y ancho por arriba (183 m al local en la esquina de
+abajo, 400 m en las de arriba), así que «cuánto barrio entra» ya no es un radio: es la cámara. Con
+la puesta, Pedro Teixeira y Panamá quedan fuera del marco (están al sur y al este, del lado de la
+cámara, que es el lado estrecho) y por eso no se rotulan.
+
+**La cámara la eligió Mario en el móvil, entre cuatro bocetos comparables con la tipografía real
+nombrados por su gesto:** «A pie de calle» (40°), «Desde el balcón» (52° y 620 m, la que se
+recomendaba), «El barrio entero» (50° y 700 m del punto de mira, como su captura de Apple) y «Desde
+el helicóptero» (62°), más la isométrica para comparar. Se quedó con **«El barrio entero»**
+sabiendo que lo que pierde respecto al balcón es tamaño en el móvil, el local incluido; «si quiero
+modificar algo, te lo comentaré». Cambiar de cámara es cambiar `PITCH`, `DIST` y `MIRA` en el
+script (o pasarlos por línea de comandos, `--pitch 40 --dist 600 --salida …`, que es como se
+sacaron los bocetos) y regenerar. **Preguntó por el crédito «© OpenStreetMap» de la esquina** —creía
+que el dibujo era reconstrucción propia— y quedó explicado y aceptado: el dibujo es nuestro, pero la
+geometría (huellas, alturas, calles, jardines, metro) es de OpenStreetMap, y su licencia ODbL exige
+la atribución visible también en las obras derivadas. Es el precio de que las manzanas sean las
+reales en vez de inventadas; calcar Apple o Google no vale porque sus licencias no lo permiten.
+**Se puede hacer más discreto o cambiarlo de esquina, no quitarlo.** Verificado sobre el build: el
+dibujo nuevo está en el HTML de las dos homes con sus ocho textos (Castellana, San Germán, Doctor
+Fleming, Defensa, Plaza de Cuzco, M, la chapa y el crédito) y el CSS construido conserva los
+`color-mix`; capturas a 1052 y 351 px revisadas a ojo, no por un juez. Avisos para quien mida: el build
+regenera `.vercel/output/static` y un servidor local lanzado antes se queda apuntando a la carpeta
+borrada; `/_vercel/image` no existe en local, y para capturas con fotos hace falta un servidor que
+redirija `?url=X` a `/X` (con la barra inicial, o la redirección cae en `/_vercel/_astro/…`);
+Overpass devuelve 406 a curl con GET sin User-Agent y 504 a ratos.
+
+**2026-09-21: el indicador del metro es el rombo de Metro de Madrid, y los nombres ya no se
+descolocan en el iPhone.** Mario propuso cambiar la chapa negra con la M por el rombo con la barra
+azul. Se le enseñaron tres bocetos —el rombo en sus colores, el rombo en paleta (barra en tinta) y
+la chapa— y eligió el de sus colores, más pequeño que en el boceto («es un pequeño logo a modo de
+indicador, nada más»): 20 px de ancho en escritorio y 18 en el móvil, sin la palabra «Metro»
+porque a ese tamaño no se lee. **Es el único azul de la web y es a propósito:** un logotipo en sus
+colores es un logotipo, no una decisión de paleta; en tinta se reconocía por la forma pero dejaba
+de ser el de Metro. Es marca registrada de Metro de Madrid; señalar la parada con él es un uso
+informativo, el mismo que hacen Apple y Google, y Mario lo asumió sabiéndolo. **El fallo de los
+nombres:** Mario vio en su iPhone nombres cortados y desplazados (primero en la isométrica vieja,
+que era lo que tenía desplegado). Medido en el WebKit de Playwright a 390 px sobre la
+perspectiva: Safari no respeta `transform-box: fill-box` en los `<text>` del SVG y los escalaba
+alrededor del marco entero —Plaza de Cuzco en el borde derecho, Defensa y el crédito fuera del
+marco por abajo, la Castellana cortada—, mientras la chapa y el rombo, que son grupos, no se
+movían. Ahora los textos crecen por tamaño de letra (19, 15 y 13 px) y solo los grupos siguen con
+`transform`; las clases de anclaje al borde (`rotulo-izq`, `rotulo-borde`) se fueron con el truco.
+Medido después en el mismo WebKit: los siete textos dentro del marco y Plaza de Cuzco sobre la
+rotonda. **Chromium lo hacía bien desde el principio, y por eso no se vio en las capturas del
+Mac:** la receta para medir en el motor de Safari sin iPhone está en `metodo.md` §2.5. **Y el
+enlace «Cómo llegar» busca ahora el negocio, no la dirección:** «Tasquita Los Ochoa» con la
+dirección detrás, para que Maps abra la ficha de la Tasquita (fotos, reseñas, horario) en vez de
+un punto en la acera, y no la confunda con otro local de nombre parecido; si algún día la
+búsqueda no cayera en la ficha, lo infalible es el «Place ID» de Google. **Cerrado el 2026-09-21
+con la prueba que faltaba:** Mario lo comprobó en su iPhone sobre la preview (6ff0df8) y
+«funciona de la manera esperada»: nombres en su sitio, rombo con el tamaño justo y el enlace
+abriendo la ficha. El mapa de Ochoa no tiene nada pendiente.
+
+**Y toda la web de Ochoa ocupa el 90% de la pantalla en escritorio**, a petición de Mario:
+primero lo probó en la carta («vamos a ver qué tal queda») y, vista, lo extendió a la web entera.
+Hasta hoy el contenedor global se paraba en 1140px, y la carta además en 44rem por una razón
+medida en julio —a 1280px el nombre quedaba a 700px de su precio— reservando el margen derecho
+para las fotos. Ahora el 90% lo hace el margen de `5vw` por lado (`--maxw: none` en `tokens.css`,
+`.wrap` en `global.css` y `.strip` en `Highlights.astro`, que copia esa geometría); en el móvil
+es lo mismo que había. Medido a 1710: cabecera, portada, tira, «lo que hay» y pie arrancan en
+el mismo píxel; **el precio de la carta queda a 1.455px del nombre**; la foto de «Lo que hay»
+pasa a 1.526px de ancho y las del muro de 511 a 752, con un `sizes` que ya se quedaba corto
+antes (declara 560px) — en escritorio pueden verse blandas; son provisionales y no se ha tocado.
+**Mario lo dio por bueno** —«bien respecto a lo del 90%»— y por eso se extendió a toda la web,
+así que esto ya no es una prueba. Si algún día se revierte, el tope vuelve en `--maxw` y en esos
+dos rellenos; `--carta-w` en
+`MenuBoard.astro` es el tope propio de la carta.
+
+**La entrada de Los Ochoa (§3.octies) ya está aquí dentro.** Se construyó el 2026-08-06 en
+`tmp/entrada-ochoa` porque Mario pidió expresamente no pushearla a `preview`, y luego que se
+subiera a una rama aparte para verla en el móvil. Ahí se quedó diez días. Se fusionó el
+2026-08-16 con la tanda cerrada, sus doce tests en verde y las dos correcciones que Mario pidió
+tras verla ya aplicadas; la rama se borró y su alias de Vercel murió con ella —ahora se ve en el
+alias de `preview`—. Si hay que sacarla, se deshace entera con `git revert -m 1` sobre el commit
+de fusión, sin tocar nada más.
+
+**Pendientes que vienen de `preview` y esta rama no tenía:**
+
+- ~~Las tres fotos de Ochoa sin usar.~~ **Ya no hacen falta (2026-10-26):** los seis destacados
+  tienen foto de Instagram con el plato nombrado en el texto (`fotografia.md`).
+- **Los alérgenos de doce platos de Ochoa, y qué significa el gluten en amarillo.** La hoja
+  del restaurante no trae fila para Bicicleta, Marinera, Marinero, Bomba, el brioche de
+  sobrasada, la tapa de alitas, los cuatro montados, el bikini de minutejos ni el pulpo: hoy
+  no muestran nada. La duda concreta es si los montados heredan del bocata del mismo relleno
+  o hay que pedirle la fila al restaurante. Y cinco platos llevan el gluten marcado en
+  amarillo sin decir por qué; hasta saberlo salen con «\*» y «pendiente de confirmar». **Mario
+  lo dejó «en el aire» el 2026-09-19 para revisarlo cuanto antes**, y el PDF del 2026-11-04 no
+  lo resuelve. **Él no tiene el dato (2026-11-05): hay que pedírselo al restaurante.** Es dato de
+  salud: no se rellena por deducción (§0, §3).
+
+### Lo cerrado en agosto, por si hace falta el contexto
+
+**La barra del navegador en iPhone (2026-08-01).** Era el `ClientRouter` de Astro, que hace
+`history.replaceState` cada vez que el scroll se detiene. El arreglo es
+`packages/ui/src/QuietScrollHistory.astro`. Todo el caso está en `archivo/barra-del-navegador-ios.md` (cerrado), y
+**su §8 —los tres errores de método— vale más que el arreglo**. La receta portable, para
+cualquier web con `<ClientRouter />`, en `receta-barra-ios-astro.md`.
+
+**«Conócenos» de Ochoa (2026-08-04)** nació montada y navegable en los dos idiomas, con el cuerpo
+en cuatro rejillas de texto que decían qué faltaba contar. Lleva `noindex` y fuera del sitemap; **el
+interruptor es `EN_OBRAS` en `apps/ochoa/src/conocenos.ts`, y ponerlo en `false` es el único
+paso**. Desde el 2026-10-30 tiene su cuerpo, en revisión (§0).
+
+**Los despliegues cruzados (2026-08-16).** Cada push reconstruía las dos webs. Resuelto con un
+`ignoreCommand` por app; detalle y pruebas en `deploy.md`. Confirmado en real: al subir la rama de
+Cokima, Ochoa quedó en `CANCELED`.
+
+**Cómo levantarlo:** los `pnpm dev` lanzados en segundo plano desde el agente se mueren solos, y
+ha pasado en las dos máquinas. Lanzarlos desde una terminal propia. Para ver el resultado sin `dev`, sirve
+`apps/cokima/.vercel/output/static` tras un `pnpm --filter cokima build` — pero recuerda que el
+optimizador de imágenes de Vercel no existe fuera de Vercel y habrá que suplir `/_vercel/image`.
+
+**Y no sondear las previews en bucle esperando a que estén listas:** activa el checkpoint anti-bot
+de Vercel y a partir de ahí devuelve `403` a curl y a Playwright, con lo que los greps empiezan a
+devolver cero coincidencias y parece que el despliegue ha fallado. El estado se pregunta a la API
+de Vercel (`list_deployments` → `state: READY`).
+
+**El repo está vinculado a Vercel y cada push despliega.** Los alias fijos están en §6. No buscar
+`.vercel/project.json` para comprobarlo: está en `.gitignore` y la vinculación por Git vive en el
+panel de Vercel, no en el repo. El 31 se dedujo mal justo por ahí.
+
+---
+
+## 1. Modelo de ramas
+
+| Rama | Papel | Alias de Vercel |
+|---|---|---|
+| `main` | Producción | falla a propósito sin `SITE_URL` |
+| `preview` | **Desarrollo y única rama de trabajo** | alias fijo por rama (ver §6) |
+
+**Desde el 2026-10-26 se trabaja solo en `preview`**, a petición de Mario: «para unificar todo».
+Nada de ramas de tema ni `tmp/*` salvo que él lo pida. El motivo, medido: la rama del rediseño
+estuvo siete semanas sin juntarse con `preview`, cada una escribió su `estado.md` por su lado, y la
+fusión trajo 23 commits y dos documentos en conflicto.
+Detalle en `deploy.md` §Modelo de ramas.
+
+**`tmp/entrada-cokima` entró en `preview` el 2026-10-26** con un avance directo: ya llevaba dentro
+todo `preview`. Con ella entró la entrada nueva de Cokima, que convive con la portada vieja debajo,
+a medias y a propósito (§0). **Se borró ese mismo día, en local y en `origin`**, con el visto
+bueno de Mario, después de comprobar que no tenía ni un commit que no estuviera en `preview`.
+`tmp/entrada-ochoa` se cerró el 2026-08-16 y se borró: su tanda está dentro de `preview`
+(§3.octies). Llegó a haber dos ramas temporales a la vez, en dos ordenadores, y eso fue justo lo
+que se lió.
+
+### 1.1 Cambiar de ordenador
+
+El proyecto se desarrolla en dos máquinas —un Mac prestado y el HP de Mario—, nunca a la vez.
+El 2026-08-16 se descubrió que las dos tenían árboles distintos: el HP llevaba desde el día 7 sin
+`fetch`, y su rama local `preview` no era `preview` sino la punta de `tmp/entrada-ochoa`, con un
+botón de «Sync Changes 10↑» en Cursor esperando a que alguien lo pulsara. Habría empujado a
+`origin/preview` exactamente la tanda que Mario había pedido no subir ahí.
+
+No se perdió nada porque el trabajo estaba respaldado en su rama remota, pero la lección va
+escrita aquí para que no dependa de esa suerte:
+
+**Al sentarse en cualquiera de las dos máquinas, antes de leer código ni documentación:**
+
+```bash
+git fetch --all --prune
+git status -sb          # ¿cuántos commits arriba y abajo, y de qué rama?
+git branch -vv          # ¿a dónde apunta de verdad cada rama local?
+```
+
+**Las tres reglas que salieron de aquel susto:**
+
+1. **No fiarse del nombre de una rama local.** Una rama llamada `preview` puede estar en otro
+   sitio. `git branch -vv` dice la verdad; el rótulo de Cursor, no.
+2. **No pulsar «Sync Changes» sin mirar qué commits son.** El botón no distingue entre subir tu
+   trabajo y contaminar la rama de integración.
+3. **Rama temporal que se abre, rama que se sube a `origin` el mismo día.** Un disco duro no es
+   una copia de seguridad, y aquí no se trabaja siempre desde el mismo.
+
+Si una rama local ha derivado, **se prueba primero el camino que no destruye nada**:
+
+```bash
+git checkout preview
+git pull --ff-only      # si avanza, no había divergencia real: se acabó
+```
+
+Es exactamente lo que le toca al HP: sus diez commits acabaron dentro de `preview` al fusionarse
+la entrada de Ochoa, así que su rama local es un **ancestro** de `origin/preview` y sube sola sin
+perder nada. **El `--ff-only` es el seguro**: si hubiera commits realmente divergentes se niega a
+moverse, en vez de tejer un merge a ciegas.
+
+Solo si se niega hay divergencia de verdad. Y entonces se comprueba dónde vive lo que se va a
+tirar **antes** de tirarlo:
+
+```bash
+git branch -r --contains <sha>   # ¿está respaldado en alguna rama remota?
+git reset --hard origin/preview  # solo con esa respuesta en la mano
+```
+
+**Al terminar en una máquina:** subir todo lo que tenga valor —`git push` de la rama de trabajo—,
+y dejar el corte de este documento con la fecha del día. Lo que no está en `origin` no existe
+para la otra máquina.
+
+---
+
+## 2. Qué está construido
+
+**Fase 1 — las dos webs.** Astro 6 estático + adaptador Vercel, pnpm workspaces.
+Cada app: 6 páginas ES + 3 EN, endpoint CAPI, robots + sitemap, JSON-LD `Restaurant`,
+hreflang, banner de consentimiento. Cartas reales transcritas ES+EN.
+
+**Fase 2 — divergencia de layout.** Las 12 tareas del plan, ejecutadas en `preview`:
+carta "baraja" de Cokima con tabs y snap horizontal, carta "pizarra" de Ochoa con toggle
+½/entera y buscador, barra inferior de Ochoa y barra de reserva de Cokima con estado de
+apertura real en hora de Madrid, View Transitions, y `MenuSection`/`DishRow` retirados de
+`packages/ui`. Registro detallado en `archivo/estado-divergencia-layout.md` (cerrado: su cabecera ya no es cierta).
+
+**Fase 3 — portadas, chrome y piel de Ochoa (2026-07-29).** Las dos homes abren con una
+foto a sangre y titular anclado abajo a la izquierda, sin párrafo ni botones; debajo, una
+tira de platos con nombre y precio que **asoma por el borde inferior** de la primera
+pantalla. La reserva y la navegación se mudan a la cabecera (`[Reservar]` + hamburguesa
+con foco atrapado), y desaparecen `BottomBar` y `ReserveBar`. Ochoa se viste con su marca
+real: rojo bandera sobre blanco, sin serif ni grano ni verde oliva. Diseño en
+`archivo/2026-07-29-portadas-y-chrome-design.md` (el plan ejecutado se borró; está en git).
+
+
+**Verificado el 2026-07-29 en `preview`,** midiendo a 390px en las cuatro homes:
+`pnpm test` → 43 tests en verde (32 content, 6 tracking, 5 config) y `pnpm build` →
+`Complete!` en las dos apps. La cabecera baja de 110px a 61px en Cokima y a 62px en
+Ochoa; la portada ocupa el 77,5% de la pantalla y asoman las fichas con su precio;
+cabecera e interruptor de la carta encajan con 0px de solape; el cartel de cookies se
+apoya en el borde inferior sin competir con nada y sus dos botones miden 168,5px cada
+uno; la carta de Ochoa sobre blanco da 17,4:1 de contraste y el titular de las portadas
+15,7:1 (Cokima) y 16,0:1 (Ochoa).
+
+---
+
+## 3. Pendiente de construir
+
+**Lo que bloquea de verdad:**
+
+- [ ] **Fotografía real.** Desde el 2026-10-26, **Ochoa tiene foto en sus seis destacados**
+      y Cokima en su portada y su casa (§0). Faltan los **cinco destacados de Cokima** (con
+      la sesión de Mario se puede recorrer su perfil entero, como se hizo con Ochoa). La
+      portada de varias fotos de Ochoa está puesta desde el 2026-10-27, con serie nueva el 29, y
+      la foto del equipo ya no hace falta: «Conócenos» quita esa sección (§0, 2026-10-29).
+      Detalle y claves de archivo exactas en `fotografia.md`.
+
+**Menores:**
+
+- [x] ~~La clave de Google Maps.~~ **Cerrado el 2026-09-20:** `Mapa.astro` lleva el dibujo de
+      la manzana (§0) en las dos homes de Ochoa y no necesita clave ni API. **Cokima sigue con el
+      `.mapbox` viejo** y su cartel *«Mapa · pendiente de integrar»*; si se quiere el mismo dibujo
+      allí, el script acepta otro centro y otro encuadre.
+- [ ] **Validar la carta en inglés con el restaurante.** Traducida entera el 2026-07-31,
+      manteniendo sin traducir lo que no tiene equivalente (gilda, pintxo, txistorra, cachopín,
+      torreznos, soldaditos de Pavía, revolconas). Es un documento comercial y lo tradujo el
+      agente con criterio propio.
+- [ ] **Cokima: la portada se queda grande al recargar**, igual que le pasaba a Ochoa hasta el
+      2026-09-19 (§0). `apps/cokima/src/components/Hero.astro` y `Entrada.astro` llevan el mismo
+      patrón —congelar una vez, remedir solo al cambiar el ancho—. El arreglo es el mismo módulo
+      que ya usa Ochoa, `@tombo/ui/alto-congelado.ts`, con su referencia fuera del flujo. Va en
+      `preview`, donde vive `Entrada.astro` desde el 2026-10-26.
+- [x] ~~Rehacer el mapa de «Dónde estamos» en perspectiva.~~ **Hecho el 2026-09-20 y cerrado el
+      21** con la prueba de Mario en su iPhone (§0). No queda nada del mapa.
+- [ ] **Alérgenos de Ochoa: los 12 platos sin fila en la hoja.** Bicicleta, Marinera, Marinero,
+      Bomba, brioche de sobrasada, tapa de alitas, los cuatro montados, bikini de minutejos y
+      pulpo no muestran nada. Mario lo dejó «en el aire» el 2026-09-19 para revisarlo cuanto
+      antes; la duda concreta es si los montados heredan del bocata del mismo relleno o hay que
+      pedir la fila al restaurante. **Y qué significa el gluten en amarillo** de los cinco platos
+      marcados (§0): hasta saberlo salen con «\*».
+- [ ] **El `sizes` de las fotos de la home de Ochoa se quedó corto** al pasar la web al 90%
+      (§0, 2026-09-19): la foto de «Lo que hay» ocupa 1.526px y declara 560, y las del muro 752.
+      En escritorio pueden verse blandas. No se tocó porque las fotos son provisionales y entran
+      otras con la tanda de fotografía; cuando entren, hay que revisar el `sizes` con ellas.
+- [ ] **Comprobar en un iPhone real** que el hundido de los botones se ve. La lógica ya no
+      depende de `:active` (ver §3.quater), pero Playwright usa Chromium: la verificación en
+      Safari de iOS no se ha podido hacer desde aquí.
+- [ ] El fragmento rojo del titular de Cokima da **4,26:1** sobre la foto. Cumple el 3:1
+      que WCAG exige para texto grande (36,8px en negrita), pero no el 4,5:1 general: el
+      vermellón `#ed1c24` no puede alcanzarlo ni sobre negro puro, donde su techo teórico
+      es 4,2:1. Cambiarlo es decisión de marca (ver §4).
+- [ ] Las fichas de destacados sin foto se resuelven tipográficamente. Funciona, pero la
+      tira gana mucho en cuanto haya imágenes.
+- [ ] `formatPortionPrice` (en `packages/content/src/portions.ts`) se quedó sin usuarios al
+      pasar la carta a dos columnas: ya nadie elige una porción, se pintan las dos. Desde que la
+      carta del 2026-07-31 va a precio único, **tampoco queda ni un plato con media ración** en
+      Ochoa. **El 2026-08-04 Mario cerró el asunto: la carta puesta es la vigente y las medias
+      raciones no vuelven**, así que la función es código muerto y se retira con sus cinco tests
+      la próxima vez que se toque `packages/content`. El esquema sí conserva el formato
+      `{ half, full }`, que no estorba y describe una carta que podría volver a tenerlo.
+- [ ] Astro avisa al construir de que no puede generar el JSON schema de las colecciones
+      `menu-es`/`menu-en` (`Cannot read properties of undefined (reading 'def')`). Es
+      incompatibilidad de versiones entre zod y el generador de tipos de editor; **la validación
+      del contenido sí funciona** y el build termina en `Complete!`. Solo afecta al autocompletado.
+
+---
+
+## 3.ter Las fotos de Ochoa, rehechas el 2026-07-30
+
+**Hay nueve fotos del local en la web vieja del grupo** (`/wp-content/uploads/2021/09/LosOchoa-1..9.jpg`,
+1000×1000) que nadie había mirado. De ahí sale todo lo de abajo.
+
+**Desde el 2026-10-27 ya no: la portada es el telón de seis fotos (§0).** Lo que sigue es cómo
+quedó en julio. **La portada es la fachada** (`hero.jpg`): el toldo rojo, el cartel colgante, la barra vista
+desde la calle y «LA TASCA QUE TE MERECES» en el cristal. Dice qué sitio es antes de leer una
+palabra. Es una sola pieza a sangre en todos los anchos, con el titular apoyado en la foto y su
+sombra roja, que es lo que mejor funcionaba de la portada original.
+
+Dos intentos anteriores, y por qué se descartaron: el **cenital de la mesa** no decía nada
+recortado a vertical —se quedaba en un fragmento de plato sin contexto— y se mudó a la sección
+«la tasca», que es apaisada y le sienta; el **rótulo del cristal** era demasiado plano de cerca
+y, siendo cuadrado, en móvil solo cabía el 60% del ancho («OS OCHO»), lo que obligó a partir la
+portada en dos con una banda roja bajo la foto. Esa partición se retiró: la banda competía con
+la imagen y forzaba a cambiar el color de la sombra del titular. El rótulo del cristal no se
+pierde, es la segunda foto de «la casa».
+
+**«Lo que hay detrás del cristal» ya no son rejillas:** las cuatro son fotos reales —la barra
+con el espejo rotulado a mano, el rótulo del cristal, el vermú con su banderilla y el interior
+con el banco corrido rojo—, así que la sección se publica. Van en **dos columnas desfasadas**,
+con la derecha bajando un escalón: ni el mosaico de piezas desiguales del primer intento ni la
+cuadrícula perfecta del segundo, que quedaba rígida.
+
+**Un fallo de la fase 3 que salió al mirar:** el estado de apertura de la portada iba en tinta
+atenuada sobre una foto oscurecida por el degradado, o sea gris oscuro sobre fondo oscuro. Se
+resuelve reescribiendo dentro de `.copy` los tokens `--t-text*` que consume, no parcheando el
+componente.
+
+## 3.quinquies La plancha roja del menú y la paridad del inglés (2026-07-31, tarde)
+
+Mario abrió el menú en el móvil y señaló la costura: barra roja arriba, folio blanco debajo.
+El problema no era la persiana, era el material. Diseño en
+`archivo/2026-07-31-panel-rojo-y-paridad-en-design.md` (el plan ejecutado se borró; está en git).
+
+
+- **El panel es la misma plancha roja que la barra**, cuyo filete se apaga mientras dura el
+  menú. Se transparenta el color y no se quita el borde: `syncHeaderHeight()` mide la barra con
+  `getBoundingClientRect()` —el borde incluido— y quitarlo la encogería dos píxeles.
+- **Dentro, la fórmula del rótulo invertida:** papel con sombra tinta, que es la misma que ya
+  usa el titular de la portada sobre la foto con los papeles cambiados. El número de sección
+  baja a tinta y pasa a ser el único elemento oscuro.
+- **El panel reescribe los tokens `--t-*` que consumen sus hijos**, como hace `.copy` en la
+  portada. Eso destapó que sin `--t-open` el punto de «Abierto ahora» cae a `--t-accent`, que
+  es este mismo rojo, y habría desaparecido.
+- **La persiana por fin se ve:** cayendo blanca sobre contenido blanco no se notaba, y encima
+  gastaba sus primeros 62px por detrás de la barra. Ahora el recorte arranca en `--t-header-h`.
+- **El relieve al dedo estaba roto en media casa**, y se descubrió midiendo. `[data-tacto].tocando`
+  pesa (0,2,0) y Astro añade el `[data-astro-cid-…]` a todo selector de un componente con
+  estilos con scope, así que `.contacto a` pesa (0,2,1) y ganaba: las fichas ponían la clase, no
+  se hundían —tampoco en la portada— y al soltar daban un salto desde abajo porque la animación
+  de vuelta sí corría. El fantasma y el «Reservar» de la barra caían por otra vía: empataban a
+  especificidad y ganaba el último declarado. **Regla para el futuro: el bloque de tacto va
+  siempre después de los botones en la hoja global, y cualquier componente que reescriba
+  `box-shadow` tiene que reescribir también su `.tocando`.**
+- **La home inglesa alcanza a la española:** cinta, «la tasca» y «la casa» con el titular
+  partido, `Mapa.astro` real en vez del dibujo de pega, y las fichas de contacto. Con ella
+  mueren un `border-radius: 6px` suelto y las reglas de una portada retirada hace dos fases.
+- **Las legales se quedan en español a propósito** (decisión de Mario: el texto válido en España
+  es ese, y traducir un documento jurídico sin validar es un riesgo que no compensa). Lo que se
+  arregla es que no mientan: el pie inglés marca «(ES)» y el `hreflang` deja de declarar que la
+  versión inglesa del aviso legal es la home inglesa. `altPath` pasa a opcional en `Seo.astro` y
+  `Base.astro` gana `altSeoPath`, porque navegar y declarar equivalencia son cosas distintas.
+
+## 3.sexies El vaivén de la barra del navegador en Chromium (2026-08-01)
+
+Mario lo describió probando en Brave: la barra de direcciones aparece y desaparece de forma
+irregular, «muy sensible a los cambios de dirección», y al hacerlo parece redimensionarse la
+página entera. **En Safari no pasa**, y esa asimetría es la pista: en Chromium el colapso de la
+barra redimensiona el viewport de verdad, mientras que Safari desde iOS 15 mueve solo el viewport
+visual. El resize no se puede evitar; lo que se ha quitado es lo que lo estorbaba.
+
+**Dos reglas heredadas, las dos vestigios, las dos fuera de las dos webs:**
+
+- **`body { overflow-x: hidden }`.** No recortaba una caja: el `overflow` del body se propaga al
+  viewport cuando el del `<html>` es `visible`, así que convertía el documento entero en un
+  scroller con desbordamiento tapado, que es justo lo que enturbia el mecanismo de Chromium.
+  **Y no protegía nada:** medido sin ella, el ancho desplazable es igual al visible en las ocho
+  rutas de Ochoa y las ocho de Cokima a 360px. Lo único que se sale son las tarjetas de la tira
+  de platos, y de eso ya se ocupa el `overflow-x: auto` de la propia tira.
+- **`scroll-behavior: smooth` en el `<html>`.** No animaba ninguna navegación, porque no hay en
+  todo el monorepo un solo `href="#"` ni un `scrollIntoView`; el único scroll suave que existe
+  —el de la tira de platos, `Highlights.astro:145`— pide su `behavior` en la propia llamada y no
+  depende de la regla. Lo que sí animaba eran los reajustes de scroll que se da el navegador.
+
+Se queda `scrollbar-gutter: stable`, que sí hace un trabajo real: sin él la página se ensancha de
+golpe al abrir el menú. Verificado tras el cambio: `scroll-behavior: auto`, `overflow-x: visible`
+y ancho desplazable igual al visible en las dieciséis rutas, con el menú **cerrado, abierto y
+cerrado otra vez**; la portada sigue a 62px con el menú abierto, así que el arreglo del salto de
+§3.quinquies sigue en pie. Regla 15 de `movimiento.md`.
+
+**Segunda vuelta, con el dato que lo cambia todo:** Mario probó y **la carta quedó perfecta, la
+portada no**. Eso descarta lo global y señala a algo que solo vive en la portada. Medido con
+`Performance.getMetrics` y un trace de Chromium, diez cambios de alto del viewport cuestan:
+
+| | recalcs de estilo | Paint | tareas de rasterizado |
+|---|---|---|---|
+| Portada | 20 | 9,0 ms | **45** |
+| Carta | 10 | 0,7 ms | **0** |
+
+**Dos causas, y una descartada que parecía la buena.** Mario preguntó si eran las imágenes:
+ocultarlas todas **no** baja el rasterizado (47 tareas), y de hecho las mediciones se hicieron con
+cinco de las seis sin cargar —`/_vercel/image` no existe fuera de Vercel, así que en local dan
+404—, o sea que **el coste real en producción es mayor que el medido**. Lo que dispara el
+rasterizado es **el `.hero`, cuya altura cuelga de `100svh`**: clavarlo en píxeles lo tira de 45
+tareas a 3 y el pintado de 9,0 ms a 2,5. Cualquier cambio de alto del viewport le cambia el
+tamaño y obliga a repintar 375×654, casi la pantalla entera. La carta no tiene nada así.
+
+- **Arreglado: la cinta rotulada se para cuando no se la ve** (regla 6, que incumplía). Deja los
+  recálculos de estilo de la portada en los mismos 10 de la carta. Verificado: pausada arriba y
+  abajo, corriendo al volver **y por donde se quedó**, una sola instancia tras navegar y volver,
+  y quieta con la pestaña detrás.
+**Tercera vuelta, la que lo cierra.** Mario probó otra vez: **sigue igual por toda la portada,
+esté arriba o abajo**. Eso descartaba el hero… y en realidad lo señalaba, porque **las dos
+primeras tandas de medición se hicieron a `scrollY 0`** y esa ventana no valía para nada. Midiendo
+a 0, 1200, 2400 y 3200, el coste es constante en la portada (72-116 tareas) y **cero en la carta
+en todas**. Las capas de composición dieron la pista que faltaba: la del documento medía
+**513×4003** en la portada y 375×4258 en la carta, y se repintaba entera en cada resize.
+
+- **Arreglado: `.wall` sacaba 138px de scroll lateral a la portada.** `grid-template-columns:
+  repeat(2, 1fr)` con fotos dentro: un track `1fr` es `minmax(auto, 1fr)` y el mínimo automático
+  de una imagen es su tamaño intrínseco —1000px—, así que el track no encogía. Con
+  `minmax(0, 1fr)` la capa vuelve a 375 de ancho y el rasterizado cae a la mitad. **El
+  desbordamiento era preexistente y lo tapaba el `overflow-x: hidden`;** al retirarlo quedó
+  destapado, así que durante unas horas la portada tuvo scroll lateral de verdad.
+- **Arreglado: la portada deja de dimensionar su alto desde el viewport.** Es lo que quedaba, y
+  lo lleva a 0. Cuando cambia de alto empuja todo lo de debajo e **invalida la capa entera del
+  documento**, así que se repinta la página completa mires donde mires —de ahí que se notara
+  igual arriba que abajo—. El `calc(100svh …)` sigue en el CSS como respaldo y como valor del
+  primer pintado; el script lo congela en píxeles y **solo vuelve a medir cuando cambia el
+  ancho**. Verificado: mismo alto de siempre (654 = 844−62−128), quieto ante un cambio de solo
+  alto, y recolocado al rotar.
+
+**Estado final medido**, diez cambios de alto del viewport desde cuatro posiciones de scroll:
+portada **0 tareas de rasterizado** (eran 116) y pintado de 3,3 ms (eran 11,5); carta 0; home
+inglesa 0. Y **cero desbordamiento lateral en 24 combinaciones** (8 rutas × 3 anchos) recorriendo
+cada página entera, que es como hay que medirlo.
+
+### Cuarta vuelta: la barra ya no salta, pero se anuncia
+
+Con los saltos resueltos, Mario describe otra cosa: al deslizar, un amago mínimo en sentido
+contrario despliega la barra de direcciones **entera**, y en vercel.com no pasa. Se midió todo lo
+que podía explicarlo y **no era ninguna de las sospechas**:
+
+- **Listeners bloqueantes: ninguno.** Los de la casa son todos `passive`, y aceptar cookies no
+  añade ni uno (GTM aún no tiene ID). Descartado.
+- **Coste del gesto: somos más ligeros que la referencia.** Trazando un deslizamiento táctil real,
+  la portada gasta 0,6 ms de hilo principal y su tarea más larga es de 21 ms; **vercel.com gasta
+  7,9 ms y tiene una tarea de 123 ms**. Ninguna de las dos registra motivos de scroll en hilo
+  principal. Descartado.
+- **Micro-retrocesos de scroll: cero.** Un swipe estrictamente monótono no produce ni un
+  retroceso en las tres webs, así que la página no está pidiendo la barra por su cuenta.
+- **Y una corrección a lo que se dijo dos veces aquí:** *vercel.com **no** oculta su cabecera al
+  bajar.* Es `sticky top: 0`, 64px, y no se mueve — muestreado a seis alturas de scroll. Es la
+  misma solución que nuestra `.nav` de 62px. La idea de imitar un auto-ocultado que no existe
+  queda retirada.
+
+**Lo que sí difiere, comparando lo que cada web le declara al navegador:**
+
+| | Ochoa | vercel.com |
+|---|---|---|
+| `theme-color` | **ninguno** | `#FAFAFA`, el color de su propio fondo |
+| `viewport` | `…, viewport-fit=cover` | `…, maximum-scale=1` |
+
+- **Arreglado: `theme-color`.** Ochoa declara ahora `#c6222b` y Cokima `#150f0c`, que son los
+  colores sobre los que ya flota cada cabecera. En Chrome y Brave de Android eso tiñe la barra de
+  direcciones, así que deja de aparecer un bloque ajeno sobre la plancha roja: **la barra del
+  navegador y la de la web pasan a ser la misma superficie**, que es el mismo argumento por el
+  que el panel del menú dejó de ser blanco. Vercel hace exactamente esto, y por eso su barra no
+  se ve llegar. Ataca la **percepción**, que es la mitad del problema, y es un remate de marca
+  que interesa por sí solo.
+- **Sin tocar, decisión de Mario: `viewport-fit=cover`.** Es la única diferencia de comportamiento
+  que queda con la referencia y es candidato plausible —cambia cómo el navegador compone su UI
+  sobre la web—, pero **quitarlo tiene coste visible**: es lo que permite que la portada llegue a
+  sangre bajo el notch del iPhone en horizontal, y lo que hace que `env(safe-area-inset-bottom)`
+  del banner de cookies (`ConsentBanner.astro:160`) devuelva algo distinto de cero. Cambio de una
+  línea, reversible, pero no se aplica a ciegas por una hipótesis.
+
+### Quinta vuelta: el navegador no era el que se creía
+
+Mario grabó un vídeo y **el marco estaba mal desde el principio: es un iPhone.** Toda la sesión
+había razonado sobre Brave de Android, que usa Chromium. **Brave en iPhone está obligado por
+Apple a usar WebKit**, el motor de Safari. Consecuencias:
+
+- El mecanismo «Chromium redimensiona el viewport de verdad y Safari no» era correcto, pero **el
+  navegador de Mario está en el lado de Safari**. Los arreglos anteriores siguen siendo válidos
+  —los saltos eran reales y desaparecieron—, pero la explicación de por qué lo eran no aplica a
+  este último síntoma.
+- **El `theme-color` no hace nada aquí.** Tiñe la barra en Chrome de Android y en Safari; en el
+  vídeo, la barra inferior de Brave sigue saliendo oscura. Se deja puesto porque sí sirve en los
+  otros navegadores y no cuesta nada, pero no es la solución de esto.
+
+**Lo que el vídeo sí demuestra, fotograma a fotograma:** en vercel.com la barra se queda
+colapsada en su línea fina casi todo el rato; en Ochoa alterna sin parar entre colapsada y
+desplegada entera. Y el patrón es que **se despliega justo cuando el contenido deja de moverse**,
+o sea al final del gesto o cuando el scroll pierde inercia.
+
+- **`viewport-fit=cover`: probado y revertido el mismo día.** Se quitó porque era la única
+  diferencia declarada que quedaba con la referencia; volvió porque **lo llevaban las dos páginas
+  y el problema solo está en la portada**, así que no podía ser la causa. Se queda: es lo que
+  pone la franja de la barra de estado del iPhone en el rojo de la casa, lo que lleva la portada a
+  sangre bajo el notch y lo que da valor al `env(safe-area-inset-bottom)` del cartel de cookies.
+- **El `theme-color` tampoco era.** Se le presentó a Mario como un arreglo de «percepción» cuando
+  él describía un problema de comportamiento; era mezclar dos cosas para tapar que no había
+  explicación. Tiñe la barra, no cambia cuándo aparece, y en Brave de iPhone ni la tiñe. Se queda
+  puesto porque sirve en Chrome de Android y en Safari, pero **no cuenta como parte de esto**.
+
+### Sexta vuelta: acotado a la portada por pruebas de Mario
+
+Dos pruebas suyas en el mismo iPhone y el mismo Brave: **en la carta no ocurre** (se comporta como
+vercel.com) y **en un artículo de Wikipedia tampoco**. Luego la rara es nuestra portada, no la
+referencia, y la causa vive en algo que solo tiene ella.
+
+**Hipótesis principal, pendiente de confirmar en el teléfono: la tira de platos.**
+`Highlights.astro:143` monta un `setInterval` que cada `--dur-turno` (3,5 s) ejecuta
+`strip.scrollTo({ left: …, behavior: "smooth" })` — **un scroll animado que la portada se hace a
+sí misma**, sobre un contenedor que además lleva `scroll-snap-type: x mandatory`. Para iOS eso es
+actividad de scroll en curso, y al terminar el navegador reevalúa si enseña la barra. Encaja con
+la descripción literal de Mario —«cuando termina la animación, la barra vuelve a subir»— y con las
+tres páginas que no fallan: ninguna tiene una tira que se mueva sola. La tira solo se apaga con un
+gesto **sobre ella misma** (`strip.addEventListener`), así que deslizando por el resto de la
+página sigue con su turno.
+
+**La prueba que lo decide:** hacer el gesto en la zona baja de la portada, con la tira fuera de
+pantalla —el `IntersectionObserver` la pausa al 50%—. Si ahí la barra se queda abajo, es la tira.
+
+**Advertencia de método para la próxima:** preguntar en qué **dispositivo y navegador** se está
+viendo antes de construir el diagnóstico. «Brave» no dice el motor: en Android es Chromium y en
+iPhone es WebKit, y el razonamiento entero cambia. Aquí costó cuatro vueltas descubrirlo.
+
+**Callejones descartados por medición, para no repetirlos:** la tira de platos **no** roba
+gestos (`scrollLeft` se queda a 0 con swipes a 15° y 30°, y el documento avanza igual dentro que
+fuera de ella); la altura del documento **no** cambia al cargar las fotos (las reserva el
+`aspect-ratio`, salto máximo 0 en las dos páginas); el `ResizeObserver` del nav **no** dispara al
+cambiar el alto (0 escrituras de `--t-header-h`); y la forma de la animación de la cinta da igual
+—porcentaje, `translate3d` o píxeles, todas cuestan lo mismo—: lo que cuesta es que corra.
+
+Si aun así siguiera, el siguiente sospechoso es de diseño: nuestra `.nav` es `sticky` y compite
+con la barra del navegador por el mismo borde superior. La referencia que él cita —vercel.com—
+oculta su propia cabecera al bajar y la devuelve al subir, en vez de dejarla clavada.
+
+## 3.nonies La entrada de Cokima (2026-08-14 al 16) — en `preview` desde el 2026-10-26
+
+> Se numeró `3.octies` mientras esta rama estuvo aislada, y ese número ya lo tenía la entrada de
+> Los Ochoa en `preview`. Al juntarlas el 2026-08-16 pasó a `nonies`, que es la que le toca por
+> fecha. Si algún documento de esta rama todavía la llama `octies`, es de antes.
+
+**El porqué de todo esto está en `cokima-el-rediseno.md`.** Aquí solo queda lo que hay que saber
+para no romperlo.
+
+`Entrada.astro` sustituye al `Hero` heredado. Cuatro commits, todos en la rama:
+
+| commit | qué |
+|---|---|
+| `5a19f0f` | la entrada a pantalla completa, con póster y dos botones píldora |
+| `5e810c6` | se vacía: rótulo, hamburguesa, cookies y aviso pasan a aparecer al deslizar |
+| `5349e85` | el nombre al medio; botones a 48px y el aire de abajo a 18 |
+| `0cf1b7c` | el pulso de luz que avisa de que hay más abajo |
+
+**Las piezas que se sostienen unas a otras**, y por eso se rompen juntas si se toca una:
+
+- **`data-sobre-entrada`** en el `<html>`. Lo pone y lo quita un `IntersectionObserver` sobre un
+  centinela de un píxel al final de la sección. De él cuelgan **cinco** comportamientos: la
+  cabecera transparente, la desaparición de sus tres piezas, el cartel de cookies, el aviso del
+  vídeo y la pausa de las dos animaciones. Vive en `Entrada.astro` porque **es la entrada la que
+  pide que la cabecera se aparte**, no la cabecera la que sabe de portadas. Y se limpia al
+  navegar, o la carta heredaría una cabecera transparente sobre nada.
+- **`margin-top: calc(-1 * var(--t-header-h))`** en la sección. La cabecera es `sticky` y reserva
+  sus 61px en el flujo aunque parezca flotar; sin ese margen la entrada terminaba en y=904 con una
+  ventana de 844 y el centinela no llegaba a entrar en pantalla nunca.
+- **`--alto-entrada`**, el mismo congelado de alto que ya llevaba el `Hero`. Ver la regla 16 de
+  `movimiento.md`: nada que ocupe media pantalla dimensiona su alto desde el viewport.
+- **El `<h1>` es el propio rótulo del centro.** Hubo una versión con el `h1` oculto y ya no hace
+  falta: si alguien quita el nombre de la pantalla, tiene que devolver el encabezado por otro
+  lado o la página se queda sin él.
+
+**Contrastes medidos sobre el póster** (peor píxel de cada franja, con el velo compuesto): nombre
+11,7:1 · «Kitchen Madness» 5,95:1 · riel del pulso 2,49:1. El velo tiene los topes que tiene
+porque se calcularon sobre la **posición medida** del texto, no a ojo; el claim que había antes
+daba 2,13:1 con la curva anterior.
+
+**Y el aviso que más importa:** en cuanto entre el vídeo, el fondo cambiará en cada fotograma y
+ninguna de esas medidas seguirá valiendo. Por eso el rótulo lleva una sombra ancha y difusa, que
+es lo único que aguanta un fondo que se mueve. **Cuando el vídeo esté, hay que volver a medir.**
+
+---
+
+## 3.octies La entrada de Los Ochoa (2026-08-06) — ya en `preview`
+
+Mario la pidió «sencilla pero llamativa», con una restricción que mandaba sobre todo lo demás:
+«no queremos generar fricción a todo el que entre haciéndole esperar una animación». Se eligió
+sobre un boceto con tres variantes reproducibles, y **la elección es provisional**: el diseño
+separa el andamiaje del gesto para que cambiarla cueste dos `@keyframes`. Todo el detalle, con
+las dos descartadas y sus motivos, en `archivo/2026-08-06-entrada-ochoa-design.md`.
+
+**Qué hace.** Sobre una plancha roja, «LOS» y «OCHOA» llegan torcidas de lados opuestos y encajan;
+se les despega la sombra dura; y después la plancha se recoge hasta medir exactamente la barra,
+con el rótulo aterrizando dentro y los botones entrando desde el borde derecho. **1,4 s**,
+repartidos mitad y mitad: 700 ms para que el rótulo se monte y se lea, 700 ms para que se vaya a su
+sitio. No estrena vocabulario: es el telón del menú y la plancha de la barra haciendo un gesto
+nuevo, y la costura no se ve porque al terminar la recogida debajo hay el mismo rojo.
+
+**Dos correcciones de Mario al verla en el móvil**, y las dos valen más que su arreglo:
+
+- **El rótulo decía «Los Ochoa» y el de la barra «LOS OCHOA».** El componente reimplementaba a
+  mano la fórmula de `.cartel` —familia e interlineado— en vez de usar la clase, así que se dejó
+  por el camino el `text-transform` y el `letter-spacing`. **Ninguna de las mediciones podía
+  cazarlo**: el aterrizaje daba desvío 0 porque era exacto… sobre otra palabra. Con la clase
+  puesta, el residuo de alto además cae de 0,43 px a 0,01. Regla 20 de `movimiento.md`, reescrita.
+- **«La animación se nota muy poco», y la alargó a 1,4 s.** El diagnóstico que salió de ahí es lo
+  aprovechable: el problema no era la velocidad del movimiento sino que no daba tiempo a leer el
+  nombre antes de que empezara a marcharse. De ahí el reparto mitad y mitad en vez de estirar las
+  tres fases por igual. Nace `--dur-recogida`, porque `--dur-in` mide un panel que aparece y esto
+  recorre la pantalla entera. Y el seguro sube de 3 s a 4,5 s: con la entrada en 1,4 s se habría
+  quedado sin margen sobre el peor caso legítimo y podría haber cortado una entrada que iba bien.
+- **El rótulo «aparecía de repente y ya», y luego la solución era demasiado seria.** Primero se
+  hizo caer dentro de una máscara; funcionaba y estaba medido, pero Mario pidió «algo más
+  juguetón, que grite tapa y caña jefe». Sobre un boceto con cuatro gestos eligió el **encaje de
+  dos mitades**: «LOS» y «OCHOA» llegan torcidas de lados opuestos y se enderezan al juntarse. Es
+  el rótulo de bar montado a mano, que nunca queda a plomo. Nace `--tuerce` (4deg), que es a la
+  rotación lo que `--shift` es al desplazamiento. **La cortina retirada deja una lección que
+  quedó escrita en la regla 14: correcta no es lo mismo que adecuada.**
+- **Los botones de la barra se descubrían de golpe**, que es lo que prohíbe la regla 10 —lo vio
+  Mario sin conocerla—. Ahora entran desde el borde derecho **durante** la recogida y por encima
+  de la plancha, así que todo converge en el mismo instante en vez de dejar un hueco muerto.
+  Costó cuatro fallos que no dan ningún error y son las reglas 21 a 24, nuevas: un `z-index` alto
+  no vale dentro de un contexto de apilamiento ajeno —la barra es `sticky` y encierra a sus
+  hijos—; en Astro un `:global()` troceado deja el combinador fuera y la regla no aplica a nada;
+  **una transición heredada convierte en movimiento lo que querías instantáneo y falsea las
+  medidas que tomes en ese momento** —los botones llevan `transition: transform` para el tacto, y
+  eso hacía que se les viera *salir* al apartarlos (el «se asoma ligeramente» que cazó Mario) y
+  que una medición diera −1284px, que los habría hecho entrar por el lado contrario—; y un valor
+  de reserva tiene que ser seguro y no aproximado, que es lo que no era el `160%` inicial.
+
+**Cuándo sale.** Cuatro puertas **en un orden que es parte del contrato**: `prefers-reduced-motion`
+la apaga siempre; `back_forward` nunca la enseña; `reload` **sí**, y por delante de la marca de
+sesión; y si no, sale salvo que la pestaña ya la haya visto. Traducido: siempre que se entra desde
+fuera —en cualquier página, también `/carta`— y también al recargar a propósito, con F5 o con el
+tirón hacia abajo del móvil. **Mario pidió lo de recargar primero al revés y lo cambió al verlo**;
+el orden importa porque recargar implica haber estado ya, así que con las puertas al revés la
+marca de sesión lo taparía siempre. Hay un test que fija ese orden.
+**La decisión se toma antes del primer pintado**, en un script inline del `<head>`; tomarla
+después enseñaría la web y luego la taparía.
+
+**La función de decisión no está escrita dos veces.** El script inline se construye con
+`decideEntrada.toString()`, así que lo que corre en el navegador es exactamente lo que cubren los
+tests. Hay un test que vigila que la función siga sin referenciar nada de su módulo, que es lo que
+rompería el truco en silencio.
+
+**Sin JavaScript no hay entrada** y la web se ve entera desde el primer frame. Y hay un seguro de
+3 s en el propio script inline: es síncrono y el que retira la plancha no lo es.
+
+**El rótulo de la barra vuelve a la home con la entrada puesta**, salvo si ya estás en la home
+—decisión de Mario—. A prueba, detrás de `INTRO_EN_RETORNO` en `packages/ui/src/intro.ts`.
+
+**Verificado midiendo, no de vista:** aterriza con desvío 0 en x, en y y en ancho; no sale al
+recargar ni con el botón de atrás *con la sesión limpia* (para probar la puerta y no el
+`sessionStorage`); sí sale al llegar desde fuera a `/carta`; y los cuatro estados de la entrada
+dejan la página en el mismo píxel. Tests: 45 → 57. `@tombo/ui` no tenía ninguno y ahora tiene
+vitest.
+
+**Pendiente y sin medir: el efecto sobre el LCP, y ahora importa más.** Un velo opaco sobre la
+portada puede empujar esa métrica, y al pasar de 740 ms a 1,4 s la entrada entra de lleno en el
+terreno donde se resiente: el umbral de «bueno» de Google son 2,5 s, así que 1,4 s de velo deja
+poco margen para el resto de la carga en una red móvil. Mario la alargó con el dato delante, pero
+**esto hay que medirlo**, y si sale mal la palanca es ese número.
+
+Tres reglas nuevas en `movimiento.md` (18, 19 y 20) y la primera excepción a la regla 5, que
+merece leerse: el apagado por `prefers-reduced-motion` no vale para una pieza que **solo existe
+para moverse**, porque atenuarla deja un destello rojo de un fotograma.
+
+## 3.septies El recuadro de foco y «Conócenos» (2026-08-04)
+
+Mario describió un recuadro que salía «a ratos» al pulsar con el dedo o con el ratón, y que él
+solo quería ver al tabular. Eran **dos causas distintas**, y se separaron midiendo.
+
+**En escritorio no se reproducía.** Con la home instrumentada y clics de ratón reales sobre el
+botón del menú, el logo, «Reservar», los tres enlaces del panel, «Ver la carta» y la tira de
+platos, todo daba `:focus-visible = false` y `outline: none`; con Tab, `true` y anillo. Las 14
+reglas de foco del repo ya usaban `:focus-visible`, así que **ahí no había nada que arreglar** —y
+tocarlo habría roto el teclado—. Dos avisos de método que costaron vueltas: `requestAnimationFrame`
+no corre con la pestaña en segundo plano y deja el instrumental mudo sin dar error, y cuando la
+ventana pierde el foco del sistema los clics siguen llegando al DOM pero el teclado ya no, así que
+`focusin` deja de dispararse y todo parece limpio.
+
+- **Móvil: faltaba `-webkit-tap-highlight-color`** en todo el repo, así que iOS y Android pintaban
+  su propio recuadro encima, compitiendo con el hundido de `[data-tacto]` justo mientras ocurre.
+  Apagado en la raíz de las dos webs, donde se hereda sin listar un selector.
+- **Escritorio: la herencia del foco programático.** `menu-overlay.ts` mueve el foco en las dos
+  direcciones —al panel al abrir, al botón al cerrar— y el navegador, que no sabe de dónde venía
+  el usuario, **hereda el anillo del elemento anterior**. Basta que entre una vez para quedarse
+  rebotando entre los dos aunque después solo se use el ratón: eso era el «a ratos». Ahora cada
+  llamada declara lo que quiere con `focus({ focusVisible })`, y quién decide es `e.detail === 0`,
+  que distingue el Enter del clic sin espiar la página. Confirmado por Mario en su Brave.
+
+**«Conócenos» (`/conocenos` y `/en/about`)** nace montada y vacía a propósito. Cuarta entrada del
+menú —detrás de «Dónde estamos», para no empujar hacia abajo lo que convierte—, enlazada también
+desde «La tasca» en las dos homes, que es lo que le da peso interno. El cuerpo son cuatro rejillas
+de texto (`CopyGuide.astro`, hermano de `PhotoGuide`) que dicen qué hay que contar en cada bloque,
+más el hueco de foto del equipo. Los dos idiomas salen de un solo componente,
+`components/Conocenos.astro`, para que no se separen como se separó la home inglesa.
+
+**Lo que impide que perjudique al SEO estando en obras:** `EN_OBRAS` en `src/conocenos.ts` la deja
+con `noindex, follow`, fuera del sitemap (filtro en `astro.config.mjs`) y sin su JSON-LD
+`AboutPage`. Un solo interruptor gobierna las tres cosas, y ponerlo en `false` cuando haya texto es
+todo lo que hay que hacer. De paso, `Seo.astro` gana la prop `noindex` y el `Base.astro` de Ochoa
+un `<slot name="head" />` para el JSON-LD propio de una página.
+
+El titular no repite «La tasca que te mereces»: ese es el lema del cristal y el de la portada, y
+dos páginas peleando por la misma frase se restan. Dice «La casa por dentro» / «Behind the bar».
+
+## 3.quater La tanda del 2026-07-31: Sibuya como referencia y los retoques de Mario
+
+Salió de analizar **sibuyaurbansushibar.com** en móvil, que es una web que le gusta a Mario, y
+de quedarse con lo que se puede contar en el idioma de esta casa. El análisis completo —lo que
+compartimos, en qué nos diferenciamos y qué no copiarles— se midió con Playwright a 390px: su
+home pesa **20,5 MB** (el mismo vídeo descargado tres veces) contra los 767 KB del build de
+Ochoa, y su `/carta` tarda 8,9 s en el primer byte. La ambición visual sí; el peso no.
+
+**Lo que entró de ahí:**
+
+- **El cartel de la portada volvió a escalar.** `clamp(2.6rem, 10vw, 6rem)` se quedaba clavado
+  en su mínimo en todo móvil por debajo de 416px de ancho —a 390px, 10vw daba 39px y ganaba el
+  suelo—. Con `11.5vw` vuelve a crecer con la pantalla desde los 362px.
+- **La cinta rotulada** (`Ticker.astro`), banda roja a sangre entre la tira de platos y el
+  manifiesto, con contenido que ya vive en la página. Va ahí y no bajo la portada porque ese
+  hueco está medido para que asome la primera ficha de plato.
+- **El medio dentro del titular**, el mejor recurso de su home, aplicado a «la casa» y no a la
+  portada: el rótulo del cristal sale del muro y se lee entre «lo que hay» y «detrás del
+  cristal». En la portada habría significado partirla en dos, que ya se probó y se retiró
+  (§3.ter). El muro se queda con tres piezas y cierra en plano.
+- **Aire solo donde hay fotografía** (`la tasca` y `la casa`, de 28/32px a 52px en móvil). La
+  densidad del resto se mantiene: la hoja de bar es densa a propósito.
+
+**Los retoques que pidió Mario después, viéndolo en el iPhone:**
+
+- **Fuera las tres rayas del menú.** El botón dice la palabra —`MENÚ` / `CERRAR`— en la versal
+  apretada de Archivo, con un subrayado que se recoge al abrir. El texto ya estaba en el markup
+  para lectores de pantalla; ahora se ve. De paso deja de estar descentrado: tenía 31px a la
+  derecha del glifo contra 22 arriba, y ahora son 20 y 21.
+- **El menú cae como una persiana** de arriba abajo con `clip-path`, y se recoge al cerrar. El
+  fundido anterior no decía de dónde venía. Con `clip-path` y no con un desplazamiento: así los
+  nombres de sección no viajan y el escalonado de los enlaces se lee como lo que aparece detrás
+  del telón.
+- **Curvatura proporcional al tamaño.** Ya no hay un radio suelto por componente sino cuatro
+  escalones (`--r-chapa` 4px, `--r-btn` 7px, `--r-caja` 9px, `--r-marco` 12px). Mario lo detectó
+  comparando «Reservar» con «Llamar»: **tenían los dos 3px**, pero el segundo mide 55px de alto
+  y se veía más picudo. La esquina se percibe en proporción a lo que enmarca. La proporción
+  radio/alto ronda 0,16 en las piezas táctiles.
+- **La tira de platos arrancaba pegada al borde** pese a su relleno de 20px: el `scroll-snap`
+  alinea contra el borde del área de scroll, que ignora el `padding`, y el navegador desplazaba
+  esos mismos píxeles. Se arregla con `scroll-padding-inline`. Y su sombra roja se cortaba por
+  abajo porque `overflow-x: auto` obliga al eje vertical a recortar también — por eso la esquina
+  inferior derecha parecía sin redondear: no lo estaba, estaba cortada.
+- **Indicador de turno en la tira**: seis marcas, la del turno en curso es una barra que se
+  rellena. Avanza solo cada 3,5 s y **se apaga para siempre al primer toque** — en una tira con
+  precios, moverse debajo de quien está leyendo es quitarle el sitio, así que el gesto de
+  deslizar es la pausa y no hay botón que la reponga.
+- **Barrido entre páginas.** `<ClientRouter />` ya estaba puesto pero hacía el fundido por
+  defecto. Ahora la hoja nueva entra por el borde y **es bidireccional**: con el botón de atrás
+  barre al revés. La marca de dirección hay que escribirla también en el documento entrante,
+  porque el intercambio copia los atributos del `<html>` nuevo encima y la borraba.
+- **«Dónde estamos» se reordena:** el mapa abre la sección en vez de cerrarla, y teléfono e
+  Instagram pasan a ser dos fichas con icono **y** texto (el icono solo obliga a adivinar, y el
+  número escrito es lo que alguien copia). El mismo componente va en el pie del menú.
+
+**El hundido de los botones, que costó tres intentos.** El primero solo tenía `:hover`, que en
+móvil no existe. El segundo añadió `:active` con un retardo antes de la vuelta, y **seguía sin
+verse en el iPhone**. Midiendo salieron las dos causas de verdad: entre soltar un enlace y tener
+la página nueva pasan **232 ms**, y los ocho botones de esta web son enlaces, así que una subida
+que arrancaba a los 220 ms se la llevaba la navegación por delante; y **en Safari de iOS
+`:active` no se aplica de forma fiable** sin un listener táctil en la página. La solución no
+depende de ninguna de las dos: `pointerdown` hunde y `pointerup` dispara la subida en el mismo
+instante en que se levanta el dedo (`--dur-sube`, 240 ms). `pointercancel` también la suelta, o
+arrastrar el dedo fuera del botón para no pulsarlo lo dejaría hundido para siempre.
+
+**Lección de método, que es la que importa:** las dos primeras versiones se dieron por buenas
+comprobando que la regla CSS existía en el CSSOM. Comprobar que una regla está escrita no es
+comprobar que el efecto ocurre. Lo que lo resolvió fue simular el toque con
+`page.mouse.down()`/`up()` y muestrear la posición real a lo largo del tiempo.
+
+**La carta, rehecha con el material del restaurante.** Alberto pasó dos PDF por WhatsApp y pidió
+tres secciones: pinchos y tapas, con pan, y raciones. **De 25 platos a 49.** Los postres van en
+una cuarta porque están en la carta de sala y no caben en ninguna de las tres; las bebidas no se
+publican, como pidió. Tres decisiones que quedaron tomadas:
+
+- **Ya no hay medias raciones.** La carta nueva trae precio único, así que la tabla se queda en
+  una columna. El soporte sigue en el esquema por si vuelven.
+- **Montados, bocatines y bikinis llevan su tipo en el nombre.** En el PDF eso lo dice el rótulo
+  de cada bloque, pero al fundirlos bajo «con pan» aparecían dos «De jamón con tomate rallado»
+  con precios distintos —4,50 y 8,00—, que es una carta que miente.
+- **El PDF de sala es imagen pura, sin capa de texto.** No se puede extraer con pdfjs; hubo que
+  renderizarlo a 4× y leerlo a ojo. Si vuelve a hacer falta, el visor está en el scratchpad de
+  la sesión, no en el repo.
+
+## 3.bis Fase 4 — acordada el 2026-07-29, en curso
+
+Orden acordado. Los cinco primeros no dependen de nadie; el sexto necesita contenido real.
+
+1. ~~**Tipografía propia para Ochoa.**~~ **Hecho el 2026-07-29.** El cuerpo ya no cae en la
+   fuente del sistema: **Archivo** (Omnibus-Type), variable en peso (100-900) **y en ancho
+   (62-125)**, autoalojada en un solo `.woff2` de 90 KB — menos que los tres estáticos de
+   Bricolage en Cokima, que suman 124 KB para tres pesos. Anton se queda solo en los
+   titulares de cartel. El eje de ancho es lo que hace de bisagra entre las dos: las
+   etiquetas en versal van al 84%, en la proporción del rótulo, y la carta podrá apretar al
+   92% cuando pase a dos columnas. Escala de siete pasos con nombres por papel
+   (`--fs-micro` … `--fs-cartel`) en `apps/ochoa/src/styles/tokens.css`. Fuera el
+   `tabular-nums` del precio. Verificado a 390px: ni un elemento del DOM conserva fuente de
+   sistema, 43 tests verdes y las dos apps `Complete!`.
+2. ~~**Menú a pantalla completa.**~~ **Hecho el 2026-07-30, en las dos webs.** Botón sin
+   borde y tres rayas que se pliegan en aspa sobre su propio centro. El panel cubre la
+   pantalla por debajo de la barra —que se queda quieta, así que el botón que abre es el
+   mismo que cierra y en el mismo sitio—, con "La carta" abriendo la cascada, numerada en
+   Ochoa y con el punto de brasa en Cokima, y un pie con horario, teléfono, Instagram y
+   dirección. El comportamiento vive una sola vez en `packages/ui/src/menu-overlay.ts`
+   (estado, foco atrapado, Escape, bloqueo del fondo) y la piel entera en cada app, como
+   manda la regla de oro. **Dos trampas que solo se vieron midiendo en el navegador:** una
+   cabecera `sticky` se descuelga fuera de la pantalla en cuanto el fondo deja de tener
+   scroll —pasa a `fixed` mientras el menú vive—, y ocultar el desbordamiento ensancha la
+   página de golpe, que se resuelve reservando el hueco de la barra con
+   `scrollbar-gutter: stable`.
+3. ~~**Carta de Ochoa a dos columnas.**~~ **Hecho el 2026-07-30.** Los dos precios a la vez
+   en columnas alineadas, y fuera el interruptor pegajoso: era una barra de 71px que
+   viajaba con el dedo por toda la carta. **Fuera también el buscador**, que Mario retiró el
+   mismo día — nadie va a buscar en una carta de veinticinco platos que se lee de un vistazo.
+   Con él se fueron `matchDish` y `normalize` (`packages/content/src/search.ts`) y sus nueve
+   tests, y la carta se quedó **sin una línea de JavaScript**. La
+   nomenclatura la confirmó Mario con el restaurante: **«Ración» y «½ Ración», no «Tapa»**.
+   Es una `<table>` de verdad, con `scope="col"`/`scope="row"`, porque un precio sin su
+   cabecera no dice si es media o entera — y así un lector de pantalla lo anuncia solo.
+   Once de los veinticinco platos no tienen media: llevan el mismo guion que la carta
+   impresa, con el aviso en texto para quien no lo ve. Los postres, que van a precio único,
+   enseñan una sola columna en vez de una vacía. Fuera también la guía de puntos: existía
+   para llevar el ojo hasta un precio suelto, y con dos columnas alineadas la columna ya es
+   la guía. **En escritorio la carta se acota a 44rem** — a 1280px el nombre quedaba a
+   700px de su precio; el margen que sobra a la derecha es donde entrarán las fotos.
+4. ~~**Rejillas guía en los huecos de foto.**~~ **Hecho el 2026-07-30.** **Diecinueve
+   huecos** entre las dos webs: once de plato (las fichas de destacados que salen sin
+   imagen) y ocho de la casa, en una sección nueva que enseña lo que ninguna de las dos
+   webs tiene hoy: la barra, la sala, el equipo. **Su texto ya es el definitivo** —«Lo que
+   hay detrás del cristal» en Ochoa, «Donde se mezcla y se mancha» en Cokima—, no el de
+   andamio que hubo primero: que faltan las fotos ya lo dice cada rejilla en su etiqueta, y
+   escribirlo otra vez en el titular era contarlo dos veces. Van en **cuadrícula de dos por
+   dos, las cuatro iguales**; el mosaico asimétrico del primer intento llamaba la atención
+   sobre la composición en vez de sobre las fotos. Cada hueco dibuja su proporción, la
+   regla de tercios y **el nombre
+   exacto del archivo** que hay que dejar para que desaparezca, derivado del nombre del
+   plato con `dishImageKey()`. El componente es `packages/ui/src/PhotoGuide.astro`, sin
+   una gota de marca, y se mide con container queries porque cae igual en una ficha de
+   250px que en una banda de 700px.
+
+   **No pueden llegar a producción, y eso no depende de acordarse:** lo decide
+   `showPhotoGuides()` (`packages/config/src/photo-guides.mjs`), que las apaga si hay
+   `SITE_URL` o si Vercel dice que es producción —un despliegue público siempre tiene una
+   de las dos— y tiene seis tests que lo fijan. Comprobado además sobre el HTML construido:
+   con `SITE_URL`, cero huecos en las dos apps; sin él, los diez de la home de Ochoa.
+5. ~~**Sistema de movimiento.**~~ **Hecho el 2026-07-30.** Cinco valores por marca
+   (`--ease`, `--dur-in`, `--dur-out`, `--shift`, `--stagger`) y **ni un milisegundo suelto
+   en los componentes**: los cuatro que quedaban a mano —los dos `.btn` y las dos portadas—
+   ya salen de los tokens. La curva es la misma en las dos marcas porque es calidad, no
+   identidad; el ritmo diverge a propósito, Cokima más lenta y más lejos, Ochoa seca.
+   De paso, **las portadas dejaron de animar `padding-bottom`**: el titular se aparta del
+   cartel de cookies con `translateY`, mismo resultado en pantalla sin recalcular la
+   disposición en cada fotograma. Y el apagado por `prefers-reduced-motion` vive ahora en un
+   único sitio, no repetido por componente. Todo escrito en **`movimiento.md`**: los cinco
+   valores, las cinco reglas y la lista de lo que se mueve, que es corta a propósito.
+6. **Páginas nuevas.** No relleno: dar contexto a lo que ya hay y contar la historia real
+   de cada casa, con copys trabajados. Las páginas concretas se deciden más adelante.
+
+**Pendiente de foco:** casi todo el trabajo hasta ahora ha mirado a Ochoa. Cokima está sin
+desmenuzar a fondo.
+
+---
+
+## 4. Decisiones abiertas (de Mario)
+
+- [ ] **Filtro de alérgenos de Cokima.** Sigue apagado (`ALLERGEN_DATA_CONFIRMED = false` en
+      `apps/cokima/src/site.ts`) y ninguna página de Brasa lo pinta. Los datos ya son oficiales desde
+      el 2026-11-04, pero un filtro "sin gluten" en el que una persona celíaca confía es una decisión
+      aparte, y nadie lo ha pedido.
+- [ ] **Lo que dejó abierto la carta del PDF de Cokima** (2026-11-04): el pan y el aperitivo sin
+      alérgenos, sulfitos y mostaza sin marcar en ningún plato, quién hereda «Imprescindible» y el
+      vídeo de portada. Mario no tiene estos datos (2026-11-05): dependen del restaurante. El
+      detalle, en `cokima-el-rediseno.md` §3, «La carta del PDF oficial».
+- [ ] **Texto del cartel de cookies.** Es lo que más altura le da. No se ha tocado porque
+      es contenido de consentimiento y acortarlo tiene matiz legal.
+- [ ] **El rojo del titular de Cokima.** Con `#ed1c24` no hay forma de pasar de 4,26:1
+      sobre la portada. Se queda así (cumple para texto grande) o el fragmento pasa al
+      naranja `--ember`, que da 7,9:1 pero cambia el acento de marca en la primera
+      pantalla.
+- [ ] **Cuándo llevar `preview` a `main`** (`git switch main && git merge preview`).
+- [x] ~~Si Ochoa se queda al 90% en escritorio.~~ **Decidido el 2026-09-19:** Mario lo vio en
+      la carta, dijo «bien respecto a lo del 90%» y pidió extenderlo a toda la web (§0). El tope
+      de 1140px no vuelve.
+- [ ] **Los 12 platos de Ochoa sin alérgenos y el gluten en amarillo** (§3). Es dato de salud:
+      no se rellena por deducción. Mario no lo tiene (2026-11-05): depende del restaurante.
+
+**Cerradas el 2026-07-29:** el verde oliva del estado de apertura (retirado con la piel
+nueva de Ochoa), las dos ramas muertas —que ya no existen— y **el push de `preview`**, que
+Mario autorizó: la fase 3 está subida y los alias de preview ya no van retrasados.
+
+**Cerrada el 2026-07-30:** **«Ración» y «½ Ración»**. Mario lo confirmó con el restaurante:
+sirven media ración, no tapa. Es la nomenclatura que va en la carta.
+
+---
+
+## 5. Infraestructura pendiente
+
+- [ ] Variables de entorno y dominios por proyecto en Vercel. `SITE_URL` bloquea los
+      despliegues de producción a propósito mientras no haya dominio. **Comprobado el
+      2026-10-22 en `ochoa`: cero variables y ningún dominio propio.** Cokima ya tiene dominio,
+      `cokima.es`, con la zona mirada el 2026-11-18 y sin tocar (`deploy.md` §Dominios y SEO); su
+      proyecto sigue con cero variables y solo `cokima.vercel.app`.
+- [ ] **El plan de Vercel.** El equipo está en Hobby, que Vercel reserva a uso no comercial.
+      Pasar a Pro (o el plan que se decida) antes de servir la web de un restaurante con
+      dominio propio. Lo decide y lo paga Mario.
+- [ ] *Ignored Build Step* en ambos proyectos: hoy cada push reconstruye las dos webs.
+      Comando en `deploy.md`.
+- [ ] Redirects 301 desde `grupotombo.com/cokima-kitchenmadness/` y
+      `/tasquita-los-ochoa/` hacia los dominios nuevos. La de Cokima seguía respondiendo 200 el
+      2026-11-18.
+- [ ] Alta de cada dominio en Google Search Console y enlace con su ficha de Google Business.
+
+---
+
+## 6. Cómo levantarlo y dónde mirarlo
+
+```bash
+pnpm install
+pnpm --filter cokima dev    # http://localhost:4321
+pnpm --filter ochoa dev     # segundo puerto libre
+pnpm test                   # 69 tests
+SITE_URL=https://example.com pnpm build
+```
+
+**Casi todo el trabajo es mobile-first y está pensado para pantalla estrecha.** En una
+ventana ancha la impresión es que cambió menos de lo que cambió: hay que estrechar a
+~375-390px o usar el modo dispositivo.
+
+**Las imágenes solo se optimizan en Vercel, no en local.** Desde el 2026-07-29 las sirve
+el servicio de imágenes del adaptador (`/_vercel/image?...`), que en `dev` y en `preview`
+local devuelve el original. El peso real solo se puede medir en un despliegue.
+
+**Previews (alias fijos, no cambian con cada push):**
+- Cokima → `https://cokima-git-preview-rodz-dev.vercel.app`
+- Ochoa → `https://ochoa-git-preview-rodz-dev.vercel.app`
+
+**El slug del equipo cambió** el 2026-08-17 —era `rodzs-projects-1c289ef0`, ahora es `rodz-dev`—
+y con él **todos los alias**. Si un enlace de preview de un documento viejo da 404, es esto.
+**Cada rama tiene su alias, no solo `preview`**, con el patrón
+`<proyecto>-git-<rama-con-guiones>-rodz-dev.vercel.app`: enseñarle algo a Mario no obliga a
+fusionar en `preview`. IDs de proyecto y detalle en `recursos.md`.
+
+**Aviso de dev:** si en local ves algo que no cuadra con el código (una regla CSS que ya
+no existe, un elemento oculto sin motivo), suele ser caché obsoleta de Vite. Se arregla
+con `rm -rf node_modules/.vite apps/*/node_modules/.vite` y rearrancando. Pasó el
+2026-07-28 y estuvo a punto de dar por bueno un fallo inexistente.
+
+---
+
+## 7. Bloqueado por el cliente
+
+Sin cambios respecto a la spec §12, más una entrada nueva:
+
+- **Nueva:** confirmación oficial de los datos de alérgenos de Cokima (requisito para
+  activar el filtro).
+- Accesos: Meta Business (píxel por marca + token CAPI) y GTM/GA4 — **sin ellos la medición de
+  reservas no se puede cerrar**. El panel de CoverManager ya lo tiene Mario (2026-10-05), pero lo
+  que necesita la medición (meter GTM en el motor, probar una reserva de punta a punta) cuelga de
+  esos dos.
+- Dominios propios por marca.
+- Logos en vectorial (los favicons actuales son provisionales y geométricos, no logotipos).
+- Fotografía real actualizada.
+- Datos fiscales para las páginas legales.
+
+---
+
+## Documentos
+
+**Los tres primeros no cuentan qué se construyó, sino cómo se trabaja aquí.** Se escribieron el
+2026-09-07 volcando lo que hasta entonces solo vivía en la memoria local del agente en una de las
+dos máquinas — que no cruza de ordenador y se borra al acabar la sesión. Un agente nuevo, en
+cualquier máquina, debería poder ponerse al día sin más que este repositorio.
+
+**Cada documento declara su estado en la primera línea.** Son tres y solo tres:
+
+- **`vivo`** — cuenta lo que hay ahora. Si deja de ser cierto, se corrige o se cierra. Nunca se
+  deja mintiendo.
+- **`receta`** — conocimiento portable. No caduca con el proyecto, solo si cambia la tecnología
+  que describe.
+- **`cerrado`** — caso terminado. Se guarda por el porqué, **no se actualiza nunca** y vive en
+  `archivo/`.
+
+### Vivos
+
+| Documento | Qué es |
+|---|---|
+| `cokima-el-rediseno.md` | **Léelo primero.** Por qué Cokima se rehace, qué se descartó y por qué cada decisión de la entrada es la que es |
+| `ochoa-inicio-vivo.md` | Por qué la home de Ochoa es como es desde el 2026-10-29: El relieve, el fondo vivo, el mosaico de La casa y la portada; lo que se descartó en cada ronda del probador y lo medido |
+| `trabajar-con-mario.md` | Con quién se trabaja y cómo se le reporta: corto porque dirige desde el móvil, progreso visible primero, y por qué una sensación suya es un dato |
+| `metodo.md` | Cómo se decide lo visual (bocetos comparables) y cómo se verifica de verdad en el navegador. Las averías conocidas del entorno |
+| `recursos.md` | Identificadores que cuesta recuperar: IDs de Vercel, slugs, cartas oficiales y dónde deja Mario el material |
+| `../.impeccable.md` | Contexto de diseño: para quién es cada web y cómo debe sentirse |
+| `movimiento.md` | Los cinco valores del movimiento, las reglas y qué se mueve |
+| `fotografia.md` | Qué fotos faltan, con qué nombre y dónde dejarlas |
+| `deploy.md` | Vercel: dos proyectos, modelo de ramas, env vars, dominios |
+
+### Recetas
+
+| Documento | Qué es |
+|---|---|
+| `receta-barra-ios-astro.md` | Portable: la barra del navegador en iPhone en cualquier web con `<ClientRouter />` |
+
+### Cerrados
+
+Todo en **`archivo/`**, con su propio índice en `archivo/README.md`. Nada de ahí describe el
+presente: se lee para saber **por qué** algo se decidió así, nunca para saber cómo está la web hoy.
+Ahí están los cinco documentos de diseño de las fases 1 a 4, el caso completo de la barra de iOS
+(resuelto el 2026-08-01) y el registro de la fase 2.
+
+**Los cinco planes de implementación se borraron el 2026-09-07** —5.142 líneas de listas de tareas
+ya ejecutadas— porque el diff ya cuenta el *qué*. Siguen enteros en el historial de git; el
+`archivo/README.md` dice cómo sacarlos.
