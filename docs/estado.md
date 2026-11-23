@@ -22,6 +22,13 @@ tiene los dominios, pero no son nuevos, y Mario no quería romper nada. Mirada l
 21 registros, solo dos son de la web; el resto es un correo @cokima.es que está activo y no se toca. Lo que
 sirve hoy el dominio es un WordPress vacío, sin direcciones antiguas que redirigir.
 
+**2026-11-23: los dominios de Ochoa, dados de alta en Vercel.** Son `tasquitalosochoa.es` y `.com`, que
+estaban aparcados en DonDominio, sin web ni correo. La principal es `www.tasquitalosochoa.es`, y las otras
+tres direcciones le redirigen. **Falta:**
+
+- que Mario cambie los DNS: dos registros en cada dominio, con los valores en `deploy.md` §Dominios y SEO;
+- decidir si Ochoa se publica: hace falta `SITE_URL` y volver a desplegar `main`.
+
 **2026-11-23: Cokima, en producción.** Se dio de alta en Vercel con `www.cokima.es` como principal, se puso
 `SITE_URL` en producción y, con el visto bueno de Mario, `preview` se fusionó en `main` (`7d004a0`, 216
 commits). El despliegue quedó `READY`, con alias `www.cokima.es` y `cokima.es`. Medido en

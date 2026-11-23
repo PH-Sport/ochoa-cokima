@@ -36,7 +36,7 @@ por defecto en monorepos) — sin eso, `packages/*` no llega al build.
 | Framework preset | Astro (autodetectado) | Astro (autodetectado) |
 | Build Command | `astro build` (autodetectado) | `astro build` (autodetectado) |
 | Install Command | `pnpm install` en la raíz (automático) | igual |
-| Dominio | `www.cokima.es` (principal) y `cokima.es` (308 a `www`), dados de alta el 2026-11-23; **los DNS de DonDominio, sin cambiar** (§Dominios y SEO) | pendiente (p. ej. `tasquitalosochoa.es`) |
+| Dominio | `www.cokima.es` (principal) y `cokima.es` (308 a `www`), dados de alta el 2026-11-23; **los DNS de DonDominio, sin cambiar** (§Dominios y SEO) | `www.tasquitalosochoa.es` (principal); `tasquitalosochoa.es`, `tasquitalosochoa.com` y `www.tasquitalosochoa.com`, 308 a ella. Dados de alta el 2026-11-23; **DNS sin cambiar** (§Dominios y SEO) |
 
 ### Variables de entorno
 
@@ -198,6 +198,27 @@ estropear y no hace falta: siguen en DonDominio.
 - **Producción publica Cokima desde el 2026-11-23**: `preview` se fusionó en `main` (`7d004a0`) con
   `SITE_URL=https://www.cokima.es` en producción, y el despliegue quedó `READY` con los alias
   `www.cokima.es` y `cokima.es`. Lo que falta son los dos registros de DonDominio de arriba.
+
+### `tasquitalosochoa.es` y `.com`: lo que hay y qué se cambia (2026-11-23)
+
+**Los dos dominios estaban aparcados.** Los DNS están en DonDominio, y lo que servían era la página
+«Registrado en DonDominio». No había web ni correo: ningún MX, solo un TXT `v=spf1` que se queda.
+La principal es `www.tasquitalosochoa.es`, como en Cokima, y las otras tres direcciones le redirigen
+con un 308. Se dieron de alta por la API de Vercel ese mismo día, sin efecto de cara al público.
+
+En **cada uno** de los dos dominios, en DonDominio:
+
+| Nombre | Tipo | Valor nuevo (lo que pidió Vercel) | Valor anterior, para deshacer |
+|---|---|---|---|
+| `@` | A | `216.198.79.1` | `31.214.178.55` |
+| `www` | CNAME | `b138c459c3eddf88.vercel-dns-017.com` | `parkingsrv0.dondominio.com.` |
+
+Si DonDominio tiene activado el servicio de *parking* en el dominio, hay que desactivarlo, porque
+puede imponerse a los registros.
+
+**Producción de Ochoa todavía no publica:** le falta `SITE_URL=https://www.tasquitalosochoa.es`, y
+después de ponerla hay que volver a desplegar `main`. Sale con lo que ya se sabía pendiente: el aviso
+legal con huecos y el plan Hobby (`estado.md` §5).
 
 ## Cómo se resuelve `SITE_URL`
 
