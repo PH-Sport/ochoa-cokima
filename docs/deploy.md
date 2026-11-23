@@ -254,7 +254,8 @@ cambios en `apps/ochoa`. Lo medido, en `estado.md` §0.
 
 ### `grupotombo.com` y `.es`: lo que hay (2026-11-23), para cuando llegue la web del grupo
 
-**Dados de alta en el proyecto `grupo-tombo` el 2026-11-23; los DNS, todavía sin tocar.** La principal es
+**Publicada el 2026-11-23:** dados de alta en el proyecto `grupo-tombo` y con los DNS cambiados por Mario
+ese mismo día (lo medido, en `estado.md` §0). La principal es
 `www.grupotombo.com`, y `grupotombo.com`, `grupotombo.es` y `www.grupotombo.es` le redirigen con un 308.
 `SITE_URL=https://www.grupotombo.com` está puesta en *production*. Los valores que pidió Vercel, iguales en
 los dos dominios:
