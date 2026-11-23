@@ -10,6 +10,13 @@
 
 @font-face {
   font-family: "Bricolage Grotesque";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/bricolage-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Bricolage Grotesque";
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -55,6 +62,15 @@
   --ck-bone: #f3eadd;
   --ck-bone-dim: #a99c8c;
   --ck-red: #ed1c24;
+  --ck-ember: #ff9a52;
+  --ck-texto-solido: #1a110c;
+  /* El neón de sus botones: el tubo, su brillo y lo que tarda en arrancar y en apagarse tras un toque */
+  --ck-neon: #ffe2c6;
+  --ck-neon-luz: rgba(255, 150, 80, 0.32);
+  --ck-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ck-dur-out: 180ms;
+  --ck-dur-encender: 1120ms;
+  --ck-dur-neon-toque: 1800ms;
   --ck-velo: rgba(14, 9, 7, 0.94);
   --ck-velo-medio: rgba(14, 9, 7, 0.5);
   --ck-velo-alto: rgba(14, 9, 7, 0.62);
@@ -65,6 +81,12 @@
   --oc-paper: #ffffff;
   --oc-ink: #1a1a1a;
   --oc-red: #c6222b;
+  --oc-red-2: #a81b23;
+  --oc-r-btn: 7px;
+  /* Sus botones se hunden al pulsar: lo que dura la respuesta y lo que tarda en volver a subir */
+  --oc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --oc-dur-out: 160ms;
+  --oc-dur-sube: 240ms;
   --oc-borde-rotulo: #d8d2ce;
   --oc-velo: rgba(26, 26, 26, 0.82);
   --oc-velo-medio: rgba(26, 26, 26, 0.25);

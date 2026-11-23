@@ -66,6 +66,58 @@ const foto = { widths: [480, 780, 1200, 1600], sizes: "(min-width: 820px) 50vw, 
   </section>
 </Base>
 
+<script>
+  // El dedo, como en cada casa: `pointerdown` y no `:active`, porque en Safari de iOS ese estado solo se
+  // aplica de forma fiable con un listener táctil (lo explica el Base de Ochoa). Al tocar una mitad, su
+  // botón se hunde; el de Cokima, además, se enciende y se apaga solo (--ck-dur-neon-toque), como en Brasa,
+  // y el de Ochoa vuelve a subir al soltar.
+  // El build reescribe las duraciones de tokens.css a segundos («1800ms» sale como «1.8s»): hay que leer la
+  // unidad, o un parseFloat a secas da 1,8 ms y el neón se apaga en el acto.
+  const ms = (nombre: string) => {
+    const v = getComputedStyle(document.documentElement).getPropertyValue(nombre).trim();
+    const n = parseFloat(v) || 0;
+    return v.endsWith("ms") ? n : v.endsWith("s") ? n * 1000 : n;
+  };
+  let pulsado: HTMLElement | null = null;
+  let desde = 0;
+
+  document.addEventListener(
+    "pointerdown",
+    (e) => {
+      const mitad = (e.target as Element | null)?.closest?.(".mitad");
+      const boton = mitad?.querySelector<HTMLElement>(".boton");
+      if (!boton) return;
+      pulsado = boton;
+      desde = performance.now();
+      boton.classList.remove("soltando");
+      boton.classList.add("tocando");
+      if (mitad!.classList.contains("cokima") && e.pointerType !== "mouse") {
+        boton.classList.add("encendido");
+        clearTimeout(Number(boton.dataset.apaga));
+        boton.dataset.apaga = String(setTimeout(() => boton.classList.remove("encendido"), ms("--ck-dur-neon-toque")));
+      }
+    },
+    { passive: true },
+  );
+
+  // En `pointerup` y en `pointercancel`: sin el segundo, arrastrar el dedo fuera lo dejaba hundido.
+  const suelta = () => {
+    const boton = pulsado;
+    if (!boton) return;
+    pulsado = null;
+    if (boton.closest(".cokima")) {
+      // Hundido lo justo para verse: --ck-dur-out como poco, como en Brasa.
+      setTimeout(() => boton.classList.remove("tocando"), Math.max(0, ms("--ck-dur-out") - (performance.now() - desde)));
+    } else {
+      boton.classList.remove("tocando");
+      boton.classList.add("soltando");
+      boton.addEventListener("animationend", () => boton.classList.remove("soltando"), { once: true });
+    }
+  };
+  document.addEventListener("pointerup", suelta, { passive: true });
+  document.addEventListener("pointercancel", suelta, { passive: true });
+</script>
+
 <style>
   .oculto {
     position: absolute;
@@ -203,15 +255,59 @@ const foto = { widths: [480, 780, 1200, 1600], sizes: "(min-width: 820px) 50vw, 
     font-size: clamp(1.25rem, 1rem + 1.2vw, 2rem);
     line-height: 1.15;
   }
+  /* El botón es el `.pill.solid` de Brasa, tal cual (apps/cokima/src/styles/brasa.css): un neón apagado
+     que arranca a trompicones con el ratón encima y se queda encendido; al pulsar se hunde un poco, y en
+     el móvil el toque lo enciende y se apaga solo. Aquí la mitad entera es el enlace, así que lo que lo
+     enciende es señalar la mitad. Lo único que no viene son las chispas al pulsar, que pinta brasa.js. */
   .cokima .boton {
+    position: relative;
     margin-top: 4px;
-    padding: 0.78em 1.4em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 0 24px;
     border-radius: 999px;
-    background: var(--ck-red);
-    color: var(--on-red);
-    font-family: var(--ck-sans);
-    font-weight: 800;
-    font-size: 0.95rem;
+    border: 1px solid var(--ck-bone);
+    background: var(--ck-bone);
+    color: var(--ck-texto-solido);
+    font: 500 0.92rem/1 var(--ck-sans);
+    transition: transform var(--ck-dur-out) var(--ck-ease);
+  }
+  .cokima .boton::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    border: 1.5px solid var(--ck-ember);
+    box-shadow: 0 0 7px var(--ck-neon-luz), inset 0 0 5px var(--ck-neon-luz);
+    opacity: 0;
+    transition: opacity var(--ck-dur-out) var(--ck-ease);
+  }
+  @keyframes encender {
+    0% { opacity: 0; }
+    8.75% { opacity: 0.55; }
+    15% { opacity: 0.18; }
+    23.75% { opacity: 0.48; }
+    31.25% { opacity: 0.1; }
+    43.75% { opacity: 0.1; }
+    53.75% { opacity: 0.72; }
+    60% { opacity: 0.45; }
+    71.25% { opacity: 0.88; }
+    78.75% { opacity: 0.68; }
+    91.25%, 100% { opacity: 1; }
+  }
+  @media (hover: hover) {
+    .cokima:hover .boton::after {
+      animation: encender var(--ck-dur-encender) ease-in-out forwards;
+    }
+  }
+  .cokima .boton.encendido::after {
+    animation: encender var(--ck-dur-encender) ease-in-out forwards;
+  }
+  .cokima .boton.tocando {
+    transform: scale(0.965);
   }
 
   /* Los Ochoa, de día: su rótulo, su Anton con sombra y sus botones de borde negro */
@@ -261,17 +357,56 @@ const foto = { widths: [480, 780, 1200, 1600], sizes: "(min-width: 820px) 50vw, 
     font-weight: 500;
     font-size: 0.82rem;
   }
+  /* El botón es el `.btn` de Ochoa, tal cual (apps/ochoa/src/styles/global.css): rojo con sombra dura de
+     tinta; con el ratón encima se oscurece y baja un píxel, y al pulsar se hunde los tres píxeles de su
+     sombra y se queda pegado al papel, y al soltar vuelve a subir. Aquí lo acciona la mitad entera. */
   .ochoa .boton {
     margin-top: 4px;
-    padding: 0.72em 1.25em;
-    border-radius: 6px;
-    background: var(--oc-paper);
-    color: var(--oc-ink);
-    border: 2px solid var(--oc-ink);
+    display: inline-block;
+    padding: 12px 22px;
+    border-radius: var(--oc-r-btn);
+    background: var(--oc-red);
+    color: var(--oc-paper);
     box-shadow: 3px 3px 0 var(--oc-ink);
     font-family: var(--oc-sans);
-    font-weight: 700;
     font-size: 0.95rem;
+    font-weight: 650;
+    letter-spacing: 0.005em;
+    white-space: nowrap;
+    transition:
+      transform var(--oc-dur-out) var(--oc-ease),
+      box-shadow var(--oc-dur-out) var(--oc-ease),
+      background var(--oc-dur-out) var(--oc-ease);
+  }
+  @media (hover: hover) {
+    .ochoa:hover .boton {
+      background: var(--oc-red-2);
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0 var(--oc-ink);
+    }
+  }
+  .ochoa .boton.tocando {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--oc-ink);
+    transition: none;
+  }
+  .ochoa .boton.soltando {
+    animation: tacto-sube var(--oc-dur-sube) var(--oc-ease);
+  }
+  @keyframes tacto-sube {
+    from {
+      transform: translate(3px, 3px);
+      box-shadow: 0 0 0 var(--oc-ink);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cokima .boton,
+    .ochoa .boton {
+      transition: none;
+    }
+    .ochoa .boton.soltando {
+      animation: none;
+    }
   }
 
   /* La costura: el grupo, en la línea entre las dos (arriba en el centro en el ordenador) */
