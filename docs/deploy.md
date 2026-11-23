@@ -135,9 +135,29 @@ quedó en `CANCELED`**.
 1. Asignar el dominio a cada proyecto (Settings → Domains) y fijar `SITE_URL` con ese mismo
    valor. De `SITE_URL` salen canonical, `hreflang`, sitemap y el JSON-LD `Restaurant` (y el
    `WebSite`, en la app que da `siteName`; hoy, Cokima).
-2. Si se abandonan las URLs actuales de `grupotombo.com`, configurar **redirects 301** desde
-   `/cokima-kitchenmadness/` y `/tasquita-los-ochoa/` hacia los dominios nuevos. Sin esto se
-   tira el posicionamiento acumulado.
+2. **Redirects 301 desde `grupotombo.com`** hacia los dominios nuevos. Sin esto, se tira el
+   posicionamiento acumulado y las páginas viejas compiten con las nuevas. El 2026-11-23, según
+   el sitemap del WordPress, son cuatro, y las cuatro respondían 200:
+
+   | Página vieja | Va a |
+   |---|---|
+   | `/cokima-kitchenmadness/` | `https://www.cokima.es/` |
+   | `/carta-cokima/` | `https://www.cokima.es/carta` |
+   | `/tasquita-los-ochoa/` | `https://www.tasquitalosochoa.es/` |
+   | `/carta-los-ochoa/` | `https://www.tasquitalosochoa.es/carta/` |
+
+   Mientras el WordPress siga sirviendo `grupotombo.com` (es Apache, en el hosting de DonDominio),
+   se ponen al principio de su `.htaccess`, antes del bloque de WordPress:
+
+   ```apache
+   RedirectMatch 301 ^/cokima-kitchenmadness/?$ https://www.cokima.es/
+   RedirectMatch 301 ^/carta-cokima/?$ https://www.cokima.es/carta
+   RedirectMatch 301 ^/tasquita-los-ochoa/?$ https://www.tasquitalosochoa.es/
+   RedirectMatch 301 ^/carta-los-ochoa/?$ https://www.tasquitalosochoa.es/carta/
+   ```
+
+   Cuando la web nueva del grupo sustituya al WordPress, estas mismas reglas pasan a su
+   configuración.
 3. Dar de alta **cada dominio por separado** en Google Search Console y enlazar cada web con
    su ficha de Google Business.
 

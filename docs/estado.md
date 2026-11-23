@@ -1694,9 +1694,10 @@ sirven media ración, no tapa. Es la nomenclatura que va en la carta.
       dominio propio. Lo decide y lo paga Mario.
 - [ ] *Ignored Build Step* en ambos proyectos: hoy cada push reconstruye las dos webs.
       Comando en `deploy.md`.
-- [ ] Redirects 301 desde `grupotombo.com/cokima-kitchenmadness/` y
-      `/tasquita-los-ochoa/` hacia los dominios nuevos. La de Cokima seguía respondiendo 200 el
-      2026-11-18.
+- [ ] Redirects 301 desde `grupotombo.com` hacia los dominios nuevos. Son cuatro páginas: las
+      dos casas y sus dos cartas viejas. Las cuatro respondían 200 el 2026-11-23, y las reglas
+      para el `.htaccess` del WordPress están en `deploy.md` §Dominios y SEO. Las pone Mario,
+      que es quien tiene acceso.
 - [ ] Alta de cada dominio en Google Search Console y enlace con su ficha de Google Business.
 - [ ] **Los dominios están en renovación manual** en DonDominio. El primero en caducar es `cokima.es`,
       el 2027-06-24 (`recursos.md` §1). Pasarlos a automática o apuntarse la fecha: lo decide Mario.
