@@ -4,7 +4,7 @@
 
 - **Corte:** 2026-11-23
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción: recibió
-  `preview` el 2026-11-23 y publica las dos webs en sus dominios) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
+  `preview` el 2026-11-23 y publica las tres webs) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
   de decidir, que no se fusionan: `feat/inicio-paralaje`, el Inicio de Ochoa en paralaje, parada,
   y `feat/cokima-brasa`, el boceto Brasa como página suelta, que sobra desde que Brasa está en
   `preview` (§0). Si se borran lo decide él; la otra rama de prueba, `feat/inicio-vivo`, ya se
@@ -22,9 +22,20 @@ publicando las páginas de las dos casas y sus cartas viejas, compitiendo con la
 una sola página que presenta el grupo, lleva a las dos casas y enseña el correo de contacto. Las
 direcciones viejas redirigen con un 301. Tiene su propio proyecto en Vercel, `grupo-tombo`, con los cuatro
 dominios dados de alta, y su primer despliegue, salido de `preview`, ya está en producción y comprobado.
-**Falta que Mario cambie los DNS** de `grupotombo.com` y `.es`, y pasar `preview` a `main`: producción
-se quedó en ese primer despliegue y no tiene el icono de la pincelada, que llegó después
-(`deploy.md` §Dominios y SEO). El porqué, lo
+`preview` pasó a `main` el mismo día (`c7d5423`) con el icono de la pincelada, y Mario cambió los DNS.
+
+**Medido ese día desde fuera:**
+
+- los cuatro nombres resuelven a Vercel, también preguntando a `ns1.dondominio.com`, y el MX de
+  `grupotombo.com` sigue en `mx01`;
+- el certificado tardó unos 90 s en emitirse, y son de Let's Encrypt hasta febrero de 2027;
+- las seis direcciones viejas llegan a su destino en 2 saltos (308 que quita la barra y 301);
+- portada, legales, sitemap y robots dan 200, sin `x-robots-tag`, y una dirección inventada da 404;
+- en el navegador del panel, sin errores de consola ni imágenes rotas, con la fuente propia cargada y
+  sin scroll lateral a 1024 px.
+
+**Mario pidió después rehacer la portada como pantalla partida**, cada mitad con la estética de su
+casa, y la aprobó en maqueta: está en `preview`, sin publicar todavía (`grupo-tombo-web.md`). El porqué, lo
 descartado y lo que falta, en `grupo-tombo-web.md`; los registros, en `deploy.md` §Dominios y SEO.
 
 **2026-11-18: el dominio de Cokima es `cokima.es`, y su SEO se repasa antes de apuntarlo.** El cliente ya

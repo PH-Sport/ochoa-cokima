@@ -1,20 +1,83 @@
-/* Tokens del Grupo Tombo. Su único color propio es el rojo de la pincelada del logo; el resto es
-   tinta y blanco, para que las fotos de las dos casas sean lo que lleva el color. Claro por defecto y
-   oscuro según el sistema, con el logo en blanco. */
+/* Tokens de la web del grupo. Desde el 2026-11-23 la portada es una pantalla partida y cada mitad es su
+   casa tal cual es en su web (docs/grupo-tombo-web.md): por eso aquí conviven tres juegos de tokens,
+   cada uno con su prefijo, copiados de los tokens.css de cada app. Si una casa cambia su paleta o su
+   letra, se cambia aquí también.
+
+   - Sin prefijo: el grupo. Tinta, blanco y el rojo de la pincelada del logo. Lo usan el contacto, el
+     pie y las legales, y se adaptan al modo oscuro.
+   - --ck-*: Cokima («Brasa»), de noche. Un solo aspecto, como su web.
+   - --oc-*: Los Ochoa, de día. Un solo aspecto, como su web. */
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/bricolage-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/bricolage-800.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Anton";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/anton-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Archivo";
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/archivo-var.woff2") format("woff2");
+}
+
 :root {
+  /* El grupo */
   --bg: #ffffff;
   --ink: #151312;
   --muted: #625a57;
   --line: #e9e4e2;
   --red: #e31e2d;
   --on-red: #ffffff;
-  --photo: #151312;
-  --photo-shade: rgba(12, 9, 8, 0.62);
-  --on-photo: #ffffff;
   --logo-light: block;
   --logo-dark: none;
-
   --font: "Schibsted Grotesk Variable", "Helvetica Neue", Arial, sans-serif;
+
+  /* Cokima: los de apps/cokima/src/styles/tokens.css */
+  --ck-ground: #0e0907;
+  --ck-bone: #f3eadd;
+  --ck-bone-dim: #a99c8c;
+  --ck-red: #ed1c24;
+  --ck-velo: rgba(14, 9, 7, 0.94);
+  --ck-velo-medio: rgba(14, 9, 7, 0.5);
+  --ck-velo-alto: rgba(14, 9, 7, 0.62);
+  --ck-sans: "Bricolage Grotesque", "Segoe UI", Arial, sans-serif;
+  --ck-voz: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+
+  /* Los Ochoa: los de apps/ochoa/src/styles/tokens.css; el borde es el del rótulo del local */
+  --oc-paper: #ffffff;
+  --oc-ink: #1a1a1a;
+  --oc-red: #c6222b;
+  --oc-borde-rotulo: #d8d2ce;
+  --oc-velo: rgba(26, 26, 26, 0.82);
+  --oc-velo-medio: rgba(26, 26, 26, 0.25);
+  --oc-velo-alto: rgba(26, 26, 26, 0.05);
+  --oc-display: "Anton", Impact, "Arial Narrow", sans-serif;
+  --oc-sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+
+  /* La costura, que es del grupo y va sobre las dos */
+  --costura: #0b0a0a;
+  --sombra-costura: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --sombra-rotulo: 0 10px 28px rgba(0, 0, 0, 0.25);
+  --oscurece: rgba(0, 0, 0, 0.35);
+
   --step--1: 0.8125rem;
   --step-0: 1rem;
   --step-1: 1.1875rem;
@@ -25,6 +88,7 @@
 
   /* Movimiento (docs/movimiento.md): entrar lento, responder rápido, sin rebote. */
   --dur-lento: 900ms;
+  --dur-rapido: 260ms;
   --curva-suave: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
@@ -35,7 +99,6 @@
     --muted: #a9a09c;
     --line: #2b2523;
     --red: #f0303e;
-    --photo-shade: rgba(0, 0, 0, 0.66);
     --logo-light: none;
     --logo-dark: block;
     color-scheme: dark;

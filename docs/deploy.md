@@ -254,7 +254,8 @@ cambios en `apps/ochoa`. Lo medido, en `estado.md` §0.
 
 ### `grupotombo.com` y `.es`: lo que hay (2026-11-23), para cuando llegue la web del grupo
 
-**Dados de alta en el proyecto `grupo-tombo` el 2026-11-23; los DNS, todavía sin tocar.** La principal es
+**Publicada el 2026-11-23:** dados de alta en el proyecto `grupo-tombo` y con los DNS cambiados por Mario
+ese mismo día (lo medido, en `estado.md` §0). La principal es
 `www.grupotombo.com`, y `grupotombo.com`, `grupotombo.es` y `www.grupotombo.es` le redirigen con un 308.
 `SITE_URL=https://www.grupotombo.com` está puesta en *production*. Los valores que pidió Vercel, iguales en
 los dos dominios:
@@ -277,9 +278,8 @@ la portada da 200 con la canónica en `https://www.grupotombo.com/`, y `/cokima-
 `/carta-los-ochoa` dan un 301 a su web nueva. **La rama de producción sí es `main`**: los pushes siguientes a `preview`
 (`87e418e`, `ecc21ee`) salieron como previews (`target: null`), no a producción. Lo de aquel primero
 fue que Vercel lleva a producción el primer despliegue de un proyecto que aún no tiene ninguno.
-**Consecuencia: producción se quedó en `e872b55`**, y lo que llegue después a `preview` (el icono de la
-pestaña, por ejemplo) no se publica hasta que `preview` pase a `main`. Ese paso desde el agente se
-denegó por permisos el 2026-11-23, así que `main` todavía no tiene `apps/grupo`.
+Por eso producción se quedó en `e872b55` hasta que, con el visto bueno de Mario, `preview` pasó a
+`main` (`c7d5423`, 2026-11-23), con el icono de la pincelada.
 
 **Al mover el dominio a Vercel, el WordPress deja de verse.** Las redirecciones de sus páginas viejas
 (§2, arriba) pasan entonces a la configuración del proyecto nuevo, y ya no hace falta acceso al
