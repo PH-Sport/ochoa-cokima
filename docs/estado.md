@@ -17,12 +17,22 @@
 
 ## 0. Por dónde seguir
 
+**2026-11-23: la foto de «La tasca», en la portada de Ochoa, es la que propuso Eva.** Eva, del
+restaurante, le escribió a Mario *«Esa foto habría que cambiarla»* sobre el cenital de la mesa, y propuso
+otra: rosquillas con ensaladilla, un vermú y banderillas. Estaba en su Drive (`fotografia.md`). Va en las
+dos portadas, en español y en inglés.
+
+**2026-11-23: el bikini de lacón de Ochoa vuelve a tener foto,** la del Drive del restaurante (carpeta
+«BIKINI LACON & TRUFA», que creó Lorena el 2026-11-04). Mario la eligió entre las dos de la carpeta. Que
+sea la versión actual del plato se deduce del nombre y la fecha de la carpeta: Lorena no lo ha dicho
+(`fotografia.md`). Medido en el build: la ficha la enlaza en español y en inglés.
+
 **2026-11-23: la carta de Ochoa deja de enseñar el «pendiente de confirmar».** Cinco platos llevaban el
 gluten como «1\*», con una leyenda que decía «pendiente de confirmar con el restaurante»: es el gluten que
 la hoja del restaurante marca en amarillo sin decir por qué (§4). Mario pidió quitarlo y dejarlo como nota
 interna. El dato sigue en `allergensToConfirm` del JSON, y la duda, abierta con el restaurante. Medido en el
 build, en español y en inglés: los mismos 88 números, ninguno con asterisco, y sin la línea de la leyenda.
-En `preview`, sin publicar.
+**Publicado** (`23fa0ef` en `main`), y medido igual en `www.tasquitalosochoa.es/carta/` y `/en/menu/`.
 
 **2026-11-23: la web del grupo, en `apps/grupo`.** `grupotombo.com` era un WordPress que seguía
 publicando las páginas de las dos casas y sus cartas viejas, compitiendo con las webs nuevas. Ahora es
