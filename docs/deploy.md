@@ -274,10 +274,12 @@ grupo sin sesión, la quita Mario en Settings → Deployment Protection. **Y sal
 pasar por `main`, aunque la rama por defecto de GitHub es `main`. Quedó en `READY` con los cuatro
 dominios. Comprobado el 2026-11-23 con `web_fetch_vercel_url`, porque el `*.vercel.app` pide sesión:
 la portada da 200 con la canónica en `https://www.grupotombo.com/`, y `/cokima-kitchenmadness/` y
-`/carta-los-ochoa` dan un 301 a su web nueva. **Falta comprobar en Settings → Environments que la rama
-de producción del proyecto sea `main`**, como en los otros dos. Si es `preview`, cada push a `preview`
-publica la web del grupo sin pasar por Mario. El paso de `preview` a `main` desde el agente se denegó
-por permisos, así que `main` aún no tiene `apps/grupo`.
+`/carta-los-ochoa` dan un 301 a su web nueva. **La rama de producción sí es `main`**: los pushes siguientes a `preview`
+(`87e418e`, `ecc21ee`) salieron como previews (`target: null`), no a producción. Lo de aquel primero
+fue que Vercel lleva a producción el primer despliegue de un proyecto que aún no tiene ninguno.
+**Consecuencia: producción se quedó en `e872b55`**, y lo que llegue después a `preview` (el icono de la
+pestaña, por ejemplo) no se publica hasta que `preview` pase a `main`. Ese paso desde el agente se
+denegó por permisos el 2026-11-23, así que `main` todavía no tiene `apps/grupo`.
 
 **Al mover el dominio a Vercel, el WordPress deja de verse.** Las redirecciones de sus páginas viejas
 (§2, arriba) pasan entonces a la configuración del proyecto nuevo, y ya no hace falta acceso al
