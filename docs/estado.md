@@ -22,7 +22,7 @@ gluten como «1\*», con una leyenda que decía «pendiente de confirmar con el 
 la hoja del restaurante marca en amarillo sin decir por qué (§4). Mario pidió quitarlo y dejarlo como nota
 interna. El dato sigue en `allergensToConfirm` del JSON, y la duda, abierta con el restaurante. Medido en el
 build, en español y en inglés: los mismos 88 números, ninguno con asterisco, y sin la línea de la leyenda.
-En `preview`, sin publicar.
+**Publicado** (`23fa0ef` en `main`), y medido igual en `www.tasquitalosochoa.es/carta/` y `/en/menu/`.
 
 **2026-11-23: la web del grupo, en `apps/grupo`.** `grupotombo.com` era un WordPress que seguía
 publicando las páginas de las dos casas y sus cartas viejas, compitiendo con las webs nuevas. Ahora es
