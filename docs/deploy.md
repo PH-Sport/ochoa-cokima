@@ -253,6 +253,46 @@ Ochoa había fallado por falta de `SITE_URL`: se puso `SITE_URL=https://www.tasq
 relanzó por la API (`create_deployment` con `gitSource` en `main`), porque un push no lo habría hecho sin
 cambios en `apps/ochoa`. Lo medido, en `estado.md` §0.
 
+### `grupotombo.com` y `.es`: lo que hay (2026-11-23), para cuando llegue la web del grupo
+
+**Todavía no se ha tocado nada.** La web del grupo está en diseño. Cuando salga, la principal será
+`www.grupotombo.com`, con `grupotombo.com` y las dos direcciones del `.es` redirigiendo a ella.
+
+**Al mover el dominio a Vercel, el WordPress deja de verse.** Las redirecciones de sus páginas viejas
+(§2, arriba) pasan entonces a la configuración del proyecto nuevo, y ya no hace falta acceso al
+WordPress.
+
+Los cambios, como en las otras webs, son dos en cada dominio. Los valores nuevos los dará Vercel al
+dar de alta el dominio. Lo que hay hoy, copiado del panel de DonDominio, para deshacer:
+
+| Dominio | `@` | `www` |
+|---|---|---|
+| `grupotombo.com` | ANAME `hostingsrv103.dondominio.com` (resolvía a `31.214.178.17`) | CNAME `hostingsrv103.dondominio.com.` |
+| `grupotombo.es` | ANAME `parkingsrv0.dondominio.com` (resolvía a `31.214.178.55`) | CNAME `parkingsrv0.dondominio.com.` |
+
+**`grupotombo.com` tiene correo activo** (info@grupotombo.com), y no se toca nada de él:
+
+- MX `10 mx01.dondominio.com.`
+- TXT `v=spf1 include:spf.dondominio.com`
+- TXT `dddk._domainkey` (DKIM)
+- `imap`, `mail`, `pop`, `pop3` y `smtp` → `mailsrv3.dondominio.com.`
+- `webmail` → `webmail-03.dondominio.net.`
+- `autoconfig` → `autoconfig.panel247.com.`
+- `autodiscover` → `autodiscover.panel247.com.`
+- SRV `_autodiscover._tcp` → `0 443 autodiscover.panel247.com`
+
+Tampoco se toca el resto de su zona:
+
+- `*` → `hostingsrv103.dondominio.com.`
+- `bbdd` → `bbddsrv33.dondominio.com.`
+- `ftp` → `ftp-server-00.dondominio.net.`
+- cinco validaciones `_<hash>` de sectigo y comodoca.
+
+**`grupotombo.es` está aparcado y sin MX.** Además del `@` y el `www`, tiene un TXT `v=spf1`, `*` a
+`parkingsrv0`, `bbdd` a `bbddsrv33`, `ftp` y las entradas de un correo de DonDominio (`imap`, `mail`,
+`pop`, `pop3`, `smtp` y `webmail`, a `mailsrv3` y `webmail-03`) que no reciben nada. Se queda todo
+como está.
+
 ## Cómo se resuelve `SITE_URL`
 
 Ya no hay dominio placeholder. `astro.config.mjs` delega en `resolveSiteUrl()`
