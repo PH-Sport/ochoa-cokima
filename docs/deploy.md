@@ -13,13 +13,14 @@
 > ausencia no significa nada. Este documento decía «no ejecutado» hasta el 2026-07-31 e indujo a
 > error justo por ahí.
 
-## El concepto: un repo, dos proyectos
+## El concepto: un repo, tres proyectos
 
 La unidad de despliegue en Vercel es el **proyecto**, no el repositorio. Un mismo repo de
 Git puede alimentar tantos proyectos como haga falta; lo que los distingue es el
 **Root Directory**.
 
-Aquí se crean **dos proyectos** que importan este mismo repositorio. Cada uno tiene su
+Aquí hay **tres proyectos** que importan este mismo repositorio: las dos casas y, desde el
+2026-11-23, la web del grupo (`grupo-tombo`, Root Directory `apps/grupo`). Cada uno tiene su
 dominio, sus variables de entorno, su historial de despliegues y sus URLs de preview:
 independientes a todos los efectos, aunque compartan `packages/*`.
 
@@ -146,8 +147,9 @@ quedó en `CANCELED`**.
    | `/tasquita-los-ochoa/` | `https://www.tasquitalosochoa.es/` |
    | `/carta-los-ochoa/` | `https://www.tasquitalosochoa.es/carta/` |
 
-   Mientras el WordPress siga sirviendo `grupotombo.com` (es Apache, en el hosting de DonDominio),
-   se ponen al principio de su `.htaccess`, antes del bloque de WordPress:
+   **Desde el 2026-11-23 van en la web del grupo** (`redirects` de `apps/grupo/astro.config.mjs`), y
+   se activan cuando `grupotombo.com` apunte a Vercel. Hasta entonces, si hiciera falta cortarlas en
+   el WordPress (es Apache, en el hosting de DonDominio), se ponen al principio de su `.htaccess`:
 
    ```apache
    RedirectMatch 301 ^/cokima-kitchenmadness/?$ https://www.cokima.es/
@@ -155,9 +157,6 @@ quedó en `CANCELED`**.
    RedirectMatch 301 ^/tasquita-los-ochoa/?$ https://www.tasquitalosochoa.es/
    RedirectMatch 301 ^/carta-los-ochoa/?$ https://www.tasquitalosochoa.es/carta/
    ```
-
-   Cuando la web nueva del grupo sustituya al WordPress, estas mismas reglas pasan a su
-   configuración.
 3. Dar de alta **cada dominio por separado** en Google Search Console y enlazar cada web con
    su ficha de Google Business.
 
@@ -255,15 +254,27 @@ cambios en `apps/ochoa`. Lo medido, en `estado.md` §0.
 
 ### `grupotombo.com` y `.es`: lo que hay (2026-11-23), para cuando llegue la web del grupo
 
-**Todavía no se ha tocado nada.** La web del grupo está en diseño. Cuando salga, la principal será
-`www.grupotombo.com`, con `grupotombo.com` y las dos direcciones del `.es` redirigiendo a ella.
+**Dados de alta en el proyecto `grupo-tombo` el 2026-11-23; los DNS, todavía sin tocar.** La principal es
+`www.grupotombo.com`, y `grupotombo.com`, `grupotombo.es` y `www.grupotombo.es` le redirigen con un 308.
+`SITE_URL=https://www.grupotombo.com` está puesta en *production*. Los valores que pidió Vercel, iguales en
+los dos dominios:
+
+| Nombre | Antes | Después |
+|---|---|---|
+| `@` | ANAME (ver la tabla de abajo) | **Se borra y se crea un A** `216.198.79.1` |
+| `www` | CNAME (ver la tabla de abajo) | CNAME `552ceccd7d762ca8.vercel-dns-017.com` |
+
+**El proyecto se creó con la protección de Vercel por defecto** («Vercel Authentication» en todo menos
+los dominios propios): sus previews y su `*.vercel.app` piden iniciar sesión en Vercel, a diferencia de
+`cokima` y `ochoa`. Quitarla desde el agente se denegó por permisos; si hace falta enseñar previews del
+grupo sin sesión, la quita Mario en Settings → Deployment Protection. **Y salió con Node 26**, no con el
+24 de los otros dos, por la misma razón.
 
 **Al mover el dominio a Vercel, el WordPress deja de verse.** Las redirecciones de sus páginas viejas
 (§2, arriba) pasan entonces a la configuración del proyecto nuevo, y ya no hace falta acceso al
 WordPress.
 
-Los cambios, como en las otras webs, son dos en cada dominio. Los valores nuevos los dará Vercel al
-dar de alta el dominio. Lo que hay hoy, copiado del panel de DonDominio, para deshacer:
+Lo que había antes, copiado del panel de DonDominio, para deshacer:
 
 | Dominio | `@` | `www` |
 |---|---|---|

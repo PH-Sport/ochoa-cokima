@@ -17,6 +17,13 @@
 
 ## 0. Por dónde seguir
 
+**2026-11-23: la web del grupo, en `apps/grupo`.** `grupotombo.com` era un WordPress que seguía
+publicando las páginas de las dos casas y sus cartas viejas, compitiendo con las webs nuevas. Ahora es
+una sola página que presenta el grupo, lleva a las dos casas y enseña el correo de contacto. Las
+direcciones viejas redirigen con un 301. Tiene su propio proyecto en Vercel, `grupo-tombo`, con los cuatro
+dominios dados de alta. **Falta que Mario cambie los DNS** de `grupotombo.com` y `.es`. El porqué, lo
+descartado y lo que falta, en `grupo-tombo-web.md`; los registros, en `deploy.md` §Dominios y SEO.
+
 **2026-11-18: el dominio de Cokima es `cokima.es`, y su SEO se repasa antes de apuntarlo.** El cliente ya
 tiene los dominios, pero no son nuevos, y Mario no quería romper nada. Mirada la zona DNS en DonDominio: de
 21 registros, solo dos son de la web; el resto es un correo @cokima.es que está activo y no se toca. Lo que
@@ -1694,10 +1701,10 @@ sirven media ración, no tapa. Es la nomenclatura que va en la carta.
       dominio propio. Lo decide y lo paga Mario.
 - [ ] *Ignored Build Step* en ambos proyectos: hoy cada push reconstruye las dos webs.
       Comando en `deploy.md`.
-- [ ] Redirects 301 desde `grupotombo.com` hacia los dominios nuevos. Son cuatro páginas: las
-      dos casas y sus dos cartas viejas. Las cuatro respondían 200 el 2026-11-23, y las reglas
-      para el `.htaccess` del WordPress están en `deploy.md` §Dominios y SEO. Las pone Mario,
-      que es quien tiene acceso.
+- [ ] Redirects 301 desde `grupotombo.com` hacia los dominios nuevos: las dos casas y sus dos
+      cartas viejas. Desde el 2026-11-23 van en la web del grupo (`apps/grupo`), así que se
+      activan solas cuando Mario cambie los DNS de `grupotombo.com`; ya no hace falta tocar el
+      `.htaccess` del WordPress.
 - [ ] Alta de cada dominio en Google Search Console y enlace con su ficha de Google Business.
 - [ ] **Los dominios están en renovación manual** en DonDominio. El primero en caducar es `cokima.es`,
       el 2027-06-24 (`recursos.md` §1). Pasarlos a automática o apuntarse la fecha: lo decide Mario.

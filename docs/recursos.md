@@ -24,6 +24,7 @@ Equipo **«Rodz»**, plan Hobby.
 | slug del equipo | **`rodz-dev`** |
 | Proyecto `cokima` | `prj_EdHpUZSUL08uIpraAMtuKDvrt5Iu` · Root Directory `apps/cokima` |
 | Proyecto `ochoa` | `prj_T4mNHTefzsFNiZChLDgxQ8JxIlEy` · Root Directory `apps/ochoa` |
+| Proyecto `grupo-tombo` | `prj_8h2E9XxqXaCYuUOwXuQvVst3KI2X` · Root Directory `apps/grupo` (creado el 2026-11-23) |
 
 **El slug cambió** —era `rodzs-projects-1c289ef0`— y con él cambiaron **todos los alias**. Si un
 enlace de preview de un documento viejo devuelve 404, es esto. Verificado el 2026-08-17.

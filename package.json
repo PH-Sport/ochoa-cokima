@@ -2,7 +2,7 @@
   "name": "tombo-webs",
   "private": true,
   "scripts": {
-    "build": "pnpm --filter cokima build && pnpm --filter ochoa build",
+    "build": "pnpm --filter cokima build && pnpm --filter ochoa build && pnpm --filter grupo build",
     "test": "pnpm --filter \"@tombo/*\" -r test"
   },
   "packageManager": "pnpm@9.15.9"

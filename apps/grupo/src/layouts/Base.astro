@@ -1,0 +1,88 @@
+---
+// El marco de la web del grupo. No usa el Seo.astro de @tombo/ui porque ese declara un restaurante,
+// y el grupo no lo es: aquí la ficha para buscadores es una organización que enlaza a sus dos casas.
+import "@fontsource-variable/schibsted-grotesk";
+import "../styles/tokens.css";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Solo la portada lleva la ficha de la organización; las legales no la repiten. */
+  ficha?: boolean;
+}
+
+const { title, description, ficha = false } = Astro.props;
+const site = Astro.site ?? new URL("http://localhost:4321");
+const canonical = new URL(Astro.url.pathname, site).href;
+const home = new URL("/", site).href;
+
+const organizacion = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": `${home}#grupo`,
+  name: "Grupo Tombo",
+  url: home,
+  logo: new URL("/images/logo.png", site).href,
+  email: "info@grupotombo.com",
+  subOrganization: [
+    { "@type": "Restaurant", name: "Cokima", url: "https://www.cokima.es/" },
+    { "@type": "Restaurant", name: "Tasquita Los Ochoa", url: "https://www.tasquitalosochoa.es/" },
+  ],
+};
+const web = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${home}#web`,
+  name: "Grupo Tombo",
+  url: home,
+  publisher: { "@id": `${home}#grupo` },
+};
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Grupo Tombo" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="es_ES" />
+    {ficha && <script type="application/ld+json" set:html={JSON.stringify(organizacion)} />}
+    {ficha && <script type="application/ld+json" set:html={JSON.stringify(web)} />}
+    <link rel="sitemap" href="/sitemap-index.xml" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap">
+        <a class="marca" href="/" aria-label="Grupo Tombo, inicio">
+          <img class="claro" src="/images/logo.png" alt="Grupo Tombo" width="800" height="288" />
+          <img class="oscuro" src="/images/logo-blanco.png" alt="Grupo Tombo" width="690" height="248" />
+        </a>
+        <nav aria-label="Secciones">
+          <a href="/#restaurantes">Restaurantes</a>
+          <a href="/#contacto">Contacto</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="pie-pagina">
+      <div class="wrap">
+        <span>© {new Date().getFullYear()} Grupo Tombo</span>
+        <nav aria-label="Legal">
+          <a href="/aviso-legal">Aviso legal</a>
+          <a href="/privacidad">Privacidad</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -33,12 +33,14 @@ Vercel, slugs, dónde deja Mario el material— están en `docs/recursos.md`.
 
 ## Qué es esto
 
-Monorepo con las dos webs del Grupo Tombo: **Cokima** y **Los Ochoa**. Astro 6 estático con
+Monorepo con las dos webs del Grupo Tombo, **Cokima** y **Los Ochoa**, y desde el 2026-11-23 la del
+propio grupo, en `grupotombo.com` (`docs/grupo-tombo-web.md`). Astro 6 estático con
 adaptador Vercel (fijado a `@astrojs/vercel` v10 — **v11 es Astro 7 alpha, no subir**), pnpm 9
 workspaces **sin Turborepo**.
 
 ```
 apps/{cokima,ochoa}              las dos webs
+apps/grupo                       la web del grupo: una página que lleva a las dos
 packages/{ui,content,tracking,config}
 docs/                            estado.md manda; lo demás cuelga de él
 ```
@@ -47,7 +49,7 @@ docs/                            estado.md manda; lo demás cuelga de él
 
 ```bash
 pnpm test                 # los 4 paquetes @tombo/*
-pnpm build                # construye las dos apps
+pnpm build                # construye las tres apps
 pnpm --filter ochoa build # una sola
 ```
 
@@ -80,7 +82,8 @@ rompe el build a propósito, y así debe seguir.
   todo devuelve `403`, con lo que los `grep` dan cero y parece que el despliegue ha fallado. El
   estado se pregunta a la API de Vercel.
 - **Las dos casas son distintas y no se cruzan.** Ochoa es transacción social, Cokima es
-  experiencia pícara. Ni contenido inventado, ni piezas de una en la otra.
+  experiencia pícara. Ni contenido inventado, ni piezas de una en la otra. La web del grupo es el
+  único sitio donde aparecen juntas, con un estilo propio que no toma prestado el de ninguna.
 
 ## Ramas
 
