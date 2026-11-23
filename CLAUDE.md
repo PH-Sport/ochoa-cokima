@@ -84,7 +84,9 @@ rompe el build a propósito, y así debe seguir.
 
 ## Ramas
 
-`main` es producción y **hoy no sube nada ahí**. **`preview` es la única rama de trabajo desde el
+`main` es producción, y **solo recibe `preview` cuando Mario lo pide** (la primera vez, el
+2026-11-23, que sacó Cokima a `www.cokima.es`; `docs/deploy.md`). Se fusiona `preview` en `main`; nunca
+se trabaja en `main`. **`preview` es la única rama de trabajo desde el
 2026-10-26**: Mario pidió unificarlo todo en ella, y el rediseño de Cokima, que vivía en
 `tmp/entrada-cokima`, entró ese día. Nada de ramas `tmp/*` ni por tarea salvo que Mario lo pida;
 para enseñarle algo basta el alias de `preview`. Llegó a haber dos ramas vivas, en dos

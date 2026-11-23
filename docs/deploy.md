@@ -45,7 +45,7 @@ los `.env.example` de cada app.
 
 | Variable | `cokima` | `ochoa` | Notas |
 |---|---|---|---|
-| `SITE_URL` | su dominio | su dominio | **Obligatoria en producción**: sin ella el build falla. |
+| `SITE_URL` | `https://www.cokima.es` (puesta el 2026-11-23, solo *production*) | su dominio | **Obligatoria en producción**: sin ella el build falla. |
 | `PUBLIC_GTM_ID` | `GTM-KW58ZDS` | `GTM-KW58ZDS` | Contenedor actual del grupo. |
 | `PUBLIC_META_PIXEL_ID` | píxel de Cokima | píxel de Los Ochoa | Recomendado uno por marca (hoy comparten `6251807501500238`). |
 | `PUBLIC_COVERMANAGER_SLUG` | `restaurante-cokima` | `tasquita-los-ochoa` | Verificados en la web actual. |
@@ -195,9 +195,9 @@ estropear y no hace falta: siguen en DonDominio.
   la portada y la `sample-page`. No hay direcciones antiguas que redirigir.
 - **No dar de baja el hosting de DonDominio sin mirar qué incluye el plan:** el correo sale de sus
   servidores (`mailsrv8`) y puede ir en el mismo plan.
-- **Qué publica producción sigue sin decidir.** Hasta hoy `main` no tiene ningún despliegue en
-  `READY` (el único, de `1020d5c`, falló a propósito por falta de `SITE_URL`): si el dominio apunta a
-  Vercel antes de eso, enseña un error de Vercel en lugar del WordPress vacío.
+- **Producción publica Cokima desde el 2026-11-23**: `preview` se fusionó en `main` (`7d004a0`) con
+  `SITE_URL=https://www.cokima.es` en producción, y el despliegue quedó `READY` con los alias
+  `www.cokima.es` y `cokima.es`. Lo que falta son los dos registros de DonDominio de arriba.
 
 ## Cómo se resuelve `SITE_URL`
 
@@ -221,7 +221,7 @@ Dos ramas permanentes:
 
 | Rama | Papel | Despliegue |
 |---|---|---|
-| `main` | **producción** | *production* en Vercel. Falla mientras no haya `SITE_URL`, a propósito. |
+| `main` | **producción** | *production* en Vercel. Recibe `preview` solo cuando Mario lo pide. Cokima publica desde el 2026-11-23; Ochoa falla a propósito mientras no tenga `SITE_URL`. |
 | `preview` | **desarrollo** | preview con alias fijo por rama. Aquí se integra todo el trabajo. |
 
 El trabajo se integra en `preview` y se enseña desde su alias. Cuando una tanda está

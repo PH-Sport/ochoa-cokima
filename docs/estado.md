@@ -3,8 +3,8 @@
 > **Estado: vivo** · corte 2026-11-19 · **el punto de entrada del repo**
 
 - **Corte:** 2026-11-19
-- **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción, sin
-  nada nuevo aún) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
+- **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción: recibió
+  `preview` el 2026-11-23 y publica Cokima; Ochoa aún no, sin dominio) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
   de decidir, que no se fusionan: `feat/inicio-paralaje`, el Inicio de Ochoa en paralaje, parada,
   y `feat/cokima-brasa`, el boceto Brasa como página suelta, que sobra desde que Brasa está en
   `preview` (§0). Si se borran lo decide él; la otra rama de prueba, `feat/inicio-vivo`, ya se
@@ -20,11 +20,16 @@
 **2026-11-18: el dominio de Cokima es `cokima.es`, y su SEO se repasa antes de apuntarlo.** El cliente ya
 tiene los dominios, pero no son nuevos, y Mario no quería romper nada. Mirada la zona DNS en DonDominio: de
 21 registros, solo dos son de la web; el resto es un correo @cokima.es que está activo y no se toca. Lo que
-sirve hoy el dominio es un WordPress vacío, sin direcciones antiguas que redirigir. **El 2026-11-23 se dio
-de alta en Vercel, con `www.cokima.es` como principal; DonDominio sigue sin tocar**: los dos registros que
-hay que cambiar y sus valores están en `deploy.md` §Dominios y SEO. Falta decidir qué publica producción,
-porque `main` no tiene ningún despliegue que haya funcionado: si se cambian los DNS antes, `cokima.es`
-enseña un error de Vercel.
+sirve hoy el dominio es un WordPress vacío, sin direcciones antiguas que redirigir.
+
+**2026-11-23: Cokima, en producción.** Se dio de alta en Vercel con `www.cokima.es` como principal, se puso
+`SITE_URL` en producción y, con el visto bueno de Mario, `preview` se fusionó en `main` (`7d004a0`, 216
+commits). El despliegue quedó `READY`, con alias `www.cokima.es` y `cokima.es`. Medido en
+`cokima.vercel.app`: 200, sin `x-robots-tag`, la canónica en `https://www.cokima.es/` y `/carta` en 200.
+**Falta que Mario cambie los dos registros en DonDominio** (`deploy.md` §Dominios y SEO, con los valores
+para deshacer); hasta entonces `cokima.es` sigue enseñando el WordPress vacío. **Sale con el aviso legal y
+la privacidad con huecos** (razón social y CIF «[pendiente]») **y en el plan Hobby**, las dos cosas ya
+sabidas. Sin GTM, píxel ni CAPI: no hay variables para eso, igual que en las previews.
 
 En el mismo repaso, cuatro arreglos de SEO en el código. Medidos sobre el build con
 `SITE_URL=https://cokima.es`, en las 9 páginas:
