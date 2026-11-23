@@ -36,7 +36,7 @@ por defecto en monorepos) — sin eso, `packages/*` no llega al build.
 | Framework preset | Astro (autodetectado) | Astro (autodetectado) |
 | Build Command | `astro build` (autodetectado) | `astro build` (autodetectado) |
 | Install Command | `pnpm install` en la raíz (automático) | igual |
-| Dominio | `www.cokima.es` (principal) y `cokima.es` (308 a `www`), dados de alta el 2026-11-23; **los DNS de DonDominio, sin cambiar** (§Dominios y SEO) | `www.tasquitalosochoa.es` (principal); `tasquitalosochoa.es`, `tasquitalosochoa.com` y `www.tasquitalosochoa.com`, 308 a ella. Dados de alta el 2026-11-23; **DNS sin cambiar** (§Dominios y SEO) |
+| Dominio | `www.cokima.es` (principal) y `cokima.es` (308 a `www`), publicada el 2026-11-23 (§Dominios y SEO) | `www.tasquitalosochoa.es` (principal); `tasquitalosochoa.es`, `tasquitalosochoa.com` y `www.tasquitalosochoa.com`, 308 a ella. Publicada el 2026-11-23 (§Dominios y SEO) |
 
 ### Variables de entorno
 
@@ -45,7 +45,7 @@ los `.env.example` de cada app.
 
 | Variable | `cokima` | `ochoa` | Notas |
 |---|---|---|---|
-| `SITE_URL` | `https://www.cokima.es` (puesta el 2026-11-23, solo *production*) | su dominio | **Obligatoria en producción**: sin ella el build falla. |
+| `SITE_URL` | `https://www.cokima.es` (puesta el 2026-11-23, solo *production*) | `https://www.tasquitalosochoa.es` (ídem) | **Obligatoria en producción**: sin ella el build falla. |
 | `PUBLIC_GTM_ID` | `GTM-KW58ZDS` | `GTM-KW58ZDS` | Contenedor actual del grupo. |
 | `PUBLIC_META_PIXEL_ID` | píxel de Cokima | píxel de Los Ochoa | Recomendado uno por marca (hoy comparten `6251807501500238`). |
 | `PUBLIC_COVERMANAGER_SLUG` | `restaurante-cokima` | `tasquita-los-ochoa` | Verificados en la web actual. |
@@ -197,7 +197,7 @@ estropear y no hace falta: siguen en DonDominio.
   servidores (`mailsrv8`) y puede ir en el mismo plan.
 - **Producción publica Cokima desde el 2026-11-23**: `preview` se fusionó en `main` (`7d004a0`) con
   `SITE_URL=https://www.cokima.es` en producción, y el despliegue quedó `READY` con los alias
-  `www.cokima.es` y `cokima.es`. Lo que falta son los dos registros de DonDominio de arriba.
+  `www.cokima.es` y `cokima.es`. Mario cambió los dos registros de DonDominio ese mismo día.
 
 ### `tasquitalosochoa.es` y `.com`: lo que hay y qué se cambia (2026-11-23)
 
@@ -228,9 +228,10 @@ datos:
 Si DonDominio tiene activado el servicio de *parking* en el dominio, hay que desactivarlo, porque
 puede imponerse a los registros.
 
-**Producción de Ochoa todavía no publica:** le falta `SITE_URL=https://www.tasquitalosochoa.es`, y
-después de ponerla hay que volver a desplegar `main`. Sale con lo que ya se sabía pendiente: el aviso
-legal con huecos y el plan Hobby (`estado.md` §5).
+**Publicada el 2026-11-23.** Mario cambió los registros de los dos dominios. El despliegue de `main` de
+Ochoa había fallado por falta de `SITE_URL`: se puso `SITE_URL=https://www.tasquitalosochoa.es` y se
+relanzó por la API (`create_deployment` con `gitSource` en `main`), porque un push no lo habría hecho sin
+cambios en `apps/ochoa`. Lo medido, en `estado.md` §0.
 
 ## Cómo se resuelve `SITE_URL`
 
@@ -254,7 +255,7 @@ Dos ramas permanentes:
 
 | Rama | Papel | Despliegue |
 |---|---|---|
-| `main` | **producción** | *production* en Vercel. Recibe `preview` solo cuando Mario lo pide. Cokima publica desde el 2026-11-23; Ochoa falla a propósito mientras no tenga `SITE_URL`. |
+| `main` | **producción** | *production* en Vercel. Recibe `preview` solo cuando Mario lo pide. Las dos publican desde el 2026-11-23. |
 | `preview` | **desarrollo** | preview con alias fijo por rama. Aquí se integra todo el trabajo. |
 
 El trabajo se integra en `preview` y se enseña desde su alias. Cuando una tanda está
