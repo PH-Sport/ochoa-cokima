@@ -43,9 +43,14 @@ casa. La aprobó en maqueta, la vio construida y **está publicada desde el mism
 - **a 1280×800:** cada mitad mide 640 px;
 - sin scroll lateral, sin imágenes rotas ni errores, y con las cinco familias cargadas.
 
-El porqué y lo descartado, en `grupo-tombo-web.md`. **Después, en `preview`:** los botones pasan a ser
-los de cada casa, con su comportamiento al ratón y al dedo, y la web del grupo tiene ya imagen para
-compartir el enlace (`scripts/compartir-grupo.sh`). El porqué, lo
+El porqué y lo descartado, en `grupo-tombo-web.md`. **Después, también publicado** (`e49be69` en `main`):
+
+- los botones pasan a ser los de cada casa, con su comportamiento al ratón y al dedo;
+- el logo de la costura va sin la pastilla negra;
+- la web del grupo ya tiene imagen para compartir el enlace (`scripts/compartir-grupo.sh`).
+
+Comprobado en la preview a 1280×800 y 375×812, y en `www.grupotombo.com`, que sirve la versión nueva
+con `og:image` en 200. El porqué, lo
 descartado y lo que falta, en `grupo-tombo-web.md`; los registros, en `deploy.md` §Dominios y SEO.
 
 **2026-11-18: el dominio de Cokima es `cokima.es`, y su SEO se repasa antes de apuntarlo.** El cliente ya
