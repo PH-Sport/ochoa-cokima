@@ -17,7 +17,6 @@ const t = es
       dish: "Plato",
       noHalf: "No se sirve en media ración",
       allergens: "Alérgenos",
-      toConfirm: "Pendiente de confirmar con el restaurante.",
       allergensNote: "Según la información facilitada por el restaurante. Ante cualquier duda, pregunta al personal.",
       sections: {
         pinchos: "Pinchos y tapas",
@@ -33,7 +32,6 @@ const t = es
       dish: "Dish",
       noHalf: "Not served as a half portion",
       allergens: "Allergens",
-      toConfirm: "To be confirmed with the restaurant.",
       allergensNote: "According to the information provided by the restaurant. If in doubt, ask the staff.",
       sections: {
         pinchos: "Pintxos & tapas",
@@ -64,16 +62,21 @@ const sections = SECTION_ORDER.map((key) => {
 }).filter((s) => s.items.length > 0);
 
 /* La chuleta al pie lista solo los alérgenos que usa esta carta, en orden de
-   número. La marca «*» solo aparece si algún plato la lleva. */
+   número.
+
+   `allergensToConfirm` (el gluten que la hoja del restaurante marca en amarillo
+   sin decir por qué, en cinco platos) ya NO se enseña: hasta el 2026-11-23 salía
+   como «1*» con la leyenda «pendiente de confirmar con el restaurante», y Mario
+   pidió quitarlo de la web y dejarlo como nota interna. El dato sigue en el JSON
+   para que la duda no se pierda; el número del alérgeno se ve igual, porque la
+   hoja sí lo lista. */
 const labels = ALLERGEN_LABELS[locale];
 const chuleta = usedAllergens(dishes);
-const hayMarca = dishes.some((d) => d.allergensToConfirm.length > 0);
 
-/** Los números de un plato, con la marca en los que el restaurante señaló. */
+/** Los números de un plato, en orden. */
 const numeros = (dish: MenuEntry) =>
   dishAllergens(dish).map((a) => ({
     n: allergenNumber(a),
-    marca: dish.allergensToConfirm.includes(a),
     label: labels[a] ?? a,
   }));
 
@@ -119,7 +122,7 @@ const cells = (price: MenuEntry["price"]) => {
                           oye el nombre entero. */}
                       <span class="visually-hidden">{t.allergens}: {numeros(dish).map((x) => x.label).join(", ")}.</span>
                       {numeros(dish).map((x) => (
-                        <span aria-hidden="true">{x.n}{x.marca && "*"}</span>
+                        <span aria-hidden="true">{x.n}</span>
                       ))}
                     </span>
                   )}
@@ -154,12 +157,6 @@ const cells = (price: MenuEntry["price"]) => {
             <dd>{labels[a] ?? a}</dd>
           </>
         ))}
-        {hayMarca && (
-          <>
-            <dt aria-hidden="true">*</dt>
-            <dd>{t.toConfirm}</dd>
-          </>
-        )}
       </dl>
       <p class="chuleta-note">{t.allergensNote}</p>
     </footer>
