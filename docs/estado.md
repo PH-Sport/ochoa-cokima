@@ -1698,6 +1698,8 @@ sirven media ración, no tapa. Es la nomenclatura que va en la carta.
       `/tasquita-los-ochoa/` hacia los dominios nuevos. La de Cokima seguía respondiendo 200 el
       2026-11-18.
 - [ ] Alta de cada dominio en Google Search Console y enlace con su ficha de Google Business.
+- [ ] **Los dominios están en renovación manual** en DonDominio. El primero en caducar es `cokima.es`,
+      el 2027-06-24 (`recursos.md` §1). Pasarlos a automática o apuntarse la fecha: lo decide Mario.
 
 ---
 

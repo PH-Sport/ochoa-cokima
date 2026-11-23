@@ -67,6 +67,21 @@ son las ramas de prueba para ver una propuesta en la web antes de decidir (`esta
 El reparto de proyectos, el `ignoreCommand` por app y la resolución de `SITE_URL` están en
 `deploy.md`.
 
+### Los dominios: todos en la misma cuenta de DonDominio
+
+Visto en el panel el 2026-11-23. **Todos en renovación manual**: si nadie los renueva, caducan y se
+caen la web y el correo.
+
+| Dominio | Caduca | Qué hay |
+|---|---|---|
+| `cokima.es` | 2027-06-24 | Web de Cokima en Vercel; correo y hosting en DonDominio |
+| `grupotombo.com` | 2027-08-24 | WordPress del grupo en el hosting de DonDominio; **correo activo** (MX `mx01.dondominio.com`) |
+| `grupotombo.es` | 2027-08-24 | Aparcado; sin MX |
+| `tasquitalosochoa.es` | 2027-08-24 | Web de Ochoa en Vercel; sin MX |
+| `tasquitalosochoa.com` | 2027-08-24 | Redirige a la web de Ochoa; sin MX |
+
+En la misma cuenta está `phsport.es`, que caduca el 2027-03-02 y es de otro proyecto.
+
 ---
 
 ## 2. Reservas y medición
