@@ -15,16 +15,37 @@ excesivamente grande»*.
 
 ## Lo que es
 
-**Una sola página**, con el logo y una frase del grupo, las dos casas a sangre con la foto de su
-fachada y un enlace a su web, y el contacto. Además, el aviso legal, la privacidad y una página de 404.
-**Los textos son los del WordPress**, sin inventar nada. Las fotos son las de cada casa, del propio
-repo, y el logo, el del WordPress.
+**La portada es una pantalla partida** (desde el 2026-11-23, idea de Mario): cada mitad es una casa con
+**su propia estética**, la de su web, y el logo del grupo las une en la costura. En el móvil, Cokima
+arriba y Ochoa abajo; en el ordenador, izquierda y derecha. Cada mitad entera es un enlace a su web.
+Al bajar, el grupo: el logo, su frase y el contacto. Además, el aviso legal, la privacidad y una
+página de 404. **Los textos son los de cada casa y los del WordPress del grupo**, sin inventar nada.
 
-- **Estilo propio del grupo**, partiendo del logo: tinta, blanco y el rojo de la pincelada como único
-  acento, que tiñe la pincelada detrás de «Restaurantes». Las fotos de las casas llevan el color. Se
-  adapta al modo oscuro con el logo en blanco.
-- **La tipografía es Schibsted Grotesk**, servida desde la propia web con `@fontsource`, no desde
-  Google Fonts, para no pasarle la IP de cada visita a Google.
+- **La mitad de Cokima es de noche, como «Brasa»:**
+  - el póster del vídeo de su portada, el logo crema y la seña «Kitchen Madness · Andrés Mellado, 21»
+    en Bricolage;
+  - la frase de la web vieja del grupo (*«Puedes comer en cualquier sitio, pero será solo comer»*) en
+    la Cormorant cursiva de su voz;
+  - un botón rojo redondeado.
+- **La mitad de Ochoa es de día:**
+  - la foto del brindis de su portada y el rótulo ovalado del local («Tasquita · Los Ochoa ·
+    Madrid»), en Anton con su sombra;
+  - *«¡La tasca que te mereces!»*;
+  - un botón blanco con borde y sombra negra, como los de su web.
+- **La costura** es el logo del grupo en blanco sobre negro: en la línea entre las dos mitades en el
+  móvil, y arriba en el centro en el ordenador.
+- **Al señalar una mitad** con el ratón, su foto se acerca un poco y la otra se apaga. Solo `transform`
+  y `opacity`, con duraciones de `tokens.css`, y nada con «reducir movimiento».
+- **Los tokens de cada casa están copiados** en `apps/grupo/src/styles/tokens.css`, con prefijo `--ck-`
+  y `--oc-`. **Si una casa cambia su paleta o su letra, se cambia también aquí.** También las fuentes
+  (Bricolage, Anton y Archivo, copiadas de `public/fonts` de cada app; la Cormorant, con
+  `@fontsource`), servidas todas desde la propia web.
+- **El nombre de cada casa y su dirección van en texto**, no dentro de imágenes, para los buscadores.
+  El `h1` de la portada está oculto a la vista y dice «Grupo Tombo: Cokima y Tasquita Los Ochoa».
+- **El resto, con el estilo del grupo:** tinta, blanco y el rojo de la pincelada del logo, en
+  Schibsted Grotesk (servida con `@fontsource`, no desde Google Fonts, para no pasarle la IP de cada
+  visita). Se adapta al modo oscuro con el logo en blanco; la pantalla partida no, porque cada casa
+  tiene un solo aspecto.
 - **Sin formularios.** Contacto y «Trabaja con nosotros» enseñan `info@grupotombo.com`. Mantener los
   formularios del WordPress suponía montar un envío de correos y manejar currículums, que son datos
   personales. Mario estuvo de acuerdo.
@@ -42,6 +63,14 @@ repo, y el logo, el del WordPress.
 
 ## Lo descartado
 
+- **La primera portada, con estilo propio del grupo** (publicada el mismo 2026-11-23): el logo, una
+  frase grande, las dos casas en dos fichas con la foto de su fachada y el contacto. Mario, al verla en
+  su dominio: *«la landing es literalmente la antigua, solo que con un poquito más modernizada»*. Pidió
+  la pantalla partida para que *«cada una de las webs destaque con su branding y todo su diseño»*. Con
+  ella cambió también la regla de CLAUDE.md: la web del grupo ya no tiene un estilo propio que no toma
+  nada de las casas, sino que cada casa se presenta en su mitad con el suyo, sin mezclarse.
+- **Más datos en cada mitad** (horario, «Reservar», teléfono). La cargarían, y para eso está la web de
+  cada casa: cada mitad lleva lo mínimo para reconocerla y entrar.
 - **Un repositorio aparte.** Se descartó para reutilizar lo que ya hay (configuración, forma de
   publicar, documentación) y tener un solo sitio que sincronizar entre los dos ordenadores. Solo
   tendría sentido si fuera a llevarla otra persona.
@@ -57,4 +86,4 @@ repo, y el logo, el del WordPress.
 - **El enlace a «Grupo Tombo» en el pie de Cokima y de Ochoa.**
 - **Los DNS:** el paso a paso y los valores, en `deploy.md` §Dominios y SEO.
 
-La maqueta con la que se aprobó está en `recursos.md` §3.
+La maqueta con la que se aprobó la pantalla partida está en `recursos.md` §3 (su segunda versión).

@@ -83,7 +83,7 @@ rompe el build a propósito, y así debe seguir.
   estado se pregunta a la API de Vercel.
 - **Las dos casas son distintas y no se cruzan.** Ochoa es transacción social, Cokima es
   experiencia pícara. Ni contenido inventado, ni piezas de una en la otra. La web del grupo es el
-  único sitio donde aparecen juntas, con un estilo propio que no toma prestado el de ninguna.
+  único sitio donde aparecen juntas: cada una en su mitad, con su estética, y sin mezclarse.
 
 ## Ramas
 

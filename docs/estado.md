@@ -34,8 +34,8 @@ dominios dados de alta, y su primer despliegue, salido de `preview`, ya está en
 - en el navegador del panel, sin errores de consola ni imágenes rotas, con la fuente propia cargada y
   sin scroll lateral a 1024 px.
 
-**Mario pidió después rehacer la portada** como pantalla partida, cada mitad con la estética de su casa
-(§ en `grupo-tombo-web.md` cuando se haga). El porqué, lo
+**Mario pidió después rehacer la portada como pantalla partida**, cada mitad con la estética de su
+casa, y la aprobó en maqueta: está en `preview`, sin publicar todavía (`grupo-tombo-web.md`). El porqué, lo
 descartado y lo que falta, en `grupo-tombo-web.md`; los registros, en `deploy.md` §Dominios y SEO.
 
 **2026-11-18: el dominio de Cokima es `cokima.es`, y su SEO se repasa antes de apuntarlo.** El cliente ya

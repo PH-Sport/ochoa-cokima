@@ -2,6 +2,8 @@
 // El marco de la web del grupo. No usa el Seo.astro de @tombo/ui porque ese declara un restaurante,
 // y el grupo no lo es: aquí la ficha para buscadores es una organización que enlaza a sus dos casas.
 import "@fontsource-variable/schibsted-grotesk";
+// La voz de Cokima, para su mitad de la portada. Cokima la pide a Google Fonts; aquí va desde la web.
+import "@fontsource/cormorant-garamond/400-italic.css";
 import "../styles/tokens.css";
 import "../styles/global.css";
 
@@ -10,9 +12,11 @@ interface Props {
   description: string;
   /** Solo la portada lleva la ficha de la organización; las legales no la repiten. */
   ficha?: boolean;
+  /** La portada no lleva cabecera: la pantalla partida ocupa la pantalla y el logo va en la costura. */
+  cabecera?: boolean;
 }
 
-const { title, description, ficha = false } = Astro.props;
+const { title, description, ficha = false, cabecera = true } = Astro.props;
 const site = Astro.site ?? new URL("http://localhost:4321");
 const canonical = new URL(Astro.url.pathname, site).href;
 const home = new URL("/", site).href;
@@ -63,18 +67,20 @@ const web = {
     <link rel="sitemap" href="/sitemap-index.xml" />
   </head>
   <body>
-    <header class="top">
-      <div class="wrap">
-        <a class="marca" href="/" aria-label="Grupo Tombo, inicio">
-          <img class="claro" src="/images/logo.png" alt="Grupo Tombo" width="800" height="288" />
-          <img class="oscuro" src="/images/logo-blanco.png" alt="Grupo Tombo" width="690" height="248" />
-        </a>
-        <nav aria-label="Secciones">
-          <a href="/#restaurantes">Restaurantes</a>
-          <a href="/#contacto">Contacto</a>
-        </nav>
-      </div>
-    </header>
+    {cabecera && (
+      <header class="top">
+        <div class="wrap">
+          <a class="marca" href="/" aria-label="Grupo Tombo, inicio">
+            <img class="claro" src="/images/logo.png" alt="Grupo Tombo" width="800" height="288" />
+            <img class="oscuro" src="/images/logo-blanco.png" alt="Grupo Tombo" width="690" height="248" />
+          </a>
+          <nav aria-label="Secciones">
+            <a href="/#restaurantes">Restaurantes</a>
+            <a href="/#contacto">Contacto</a>
+          </nav>
+        </div>
+      </header>
+    )}
     <main>
       <slot />
     </main>
