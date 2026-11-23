@@ -20,12 +20,15 @@
 **2026-11-23: la foto de «La tasca», en la portada de Ochoa, es la que propuso Eva.** Eva, del
 restaurante, le escribió a Mario *«Esa foto habría que cambiarla»* sobre el cenital de la mesa, y propuso
 otra: rosquillas con ensaladilla, un vermú y banderillas. Estaba en su Drive (`fotografia.md`). Va en las
-dos portadas, en español y en inglés.
+dos portadas, en español y en inglés. **Publicada con el bikini** (`91f9faa` en `main`), y medida en
+`www.tasquitalosochoa.es` a 375×812: la foto carga en su marco de 338×190, que recorta un poco la carta
+del fondo, y no hay scroll lateral.
 
 **2026-11-23: el bikini de lacón de Ochoa vuelve a tener foto,** la del Drive del restaurante (carpeta
 «BIKINI LACON & TRUFA», que creó Lorena el 2026-11-04). Mario la eligió entre las dos de la carpeta. Que
 sea la versión actual del plato se deduce del nombre y la fecha de la carpeta: Lorena no lo ha dicho
-(`fotografia.md`). Medido en el build: la ficha la enlaza en español y en inglés.
+(`fotografia.md`). Medido en la preview a 1440×900 (ficha de 200×200) y a 375×812 (286×179, 16:10), con la
+foto cargada; publicada el mismo día.
 
 **2026-11-23: la carta de Ochoa deja de enseñar el «pendiente de confirmar».** Cinco platos llevaban el
 gluten como «1\*», con una leyenda que decía «pendiente de confirmar con el restaurante»: es el gluten que
