@@ -270,6 +270,15 @@ los dominios propios): sus previews y su `*.vercel.app` piden iniciar sesión en
 grupo sin sesión, la quita Mario en Settings → Deployment Protection. **Y salió con Node 26**, no con el
 24 de los otros dos, por la misma razón.
 
+**Ojo: su primer despliegue salió de `preview` y fue a producción.** Se hizo con el push de `e872b55`, sin
+pasar por `main`, aunque la rama por defecto de GitHub es `main`. Quedó en `READY` con los cuatro
+dominios. Comprobado el 2026-11-23 con `web_fetch_vercel_url`, porque el `*.vercel.app` pide sesión:
+la portada da 200 con la canónica en `https://www.grupotombo.com/`, y `/cokima-kitchenmadness/` y
+`/carta-los-ochoa` dan un 301 a su web nueva. **Falta comprobar en Settings → Environments que la rama
+de producción del proyecto sea `main`**, como en los otros dos. Si es `preview`, cada push a `preview`
+publica la web del grupo sin pasar por Mario. El paso de `preview` a `main` desde el agente se denegó
+por permisos, así que `main` aún no tiene `apps/grupo`.
+
 **Al mover el dominio a Vercel, el WordPress deja de verse.** Las redirecciones de sus páginas viejas
 (§2, arriba) pasan entonces a la configuración del proyecto nuevo, y ya no hace falta acceso al
 WordPress.
