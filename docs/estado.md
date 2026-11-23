@@ -20,10 +20,11 @@
 **2026-11-18: el dominio de Cokima es `cokima.es`, y su SEO se repasa antes de apuntarlo.** El cliente ya
 tiene los dominios, pero no son nuevos, y Mario no quería romper nada. Mirada la zona DNS en DonDominio: de
 21 registros, solo dos son de la web; el resto es un correo @cokima.es que está activo y no se toca. Lo que
-sirve hoy el dominio es un WordPress vacío, sin direcciones antiguas que redirigir. **Todavía no se ha
-cambiado nada ni en DonDominio ni en Vercel**: el registro a registro y el orden están en `deploy.md`
-§Dominios y SEO. Falta decidir qué publica producción, porque `main` no tiene ningún despliegue que haya
-funcionado.
+sirve hoy el dominio es un WordPress vacío, sin direcciones antiguas que redirigir. **El 2026-11-23 se dio
+de alta en Vercel, con `www.cokima.es` como principal; DonDominio sigue sin tocar**: los dos registros que
+hay que cambiar y sus valores están en `deploy.md` §Dominios y SEO. Falta decidir qué publica producción,
+porque `main` no tiene ningún despliegue que haya funcionado: si se cambian los DNS antes, `cokima.es`
+enseña un error de Vercel.
 
 En el mismo repaso, cuatro arreglos de SEO en el código. Medidos sobre el build con
 `SITE_URL=https://cokima.es`, en las 9 páginas:

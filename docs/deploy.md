@@ -36,7 +36,7 @@ por defecto en monorepos) — sin eso, `packages/*` no llega al build.
 | Framework preset | Astro (autodetectado) | Astro (autodetectado) |
 | Build Command | `astro build` (autodetectado) | `astro build` (autodetectado) |
 | Install Command | `pnpm install` en la raíz (automático) | igual |
-| Dominio | `cokima.es`, del cliente, con los DNS en DonDominio; **aún sin dar de alta en Vercel** (§Dominios y SEO) | pendiente (p. ej. `tasquitalosochoa.es`) |
+| Dominio | `www.cokima.es` (principal) y `cokima.es` (308 a `www`), dados de alta el 2026-11-23; **los DNS de DonDominio, sin cambiar** (§Dominios y SEO) | pendiente (p. ej. `tasquitalosochoa.es`) |
 
 ### Variables de entorno
 
@@ -149,17 +149,45 @@ tiene 21 registros. Solo dos son de la web; el resto se deja tal cual:
 
 | Registros | Qué son | Qué se hace |
 |---|---|---|
-| `cokima.es` ANAME → `hostingsrv97.dondominio.com` | La web, el dominio pelado | **Se borra y se crea un `A`** con el valor que dé Vercel |
-| `www` CNAME → `hostingsrv97.dondominio.com` | La web con `www` | **Se cambia el destino** al que dé Vercel |
+| `cokima.es` ANAME → `hostingsrv97.dondominio.com` | La web, el dominio pelado | **Se borra y se crea un `A`** `@` → `216.198.79.1` (lo que pidió Vercel el 2026-11-23) |
+| `www` CNAME → `hostingsrv97.dondominio.com` | La web con `www` | **Se cambia el destino** a `af2c85dc95c30ec9.vercel-dns-017.com` (ídem) |
 | MX, TXT `v=spf1`, TXT `dddk._domainkey` (DKIM), `mail`, `imap`, `pop`, `pop3`, `smtp`, `webmail`, `autoconfig`, `autodiscover`, SRV `_autodiscover._tcp` | El correo @cokima.es, **montado y activo** | Nada |
 | `ftp`, `bbdd`, `*.cokima.es` | Restos del hosting de DonDominio | Nada: no estorban |
 | Los cuatro `_<hash>` CNAME → `comodoca.com` / `sectigo.com` | Validaciones de certificados viejos del hosting | Nada: no estorban |
 
+**Para deshacer: los valores antes del cambio** (copiados del panel de DonDominio el 2026-11-18):
+
+| Nombre | Tipo | Valor anterior |
+|---|---|---|
+| `cokima.es` | ANAME | `hostingsrv97.dondominio.com` (resolvía a `31.214.178.95`) |
+| `www.cokima.es` | CNAME | `hostingsrv97.dondominio.com.` |
+
+Volver a poner esas dos entradas deja la zona como estaba. El resto de la zona no se toca:
+
+- MX `10 mx01.dondominio.com.`
+- TXT `v=spf1 include:spf.dondominio.com`
+- TXT `dddk._domainkey` (DKIM)
+- `*.cokima.es` → `hostingsrv97.dondominio.com.`
+- `autoconfig` → `autoconfig.panel247.com.`
+- `autodiscover` → `autodiscover.panel247.com.`
+- SRV `_autodiscover._tcp` → `0 443 autodiscover.panel247.com`
+- `bbdd` → `bbddsrv17.dondominio.com.`
+- `ftp` → `ftp-server-00.dondominio.net.`
+- `imap`, `mail`, `pop`, `pop3` y `smtp` → `mailsrv8.dondominio.com.`
+- `webmail` → `webmail-08.dondominio.net.`
+- Las cuatro validaciones `_<hash>` de comodoca y sectigo.
+
+La clave DKIM y los hashes no se copian aquí, porque transcribirlos de una captura es fácil de
+estropear y no hace falta: siguen en DonDominio.
+
 - **Los valores de Vercel se copian de Vercel**, no de memoria: ya no son siempre `76.76.21.21`
-  y `cname.vercel-dns.com`, a veces da unos propios del proyecto. Por eso el orden es dar de alta
-  `cokima.es` y `www` en el proyecto (eso no cambia nada de cara al público), copiar lo que pida y
-  solo entonces tocar DonDominio. Propuesto: `cokima.es` como principal y `www` redirigiendo a ella,
-  que es lo que ya declaran la canónica y el sitemap.
+  y `cname.vercel-dns.com`, y en efecto dio unos propios del proyecto (los de la tabla). Por eso
+  se dio de alta primero en Vercel, que no cambia nada de cara al público, y DonDominio va después.
+- **La principal es `www.cokima.es`**, y `cokima.es` le redirige con un 308. Se propuso al revés,
+  pero el 2026-11-23 se dejó la opción por defecto de Vercel («Redirect apex domains to www»): es la
+  que recomienda, y la web vieja ya era `www`, que es lo que Google conoce. **Por eso `SITE_URL` en
+  producción es `https://www.cokima.es`**: de ella salen canónica y sitemap, y deben coincidir con
+  la principal.
 - **Se guarda una copia de la zona antes de tocarla.** Es el deshacer.
 - **No hay registro CAA** (el que limita quién puede emitir certificados): Vercel podrá sacar el suyo.
 - **Lo que sirve hoy el dominio es un WordPress vacío**: menú con anclas (`#about`, `#carta`,
