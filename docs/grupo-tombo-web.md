@@ -32,8 +32,10 @@ página de 404. **Los textos son los de cada casa y los del WordPress del grupo*
     Madrid»), en Anton con su sombra;
   - *«¡La tasca que te mereces!»*;
   - su botón, el `.btn` de Ochoa.
-- **La costura** es el logo del grupo en blanco sobre negro: en la línea entre las dos mitades en el
-  móvil, y arriba en el centro en el ordenador.
+- **La costura** es el logo del grupo en blanco, solo las letras y el brochazo, con una sombra suave
+  para despegarlo de las fotos: en la línea entre las dos mitades en el móvil, y arriba en el centro en
+  el ordenador. Llevó una pastilla negra debajo hasta que Mario pidió quitarla, el mismo 2026-11-23:
+  *«deja solo las letras con el brochazo, que si no, no me parece que quede del todo bien»*.
 - **Al señalar una mitad** con el ratón, su foto se acerca un poco y la otra se apaga. Solo `transform`
   y `opacity`, con duraciones de `tokens.css`, y nada con «reducir movimiento».
 - **Los botones son los de cada casa, con su comportamiento** (desde el 2026-11-23, tras preguntar
@@ -73,8 +75,8 @@ página de 404. **Los textos son los de cada casa y los del WordPress del grupo*
   es una `Organization` con sus dos casas como `subOrganization`, más un `WebSite` con el nombre
   «Grupo Tombo». Solo la lleva la portada.
 - **La imagen al compartir el enlace** (`/images/compartir.jpg`, 1200×630, 87 KB) es la portada en
-  pequeño: las dos mitades con sus fotos y su velo, y el logo del grupo en blanco sobre su pastilla
-  negra en el centro, más grande que en la web para que se lea en un chat. Se rehace igual con
+  pequeño: las dos mitades con sus fotos y su velo, y el logo del grupo en blanco en el centro, sin
+  pastilla, sobre un óvalo de sombra difusa y más grande que en la web, para que se lea en un chat. Se rehace igual con
   `sh scripts/compartir-grupo.sh` (ffmpeg). **Trampa:** sin pasar las fotos a RGB y conservar el rango
   completo, los colores salían lavados.
 - **El icono de la pestaña es la pincelada roja**, el mismo que tenía el WordPress, en sus tres tamaños

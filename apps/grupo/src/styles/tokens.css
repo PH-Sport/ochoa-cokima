@@ -94,9 +94,8 @@
   --oc-display: "Anton", Impact, "Arial Narrow", sans-serif;
   --oc-sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
 
-  /* La costura, que es del grupo y va sobre las dos */
-  --costura: #0b0a0a;
-  --sombra-costura: 0 8px 24px rgba(0, 0, 0, 0.35);
+  /* La costura, que es del grupo y va sobre las dos: el logo solo, despegado de las fotos con sombra */
+  --sombra-logo: 0 2px 12px rgba(0, 0, 0, 0.6);
   --sombra-rotulo: 0 10px 28px rgba(0, 0, 0, 0.25);
   --oscurece: rgba(0, 0, 0, 0.35);
 

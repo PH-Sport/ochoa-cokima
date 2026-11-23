@@ -409,7 +409,9 @@ const foto = { widths: [480, 780, 1200, 1600], sizes: "(min-width: 820px) 50vw, 
     }
   }
 
-  /* La costura: el grupo, en la línea entre las dos (arriba en el centro en el ordenador) */
+  /* La costura: el grupo, en la línea entre las dos (arriba en el centro en el ordenador). Solo el logo,
+     las letras y el brochazo, sin pastilla debajo (Mario, 2026-11-23: con el recuadro negro «no me parece
+     que quede del todo bien»); una sombra suave lo despega de las fotos. */
   .costura {
     position: absolute;
     z-index: 2;
@@ -417,15 +419,12 @@ const foto = { widths: [480, 780, 1200, 1600], sizes: "(min-width: 820px) 50vw, 
     top: 50%;
     transform: translate(-50%, -50%);
     display: block;
-    padding: 12px 16px;
-    background: var(--costura);
-    border-radius: 10px;
-    box-shadow: var(--sombra-costura);
   }
   .costura img {
     display: block;
-    width: clamp(88px, 10vw, 120px);
+    width: clamp(110px, 12vw, 150px);
     height: auto;
+    filter: drop-shadow(var(--sombra-logo));
   }
   @media (min-width: 820px) {
     .costura {
