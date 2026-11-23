@@ -17,6 +17,13 @@
 
 ## 0. Por dónde seguir
 
+**2026-11-23: la carta de Ochoa deja de enseñar el «pendiente de confirmar».** Cinco platos llevaban el
+gluten como «1\*», con una leyenda que decía «pendiente de confirmar con el restaurante»: es el gluten que
+la hoja del restaurante marca en amarillo sin decir por qué (§4). Mario pidió quitarlo y dejarlo como nota
+interna. El dato sigue en `allergensToConfirm` del JSON, y la duda, abierta con el restaurante. Medido en el
+build, en español y en inglés: los mismos 88 números, ninguno con asterisco, y sin la línea de la leyenda.
+En `preview`, sin publicar.
+
 **2026-11-23: la web del grupo, en `apps/grupo`.** `grupotombo.com` era un WordPress que seguía
 publicando las páginas de las dos casas y sus cartas viejas, compitiendo con las webs nuevas. Ahora es
 una sola página que presenta el grupo, lleva a las dos casas y enseña el correo de contacto. Las
@@ -43,9 +50,14 @@ casa. La aprobó en maqueta, la vio construida y **está publicada desde el mism
 - **a 1280×800:** cada mitad mide 640 px;
 - sin scroll lateral, sin imágenes rotas ni errores, y con las cinco familias cargadas.
 
-El porqué y lo descartado, en `grupo-tombo-web.md`. **Después, en `preview`:** los botones pasan a ser
-los de cada casa, con su comportamiento al ratón y al dedo, y la web del grupo tiene ya imagen para
-compartir el enlace (`scripts/compartir-grupo.sh`). El porqué, lo
+El porqué y lo descartado, en `grupo-tombo-web.md`. **Después, también publicado** (`e49be69` en `main`):
+
+- los botones pasan a ser los de cada casa, con su comportamiento al ratón y al dedo;
+- el logo de la costura va sin la pastilla negra;
+- la web del grupo ya tiene imagen para compartir el enlace (`scripts/compartir-grupo.sh`).
+
+Comprobado en la preview a 1280×800 y 375×812, y en `www.grupotombo.com`, que sirve la versión nueva
+con `og:image` en 200. El porqué, lo
 descartado y lo que falta, en `grupo-tombo-web.md`; los registros, en `deploy.md` §Dominios y SEO.
 
 **2026-11-18: el dominio de Cokima es `cokima.es`, y su SEO se repasa antes de apuntarlo.** El cliente ya
@@ -902,7 +914,9 @@ de fusión, sin tocar nada más.
   sobrasada, la tapa de alitas, los cuatro montados, el bikini de minutejos ni el pulpo: hoy
   no muestran nada. La duda concreta es si los montados heredan del bocata del mismo relleno
   o hay que pedirle la fila al restaurante. Y cinco platos llevan el gluten marcado en
-  amarillo sin decir por qué; hasta saberlo salen con «\*» y «pendiente de confirmar». **Mario
+  amarillo sin decir por qué. Salían con «\*» y «pendiente de confirmar» hasta el 2026-11-23, cuando
+  Mario pidió quitarlo de la web y dejarlo como nota interna: sigue en `allergensToConfirm` del JSON,
+  sin enseñarse, y el número del gluten se ve como los demás. **Mario
   lo dejó «en el aire» el 2026-09-19 para revisarlo cuanto antes**, y el PDF del 2026-11-04 no
   lo resuelve. **Él no tiene el dato (2026-11-05): hay que pedírselo al restaurante.** Es dato de
   salud: no se rellena por deducción (§0, §3).
