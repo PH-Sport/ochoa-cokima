@@ -4,7 +4,7 @@
 
 - **Corte:** 2026-11-23
 - **Rama de trabajo:** `preview`, **la única desde el 2026-10-26** (§1) · `main` (producción: recibió
-  `preview` el 2026-11-23 y publica las dos webs en sus dominios) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
+  `preview` el 2026-11-23 y publica las tres webs) · y dos ramas de prueba que pidió Mario para ver una propuesta en la web antes
   de decidir, que no se fusionan: `feat/inicio-paralaje`, el Inicio de Ochoa en paralaje, parada,
   y `feat/cokima-brasa`, el boceto Brasa como página suelta, que sobra desde que Brasa está en
   `preview` (§0). Si se borran lo decide él; la otra rama de prueba, `feat/inicio-vivo`, ya se
@@ -22,9 +22,8 @@ publicando las páginas de las dos casas y sus cartas viejas, compitiendo con la
 una sola página que presenta el grupo, lleva a las dos casas y enseña el correo de contacto. Las
 direcciones viejas redirigen con un 301. Tiene su propio proyecto en Vercel, `grupo-tombo`, con los cuatro
 dominios dados de alta, y su primer despliegue, salido de `preview`, ya está en producción y comprobado.
-**Falta que Mario cambie los DNS** de `grupotombo.com` y `.es`, y pasar `preview` a `main`: producción
-se quedó en ese primer despliegue y no tiene el icono de la pincelada, que llegó después
-(`deploy.md` §Dominios y SEO). El porqué, lo
+`preview` pasó a `main` el mismo día (`c7d5423`) con el icono de la pincelada. **Falta que Mario
+cambie los DNS** de `grupotombo.com` y `.es` (`deploy.md` §Dominios y SEO). El porqué, lo
 descartado y lo que falta, en `grupo-tombo-web.md`; los registros, en `deploy.md` §Dominios y SEO.
 
 **2026-11-18: el dominio de Cokima es `cokima.es`, y su SEO se repasa antes de apuntarlo.** El cliente ya
