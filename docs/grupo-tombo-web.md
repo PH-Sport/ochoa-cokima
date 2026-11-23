@@ -15,7 +15,7 @@ excesivamente grande»*.
 
 ## Lo que es
 
-**La portada es una pantalla partida** (desde el 2026-11-23, idea de Mario): cada mitad es una casa con
+**La portada es una pantalla partida** (publicada el 2026-11-23, idea de Mario): cada mitad es una casa con
 **su propia estética**, la de su web, y el logo del grupo las une en la costura. En el móvil, Cokima
 arriba y Ochoa abajo; en el ordenador, izquierda y derecha. Cada mitad entera es un enlace a su web.
 Al bajar, el grupo: el logo, su frase y el contacto. Además, el aviso legal, la privacidad y una
