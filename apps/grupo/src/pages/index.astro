@@ -23,7 +23,7 @@ const foto = { widths: [480, 780, 1200, 1600], sizes: "(min-width: 820px) 50vw, 
       <Image src={cokima} alt="" {...foto} loading="eager" fetchpriority="high" />
       <div class="dentro">
         <img class="logo" src="/images/cokima-logo.png" alt="Cokima" width="1756" height="354" />
-        <p class="seña">Kitchen Madness · Andrés Mellado, 21</p>
+        <p class="seña"><span>Kitchen Madness ·</span> <span>Andrés Mellado, 21</span></p>
         <p class="lema">Puedes comer en cualquier sitio, pero será solo comer.</p>
         <span class="boton">Entrar en Cokima →</span>
       </div>
@@ -191,6 +191,10 @@ const foto = { widths: [480, 780, 1200, 1600], sizes: "(min-width: 820px) 50vw, 
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--ck-bone-dim);
+  }
+  /* Si no cabe en una línea, se parte entre el nombre y la dirección, no dentro de la dirección. */
+  .cokima .seña span {
+    white-space: nowrap;
   }
   .cokima .lema {
     max-width: 24ch;
