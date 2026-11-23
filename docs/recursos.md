@@ -151,6 +151,24 @@ Ambas recomendaciones están **bloqueadas por accesos del cliente**; ver `estado
 - Cokima: https://claude.ai/code/artifact/1310ef1a-9b31-4a91-829a-8740df5c1bb4
 - Los Ochoa: https://claude.ai/code/artifact/b716368e-80d1-48b6-ae95-83f3cee20043
 
+**La web del grupo, en maqueta** (artifact privado de Mario, 2026-11-23):
+https://claude.ai/artifact/JwoAj2PWR3kk95P9D5WQYc
+
+### El Drive de los restaurantes (acceso desde el 2026-11-23)
+
+Es la carpeta compartida del equipo de los restaurantes, la que ofreció Lorena el 2026-11-13, y es
+**la fuente más al día** para material: fotos, vídeos, cartas y logos. Mario tiene acceso de lectura
+con su cuenta de Google, y el conector de Google Drive de Claude la ve. Las dos casas cuelgan de la
+misma carpeta madre (`1K6t03HXXyo7STneVWgLR89lH2aHxXUtk`):
+
+| Casa | Carpeta | Lo que puede servir a la web |
+|---|---|---|
+| Cokima | `COKIMA` · `1y9uQVQLdu3EaRmVZdHXBzdk7Yp7DP_Xb` | `BRANDING`, `LOCAL`, `AMBIENTE`, `PRODUCTOS`, `FOTOS DE EQUIPO`, `CARTA NUEVA MARZO`, `VIDEOS NUEVA CARTA`, `MARIDAJES` |
+| Ochoa | `TASQUITA LOS OCHOA` · `1ihhZZ2mUoCAz0tYlOgS3a18PtxdNHpmE` | `LOGO Y PATRONES`, `LOCAL`, `CONTENIDO TASQUITA` (sept. 2026), `CARTA`, `PINTXOS`, `BOCADILLOS`, `BEBIDAS`, `DESAYUNOS`, `FEED NUEVO` |
+
+Hay carpetas que no son material para la web, como `PERSONAL` o `CLIENTES`, y no se abren sin que
+Mario lo pida. **No se ha revisado aún el contenido de ninguna**: lo de arriba son solo los nombres.
+
 ---
 
 ## 4. Datos de local — **pendientes de validar con el cliente**
