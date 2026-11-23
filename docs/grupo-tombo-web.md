@@ -37,6 +37,8 @@ repo, y el logo, el del WordPress.
 - **No usa el `Seo.astro` de `@tombo/ui`**, que declara un `Restaurant`. Aquí la ficha para buscadores
   es una `Organization` con sus dos casas como `subOrganization`, más un `WebSite` con el nombre
   «Grupo Tombo». Solo la lleva la portada.
+- **El icono de la pestaña es la pincelada roja**, el mismo que tenía el WordPress, en sus tres tamaños
+  (32, 180 y 192 px). Lo eligió Mario el 2026-11-23, en lugar del provisional con «GT».
 
 ## Lo descartado
 
@@ -51,7 +53,6 @@ repo, y el logo, el del WordPress.
 ## Lo que falta
 
 - **Los datos fiscales del titular** en el aviso legal y la privacidad, como en las otras dos webs.
-- **El favicon es provisional**: un cuadrado rojo con «GT», hasta que llegue el del grupo en vectorial.
 - **No tiene imagen para compartir el enlace** (`og:image`).
 - **El enlace a «Grupo Tombo» en el pie de Cokima y de Ochoa.**
 - **Los DNS:** el paso a paso y los valores, en `deploy.md` §Dominios y SEO.
